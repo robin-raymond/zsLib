@@ -73,9 +73,9 @@
 		0066856B16C9DD6E00259F81 /* TestStringize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestStringize.cpp; sourceTree = "<group>"; };
 		0066856C16C9DD6E00259F81 /* TestTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTimer.cpp; sourceTree = "<group>"; };
 		0066856D16C9DD6E00259F81 /* TestXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestXML.cpp; sourceTree = "<group>"; };
-		0066858616C9E0E400259F81 /* libboost_date_time.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_date_time.a; path = "../../../../../hookflash-staging/lib/libboost_date_time.a"; sourceTree = SOURCE_ROOT; };
-		0066858716C9E0E400259F81 /* libboost_regex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_regex.a; path = "../../../../../hookflash-staging/lib/libboost_regex.a"; sourceTree = SOURCE_ROOT; };
-		0066858816C9E0E400259F81 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = "../../../../../hookflash-staging/lib/libboost_thread.a"; sourceTree = SOURCE_ROOT; };
+		0066858616C9E0E400259F81 /* libboost_date_time.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_date_time.a; path = ../../../../boost/staging/lib/libboost_date_time.a; sourceTree = SOURCE_ROOT; };
+		0066858716C9E0E400259F81 /* libboost_regex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_regex.a; path = ../../../../boost/staging/lib/libboost_regex.a; sourceTree = SOURCE_ROOT; };
+		0066858816C9E0E400259F81 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = ../../../../boost/staging/lib/libboost_thread.a; sourceTree = SOURCE_ROOT; };
 		0066858C16C9E16200259F81 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -290,7 +290,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../..;
+				HEADER_SEARCH_PATHS = (
+					../../..,
+					../../../../boost/staging/include,
+				);
+				LIBRARY_SEARCH_PATHS = ../../../../boost/staging/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -316,7 +320,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../..;
+				HEADER_SEARCH_PATHS = (
+					../../..,
+					../../../../boost/staging/include,
+				);
+				LIBRARY_SEARCH_PATHS = ../../../../boost/staging/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
 			};
@@ -325,14 +333,8 @@
 		0066854216C9DD1600259F81 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../hookflash-staging/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../hookflash-staging/lib",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -340,14 +342,8 @@
 		0066854316C9DD1600259F81 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../hookflash-staging/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../hookflash-staging/lib",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

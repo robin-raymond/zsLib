@@ -38,6 +38,7 @@
 		006681F916C9D65E00259F81 /* zsLib_XMLParserWarningTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006681B116C9D65E00259F81 /* zsLib_XMLParserWarningTypes.cpp */; };
 		006681FA16C9D65E00259F81 /* zsLib_XMLText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006681B216C9D65E00259F81 /* zsLib_XMLText.cpp */; };
 		006681FB16C9D65E00259F81 /* zsLib_XMLUnknown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006681B316C9D65E00259F81 /* zsLib_XMLUnknown.cpp */; };
+		00EB8E91177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E90177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */; };
 		87F09EEA171EE06E0045F6A6 /* zsLib_RegEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87F09EE9171EE06E0045F6A6 /* zsLib_RegEx.cpp */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +127,9 @@
 		006681DA16C9D65E00259F81 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		006681DB16C9D65E00259F81 /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
 		006681DC16C9D65E00259F81 /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+		00EB8E8E177D333500FFD40F /* RegEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegEx.h; sourceTree = "<group>"; };
+		00EB8E8F177D334900FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
+		00EB8E90177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		87F09EE8171EE05F0045F6A6 /* zsLib_RegEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_RegEx.h; sourceTree = "<group>"; };
 		87F09EE9171EE06E0045F6A6 /* zsLib_RegEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_RegEx.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,6 +180,7 @@
 				006681D316C9D65E00259F81 /* MessageQueueThread.h */,
 				006681D416C9D65E00259F81 /* Numeric.h */,
 				006681D516C9D65E00259F81 /* Proxy.h */,
+				00EB8E8E177D333500FFD40F /* RegEx.h */,
 				006681D616C9D65E00259F81 /* Socket.h */,
 				006681D716C9D65E00259F81 /* String.h */,
 				006681D816C9D65E00259F81 /* Stringize.h */,
@@ -200,6 +205,7 @@
 				0066819C16C9D65E00259F81 /* zsLib_MessageQueueThreadBasic.cpp */,
 				0066819D16C9D65E00259F81 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp */,
 				0066819E16C9D65E00259F81 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp */,
+				00EB8E90177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */,
 				0066819F16C9D65E00259F81 /* zsLib_Numeric.cpp */,
 				006681A016C9D65E00259F81 /* zsLib_Proxy.cpp */,
 				006681A116C9D65E00259F81 /* zsLib_Socket.cpp */,
@@ -241,6 +247,7 @@
 				006681C116C9D65E00259F81 /* zsLib_MessageQueueThreadBasic.h */,
 				006681C216C9D65E00259F81 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h */,
 				006681C316C9D65E00259F81 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h */,
+				00EB8E8F177D334900FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */,
 				006681C416C9D65E00259F81 /* zsLib_Numeric.h */,
 				006681C516C9D65E00259F81 /* zsLib_Proxy.h */,
 				006681C616C9D65E00259F81 /* zsLib_ProxyPack.h */,
@@ -337,6 +344,7 @@
 				006681FA16C9D65E00259F81 /* zsLib_XMLText.cpp in Sources */,
 				006681FB16C9D65E00259F81 /* zsLib_XMLUnknown.cpp in Sources */,
 				87F09EEA171EE06E0045F6A6 /* zsLib_RegEx.cpp in Sources */,
+				00EB8E91177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +372,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../../;
+				HEADER_SEARCH_PATHS = (
+					../../..,
+					../../../../boost/staging/iPhoneOS/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -386,7 +397,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../../;
+				HEADER_SEARCH_PATHS = (
+					../../..,
+					../../../../boost/staging/iPhoneOS/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -398,10 +412,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/zsLib_ios.dst;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../hookflash-staging/iPhoneOS/include",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -413,10 +424,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/zsLib_ios.dst;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../../../../hookflash-staging/iPhoneOS/include",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
