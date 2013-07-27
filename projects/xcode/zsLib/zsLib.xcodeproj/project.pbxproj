@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000CBF6217A3EB640075E86C /* zsLib_ProxySubscriptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */; };
 		006680FF16C9CE8700259F81 /* zsLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B716C9CE8700259F81 /* zsLib.cpp */; };
 		0066810016C9CE8700259F81 /* zsLib_Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B816C9CE8700259F81 /* zsLib_Event.cpp */; };
 		0066810116C9CE8700259F81 /* zsLib_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B916C9CE8700259F81 /* zsLib_helpers.cpp */; };
@@ -43,6 +44,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		000CBF6017A3E5090075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
+		000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxySubscriptions.h; sourceTree = "<group>"; };
 		006680AE16C9CE4300259F81 /* libzsLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libzsLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		006680B716C9CE8700259F81 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
 		006680B816C9CE8700259F81 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
@@ -168,6 +171,7 @@
 				006680F516C9CE8700259F81 /* MessageQueueThread.h */,
 				006680F616C9CE8700259F81 /* Numeric.h */,
 				006680F716C9CE8700259F81 /* Proxy.h */,
+				000CBF6017A3E5090075E86C /* ProxySubscriptions.h */,
 				00EB8E84177D328700FFD40F /* RegEx.h */,
 				006680F816C9CE8700259F81 /* Socket.h */,
 				006680F916C9CE8700259F81 /* String.h */,
@@ -237,6 +241,7 @@
 				00EB8E86177D32C800FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */,
 				006680E616C9CE8700259F81 /* zsLib_Numeric.h */,
 				006680E716C9CE8700259F81 /* zsLib_Proxy.h */,
+				000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */,
 				006680E816C9CE8700259F81 /* zsLib_ProxyPack.h */,
 				00EB8E87177D32C800FFD40F /* zsLib_RegEx.h */,
 				006680E916C9CE8700259F81 /* zsLib_Socket.h */,
@@ -256,6 +261,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				000CBF6217A3EB640075E86C /* zsLib_ProxySubscriptions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,6 +35,7 @@
 #include <zsLib/MessageQueueThread.h>
 #include <zsLib/Numeric.h>
 #include <zsLib/Proxy.h>
+#include <zsLib/ProxySubscriptions.h>
 #include <zsLib/ISocket.h>
 #include <zsLib/Socket.h>
 #include <zsLib/String.h>

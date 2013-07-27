@@ -21,6 +21,7 @@
  */
 
 #include <zsLib/Proxy.h>
+#include <zsLib/ProxySubscriptions.h>
 #include <zsLib/MessageQueueAssociator.h>
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>

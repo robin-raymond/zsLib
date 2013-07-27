@@ -55,6 +55,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		000CBF8017A40C510075E86C /* zsLib_ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxySubscriptions.h; sourceTree = "<group>"; };
+		000CBF8117A40C690075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
 		0066818216C9D64000259F81 /* libzsLib_ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libzsLib_ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0066819516C9D65E00259F81 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
 		0066819616C9D65E00259F81 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				006681D316C9D65E00259F81 /* MessageQueueThread.h */,
 				006681D416C9D65E00259F81 /* Numeric.h */,
 				006681D516C9D65E00259F81 /* Proxy.h */,
+				000CBF8117A40C690075E86C /* ProxySubscriptions.h */,
 				00EB8E8E177D333500FFD40F /* RegEx.h */,
 				006681D616C9D65E00259F81 /* Socket.h */,
 				006681D716C9D65E00259F81 /* String.h */,
@@ -250,6 +253,7 @@
 				00EB8E8F177D334900FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */,
 				006681C416C9D65E00259F81 /* zsLib_Numeric.h */,
 				006681C516C9D65E00259F81 /* zsLib_Proxy.h */,
+				000CBF8017A40C510075E86C /* zsLib_ProxySubscriptions.h */,
 				006681C616C9D65E00259F81 /* zsLib_ProxyPack.h */,
 				006681C716C9D65E00259F81 /* zsLib_Socket.h */,
 				006681C816C9D65E00259F81 /* zsLib_SocketMonitor.h */,
