@@ -44,6 +44,7 @@ namespace zsLib
   class ProxySubscriptions
   {
   public:
+    typedef size_t size_type;
     typedef boost::shared_ptr<XINTERFACE> DelegatePtr;
     typedef boost::weak_ptr<XINTERFACE>   DelegateWeakPtr;
 
