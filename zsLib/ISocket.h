@@ -44,6 +44,8 @@ namespace zsLib
       class Unspecified : public Exception
       {
       public:
+        typedef int error_type;
+
         Unspecified(
                     const Subsystem &subsystem,
                     const String &inMessage,
@@ -58,10 +60,10 @@ namespace zsLib
         }
         ~Unspecified() throw() {}
 
-        int getErrorCode() {return mErrorCode;}
+        error_type getErrorCode() {return mErrorCode;}
 
       private:
-        int mErrorCode;
+        error_type mErrorCode;
       };
 
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(WouldBlock, Unspecified, int)
