@@ -32,6 +32,13 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTest)
 
   BOOST_AUTO_TEST_CASE(Test_PUID_GUID)
   {
+    zsLib::AutoBool testBool;
+    BOOST_CHECK(!testBool)
+
+    boost::value_initialized<int> value;
+
+    BOOST_CHECK(0 == value)
+
     zsLib::PUID puid1 = zsLib::createPUID();
     zsLib::PUID puid2 = zsLib::createPUID();
 

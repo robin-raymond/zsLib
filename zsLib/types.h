@@ -84,6 +84,8 @@ namespace zsLib
   typedef WSTR ZsDeclareWSTR;
   typedef CWSTR ZsDeclareCWSTR;
 
+  typedef boost::value_initialized<bool> AutoBool;
+
   class Event;
   typedef boost::shared_ptr<Event> EventPtr;
   typedef boost::weak_ptr<Event> EventWeakPtr;
