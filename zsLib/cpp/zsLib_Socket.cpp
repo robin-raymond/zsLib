@@ -472,11 +472,45 @@ namespace zsLib
     return localIP;
   }
 
+  //---------------------------------------------------------------------------
+  static int handleError(bool *outWouldBlock)
+  {
+    int error = WSAGetLastError();
+
+    if (outWouldBlock) {
+      *outWouldBlock = false;
+      if ((WSAEWOULDBLOCK == error) ||
+          (WSAEINPROGRESS == error)) {
+        *outWouldBlock = true;
+        return 0;
+      }
+    }
+    
+    return error;
+  }
+
+  //---------------------------------------------------------------------------
+  static int handleError(
+                         int error,
+                         int *outNoThrowErrorResult
+                         )
+  {
+    if (0 == error) {
+      error = WSAGetLastError();
+    }
+
+    if (outNoThrowErrorResult) {
+      *outNoThrowErrorResult = error;
+      return 0;
+    }
+    
+    return error;
+  }
 
   //---------------------------------------------------------------------------
   void Socket::bind(
                     const IPAddress &inBindIP,
-                    int *noThrowErrorResult
+                    int *outNoThrowErrorResult
                     ) const throw(
                                   Exceptions::InvalidSocket,
                                   Exceptions::AddressInUse,
@@ -503,11 +537,9 @@ namespace zsLib
 
       if (SOCKET_ERROR == result)
       {
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          *noThrowErrorResult = error;
-          return;
-        }
+        int error = handleError(0, outNoThrowErrorResult);
+        if (0 == error) return;
+
         switch (error)
         {
           case WSAEADDRINUSE: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot bind socket as address is already in use, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", bind IP=" + inBindIP.string()); break;
@@ -558,7 +590,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   ISocketPtr Socket::accept(
                             IPAddress &outRemoteIP,
-                            int *noThrowErrorResult
+                            int *outNoThrowErrorResult
                             ) const throw(
                                           Exceptions::InvalidSocket,
                                           Exceptions::ConnectionReset,
@@ -568,8 +600,8 @@ namespace zsLib
     internal::ignoreSigTermOnThread();
 
     SOCKET acceptSocket = INVALID_SOCKET;
-    if (noThrowErrorResult)
-      *noThrowErrorResult = 0;
+    if (outNoThrowErrorResult)
+      *outNoThrowErrorResult = 0;
 
     {
       AutoRecursiveLock lock(mLock);
@@ -582,11 +614,9 @@ namespace zsLib
       acceptSocket = ::accept(mSocket, (sockaddr *)(&address), &size);
       if (INVALID_SOCKET == acceptSocket)
       {
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          *noThrowErrorResult = error;
-          return ISocketPtr();
-        }
+        int error = handleError(0, outNoThrowErrorResult);
+        if (0 == error) return ISocketPtr();
+
         switch (error)
         {
           case WSAECONNRESET: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "New connection was indicated but connection was reset before it could be accepted, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
@@ -619,7 +649,7 @@ namespace zsLib
   void Socket::connect(
                        const IPAddress &inDestination,
                        bool *outWouldBlock,
-                       int *noThrowErrorResult
+                       int *outNoThrowErrorResult
                        ) const throw(
                                      Exceptions::InvalidSocket,
                                      Exceptions::WouldBlock,
@@ -633,14 +663,14 @@ namespace zsLib
     internal::ignoreSigTermOnThread();
 
     {
-      if (noThrowErrorResult)
-        *noThrowErrorResult = 0;
-
-      AutoRecursiveLock lock(mLock);
-      ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
+      if (outNoThrowErrorResult)
+        *outNoThrowErrorResult = 0;
 
       if (NULL != outWouldBlock)
         *outWouldBlock = false;
+
+      AutoRecursiveLock lock(mLock);
+      ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
 
       sockaddr_in addressv4;
       sockaddr_in6 addressv6;
@@ -651,26 +681,18 @@ namespace zsLib
       int result = ::connect(mSocket, address, size);
       if (SOCKET_ERROR == result)
       {
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          if (WSAEWOULDBLOCK == error) {
-            if (outWouldBlock) {
-              *outWouldBlock = true;
-              goto connect_final;
-            }
-          }
-          *noThrowErrorResult = error;
-          return;
-        }
+        int error = handleError(outWouldBlock);
+        if (0 == error) goto connect_final;
+
+        error = handleError(error, outNoThrowErrorResult);
+        if (0 == error) return;
+
         switch (error)
         {
           case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            if (NULL != outWouldBlock)
-              *outWouldBlock = true;
-            else
-              ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "The connection will block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "The connection will block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string());
             break;
           }
           case WSAEADDRINUSE:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot connect socket as address is already in use, where socket id" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string()); break;
@@ -700,7 +722,7 @@ namespace zsLib
                         ULONG inBufferLengthInBytes,
                         bool *outWouldBlock,
                         ULONG inFlags,
-                        int *noThrowErrorResult
+                        int *outNoThrowErrorResult
                         ) const throw(
                                       Exceptions::InvalidSocket,
                                       Exceptions::WouldBlock,
@@ -715,16 +737,17 @@ namespace zsLib
     internal::ignoreSigTermOnThread();
 
     int result = 0;
-    if (noThrowErrorResult)
-      *noThrowErrorResult = 0;
+    if (outNoThrowErrorResult)
+      *outNoThrowErrorResult = 0;
+
+    if (NULL != outWouldBlock)
+      *outWouldBlock = false;
 
     // scope:
     {
       AutoRecursiveLock lock(mLock);
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
 
-      if (NULL != outWouldBlock)
-        *outWouldBlock = false;
       if (0 == inBufferLengthInBytes)
         return 0;
 
@@ -742,23 +765,18 @@ namespace zsLib
       {
         result = 0;
 
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          if (WSAEWOULDBLOCK == error) {
-            if (outWouldBlock)
-              *outWouldBlock = true;
-          }
-          *noThrowErrorResult = error;
-          goto receive_final;
-        }
+        int error = handleError(outWouldBlock);
+        if (0 == error) goto receive_final;
+
+        error = handleError(error, outNoThrowErrorResult);
+        if (0 == error) return 0;
+
         switch (error)
         {
+          case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            if (NULL != outWouldBlock)
-              *outWouldBlock = true;
-            else
-              ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
             break;
           }
           case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot receive socket data as connection was shutdown, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
@@ -787,7 +805,7 @@ namespace zsLib
                             ULONG inBufferLengthInBytes,
                             bool *outWouldBlock,
                             ULONG inFlags,
-                            int *noThrowErrorResult
+                            int *outNoThrowErrorResult
                             ) const throw(
                                           Exceptions::InvalidSocket,
                                           Exceptions::WouldBlock,
@@ -801,16 +819,16 @@ namespace zsLib
     internal::ignoreSigTermOnThread();
 
     int result = 0;
-    if (noThrowErrorResult)
-      *noThrowErrorResult = 0;
+    if (outNoThrowErrorResult)
+      *outNoThrowErrorResult = 0;
+
+    if (NULL != outWouldBlock)
+      *outWouldBlock = false;
 
     // scope:
     {
       AutoRecursiveLock lock(mLock);
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
-
-      if (NULL != outWouldBlock)
-        *outWouldBlock = false;
 
       sockaddr_in6 address;
       memset(&address, 0, sizeof(address));
@@ -829,23 +847,18 @@ namespace zsLib
       {
         result = 0;
 
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          if (WSAEWOULDBLOCK == error) {
-            if (outWouldBlock)
-              *outWouldBlock = true;
-          }
-          *noThrowErrorResult = error;
-          goto recvfrom_final;
-        }
+        int error = handleError(outWouldBlock);
+        if (0 == error) goto recvfrom_final;
+
+        error = handleError(error, outNoThrowErrorResult);
+        if (0 == error) return 0;
+
         switch (error)
         {
+          case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            if (NULL != outWouldBlock)
-              *outWouldBlock = true;
-            else
-              ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
             break;
           }
           case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot receive socket data as connection was shutdown, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
@@ -879,7 +892,7 @@ namespace zsLib
                      ULONG inBufferLengthInBytes,
                      bool *outWouldBlock,
                      ULONG inFlags,
-                     int *noThrowErrorResult
+                     int *outNoThrowErrorResult
                      ) const throw(
                                    Exceptions::InvalidSocket,
                                    Exceptions::WouldBlock,
@@ -895,16 +908,16 @@ namespace zsLib
     internal::ignoreSigTermOnThread();
 
     int result = 0;
-    if (noThrowErrorResult)
-      *noThrowErrorResult = 0;
+    if (outNoThrowErrorResult)
+      *outNoThrowErrorResult = 0;
+
+    if (NULL != outWouldBlock)
+      *outWouldBlock = false;
 
     // scope:
     {
       AutoRecursiveLock lock(mLock);
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
-
-      if (NULL != outWouldBlock)
-        *outWouldBlock = false;
 
       result = ::send(
                       mSocket,
@@ -917,24 +930,18 @@ namespace zsLib
       {
         result = 0;
 
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          if (WSAEWOULDBLOCK == error) {
-            if (outWouldBlock)
-              *outWouldBlock = true;
-          }
-          *noThrowErrorResult = error;
-          goto send_final;
-        }
+        int error = handleError(outWouldBlock);
+        if (0 == error) goto send_final;
+
+        error = handleError(error, outNoThrowErrorResult);
+        if (0 == error) return 0;
+
         switch (error)
         {
+          case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            if (NULL != outWouldBlock) {
-              *outWouldBlock = true;
-            } else {
-              ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
-            }
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
             break;
           }
           case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as connection keep alive timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
@@ -964,7 +971,7 @@ namespace zsLib
                        ULONG inBufferLengthInBytes,
                        bool *outWouldBlock,
                        ULONG inFlags,
-                       int *noThrowErrorResult
+                       int *outNoThrowErrorResult
                        ) const throw(
                                      Exceptions::InvalidSocket,
                                      Exceptions::WouldBlock,
@@ -981,16 +988,16 @@ namespace zsLib
     internal::ignoreSigTermOnThread();
 
     int result = 0;
-    if (noThrowErrorResult)
-      *noThrowErrorResult = 0;
+    if (outNoThrowErrorResult)
+      *outNoThrowErrorResult = 0;
+
+    if (NULL != outWouldBlock)
+      *outWouldBlock = false;
 
     // scope:
     {
       AutoRecursiveLock lock(mLock);
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
-
-      if (NULL != outWouldBlock)
-        *outWouldBlock = false;
 
       sockaddr_in addressv4;
       sockaddr_in6 addressv6;
@@ -1010,23 +1017,18 @@ namespace zsLib
       {
         result = 0;
 
-        int error = WSAGetLastError();
-        if (noThrowErrorResult) {
-          if (WSAEWOULDBLOCK == error) {
-            if (outWouldBlock)
-              *outWouldBlock = true;
-          }
-          *noThrowErrorResult = error;
-          goto sendto_final;
-        }
+        int error = handleError(outWouldBlock);
+        if (0 == error) goto sendto_final;
+
+        error = handleError(error, outNoThrowErrorResult);
+        if (0 == error) return 0;
+
         switch (error)
         {
+          case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            if (NULL != outWouldBlock)
-              *outWouldBlock = true;
-            else
-              ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
             break;
           }
           case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as connection keep alive timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
