@@ -21,6 +21,7 @@
  */
 
 #include <zsLib/helpers.h>
+#include <zsLib/Stringize.h>
 
 //#include <boost/test/unit_test_suite.hpp>
 //#include <boost/test/unit_test.hpp>
@@ -50,6 +51,12 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTest)
 
     BOOST_CHECK(sizeof(uuid1) == sizeof(zsLib::UUID))
     BOOST_CHECK(uuid1 != uuid2)
+
+    zsLib::AutoPUID auto1;
+
+    BOOST_CHECK(get(auto1) == (puid2 + 1))
+
+    BOOST_CHECK(auto1.string() == zsLib::Stringize<zsLib::PUID>(puid2+1).string())
   }
 
   BOOST_AUTO_TEST_CASE(Test_atomic_inc_dec)

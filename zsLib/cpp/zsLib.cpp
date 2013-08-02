@@ -30,4 +30,14 @@ namespace zsLib {ZS_IMPLEMENT_SUBSYSTEM(zsLib)}
 
 namespace zsLib
 {
+  AutoPUID::AutoPUID()
+  {
+    get(*this) = zsLib::createPUID();
+  }
+
+  String AutoPUID::string() const
+  {
+    return Stringize<PUID>(get(*this)).string();
+  }
+
 };
