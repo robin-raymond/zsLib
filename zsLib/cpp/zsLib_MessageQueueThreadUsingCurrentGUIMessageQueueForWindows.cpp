@@ -83,7 +83,7 @@ namespace zsLib
         wndClass.lpszClassName = mHiddenWindowClassName;
 
         mRegisteredWindowClass = ::RegisterClass(&wndClass);
-        ZS_THROW_BAD_STATE_MSG_IF(0 == mRegisteredWindowClass, "RegisterClass failed with error: " + zsLib::Stringize<DWORD>(::GetLastError()).string())
+        ZS_THROW_BAD_STATE_MSG_IF(0 == mRegisteredWindowClass, "RegisterClass failed with error: " + zsLib::string(::GetLastError()))
 
         mCustomMessage = ::RegisterWindowMessage(mCustomMessageName);
         ZS_THROW_BAD_STATE_IF(0 == mCustomMessage)

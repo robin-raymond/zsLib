@@ -22,6 +22,7 @@
 
 #include <zsLib/Stringize.h>
 #include <zsLib/Exception.h>
+#include <zsLib/IPAddress.h>
 
 #include <boost/shared_array.hpp>
 
@@ -58,5 +59,10 @@ namespace zsLib
         *dest = '0';
       return String(dest);
     }
+  }
+
+  String string(const IPAddress & x, bool includePort)
+  {
+    return x.string(includePort);
   }
 }

@@ -97,7 +97,7 @@ namespace zsLib
         std::cout << "-------------------------------------------------------------------------------\n";
 
         for (LocationCountMap::iterator iter = mLocations.begin(); iter != mLocations.end(); ++iter) {
-          String output = String("FILE=") + (*iter).first.second + " LINE=" + Stringize<int>((*iter).first.first).string() + " COUNT=" + Stringize<int>((*iter).second).string();
+          String output = String("FILE=") + (*iter).first.second + " LINE=" + string((*iter).first.first) + " COUNT=" + string((*iter).second);
           ZS_LOG_WARNING(Basic, output)
           std::cout << output << "\n";
         }

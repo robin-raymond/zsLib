@@ -23,6 +23,7 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
 #include <zsLib/Numeric.h>
+#include <zsLib/IPAddress.h>
 
 //#include <boost/test/unit_test_suite.hpp>
 //#include <boost/test/unit_test.hpp>
@@ -34,6 +35,7 @@
 using zsLib::BYTE;
 using zsLib::LONGLONG;
 using zsLib::ULONGLONG;
+using zsLib::IPAddress;
 
 BOOST_AUTO_TEST_SUITE(zsLibStringize)
 
@@ -71,6 +73,8 @@ BOOST_AUTO_TEST_SUITE(zsLibStringize)
     zsLib::UUID uuid = zsLib::Numeric<zsLib::UUID>("b0a01e87-2be5-4daa-8155-1380c98400a1");
     zsLib::String uuidStr = zsLib::Stringize<zsLib::UUID>(uuid);
     BOOST_EQUAL("b0a01e87-2be5-4daa-8155-1380c98400a1", uuidStr);
+
+    BOOST_EQUAL(IPAddress("192.168.1.10:5060").string(), string(IPAddress("192.168.1.10:5060")))
   }
 
 BOOST_AUTO_TEST_SUITE_END()

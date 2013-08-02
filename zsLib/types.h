@@ -84,17 +84,6 @@ namespace zsLib
   typedef WSTR ZsDeclareWSTR;
   typedef CWSTR ZsDeclareCWSTR;
 
-  typedef boost::value_initialized<bool> AutoBool;
-  typedef boost::value_initialized<BYTE> AutoBYTE;
-  typedef boost::value_initialized<WORD> AutoWORD;
-  typedef boost::value_initialized<DWORD> AutoDWORD;
-  typedef boost::value_initialized<QWORD> AutoQWORD;
-  typedef boost::value_initialized<ULONG> AutoULONG;
-  typedef boost::value_initialized<LONGLONG> AutoLONGLONG;
-  typedef boost::value_initialized<ULONGLONG> AutoULONGLONG;
-  typedef boost::value_initialized<FLOAT> AutoFLOAT;
-  typedef boost::value_initialized<DOUBLE> AutoDOUBLE;
-
   class Event;
   typedef boost::shared_ptr<Event> EventPtr;
   typedef boost::weak_ptr<Event> EventWeakPtr;
@@ -177,12 +166,23 @@ namespace zsLib
     bool mNoop;
   };
 
-  class AutoPUID : public boost::value_initialized<PUID>
+  class AutoInitializedPUID : public boost::value_initialized<PUID>
   {
   public:
-    AutoPUID();
-    String string() const;
+    AutoInitializedPUID();
   };
+
+  typedef AutoInitializedPUID AutoPUID;
+  typedef boost::value_initialized<bool> AutoBool;
+  typedef boost::value_initialized<BYTE> AutoBYTE;
+  typedef boost::value_initialized<WORD> AutoWORD;
+  typedef boost::value_initialized<DWORD> AutoDWORD;
+  typedef boost::value_initialized<QWORD> AutoQWORD;
+  typedef boost::value_initialized<ULONG> AutoULONG;
+  typedef boost::value_initialized<LONGLONG> AutoLONGLONG;
+  typedef boost::value_initialized<ULONGLONG> AutoULONGLONG;
+  typedef boost::value_initialized<FLOAT> AutoFLOAT;
+  typedef boost::value_initialized<DOUBLE> AutoDOUBLE;
 
   namespace XML
   {

@@ -483,7 +483,7 @@ namespace zsLib
       }
 
       if (0 != errorCode) {
-        std::cout << "SocketMonitor: Could not wake up socket monitor. This will cause a delay in the socket monitor response time, where error=" + (Stringize<int>(errorCode).string());
+        std::cout << "SocketMonitor: Could not wake up socket monitor. This will cause a delay in the socket monitor response time, where error=" + (string(errorCode));
       }
     }
 

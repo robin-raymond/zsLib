@@ -167,6 +167,7 @@ namespace zsLib
   {
     return String(boost::posix_time::to_simple_string(mValue));
   }
+
 }
 #else
 #define ZSLIB_INTERNAL_STRINGIZE_H_0c235f6defcccb275d602da44da60e58_SECOND_INCLUDE

@@ -105,7 +105,7 @@ namespace zsLib
         memset(&data, 0, sizeof(data));
         int result = WSAStartup(MAKEWORD(2, 2), &data);
         if (0 != result)
-			ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + Stringize<int>(result).string())
+			ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
       }
 
       //-----------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace zsLib
       {
         int result = WSACleanup();
         if (0 != result)
-			ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + Stringize<int>(result).string())
+			ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
       }
     };
 #else
@@ -242,7 +242,7 @@ namespace zsLib
     if (INVALID_SOCKET == socket)
     {
       int error = WSAGetLastError();
-      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Could not create socket due to an unexpected error, where error=" + (Stringize<int>(error)).string())
+      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Could not create socket due to an unexpected error, where error=" + (string(error)))
     }
     SocketPtr object = create();
     object->mThis = object;
@@ -400,8 +400,8 @@ namespace zsLib
       int error = WSAGetLastError();
       switch (error)
       {
-        case WSAEWOULDBLOCK: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "closesocket on an asynchronous socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-        default:             ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "closesocket returned an unexpected error, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+        case WSAEWOULDBLOCK: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "closesocket on an asynchronous socket would block, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+        default:             ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "closesocket returned an unexpected error, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
     }
   }
@@ -425,7 +425,7 @@ namespace zsLib
     if (SOCKET_ERROR == result)
     {
       int error = WSAGetLastError();
-      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "getsockname returned an unexpected error, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "getsockname returned an unexpected error, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
     }
 
     IPAddress localIP;
@@ -458,7 +458,7 @@ namespace zsLib
     if (SOCKET_ERROR == result)
     {
       int error = WSAGetLastError();
-      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "getpeername returned an unexpected error, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "getpeername returned an unexpected error, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
     }
 
     IPAddress localIP;
@@ -542,8 +542,8 @@ namespace zsLib
 
         switch (error)
         {
-          case WSAEADDRINUSE: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot bind socket as address is already in use, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", bind IP=" + inBindIP.string()); break;
-          default:            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error binding a socket, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", bind ip=" + inBindIP.string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAEADDRINUSE: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot bind socket as address is already in use, where socket id=" + (string((PTRNUMBER)mSocket)) + ", bind IP=" + inBindIP.string()); break;
+          default:            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error binding a socket, where socket id=" + (string((PTRNUMBER)mSocket)) + ", bind ip=" + inBindIP.string() + ", error=" + (string(error))); break;
         }
       }
     }
@@ -572,8 +572,8 @@ namespace zsLib
         int error = WSAGetLastError();
         switch (error)
         {
-          case WSAEADDRINUSE: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot listen on socket as address is already in use, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          default:            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error listening on a socket, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAEADDRINUSE: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot listen on socket as address is already in use, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          default:            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error listening on a socket, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error))); break;
         }
       }
     }
@@ -619,8 +619,8 @@ namespace zsLib
 
         switch (error)
         {
-          case WSAECONNRESET: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "New connection was indicated but connection was reset before it could be accepted, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          default:            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error accepting new connection, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAECONNRESET: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "New connection was indicated but connection was reset before it could be accepted, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          default:            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error accepting new connection, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error))); break;
         }
       }
 
@@ -692,15 +692,15 @@ namespace zsLib
           case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "The connection will block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "The connection will block, where socket id=" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string());
             break;
           }
-          case WSAEADDRINUSE:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot connect socket as address is already in use, where socket id" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string()); break;
-          case WSAECONNREFUSED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionRefused, error, "Cannot connect socket as connection was refused, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string()); break;
-          case WSAENETUNREACH:    ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::NetworkNotReachable, error, "Cannot connect socket as network was not able to reach destination, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string()); break;
-          case WSAEHOSTUNREACH:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::HostNotReachable, error, "Cannot connect socket as host was not reachable, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string()); break;
-          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot connect socket as connection timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string()); break;
-          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error connecting to destination, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", destination ip=" + inDestination.string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAEADDRINUSE:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot connect socket as address is already in use, where socket id" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string()); break;
+          case WSAECONNREFUSED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionRefused, error, "Cannot connect socket as connection was refused, where socket id=" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string()); break;
+          case WSAENETUNREACH:    ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::NetworkNotReachable, error, "Cannot connect socket as network was not able to reach destination, where socket id=" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string()); break;
+          case WSAEHOSTUNREACH:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::HostNotReachable, error, "Cannot connect socket as host was not reachable, where socket id=" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string()); break;
+          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot connect socket as connection timed out, where socket id=" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string()); break;
+          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Unexpected error connecting to destination, where socket id=" + (string((PTRNUMBER)mSocket)) + ", destination ip=" + inDestination.string() + ", error=" + (string(error))); break;
         }
       }
     }
@@ -776,16 +776,16 @@ namespace zsLib
           case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (string((PTRNUMBER)mSocket)));
             break;
           }
-          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot receive socket data as connection was shutdown, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot receive socket data as socket was abruptly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNABORTED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionAborted, error, "Cannot receive socket data as socket connection was aborted, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as connection keep alive timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as socket timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot receive socket data as buffer provided was too small, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The receive unexpectedly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot receive socket data as connection was shutdown, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot receive socket data as socket was abruptly closed, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNABORTED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionAborted, error, "Cannot receive socket data as socket connection was aborted, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as connection keep alive timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as socket timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot receive socket data as buffer provided was too small, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The receive unexpectedly closed, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error))); break;
         }
       }
     }
@@ -858,15 +858,15 @@ namespace zsLib
           case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot receive socket data as socket would block, where socket id=" + (string((PTRNUMBER)mSocket)));
             break;
           }
-          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot receive socket data as connection was shutdown, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot receive socket data as socket was abruptly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as connection keep alive timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as socket timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot receive socket data as buffer provided was too small, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The receive unexpectedly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot receive socket data as connection was shutdown, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot receive socket data as socket was abruptly closed, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as connection keep alive timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot receive socket data as socket timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot receive socket data as buffer provided was too small, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The receive unexpectedly closed, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error))); break;
         }
       } else {
         switch (size)
@@ -941,17 +941,17 @@ namespace zsLib
           case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (string((PTRNUMBER)mSocket)));
             break;
           }
-          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as connection keep alive timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot send socket data as connection was shutdown, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAEHOSTUNREACH:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::HostNotReachable, error, "Cannot send socket data as host is unreachable at this time, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNABORTED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionAborted, error, "Cannot send socket data as socket connection was aborted, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot send socket data as socket was abruptly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as socket timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot send socket data as buffer provided was too big, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The send unexpectedly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as connection keep alive timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot send socket data as connection was shutdown, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAEHOSTUNREACH:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::HostNotReachable, error, "Cannot send socket data as host is unreachable at this time, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNABORTED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionAborted, error, "Cannot send socket data as socket connection was aborted, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot send socket data as socket was abruptly closed, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as socket timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot send socket data as buffer provided was too big, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The send unexpectedly closed, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error))); break;
         }
       }
     }
@@ -1028,17 +1028,17 @@ namespace zsLib
           case WSAEINPROGRESS:
           case WSAEWOULDBLOCK:
           {
-            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string());
+            ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "Cannot send socket data as socket would block, where socket id=" + (string((PTRNUMBER)mSocket)));
             break;
           }
-          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as connection keep alive timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot send socket data as connection was shutdown, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAEHOSTUNREACH:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::HostNotReachable, error, "Cannot send socket data as host is unreachable at this time, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNABORTED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionAborted, error, "Cannot send socket data as socket connection was aborted, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot send socket data as socket was abruptly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as socket timed out, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot send socket data as buffer provided was too big, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string()); break;
-          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The send unexpectedly closed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string()); break;
+          case WSAENETRESET:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as connection keep alive timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAESHUTDOWN:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Shutdown, error, "Cannot send socket data as connection was shutdown, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAEHOSTUNREACH:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::HostNotReachable, error, "Cannot send socket data as host is unreachable at this time, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNABORTED:   ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionAborted, error, "Cannot send socket data as socket connection was aborted, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAECONNRESET:     ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::ConnectionReset, error, "Cannot send socket data as socket was abruptly closed, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAETIMEDOUT:      ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Timeout, error, "Cannot send socket data as socket timed out, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          case WSAEMSGSIZE:       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::BufferTooSmall, error, "Cannot send socket data as buffer provided was too big, where socket id=" + (string((PTRNUMBER)mSocket))); break;
+          default:                ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "The send unexpectedly closed, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error))); break;
         }
       }
     }
@@ -1065,7 +1065,7 @@ namespace zsLib
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
-        ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Failed to perform a shutdown on the socket, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+        ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Failed to perform a shutdown on the socket, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
     }
     internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
@@ -1092,7 +1092,7 @@ namespace zsLib
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
-        ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, error, "setsockopt failed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)inSocket)).string() + ", socket option=" + (Stringize<int>(inOptionName)).string() + ", error=" + (Stringize<int>(error)).string())
+        ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, error, "setsockopt failed, where socket id=" + (string((PTRNUMBER)inSocket)) + ", socket option=" + (string(inOptionName)) + ", error=" + (string(error)))
       }
     }
 
@@ -1110,7 +1110,7 @@ namespace zsLib
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
-        ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, error, "getsockopt failed, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)inSocket)).string() + ", socket option=" + (Stringize<int>(inOptionName)).string() + ", error=" + (Stringize<int>(error)).string())
+        ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, error, "getsockopt failed, where socket id=" + (string((PTRNUMBER)inSocket)) + ", socket option=" + (string(inOptionName)) + ", error=" + (string(error)))
       }
       ZS_THROW_BAD_STATE_IF(length != inOptionLength)
     }
@@ -1154,7 +1154,7 @@ namespace zsLib
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
-        ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to set the socket to non-blocking, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+        ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to set the socket to non-blocking, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
       return;
     }
@@ -1223,7 +1223,7 @@ namespace zsLib
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
-        ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to determine if OOB data was available or not, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+        ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to determine if OOB data was available or not, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
       return 0 != value;
     }
@@ -1266,7 +1266,7 @@ namespace zsLib
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
-        ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to determine amount of data ready to read, where socket id=" + (Stringize<PTRNUMBER>((PTRNUMBER)mSocket)).string() + ", error=" + (Stringize<int>(error)).string())
+        ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to determine amount of data ready to read, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
       return value;
     }
