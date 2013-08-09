@@ -302,9 +302,9 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  void Socket::setDelegate(ISocketDelegatePtr delegate) throw (Socket::Exceptions::InvalidSocket)
+  void Socket::setDelegate(ISocketDelegatePtr originalDelegate) throw (Socket::Exceptions::InvalidSocket)
   {
-    delegate = ISocketDelegateProxy::createWeak(delegate);
+    ISocketDelegatePtr delegate = ISocketDelegateProxy::createWeak(originalDelegate);
 
     if (delegate) {
       // only supported if using a proxy mechanism
