@@ -99,7 +99,17 @@ namespace zsLib
     // copy the list but notify without the lock
     {
       AutoRecursiveLock lock(mLock);
-      mListeners.push_back(delegate);
+
+      ListenerListPtr replaceList(new ListenerList);
+
+      if (mListeners) {
+        (*replaceList) = (*mListeners);
+      }
+
+      replaceList->push_back(delegate);
+
+      mListeners = replaceList;
+
       notifyList = mSubsystems;
     }
 
@@ -114,11 +124,20 @@ namespace zsLib
   void Log::removeListener(ILogDelegatePtr delegate)
   {
     AutoRecursiveLock lock(mLock);
-    for (ListenerList::iterator iter = mListeners.begin(); iter != mListeners.end(); ++iter)
+
+    ListenerListPtr replaceList(new ListenerList);
+
+    if (mListeners) {
+      (*replaceList) = (*mListeners);
+    }
+
+    for (ListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
     {
       if (delegate.get() == (*iter).get())
       {
-        mListeners.erase(iter);
+        replaceList->erase(iter);
+
+        mListeners = replaceList;
         return;
       }
     }
@@ -127,7 +146,7 @@ namespace zsLib
 
   void Log::notifyNewSubsystem(Subsystem *inSubsystem)
   {
-    ListenerList notifyList;
+    ListenerListPtr notifyList;
 
     // scope: remember the subsystem
     {
@@ -136,7 +155,9 @@ namespace zsLib
       notifyList = mListeners;
     }
 
-    for (ListenerList::iterator iter = notifyList.begin(); iter != notifyList.end(); ++iter)
+    if (!notifyList) return;
+
+    for (ListenerList::iterator iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       (*iter)->onNewSubsystem(
                               *inSubsystem
@@ -157,8 +178,16 @@ namespace zsLib
     if (inLevel > inSubsystem.getOutputLevel())
       return;
 
-    AutoRecursiveLock lock(mLock);
-    for (ListenerList::iterator iter = mListeners.begin(); iter != mListeners.end(); ++iter)
+    ListenerListPtr notifyList;
+
+    {
+      AutoRecursiveLock lock(mLock);
+      notifyList = mListeners;
+    }
+
+    if (!notifyList) return;
+
+    for (ListenerList::iterator iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       (*iter)->log(
                    inSubsystem,

@@ -52,7 +52,11 @@ namespace zsLib
     protected:
       RecursiveLock mLock;
       typedef std::list<ILogDelegatePtr> ListenerList;
-      ListenerList mListeners;
+
+      typedef boost::shared_ptr<ListenerList> ListenerListPtr;
+      typedef boost::weak_ptr<ListenerList> ListenerListWeakPtr;
+
+      ListenerListPtr mListeners;
 
       typedef std::list<Subsystem *> SubsystemList;
       SubsystemList mSubsystems;
