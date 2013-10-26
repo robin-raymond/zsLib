@@ -49,9 +49,13 @@
 #define ZS_LOG_DETAIL(xMsg)                                             ZS_INTERNAL_LOG_DETAIL(xMsg)
 #define ZS_LOG_DEBUG(xMsg)                                              ZS_INTERNAL_LOG_DEBUG(xMsg)
 #define ZS_LOG_TRACE(xMsg)                                              ZS_INTERNAL_LOG_TRACE(xMsg)
+#define ZS_LOG_INSANE(xMsg)                                             ZS_INTERNAL_LOG_INSANE(xMsg)
 
 #define ZS_TRACE()                                                      ZS_INTERNAL_LOG_TRACE("[TRACE]")
 #define ZS_TRACE_THIS()                                                 ZS_INTERNAL_LOG_TRACE("[TRACE THIS=" + (::zsLib::string((::zsLib::PTRNUMBER)this)) + "]")
+
+#define ZS_TRACE_INSANE()                                               ZS_INTERNAL_LOG_INSANE("[TRACE]")
+#define ZS_TRACE_INSANE_THIS()                                          ZS_INTERNAL_LOG_INSANE("[TRACE THIS=" + (::zsLib::string((::zsLib::PTRNUMBER)this)) + "]")
 
 #define ZS_LOG(xLevel, xMsg)                                            ZS_INTERNAL_LOG(xLevel, xMsg)
 #define ZS_LOG_WARNING(xLevel, xMsg)                                    ZS_INTERNAL_LOG_WARNING(xLevel, xMsg)
@@ -84,7 +88,8 @@ namespace zsLib
       Basic,
       Detail,
       Debug,
-      Trace
+      Trace,
+      Insane
     };
 
   public:
