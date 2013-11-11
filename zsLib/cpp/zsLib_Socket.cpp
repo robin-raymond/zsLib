@@ -736,7 +736,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    int result = 0;
+    size_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -818,7 +818,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    int result = 0;
+    size_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -835,13 +835,13 @@ namespace zsLib
       address.sin6_family = AF_INET6;
       socklen_t size = sizeof(address);
       result = recvfrom(
-                            mSocket,
-                            (char *)ioBuffer,
-                            inBufferLengthInBytes,
-                            inFlags,
-                            (sockaddr *)&address,
-                            &size
-                            );
+                        mSocket,
+                        (char *)ioBuffer,
+                        inBufferLengthInBytes,
+                        static_cast<int>(inFlags),
+                        (sockaddr *)&address,
+                        &size
+                        );
 
       if (SOCKET_ERROR == result)
       {
@@ -907,7 +907,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    int result = 0;
+    size_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -923,7 +923,7 @@ namespace zsLib
                       mSocket,
                       (const char *)inBuffer,
                       inBufferLengthInBytes,
-                      inFlags
+                      static_cast<int>(inFlags)
                       );
 
       if (SOCKET_ERROR == result)
@@ -987,7 +987,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    int result = 0;
+    size_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -1009,7 +1009,7 @@ namespace zsLib
                         mSocket,
                         (const char *)inBuffer,
                         inBufferLengthInBytes,
-                        inFlags,
+                        static_cast<int>(inFlags),
                         address,
                         size
                         );
@@ -1088,7 +1088,7 @@ namespace zsLib
                                  ULONG inOptionLength
                                  )
     {
-      int result = ::setsockopt(inSocket, inLevel, inOptionName, (const char *)inOptionValue, inOptionLength);
+      int result = ::setsockopt(inSocket, inLevel, inOptionName, (const char *)inOptionValue, static_cast<socklen_t>(inOptionLength));
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
@@ -1105,7 +1105,7 @@ namespace zsLib
                                  ULONG inOptionLength
                                  )
     {
-      socklen_t length = inOptionLength;
+      socklen_t length = static_cast<socklen_t>(inOptionLength);
       int result = ::getsockopt(inSocket, inLevel, inOptionName, (char *)outOptionValue, &length);
       if (SOCKET_ERROR == result)
       {
@@ -1168,7 +1168,7 @@ namespace zsLib
 #else
     int value = (inEnabled ? 1 : 0);
 #endif //_WIN32
-    internal::setSocketOptions(mSocket, level, inOption, (BYTE *)&value, sizeof(value));
+    internal::setSocketOptions(mSocket, level, static_cast<int>(inOption), (BYTE *)&value, sizeof(value));
   }
 
   //---------------------------------------------------------------------------
@@ -1182,7 +1182,7 @@ namespace zsLib
 
     AutoRecursiveLock lock(mLock);
     ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
-    ZS_THROW_CUSTOM_PROPERTIES_1_IF(Socket::Exceptions::UnsupportedSocketOption, -1 == inOption, ENOSYS)
+    ZS_THROW_CUSTOM_PROPERTIES_1_IF(Socket::Exceptions::UnsupportedSocketOption, -1 == static_cast<int>(inOption), ENOSYS)
 
     if (SetOptionValue::LingerTimeInSeconds == inOption)
     {
@@ -1194,7 +1194,7 @@ namespace zsLib
       return;
     }
 
-    int value = inValue;
+    int value = static_cast<int>(inValue);
     internal::setSocketOptions(mSocket, SOL_SOCKET, inOption, (BYTE *)&value, sizeof(value));
   }
 

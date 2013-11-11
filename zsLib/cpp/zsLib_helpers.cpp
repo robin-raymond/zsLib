@@ -73,7 +73,11 @@ namespace zsLib
 
   ULONG atomicGetValue(ULONG &value)
   {
+#ifdef __GNUC__
+    return __sync_add_and_fetch(&value, 0);
+#else
     return (long)(*(boost::detail::atomic_count *)((LONG *)(&value)));
+#endif //__GNUC__
   }
 
   DWORD atomicGetValue32(DWORD &value)

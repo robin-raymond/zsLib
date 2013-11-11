@@ -52,15 +52,15 @@ BOOST_AUTO_TEST_SUITE(zsLibStringize)
 
     BOOST_EQUAL("ffff", zsLib::Stringize<unsigned short>(0xFFFF, 16).string());
     BOOST_EQUAL("ffffffff", zsLib::Stringize<unsigned int>(0xFFFFFFFF, 16).string());
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 1
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 2
-    //BOOST_EQUAL("ffffffffffffffff", zsLib::Stringize<ULONGLONG>(0xFFFFFFFFFFFFFFFF, 16).string());
+#ifdef ZSLIBG_64BIT
+    BOOST_EQUAL("ffffffffffffffff", zsLib::Stringize<ULONGLONG>(0xFFFFFFFFFFFFFFFF, 16).string());
+#endif // ZSLIBG_64BIT
 
     BOOST_EQUAL("f0f0", zsLib::Stringize<unsigned short>(0xF0F0, 16).string());
     BOOST_EQUAL("f0f0f0f0", zsLib::Stringize<unsigned int>(0xF0F0F0F0, 16).string());
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 3
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 4
-    //BOOST_EQUAL("f0f0f0f0f0f0f0f0", zsLib::Stringize<ULONGLONG>(0xF0F0F0F0F0F0F0F0, 16).string());
+#ifdef ZSLIB_64BIT
+    BOOST_EQUAL("f0f0f0f0f0f0f0f0", zsLib::Stringize<ULONGLONG>(0xF0F0F0F0F0F0F0F0, 16).string());
+#endif // ZSLIBG_64BIT
 
     BOOST_EQUAL("0", zsLib::Stringize<float>(0.0f).string());
     BOOST_EQUAL("0.5", zsLib::Stringize<float>(0.5).string());

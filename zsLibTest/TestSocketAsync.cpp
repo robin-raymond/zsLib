@@ -33,6 +33,7 @@
 
 using zsLib::BYTE;
 using zsLib::ULONG;
+using zsLib::IMessageQueue;
 
 namespace async_socket
 {
@@ -146,7 +147,7 @@ namespace async_socket
 
       server.reset();
 
-      ULONG count = 0;
+      IMessageQueue::size_type count = 0;
       do
       {
         count = thread->getTotalUnprocessedMessages();

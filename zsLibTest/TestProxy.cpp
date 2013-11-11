@@ -34,6 +34,7 @@
 #include "boost_replacement.h"
 
 using zsLib::ULONG;
+using zsLib::IMessageQueue;
 
 namespace testing
 {
@@ -219,7 +220,7 @@ namespace testing
 
     ~TestProxy()
     {
-      ULONG count = 0;
+      IMessageQueue::size_type count = 0;
       do
       {
         count = mThread->getTotalUnprocessedMessages();

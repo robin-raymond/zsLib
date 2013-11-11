@@ -137,6 +137,9 @@ namespace zsLib
   class Subsystem
   {
   public:
+    typedef DWORD LevelType;
+
+  public:
     Subsystem(CSTR inName, Log::Level inLevel = Log::Basic);
     CSTR getName() const {return mSubsystem;}
 
@@ -148,7 +151,7 @@ namespace zsLib
 
   private:
     CSTR mSubsystem;
-    mutable DWORD mLevel;
+    mutable LevelType mLevel;
   };
 
 } // namespace zsLib

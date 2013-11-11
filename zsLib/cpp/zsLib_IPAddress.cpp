@@ -191,8 +191,8 @@ namespace zsLib
       // scope: try to parse as an IPv6 address first
       try
       {
-        int openBracketPos = inString.find("[");
-        int closeBracketPos = (openBracketPos >= 0 ? inString.find("]", openBracketPos+1) : String::npos);
+        String::size_type openBracketPos = inString.find("[");
+        String::size_type closeBracketPos = (openBracketPos != String::npos ? inString.find("]", openBracketPos+1) : String::npos);
 
         // this is illegal
         ZS_THROW_CUSTOM_MSG_IF(
@@ -205,7 +205,7 @@ namespace zsLib
         String ipv6;
         if (String::npos != openBracketPos)
         {
-          int colonPos = inString.find(":", closeBracketPos+1);
+          String::size_type colonPos = inString.find(":", closeBracketPos+1);
           if (String::npos != colonPos)
           {
             ZS_THROW_CUSTOM_MSG_IF(
@@ -242,7 +242,7 @@ namespace zsLib
       {
         // this has to be an IPv4 address
         String ipv4;
-        int colonPos = inString.find(":");
+        String::size_type colonPos = inString.find(":");
         if (String::npos != colonPos)
         {
           String port(inString.substr(colonPos+1));
@@ -288,8 +288,8 @@ namespace zsLib
     // scope: try to parse as an IPv6 address first
     try
     {
-      int openBracketPos = inString.find("[");
-      int closeBracketPos = (openBracketPos >= 0 ? inString.find("]", openBracketPos+1) : String::npos);
+      String::size_type openBracketPos = inString.find("[");
+      String::size_type closeBracketPos = (openBracketPos != String::npos ? inString.find("]", openBracketPos+1) : String::npos);
 
       // this is illegal
       if (((String::npos != openBracketPos) || (String::npos != closeBracketPos)) &&
@@ -298,7 +298,7 @@ namespace zsLib
       String ipv6;
       if (String::npos != openBracketPos)
       {
-        int colonPos = inString.find(":", closeBracketPos+1);
+        String::size_type colonPos = inString.find(":", closeBracketPos+1);
         if (String::npos != colonPos)
         {
           if (colonPos != closeBracketPos+1) return false;
@@ -328,7 +328,7 @@ namespace zsLib
     {
       // this has to be an IPv4 address
       String ipv4;
-      int colonPos = inString.find(":");
+      String::size_type colonPos = inString.find(":");
       if (String::npos != colonPos)
       {
         String port(inString.substr(colonPos+1));
@@ -919,7 +919,7 @@ namespace zsLib
          */
 //#pragma warning(push)
 //#pragma warning(disable:4244)
-        const int n = tp - colonp;
+        const int n = static_cast<int>(tp - colonp);
 //#pragma warning(pop)
         int i;
 
@@ -960,7 +960,7 @@ namespace zsLib
         if ((pch = strchr(digits, ch)) != NULL) {
 //#pragma warning(push)
 //#pragma warning(disable:4244)
-          u_int newTemp = *tp * 10 + (pch - digits);
+          u_int newTemp = static_cast<u_int>(*tp * 10 + (pch - digits));
 //#pragma warning(pop)
 
           if (newTemp > 255)

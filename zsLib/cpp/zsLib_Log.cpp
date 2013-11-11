@@ -60,7 +60,7 @@ namespace zsLib
 
   Subsystem::Subsystem(CSTR inName, Log::Level inLevel) :
     mSubsystem(inName),
-    mLevel((ULONG)inLevel)
+    mLevel(static_cast<Subsystem::LevelType>(inLevel))
   {
   }
 
@@ -72,7 +72,7 @@ namespace zsLib
   void Subsystem::setOutputLevel(Log::Level inLevel)
   {
     ULONG value = (ULONG)inLevel;
-    atomicSetValue32(mLevel, value);
+    atomicSetValue32(mLevel, static_cast<Subsystem::LevelType>(value));
   }
 
   Log::Level Subsystem::getOutputLevel() const

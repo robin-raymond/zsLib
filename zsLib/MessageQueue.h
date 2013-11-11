@@ -44,9 +44,11 @@ namespace zsLib
 
   interaction IMessageQueue
   {
+    typedef UINT size_type;
+
     virtual void post(IMessageQueueMessagePtr message) = 0;
 
-    virtual UINT getTotalUnprocessedMessages() const = 0;
+    virtual size_type getTotalUnprocessedMessages() const = 0;
   };
 }
 
@@ -64,7 +66,7 @@ namespace zsLib
 
     virtual void post(IMessageQueueMessagePtr message);
 
-    virtual UINT getTotalUnprocessedMessages() const;
+    virtual size_type getTotalUnprocessedMessages() const;
 
     void process();
     void processOnlyOneMessage();

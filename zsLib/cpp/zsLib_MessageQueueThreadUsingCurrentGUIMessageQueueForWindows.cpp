@@ -196,7 +196,7 @@ namespace zsLib
       queue->post(message);
     }
 
-    UINT MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::getTotalUnprocessedMessages() const
+    IMessageQueue::size_type MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
       if (!mQueue)

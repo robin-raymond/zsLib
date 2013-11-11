@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0063D2C116CB094D00E6DB4D /* libzsLib_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0063D2BE16CB093100E6DB4D /* libzsLib_ios.a */; };
+		0063E711182FE10300AD3DBA /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0063E710182FE10300AD3DBA /* boost.framework */; };
 		0066859C16C9E42000259F81 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859B16C9E42000259F81 /* UIKit.framework */; };
 		0066859E16C9E42000259F81 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859D16C9E42000259F81 /* Foundation.framework */; };
 		006685A016C9E42000259F81 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859F16C9E42000259F81 /* CoreGraphics.framework */; };
@@ -31,9 +32,6 @@
 		0066861716C9E6CC00259F81 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0066860D16C9E6CC00259F81 /* main.m */; };
 		0066861816C9E6CC00259F81 /* zsLibTest_ios-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0066860E16C9E6CC00259F81 /* zsLibTest_ios-Info.plist */; };
 		0066861916C9E6CC00259F81 /* zsLibTest_iosAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0066861116C9E6CC00259F81 /* zsLibTest_iosAppDelegate.m */; };
-		0066862516C9E80900259F81 /* libboost_date_time.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066862216C9E80900259F81 /* libboost_date_time.a */; };
-		0066862616C9E80900259F81 /* libboost_regex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066862316C9E80900259F81 /* libboost_regex.a */; };
-		0066862716C9E80900259F81 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066862416C9E80900259F81 /* libboost_thread.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		0063D2B916CB093000E6DB4D /* zsLib_ios.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zsLib_ios.xcodeproj; path = ../zsLib_ios/zsLib_ios.xcodeproj; sourceTree = "<group>"; };
+		0063E710182FE10300AD3DBA /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../../../boost/ios/framework/boost.framework; sourceTree = "<group>"; };
 		0066859816C9E42000259F81 /* zsLibTest_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = zsLibTest_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0066859B16C9E42000259F81 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0066859D16C9E42000259F81 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -96,12 +95,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				0063D2C116CB094D00E6DB4D /* libzsLib_ios.a in Frameworks */,
-				0066859C16C9E42000259F81 /* UIKit.framework in Frameworks */,
-				0066859E16C9E42000259F81 /* Foundation.framework in Frameworks */,
+				0063E711182FE10300AD3DBA /* boost.framework in Frameworks */,
 				006685A016C9E42000259F81 /* CoreGraphics.framework in Frameworks */,
-				0066862516C9E80900259F81 /* libboost_date_time.a in Frameworks */,
-				0066862616C9E80900259F81 /* libboost_regex.a in Frameworks */,
-				0066862716C9E80900259F81 /* libboost_thread.a in Frameworks */,
+				0066859E16C9E42000259F81 /* Foundation.framework in Frameworks */,
+				0066859C16C9E42000259F81 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +136,7 @@
 		0066859A16C9E42000259F81 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0063E710182FE10300AD3DBA /* boost.framework */,
 				0066859B16C9E42000259F81 /* UIKit.framework */,
 				0066859D16C9E42000259F81 /* Foundation.framework */,
 				0066859F16C9E42000259F81 /* CoreGraphics.framework */,
@@ -364,6 +362,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -371,23 +371,21 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = ../../../../boost/ios/framework;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../..,
-					../../../../boost/staging/iPhoneOS/include,
+					../../../../boost/ios/framework/boost.framework/Headers/,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = ../../../../boost/staging/iPhoneOS/lib;
+				LIBRARY_SEARCH_PATHS = "";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -398,6 +396,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -405,16 +405,19 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = ../../../../boost/ios/framework;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../..,
-					../../../../boost/staging/iPhoneOS/include,
+					../../../../boost/ios/framework/boost.framework/Headers/,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = ../../../../boost/staging/iPhoneOS/lib;
+				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -427,10 +430,15 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "zsLibTest_ios/zsLibTest_ios-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "zsLibTest_ios/zsLibTest_ios-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -440,10 +448,15 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "zsLibTest_ios/zsLibTest_ios-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"NDEBUG=1",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "zsLibTest_ios/zsLibTest_ios-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

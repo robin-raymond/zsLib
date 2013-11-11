@@ -36,6 +36,7 @@
 #include "boost_replacement.h"
 
 using zsLib::ULONG;
+using zsLib::IMessageQueue;
 
 namespace testingUsingGUIThread
 {
@@ -156,7 +157,7 @@ namespace testingUsingGUIThread
 
     ~TestProxy()
     {
-      ULONG count = 0;
+      IMessageQueue::size_type count = 0;
 
 #ifdef _WIN32
       BOOL result = 0;

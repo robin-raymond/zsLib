@@ -344,12 +344,12 @@ namespace zsLib
     if (NULL == replaceStr)
       replaceStr = "";
 
-    int findSize = strlen(findStr);
-    int replaceSize = strlen(replaceStr);
+    size_t findSize = strlen(findStr);
+    size_t replaceSize = strlen(replaceStr);
     if (findSize < 1)
       return;
 
-    int position = (*this).find(findStr); // find first space
+    String::size_type position = (*this).find(findStr); // find first space
     while ((position != std::string::npos) && (0 != totalOccurances))
     {
       (*this).replace(position, findSize, replaceStr);
@@ -611,7 +611,7 @@ namespace zsLib
     static boost::shared_array<WCHAR> utf8ToUnicodeConvert(CSTR szInUTF8)
     {
       if (NULL == szInUTF8)
-        return boost::shared_array<WCHAR>(NULL);
+        return boost::shared_array<WCHAR>();
 
       size_t actualLength = strlen(szInUTF8);
 
@@ -644,7 +644,7 @@ namespace zsLib
     static boost::shared_array<CHAR> unicodeToUTF8Convert(CWSTR szInUnicodeString)
     {
       if (NULL == szInUnicodeString)
-        return boost::shared_array<CHAR>(NULL);
+        return boost::shared_array<CHAR>();
 
       size_t actualLength = wcslen(szInUnicodeString);
 

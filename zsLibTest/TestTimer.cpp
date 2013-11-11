@@ -30,6 +30,7 @@
 #include "boost_replacement.h"
 
 using zsLib::ULONG;
+using zsLib::IMessageQueue;
 
 class TestTimerCallback;
 typedef boost::shared_ptr<TestTimerCallback> TestTimerCallbackPtr;
@@ -104,7 +105,7 @@ BOOST_AUTO_TEST_SUITE(zsLibTimer)
     BOOST_EQUAL(testObject3->mCount, 0);
     BOOST_EQUAL(testObject4->mCount, 1);
 
-    ULONG count = 0;
+    IMessageQueue::size_type count = 0;
     do
     {
       count = thread->getTotalUnprocessedMessages();

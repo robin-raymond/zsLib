@@ -153,7 +153,7 @@ namespace zsLib
       0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF, // 15
     };
 
-    static LONGLONG gMinLongLongs[] =
+    static ULONGLONG gMinLongLongs[] =
     {
       0xFFFFFFFFFFFFFF80LL,  // 1 bytes
       0xFFFFFFFFFFFF8000LL,  // 2 bytes
@@ -261,7 +261,7 @@ namespace zsLib
             return false; // value had to flip
           ++str;
         }
-        if (result < gMinLongLongs[size-1])
+        if (result < static_cast<LONGLONG>(gMinLongLongs[size-1]))
           return false;
       }
 
