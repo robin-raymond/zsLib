@@ -288,9 +288,6 @@ namespace zsLib
 
   WCHAR String::atUnicodeSafe(size_t pos) const
   {
-    if (pos < 0)
-      throw std::out_of_range("String::atUnicodeSafe passed an index value too small");
-
     CSTR str = this->c_str();
     if (NULL == str) {
       if (0 == pos)
@@ -449,7 +446,7 @@ namespace zsLib
     // U+000800-U+00FFFF    1110yyyy 10yyyyxx 10xxxxxx
     // U+010000-U+10FFFF    11110zzz 10zzyyyy 10yyyyxx 10xxxxxx
 
-    static ULONG gUTF8LengthLookupTable[256] =
+    static size_t gUTF8LengthLookupTable[256] =
     {
       // 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 00 - 0F
@@ -501,7 +498,7 @@ namespace zsLib
     static UTF32 utf8ToUTF32(CSTR &ioUTF8)
     {
       CSTR start = ioUTF8;
-      ULONG byteLength = gUTF8LengthLookupTable[((BYTE)*ioUTF8)];
+      size_t byteLength = gUTF8LengthLookupTable[((BYTE)*ioUTF8)];
 
       if (byteLength > 1) {
         UTF32 result = (((BYTE)*ioUTF8) & gUTF8FirstByteValueMask[byteLength]);
@@ -546,7 +543,7 @@ namespace zsLib
 
       CSTR lookAheadPos = ioUTF8;
 
-      ULONG length = 0;
+      size_t length = 0;
       while ((lookAheadPos > inStartPos) &&
              (ZS_INTERNAL_UTF8_OTHER_DIGITS_INDICATOR != ((*lookAheadPos) & ZS_INTERNAL_UTF8_OTHER_DIGITS_MASK)))
       {
@@ -556,7 +553,7 @@ namespace zsLib
         --lookAheadPos;
       }
 
-      ULONG byteLength = gUTF8LengthLookupTable[((BYTE)*lookAheadPos)];
+      size_t byteLength = gUTF8LengthLookupTable[((BYTE)*lookAheadPos)];
       if (byteLength != length+1)
       {
         // this is not the legal sequence, so assume ASCII
@@ -571,7 +568,7 @@ namespace zsLib
 
     static void utf32ToUTF8(UTF32 utf32Char, STR &outUTF8)
     {
-      ULONG length = 1;             // the assumed length
+      size_t length = 1;             // the assumed length
       if      (utf32Char > 0x03FFFFFF)
         length = 6;
       else if (utf32Char > 0x001FFFFF)
@@ -585,7 +582,7 @@ namespace zsLib
 
       STR fillSpot = (outUTF8 + length - 1);
 
-      ULONG loop = length;
+      size_t loop = length;
       while (loop > 1)
       {
         *fillSpot = (CHAR)((BYTE)((ZS_INTERNAL_UTF8_OTHER_DIGITS_VALUE_MASK & utf32Char) | ZS_INTERNAL_UTF8_OTHER_DIGITS_INDICATOR));

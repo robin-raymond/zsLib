@@ -75,11 +75,11 @@ namespace async_socket
 
       zsLib::IPAddress address;
       BYTE buffer[1024];
-      ULONG total = socket->receiveFrom(
-                                        address,
-                                        buffer,
-                                        sizeof(buffer)
-                                        );
+      size_t total = socket->receiveFrom(
+                                         address,
+                                         buffer,
+                                         sizeof(buffer)
+                                         );
       mReadData.push_back((const char *)buffer);
       mReadAddresses.push_back(address);
       std::cout << "READ " << total << " BYTES.\n";

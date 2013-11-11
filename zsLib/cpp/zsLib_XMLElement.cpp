@@ -55,16 +55,16 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Element::getOutputSizeXML(const GeneratorPtr &inGenerator) const
+      size_t Element::getOutputSizeXML(const GeneratorPtr &inGenerator) const
       {
         class Walker : public WalkSink
         {
         public:
-          Walker(ULONG &outResult, const GeneratorPtr &inGenerator) : mResult(outResult), mGenerator(inGenerator) {}
+          Walker(size_t &outResult, const GeneratorPtr &inGenerator) : mResult(outResult), mGenerator(inGenerator) {}
 
           virtual bool onElementEnter(ElementPtr inNode)
           {
-            mResult += (ULONG)strlen("<");
+            mResult += strlen("<");
             if (inNode->getValue().isEmpty()) {
               mResult += strlen(ZSLIB_XML_UNKNOWN_ELEMENT_NAME_OUTPUT);
             } else {
@@ -77,7 +77,7 @@ namespace zsLib
               while (child)
               {
                 AttributePtr attribute = child->toAttribute();
-                mResult += (ULONG)strlen(" ");
+                mResult += strlen(" ");
                 mResult += Generator::getOutputSize(mGenerator, attribute);
                 child = child->getNextSibling();
               }
@@ -87,21 +87,21 @@ namespace zsLib
 
             if ((inNode->hasChildren()) || (forceEndTag))
             {
-              mResult += (ULONG)strlen(">");
+              mResult += strlen(">");
 
               // inner content would go here
 
-              mResult += (ULONG)strlen("</");
+              mResult += strlen("</");
               if (inNode->getValue().isEmpty()) {
                 mResult += strlen(ZSLIB_XML_UNKNOWN_ELEMENT_NAME_OUTPUT);
               } else {
                 mResult += inNode->mName.getLength();
               }
-              mResult += (ULONG)strlen(">");
+              mResult += strlen(">");
             }
             else
             {
-              mResult += (ULONG)strlen(" />");
+              mResult += strlen(" />");
             }
             return false;
           }
@@ -113,12 +113,12 @@ namespace zsLib
 
         private:
           const GeneratorPtr &mGenerator;
-          ULONG &mResult;
+          size_t &mResult;
         };
 
         ElementPtr self(mThis.lock());
 
-        ULONG result = 0;
+        size_t result = 0;
         XML::Node::FilterList filter;
         filter.push_back(XML::Node::NodeType::Element);
         filter.push_back(XML::Node::NodeType::Text);
@@ -214,12 +214,12 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Element::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Element::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
       {
         class Walker : public WalkSink
         {
         public:
-          Walker(ULONG &outResult, const GeneratorPtr &inGenerator) :
+          Walker(size_t &outResult, const GeneratorPtr &inGenerator) :
             mResult(outResult), mGenerator(inGenerator)
           {}
 
@@ -344,12 +344,12 @@ namespace zsLib
 
         private:
           const GeneratorPtr &mGenerator;
-          ULONG &mResult;
+          size_t &mResult;
         };
 
         ElementPtr self(mThis.lock());
 
-        ULONG result = 0;
+        size_t result = 0;
         XML::Node::FilterList filter;
         filter.push_back(XML::Node::NodeType::Element);
         Walker walker(result, inGenerator);
@@ -858,7 +858,7 @@ namespace zsLib
       {
         XML::ParserPos temp(ioPos);
 
-        temp += ((ULONG)strlen("</"));
+        temp += (strlen("</"));
         Parser::skipWhiteSpace(temp);
 
         // this could be the end tag for this element

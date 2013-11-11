@@ -73,7 +73,7 @@ public:
       zsLib::IPAddress address3;
       BYTE buffer[1024];
       HlZeroMemory(&(buffer[0]), sizeof(buffer));
-      zsLib::ULONG length = socket2->receiveFrom(address3, buffer, sizeof(buffer));
+      size_t length = socket2->receiveFrom(address3, buffer, sizeof(buffer));
       BOOST_CHECK(sizeof("HELLO") == length)
       BOOST_CHECK(0 == memcmp(&(buffer[0]), "HELLO", sizeof("HELLO")))
       BOOST_CHECK(address3 == address1)
@@ -110,7 +110,7 @@ public:
       zsLib::IPAddress address3;
       BYTE buffer[1024];
       HlZeroMemory(&(buffer[0]), sizeof(buffer));
-      zsLib::ULONG length = socket2->receiveFrom(address3, buffer, sizeof(buffer));
+      size_t length = socket2->receiveFrom(address3, buffer, sizeof(buffer));
       BOOST_CHECK(sizeof("HELLO") == length)
       BOOST_CHECK(0 == memcmp(&(buffer[0]), "HELLO", sizeof("HELLO")))
       BOOST_CHECK(address3 == address1)
@@ -139,7 +139,7 @@ public:
 
       BYTE buffer[1024];
       HlZeroMemory(&(buffer[0]), sizeof(buffer));
-      zsLib::ULONG length = socket2->receive(buffer, sizeof(buffer));
+      size_t length = socket2->receive(buffer, sizeof(buffer));
       BOOST_CHECK(sizeof("HELLO") == length)
       BOOST_CHECK(0 == memcmp(&(buffer[0]), "HELLO", sizeof("HELLO")))
 

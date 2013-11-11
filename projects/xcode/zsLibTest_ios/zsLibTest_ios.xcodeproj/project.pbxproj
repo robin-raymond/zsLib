@@ -84,9 +84,6 @@
 		0066860F16C9E6CC00259F81 /* zsLibTest_ios-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "zsLibTest_ios-Prefix.pch"; sourceTree = "<group>"; };
 		0066861016C9E6CC00259F81 /* zsLibTest_iosAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLibTest_iosAppDelegate.h; sourceTree = "<group>"; };
 		0066861116C9E6CC00259F81 /* zsLibTest_iosAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = zsLibTest_iosAppDelegate.m; sourceTree = "<group>"; };
-		0066862216C9E80900259F81 /* libboost_date_time.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_date_time.a; path = ../../../../boost/staging/iPhoneOS/lib/libboost_date_time.a; sourceTree = SOURCE_ROOT; };
-		0066862316C9E80900259F81 /* libboost_regex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_regex.a; path = ../../../../boost/staging/iPhoneOS/lib/libboost_regex.a; sourceTree = SOURCE_ROOT; };
-		0066862416C9E80900259F81 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = ../../../../boost/staging/iPhoneOS/lib/libboost_thread.a; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,9 +209,6 @@
 		0066862116C9E7E400259F81 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				0066862216C9E80900259F81 /* libboost_date_time.a */,
-				0066862316C9E80900259F81 /* libboost_regex.a */,
-				0066862416C9E80900259F81 /* libboost_thread.a */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";

@@ -717,22 +717,22 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  ULONG Socket::receive(
-                        BYTE *ioBuffer,
-                        ULONG inBufferLengthInBytes,
-                        bool *outWouldBlock,
-                        ULONG inFlags,
-                        int *outNoThrowErrorResult
-                        ) const throw(
-                                      Exceptions::InvalidSocket,
-                                      Exceptions::WouldBlock,
-                                      Exceptions::Shutdown,
-                                      Exceptions::ConnectionReset,
-                                      Exceptions::ConnectionAborted,
-                                      Exceptions::Timeout,
-                                      Exceptions::BufferTooSmall,
-                                      Exceptions::Unspecified
-                                      )
+  size_t Socket::receive(
+                         BYTE *ioBuffer,
+                         size_t inBufferLengthInBytes,
+                         bool *outWouldBlock,
+                         ULONG inFlags,
+                         int *outNoThrowErrorResult
+                         ) const throw(
+                                       Exceptions::InvalidSocket,
+                                       Exceptions::WouldBlock,
+                                       Exceptions::Shutdown,
+                                       Exceptions::ConnectionReset,
+                                       Exceptions::ConnectionAborted,
+                                       Exceptions::Timeout,
+                                       Exceptions::BufferTooSmall,
+                                       Exceptions::Unspecified
+                                       )
   {
     internal::ignoreSigTermOnThread();
 
@@ -795,26 +795,26 @@ namespace zsLib
     if (mMonitorReadReady)
       monitor->monitorRead(*this);
 
-    return (ULONG)result;
+    return result;
   }
 
   //---------------------------------------------------------------------------
-  ULONG Socket::receiveFrom(
-                            IPAddress &outRemoteIP,
-                            BYTE *ioBuffer,
-                            ULONG inBufferLengthInBytes,
-                            bool *outWouldBlock,
-                            ULONG inFlags,
-                            int *outNoThrowErrorResult
-                            ) const throw(
-                                          Exceptions::InvalidSocket,
-                                          Exceptions::WouldBlock,
-                                          Exceptions::Shutdown,
-                                          Exceptions::ConnectionReset,
-                                          Exceptions::Timeout,
-                                          Exceptions::BufferTooSmall,
-                                          Exceptions::Unspecified
-                                          )
+  size_t Socket::receiveFrom(
+                             IPAddress &outRemoteIP,
+                             BYTE *ioBuffer,
+                             size_t inBufferLengthInBytes,
+                             bool *outWouldBlock,
+                             ULONG inFlags,
+                             int *outNoThrowErrorResult
+                             ) const throw(
+                                           Exceptions::InvalidSocket,
+                                           Exceptions::WouldBlock,
+                                           Exceptions::Shutdown,
+                                           Exceptions::ConnectionReset,
+                                           Exceptions::Timeout,
+                                           Exceptions::BufferTooSmall,
+                                           Exceptions::Unspecified
+                                           )
   {
     internal::ignoreSigTermOnThread();
 
@@ -883,27 +883,27 @@ namespace zsLib
     if (mMonitorReadReady)
       monitor->monitorRead(*this);
 
-    return (ULONG)result;
+    return result;
   }
 
   //---------------------------------------------------------------------------
-  ULONG Socket::send(
-                     const BYTE *inBuffer,
-                     ULONG inBufferLengthInBytes,
-                     bool *outWouldBlock,
-                     ULONG inFlags,
-                     int *outNoThrowErrorResult
-                     ) const throw(
-                                   Exceptions::InvalidSocket,
-                                   Exceptions::WouldBlock,
-                                   Exceptions::Shutdown,
-                                   Exceptions::HostNotReachable,
-                                   Exceptions::ConnectionAborted,
-                                   Exceptions::ConnectionReset,
-                                   Exceptions::Timeout,
-                                   Exceptions::BufferTooSmall,
-                                   Exceptions::Unspecified
-                                   )
+  size_t Socket::send(
+                      const BYTE *inBuffer,
+                      size_t inBufferLengthInBytes,
+                      bool *outWouldBlock,
+                      ULONG inFlags,
+                      int *outNoThrowErrorResult
+                      ) const throw(
+                                    Exceptions::InvalidSocket,
+                                    Exceptions::WouldBlock,
+                                    Exceptions::Shutdown,
+                                    Exceptions::HostNotReachable,
+                                    Exceptions::ConnectionAborted,
+                                    Exceptions::ConnectionReset,
+                                    Exceptions::Timeout,
+                                    Exceptions::BufferTooSmall,
+                                    Exceptions::Unspecified
+                                    )
   {
     internal::ignoreSigTermOnThread();
 
@@ -961,29 +961,29 @@ namespace zsLib
     if (mMonitorWriteReady)
       monitor->monitorWrite(*this);
 
-    return (ULONG)result;
+    return result;
   }
 
   //---------------------------------------------------------------------------
-  ULONG Socket::sendTo(
-                       const IPAddress &inDestination,
-                       const BYTE *inBuffer,
-                       ULONG inBufferLengthInBytes,
-                       bool *outWouldBlock,
-                       ULONG inFlags,
-                       int *outNoThrowErrorResult
-                       ) const throw(
-                                     Exceptions::InvalidSocket,
-                                     Exceptions::WouldBlock,
-                                     Exceptions::Shutdown,
-                                     Exceptions::Timeout,
-                                     Exceptions::HostNotReachable,
-                                     Exceptions::ConnectionAborted,
-                                     Exceptions::ConnectionReset,
-                                     Exceptions::Timeout,
-                                     Exceptions::BufferTooSmall,
-                                     Exceptions::Unspecified
-                                     )
+  size_t Socket::sendTo(
+                        const IPAddress &inDestination,
+                        const BYTE *inBuffer,
+                        size_t inBufferLengthInBytes,
+                        bool *outWouldBlock,
+                        ULONG inFlags,
+                        int *outNoThrowErrorResult
+                        ) const throw(
+                                      Exceptions::InvalidSocket,
+                                      Exceptions::WouldBlock,
+                                      Exceptions::Shutdown,
+                                      Exceptions::Timeout,
+                                      Exceptions::HostNotReachable,
+                                      Exceptions::ConnectionAborted,
+                                      Exceptions::ConnectionReset,
+                                      Exceptions::Timeout,
+                                      Exceptions::BufferTooSmall,
+                                      Exceptions::Unspecified
+                                      )
   {
     internal::ignoreSigTermOnThread();
 
@@ -1049,7 +1049,7 @@ namespace zsLib
     if (mMonitorWriteReady)
       monitor->monitorWrite(*this);
 
-    return (ULONG)result;
+    return result;
   }
 
   //---------------------------------------------------------------------------
@@ -1085,10 +1085,10 @@ namespace zsLib
                                  int inLevel,
                                  int inOptionName,
                                  BYTE *inOptionValue,
-                                 ULONG inOptionLength
+                                 socklen_t inOptionLength
                                  )
     {
-      int result = ::setsockopt(inSocket, inLevel, inOptionName, (const char *)inOptionValue, static_cast<socklen_t>(inOptionLength));
+      int result = ::setsockopt(inSocket, inLevel, inOptionName, (const char *)inOptionValue, inOptionLength);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
@@ -1102,10 +1102,10 @@ namespace zsLib
                                  int inLevel,
                                  int inOptionName,
                                  BYTE *outOptionValue,
-                                 ULONG inOptionLength
+                                 socklen_t inOptionLength
                                  )
     {
-      socklen_t length = static_cast<socklen_t>(inOptionLength);
+      socklen_t length = inOptionLength;
       int result = ::getsockopt(inSocket, inLevel, inOptionName, (char *)outOptionValue, &length);
       if (SOCKET_ERROR == result)
       {

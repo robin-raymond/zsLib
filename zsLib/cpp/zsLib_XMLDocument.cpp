@@ -56,11 +56,11 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Document::getOutputSizeXML(const GeneratorPtr &generator) const
+      size_t Document::getOutputSizeXML(const GeneratorPtr &generator) const
       {
         DocumentPtr self(mThis.lock());
 
-        ULONG result = 0;
+        size_t result = 0;
         NodePtr child = self->getFirstChild();
         while (child)
         {
@@ -84,13 +84,13 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Document::getOutputSizeJSON(const GeneratorPtr &generator) const
+      size_t Document::getOutputSizeJSON(const GeneratorPtr &generator) const
       {
         DocumentPtr self(mThis.lock());
 
         bool foundText = false;
 
-        ULONG result = 0;
+        size_t result = 0;
         NodePtr child = self->getFirstChild();
         while (child)
         {
@@ -259,14 +259,14 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Document::writeAsXML(ULONG *outLength) const
+    boost::shared_array<char> Document::writeAsXML(size_t *outLength) const
     {
       GeneratorPtr generator = Generator::createXMLGenerator();
       return generator->write(mThis.lock(), outLength);
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Document::writeAsJSON(ULONG *outLength) const
+    boost::shared_array<char> Document::writeAsJSON(size_t *outLength) const
     {
       GeneratorPtr generator = Generator::createJSONGenerator();
       return generator->write(mThis.lock(), outLength);

@@ -44,7 +44,7 @@ namespace zsLib
 
   interaction IMessageQueue
   {
-    typedef UINT size_type;
+    typedef size_t size_type;
 
     virtual void post(IMessageQueueMessagePtr message) = 0;
 

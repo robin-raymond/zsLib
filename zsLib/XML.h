@@ -315,8 +315,8 @@ namespace zsLib
       void setAttributeNameIsCaseSensative(bool inCaseSensative = true);
       bool isAttributeNameIsCaseSensative() const;
 
-      boost::shared_array<char> writeAsXML(ULONG *outLength = NULL) const;
-      boost::shared_array<char> writeAsJSON(ULONG *outLength = NULL) const;
+      boost::shared_array<char> writeAsXML(size_t *outLength = NULL) const;
+      boost::shared_array<char> writeAsJSON(size_t *outLength = NULL) const;
 
       // overrides
       virtual NodePtr clone() const;
@@ -670,8 +670,8 @@ namespace zsLib
 
       size_t operator-(const ParserPos &inPos) const;
 
-      ParserPos &operator+=(ULONG inDistance);
-      ParserPos &operator-=(ULONG inDistance);
+      ParserPos &operator+=(size_t inDistance);
+      ParserPos &operator-=(size_t inDistance);
 
       bool operator==(const ParserPos &inPos);
       bool operator!=(const ParserPos &inPos);
@@ -689,8 +689,8 @@ namespace zsLib
       ParserPos(Parser &, Document &);
     };
 
-    ParserPos operator+(const ParserPos &inPos, ULONG inDistance);
-    ParserPos operator-(const ParserPos &inPos, ULONG inDistance);
+    ParserPos operator+(const ParserPos &inPos, size_t inDistance);
+    ParserPos operator-(const ParserPos &inPos, size_t inDistance);
     ParserPos operator+(const ParserPos &inPos, int inDistance);
     ParserPos operator-(const ParserPos &inPos, int inDistance);
     ParserPos operator+(const ParserPos &inPos, unsigned int inDistance);
@@ -814,8 +814,8 @@ namespace zsLib
                                               char attributePrefix = ZS_JSON_DEFAULT_ATTRIBUTE_PREFIX
                                               );
 
-      virtual ULONG getOutputSize(const NodePtr &onlyThisNode) const;
-      virtual boost::shared_array<char> write(const NodePtr &onlyThisNode, ULONG *outLength = NULL) const;
+      virtual size_t getOutputSize(const NodePtr &onlyThisNode) const;
+      virtual boost::shared_array<char> write(const NodePtr &onlyThisNode, size_t *outLength = NULL) const;
 
       virtual GeneratorPtr toGenerator() const   {return mThis.lock();}
 

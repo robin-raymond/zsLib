@@ -61,7 +61,7 @@ namespace zsLib
         if (XML::Text::Format_CDATA == mFormat)
         {
           // skip over the CDATA tag
-          ioPos += (ULONG)strlen("<![CDATA[");
+          ioPos += strlen("<![CDATA[");
 
           while ((*ioPos) &&
                  (!ioPos.isString("]]>")))
@@ -78,7 +78,7 @@ namespace zsLib
           }
 
           // done parsing the CDATA
-          ioPos += (ULONG)strlen("]]>");
+          ioPos += strlen("]]>");
           return;
         }
 
@@ -95,7 +95,7 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Text::getOutputSizeXML(const GeneratorPtr &inGenerator) const
+      size_t Text::getOutputSizeXML(const GeneratorPtr &inGenerator) const
       {
         bool normalizeCDATA = (0 != (XML::Generator::XMLWriteFlag_NormalizeCDATA & inGenerator->getXMLWriteFlags()));
         bool encode0xDCharactersInText = (0 != (XML::Generator::XMLWriteFlag_EntityEncode0xDInText & inGenerator->getXMLWriteFlags()));
@@ -116,15 +116,15 @@ namespace zsLib
 
         String value = getValueInFormat(outputFormat, normalizeCDATA, encode0xDCharactersInText);
 
-        ULONG result = 0;
+        size_t result = 0;
 
         if (XML::Text::Format_CDATA == outputFormat)
-          result += (ULONG)strlen("<![CDATA[");
+          result += strlen("<![CDATA[");
 
-        result += (ULONG)value.length();
+        result += value.length();
 
         if (XML::Text::Format_CDATA == outputFormat)
-          result += (ULONG)strlen("]]>");
+          result += strlen("]]>");
 
         return result;
       }
@@ -161,13 +161,13 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Text::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Text::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
       {
         bool normalizeCDATA = (0 != (XML::Generator::XMLWriteFlag_NormalizeCDATA & inGenerator->getXMLWriteFlags()));
         String value = getValueInFormat(XML::Text::Format_JSONNumberEncoded == mFormat ? XML::Text::Format_JSONNumberEncoded : XML::Text::Format_JSONStringEncoded, normalizeCDATA);
 
-        ULONG result = 0;
-        result += (ULONG)value.length();
+        size_t result = 0;
+        result += value.length();
         return result;
       }
 

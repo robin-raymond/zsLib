@@ -183,6 +183,7 @@ namespace zsLib
   typedef boost::value_initialized<ULONGLONG> AutoULONGLONG;
   typedef boost::value_initialized<FLOAT> AutoFLOAT;
   typedef boost::value_initialized<DOUBLE> AutoDOUBLE;
+  typedef boost::value_initialized<size_t> AutoSizeT;
 
   namespace XML
   {

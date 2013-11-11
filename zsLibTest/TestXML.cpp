@@ -1731,10 +1731,10 @@ public:
     zsLib::XML::GeneratorPtr generatorJSON = zsLib::XML::Generator::createJSONGenerator("#text",'$');
     zsLib::XML::GeneratorPtr reGeneratorJSON = zsLib::XML::Generator::createJSONGenerator("#text",'$');
 
-    ULONG lengthXML = 0;
+    size_t lengthXML = 0;
     boost::shared_array<char> outputXML = generatorXML->write(cloneDocument, &lengthXML);
 
-    ULONG lengthJSON = 0;
+    size_t lengthJSON = 0;
     boost::shared_array<char> outputJSON = generatorJSON->write(cloneDocument, &lengthJSON);
 
     BOOST_CHECK(lengthXML == strlen(outputXML.get()))
@@ -2479,7 +2479,7 @@ public:
 
     zsLib::XML::GeneratorPtr generator = zsLib::XML::Generator::createXMLGenerator();
 
-    ULONG length = 0;
+    size_t length = 0;
     boost::shared_array<char> output = generator->write(document, &length);
 
     BOOST_CHECK(length == strlen(output.get()))
@@ -2500,12 +2500,12 @@ public:
     BOOST_CHECK(temp1.isString("OL"))
     zsLib::XML::ParserPos temp2(--constPos);
     BOOST_CHECK(temp2.isString(" EOL"))
-    ULONG length1 = (ULONG)(temp1 - temp2);
+    size_t length1 = (size_t)(temp1 - temp2);
     BOOST_CHECK(2 == length1)
 
     // move the end to the EOF
     temp1.setEOF();
-    length1 = (ULONG)(temp1 - temp2);
+    length1 = (size_t)(temp1 - temp2);
     BOOST_CHECK(strlen(" EOL") == length1)
 
     BOOST_CHECK(0 == strcmp((CSTR)temp2, " EOL"))
@@ -2550,7 +2550,7 @@ public:
     pos.setEOF();
     BOOST_CHECK(pos.isEOF())
 
-    pos -= (ULONG)strlen("EOL");
+    pos -= strlen("EOL");
     BOOST_CHECK(pos.isString("EOL"))
     parserPosTestConst(pos);
 
@@ -2570,16 +2570,16 @@ public:
     BOOST_CHECK(1 == pos.mColumn)
 
     // advance to EOL
-    pos += (ULONG)(strstr(gParse, "\r\n") - gParse);
+    pos += (size_t)(strstr(gParse, "\r\n") - gParse);
     BOOST_CHECK(pos.isString("\r\n"))
     BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((ULONG)(strstr(gParse, "\r\n") - gParse))+1)
+    BOOST_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
 
     // advance passed the \r which should force the column to 1
     ++pos;
     BOOST_CHECK(pos.isString("\n"))
     BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((ULONG)(strstr(gParse, "\r\n") - gParse))+1)
+    BOOST_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
 
     ++pos;
     BOOST_CHECK(pos.isString("whatever"))
@@ -2589,10 +2589,10 @@ public:
     --pos;
     BOOST_CHECK(pos.isString("\n"))
     BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((ULONG)(strstr(gParse, "\r\n") - gParse))+1)
+    BOOST_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
 
     ++pos;
-    pos += (ULONG)strlen("whatever dude!");
+    pos += strlen("whatever dude!");
     BOOST_CHECK(pos.isString("\r"))
     BOOST_CHECK(2 == pos.mRow)
     BOOST_CHECK(pos.mColumn == ((ULONG)strlen("whatever dude!")+1))

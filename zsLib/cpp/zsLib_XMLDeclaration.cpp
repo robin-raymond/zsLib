@@ -53,7 +53,7 @@ namespace zsLib
         // this must be a <?xml
         ZS_THROW_BAD_STATE_IF(!ioPos.isString("<?xml", false))
 
-        ioPos += (ULONG)strlen("<?xml");
+        ioPos += strlen("<?xml");
 
         while ((*ioPos) &&
                (!ioPos.isString("?>")))
@@ -67,7 +67,7 @@ namespace zsLib
             // this not a proper end to the tag but it must be an end tag
             (ioPos.getParser())->addWarning(ParserWarningType_NotProperEndDeclaration, ioPos);
             if (ioPos.isString("/>"))
-              ioPos += (ULONG)strlen("/>");
+              ioPos += strlen("/>");
             else
               ++ioPos;
 
@@ -108,14 +108,14 @@ namespace zsLib
           return;
         }
 
-        ioPos += (ULONG)strlen("?>");
+        ioPos += strlen("?>");
       }
 
       //-----------------------------------------------------------------------
-      ULONG Declaration::getOutputSizeXML(const GeneratorPtr &inGenerator) const
+      size_t Declaration::getOutputSizeXML(const GeneratorPtr &inGenerator) const
       {
-        ULONG result = 0;
-        result += (ULONG)strlen("<?xml");
+        size_t result = 0;
+        result += strlen("<?xml");
 
         if (mFirstAttribute)
         {
@@ -123,13 +123,13 @@ namespace zsLib
           while (child)
           {
             AttributePtr attribute = child->toAttribute();
-            result += (ULONG)strlen(" ");
+            result += strlen(" ");
             result += Generator::getOutputSize(inGenerator, attribute);
             child = child->getNextSibling();
           }
         }
 
-        result += (ULONG)strlen(" ?>");
+        result += strlen(" ?>");
         return result;
       }
 
@@ -153,9 +153,9 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Declaration::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Declaration::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
       {
-        ULONG result = 0;
+        size_t result = 0;
         return result;
       }
 
