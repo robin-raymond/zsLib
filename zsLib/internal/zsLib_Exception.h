@@ -26,11 +26,8 @@
 #define ZSLIB_INTERNAL_EXCEPTION_H_33206cbc33b745eb5c841eca0b34d550
 
 #include <zsLib/types.h>
-#include <zsLib/Log.h>
 #include <zsLib/String.h>
-
-#define ZS_INTERNAL_THROW_PREFIX(xMessage) \
-  ZS_LOG_ERROR(Basic, xMessage)
+#include <zsLib/Log.h>
 
 #define ZS_INTERNAL_DECLARE_EXCEPTION_PROPERTY(xClass, xPropertyType, xPropertyName) \
   xClass &set##xPropertyName(xPropertyType in##xPropertyName) {xPropertyName = in##xPropertyName; return *this;} \
@@ -42,11 +39,34 @@
   public: \
     xObject( \
       const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression = NULL \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
       const ::zsLib::String &message, \
       ::zsLib::CSTR function, \
       ::zsLib::CSTR pathName, \
-      ::zsLib::ULONG lineNumber \
-    ) : Exception(subsystem, message, function, pathName, lineNumber) \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression = NULL \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression = NULL \
+    ) : Exception(subsystem, params, function, pathName, lineNumber, expression) \
     { \
     } \
   };
@@ -57,11 +77,34 @@
   public: \
     xObject( \
       const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression = NULL \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
       const ::zsLib::String &message, \
       ::zsLib::CSTR function, \
       ::zsLib::CSTR pathName, \
-      ::zsLib::ULONG lineNumber \
-    ) : xBase(subsystem, message, function, pathName, lineNumber) \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression = NULL \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression = NULL \
+    ) : xBase(subsystem, params, function, pathName, lineNumber, expression) \
     { \
     } \
   };
@@ -72,12 +115,37 @@
   public: \
     xObject( \
       const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1 \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression, inValue1) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
       const ::zsLib::String &message, \
       ::zsLib::CSTR function, \
       ::zsLib::CSTR pathName, \
       ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
       xType1 inValue1 \
-    ) : xBase(subsystem, message, function, pathName, lineNumber, inValue1) \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression, inValue1) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1 \
+    ) : xBase(subsystem, params, function, pathName, lineNumber, expression, inValue1) \
     { \
     } \
   };
@@ -88,13 +156,40 @@
   public: \
     xObject( \
       const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2 \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression, inValue1, inValue2) \
+  { \
+  } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
       const ::zsLib::String &message, \
       ::zsLib::CSTR function, \
       ::zsLib::CSTR pathName, \
       ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
       xType1 inValue1, \
       xType2 inValue2 \
-    ) : xBase(subsystem, message, function, pathName, lineNumber, inValue1, inValue2) \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression, inValue1, inValue2) \
+  { \
+  } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2 \
+    ) : xBase(subsystem, params, function, pathName, lineNumber, expression, inValue1, inValue2) \
   { \
   } \
 };
@@ -105,14 +200,43 @@
   public: \
     xObject( \
       const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2, \
+      xType3 inValue3, \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression, inValue1, inValue2, inValue3) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
       const ::zsLib::String &message, \
       ::zsLib::CSTR function, \
       ::zsLib::CSTR pathName, \
       ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
       xType1 inValue1, \
       xType2 inValue2, \
       xType3 inValue3, \
-    ) : xBase(subsystem, message, function, pathName, lineNumber, inValue1, inValue2, inValue3) \
+    ) : xBase(subsystem, message, function, pathName, lineNumber, expression, inValue1, inValue2, inValue3) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2, \
+      xType3 inValue3, \
+    ) : xBase(subsystem, params, function, pathName, lineNumber, expression, inValue1, inValue2, inValue3) \
     { \
     } \
   };

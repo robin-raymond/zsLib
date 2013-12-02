@@ -23,6 +23,7 @@
 #include <zsLib/Stringize.h>
 #include <zsLib/Exception.h>
 #include <zsLib/IPAddress.h>
+#include <zsLib/helpers.h>
 
 #include <boost/shared_array.hpp>
 
@@ -38,6 +39,7 @@ namespace zsLib
       'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
     };
 
+    //-----------------------------------------------------------------------
     String convert(ULONGLONG value, size_t base)
     {
       ZS_THROW_INVALID_USAGE_IF((base < 2) || (base > (10+26)))
@@ -59,10 +61,21 @@ namespace zsLib
         *dest = '0';
       return String(dest);
     }
+
+    //-----------------------------------------------------------------------
+    String timeToString(const Time &value)
+    {
+      if (Time() == value) return String();
+
+      Duration duration = zsLib::timeSinceEpoch(value);
+      return string(duration.total_seconds());
+    }
   }
 
+  //-----------------------------------------------------------------------
   String string(const IPAddress & x, bool includePort)
   {
     return x.string(includePort);
   }
+
 }

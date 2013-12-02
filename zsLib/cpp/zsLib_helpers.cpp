@@ -103,24 +103,22 @@ namespace zsLib
     return boost::posix_time::microsec_clock::universal_time();
   }
 
-  time_t toEpoch(Time time)
+  Duration timeSinceEpoch(Time time)
   {
     if (Time() == time) {
-      return (time_t)0;
+      return Duration();
     }
 
     static Time epoch(boost::gregorian::date(1970,1,1));
-    Duration::sec_type x = (time - epoch).total_seconds();
-
-    return time_t(x);
+    return (time - epoch);
   }
 
-  Time toTime(time_t time)
+  Time timeSinceEpoch(Duration duration)
   {
     if (0 == time) {
       return Time();
     }
     static Time epoch(boost::gregorian::date(1970,1,1));
-    return epoch + Seconds((Duration::sec_type)time);
+    return epoch + duration;
   }
 }

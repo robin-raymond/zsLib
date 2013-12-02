@@ -42,6 +42,9 @@
 /// get a subsystem that is not part of this subsystem
 #define ZS_GET_OTHER_SUBSYSTEM(xNamespace, xSubsystem)                  ZS_INTERNAL_GET_OTHER_SUBSYSTEM(xNamespace, xSubsystem)
 
+#define ZS_LOG_PARAMS(xMsg)                                             ZS_INTERNAL_LOG_PARAMS(xMsg)
+#define ZS_PARAM(xName, xValue)                                         ZS_INTERNAL_PARAM(xName, xValue)
+
 #define ZS_GET_LOG_LEVEL()                                              ZS_INTERNAL_GET_LOG_LEVEL()
 #define ZS_IS_LOGGING(xLevel)                                           ZS_INTERNAL_IS_LOGGING(xLevel)
 
@@ -69,6 +72,14 @@
 
 namespace zsLib
 {
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark Log
+  #pragma mark
+
   class Log : public internal::Log
   {
     friend class internal::Log;
@@ -82,6 +93,8 @@ namespace zsLib
       Fatal
     };
 
+    static const char *toString(Severity severity);
+
     enum Level
     {
       None,
@@ -92,7 +105,80 @@ namespace zsLib
       Insane
     };
 
+    static const char *toString(Level level);
+
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log::Param
+    #pragma mark
+
+    class Param
+    {
+    public:
+      Param(const Param &param);
+      Param(const char *name, const char *value, bool isNumber = false);
+      Param(const char *name, const String &value, bool isNumber = false);
+      Param(const char *name, XML::ElementPtr value);
+      Param(const char *name, bool value);
+      Param(const char *name, CHAR value);
+      Param(const char *name, UCHAR value);
+      Param(const char *name, SHORT value);
+      Param(const char *name, USHORT value);
+      Param(const char *name, INT value);
+      Param(const char *name, UINT value);
+      Param(const char *name, LONG value);
+      Param(const char *name, ULONG value);
+      Param(const char *name, LONGLONG value);
+      Param(const char *name, ULONGLONG value);
+      Param(const char *name, FLOAT value);
+      Param(const char *name, DOUBLE value);
+      Param(const char *name, const Time &value);
+      Param(const char *name, const Duration &value);
+
+      const XML::ElementPtr &param() const;
+
+    private:
+      XML::ElementPtr mParam;
+    };
+
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log::Params
+    #pragma mark
+
+    class Params
+    {
+    public:
+      Params();
+      Params(const char *message, XML::ElementPtr object  = XML::ElementPtr());
+      Params(const String &message, XML::ElementPtr object = XML::ElementPtr());
+      Params(const char *message, const char *staticObjectName);
+      Params(const String &message, const char *staticObjectName);
+      Params(const Params &params);
+
+      Params &operator<<(const XML::ElementPtr &param);
+      Params &operator<<(const Param &param);
+      Params &operator<<(const Params &params);
+
+      Params &operator+(const XML::ElementPtr &param) {return *this << param;}
+      Params &operator+(const Param &param)           {return *this << param;}
+
+      const String &message() const;
+      const XML::ElementPtr &object() const;
+      const XML::ElementPtr &params() const;
+
+    protected:
+      XML::ElementPtr mObject;
+      XML::ElementPtr mParams;
+      String mMessage;
+    };
+
   public:
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log => (methods)
+    #pragma mark
+
     ~Log();
 
     static LogPtr singleton();
@@ -112,9 +198,27 @@ namespace zsLib
              ULONG lineNumber
              );
 
+    void log(
+             const Subsystem &subsystem,
+             Severity severity,
+             Level level,
+             const Params &params,
+             CSTR function,
+             CSTR filePath,
+             ULONG lineNumber
+             );
+
   private:
     Log();
   };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark ILogDelegate
+  #pragma mark
 
   interaction ILogDelegate
   {
@@ -123,16 +227,24 @@ namespace zsLib
     virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
 
     // notification of a log event
-    virtual void log(
-                     const zsLib::Subsystem &inSubsystem,
-                     zsLib::Log::Severity inSeverity,
-                     zsLib::Log::Level inLevel,
-                     zsLib::CSTR inMessage,
-                     zsLib::CSTR inFunction,
-                     zsLib::CSTR inFilePath,
-                     zsLib::ULONG inLineNumber
-                     ) {}
+    virtual void onLog(
+                       const zsLib::Subsystem &inSubsystem,
+                       zsLib::Log::Severity inSeverity,
+                       zsLib::Log::Level inLevel,
+                       zsLib::CSTR inFunction,
+                       zsLib::CSTR inFilePath,
+                       zsLib::ULONG inLineNumber,
+                       const zsLib::Log::Params &params
+                       ) {}
   };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark Subsystem
+  #pragma mark
 
   class Subsystem
   {

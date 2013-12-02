@@ -34,26 +34,38 @@ namespace zsLib
   public:
     Exception(
               const Subsystem &subsystem,
+              CSTR message,
+              CSTR function,
+              CSTR filePath,
+              ULONG lineNumber,
+              const char *expression = NULL
+              );
+    Exception(
+              const Subsystem &subsystem,
               const String &message,
               CSTR function,
               CSTR filePath,
-              ULONG lineNumber
-              ) :
-      mSubsystem(subsystem),
-      mMessage(message),
-      mFunction(function),
-      mLineNumber(lineNumber)
-    {
-    }
+              ULONG lineNumber,
+              const char *expression = NULL
+              );
+    Exception(
+              const Subsystem &subsystem,
+              const Log::Params &params,
+              CSTR function,
+              CSTR filePath,
+              ULONG lineNumber,
+              const char *expression = NULL
+              );
     ~Exception() throw() {}
 
-    virtual const char* what() const throw() {return mMessage;}
+    virtual const char *what() const throw() {return mMessage.c_str();}
 
-    const Subsystem &getSubsystem() const {return mSubsystem;}
-    const String &getMessage() const {return mMessage;}
-    CSTR getFunction() const {return mFunction;}
-    CSTR getFilePath() const {return mFilePath;}
-    ULONG getLineNumber() const {return mLineNumber;}
+    const Subsystem &subsystem() const {return mSubsystem;}
+    const String &message() const {return mMessage;}
+    CSTR function() const {return mFunction;}
+    CSTR filePath() const {return mFilePath;}
+    ULONG lineNumber() const {return mLineNumber;}
+    Log::Params params() const;
 
   private:
     const Subsystem &mSubsystem;
@@ -61,14 +73,15 @@ namespace zsLib
     CSTR mFunction;
     CSTR mFilePath;
     ULONG mLineNumber;
+    Log::Params mParams;
   };
 }
 
-#define ZS_DECLARE_CUSTOM_EXCEPTION(xObject)                                                          ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION(xObject)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)                                          ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)                 ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)         ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3) ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)
+#define ZS_DECLARE_CUSTOM_EXCEPTION(xObject)                                                            ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION(xObject)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)                                            ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)                  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)          ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)
 
 namespace zsLib
 {
@@ -84,40 +97,40 @@ namespace zsLib
   };
 } // namespace zsLib
 
-#define ZS_THROW_INVALID_ARGUMENT(xMessage)                                                     {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::InvalidArgument(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_BAD_STATE(xMessage)                                                            {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::BadState(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_RESOURCE_ERROR(xMessage)                                                       {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::ResourceError(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_UNEXPECTED_ERROR(xMessage)                                                     {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::UnexpectedError(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_INVALID_USAGE(xMessage)                                                        {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::InvalidUsage(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_INVALID_ASSUMPTION(xMessage)                                                   {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::InvalidAssumption(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_NOT_IMPLEMENTED(xMessage)                                                      {ZS_INTERNAL_THROW_PREFIX(xMessage) throw ::zsLib::Exceptions::NotImplemented(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_CUSTOM(xObject, xMessage)                                                      {ZS_INTERNAL_THROW_PREFIX(xMessage) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__);}
-#define ZS_THROW_CUSTOM_PROPERTIES_1(xObject, xValue1, xMessage)                                {ZS_INTERNAL_THROW_PREFIX(xMessage) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__, xValue1);}
-#define ZS_THROW_CUSTOM_PROPERTIES_2(xObject, xValue1, xValue2, xMessage)                       {ZS_INTERNAL_THROW_PREFIX(xMessage) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__, xValue1, xValue2);}
-#define ZS_THROW_CUSTOM_PROPERTIES_3(xObject, xValue1, xValue2, xValue3, xMessage)              {ZS_INTERNAL_THROW_PREFIX(xMessage) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(xMessage), __FUNCTION__, __FILE__, __LINE__, xValue1, xValue2, xValue3);}
+#define ZS_THROW_INVALID_ARGUMENT(xMessage)                                                             {throw ::zsLib::Exceptions::InvalidArgument(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_BAD_STATE(xMessage)                                                                    {throw ::zsLib::Exceptions::BadState(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_RESOURCE_ERROR(xMessage)                                                               {throw ::zsLib::Exceptions::ResourceError(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_UNEXPECTED_ERROR(xMessage)                                                             {throw ::zsLib::Exceptions::UnexpectedError(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_INVALID_USAGE(xMessage)                                                                {throw ::zsLib::Exceptions::InvalidUsage(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_INVALID_ASSUMPTION(xMessage)                                                           {throw ::zsLib::Exceptions::InvalidAssumption(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_NOT_IMPLEMENTED(xMessage)                                                              {throw ::zsLib::Exceptions::NotImplemented(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_CUSTOM(xObject, xMessage)                                                              {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__);}
+#define ZS_THROW_CUSTOM_PROPERTIES_1(xObject, xValue1, xMessage)                                        {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, NULL, xValue1);}
+#define ZS_THROW_CUSTOM_PROPERTIES_2(xObject, xValue1, xValue2, xMessage)                               {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, NULL, xValue1, xValue2);}
+#define ZS_THROW_CUSTOM_PROPERTIES_3(xObject, xValue1, xValue2, xValue3, xMessage)                      {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, NULL, xValue1, xValue2, xValue3);}
 
-#define ZS_THROW_INVALID_ARGUMENT_IF(xExperssion)                                               {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::InvalidArgument(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_BAD_STATE_IF(xExperssion)                                                      {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::BadState(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_RESOURCE_ERROR_IF(xExperssion)                                                 {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::ResourceError(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_UNEXPECTED_ERROR_IF(xExperssion)                                               {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::UnexpectedError(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_INVALID_USAGE_IF(xExperssion)                                                  {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::InvalidUsage(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_INVALID_ASSUMPTION_IF(xExperssion)                                             {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::InvalidAssumption(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_NOT_IMPLEMENTED_IF(xExperssion)                                                {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::NotImplemented(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_CUSTOM_IF(xObject, xExperssion)                                                {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_CUSTOM_PROPERTIES_1_IF(xObject, xExperssion, xValue1)                          {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__, xValue1);}}
-#define ZS_THROW_CUSTOM_PROPERTIES_2_IF(xObject, xExperssion, xValue1, xValue2)                 {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__, xValue1, xValue2);}}
-#define ZS_THROW_CUSTOM_PROPERTIES_3_IF(xObject, xExperssion, xValue1, xValue2, xValue3)        {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(#xExperssion), __FUNCTION__, __FILE__, __LINE__, xValue1, xValue2, xValue3);}}
+#define ZS_THROW_INVALID_ARGUMENT_IF(xExperssion)                                                       {if (xExperssion) {throw ::zsLib::Exceptions::InvalidArgument(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_BAD_STATE_IF(xExperssion)                                                              {if (xExperssion) {throw ::zsLib::Exceptions::BadState(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_RESOURCE_ERROR_IF(xExperssion)                                                         {if (xExperssion) {throw ::zsLib::Exceptions::ResourceError(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_UNEXPECTED_ERROR_IF(xExperssion)                                                       {if (xExperssion) {throw ::zsLib::Exceptions::UnexpectedError(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_INVALID_USAGE_IF(xExperssion)                                                          {if (xExperssion) {throw ::zsLib::Exceptions::InvalidUsage(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_INVALID_ASSUMPTION_IF(xExperssion)                                                     {if (xExperssion) {throw ::zsLib::Exceptions::InvalidAssumption(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_NOT_IMPLEMENTED_IF(xExperssion)                                                        {if (xExperssion) {throw ::zsLib::Exceptions::NotImplemented(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_CUSTOM_IF(xObject, xExperssion)                                                        {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__);}}
+#define ZS_THROW_CUSTOM_PROPERTIES_1_IF(xObject, xExperssion, xValue1)                                  {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__, NULL, xValue1);}}
+#define ZS_THROW_CUSTOM_PROPERTIES_2_IF(xObject, xExperssion, xValue1, xValue2)                         {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__, NULL, xValue1, xValue2);}}
+#define ZS_THROW_CUSTOM_PROPERTIES_3_IF(xObject, xExperssion, xValue1, xValue2, xValue3)                {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), #xExperssion, __FUNCTION__, __FILE__, __LINE__, NULL, xValue1, xValue2, xValue3);}}
 
-#define ZS_THROW_INVALID_ARGUMENT_MSG_IF(xExperssion, xMessage)                                 {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::InvalidArgument(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (#xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_BAD_STATE_MSG_IF(xExperssion, xMessage)                                        {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::BadState(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_RESOURCE_ERROR_MSG_IF(xExperssion, xMessage)                                   {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::ResourceError(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_UNEXPECTED_ERROR_MSG_IF(xExperssion, xMessage)                                 {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::UnexpectedError(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_INVALID_USAGE_MSG_IF(xExperssion, xMessage)                                    {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::InvalidUsage(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_INVALID_ASSUMPTION_MSG_IF(xExperssion, xMessage)                               {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::InvalidAssumption(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_NOT_IMPLEMENTED_MSG_IF(xExperssion, xMessage)                                  {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw ::zsLib::Exceptions::NotImplemented(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_CUSTOM_MSG_IF(xObject, xExperssion, xMessage)                                  {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__);}}
-#define ZS_THROW_CUSTOM_MSG_PROPERTIES_1_IF(xObject, xExperssion, xValue1, xMessage)            {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__, xValue1);}}
-#define ZS_THROW_CUSTOM_MSG_PROPERTIES_2_IF(xObject, xExperssion, xValue1, xValue2, xMessage)   {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__, xValue1, xValue2);}}
-#define ZS_THROW_CUSTOM_MSG_PROPERTIES_3_IF(xObject, xExperssion, xValue1, xValue2, xValue3, xMessage)   {if (xExperssion) {ZS_INTERNAL_THROW_PREFIX(#xExperssion) throw xObject(ZS_GET_SUBSYSTEM(), ::zsLib::String(::zsLib::String(#xExperssion) + (xMessage)), __FUNCTION__, __FILE__, __LINE__, xValue1, xValue2, xValue3);}}
+#define ZS_THROW_INVALID_ARGUMENT_MSG_IF(xExperssion, xMessage)                                         {if (xExperssion) {throw ::zsLib::Exceptions::InvalidArgument(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_BAD_STATE_MSG_IF(xExperssion, xMessage)                                                {if (xExperssion) {throw ::zsLib::Exceptions::BadState(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_RESOURCE_ERROR_MSG_IF(xExperssion, xMessage)                                           {if (xExperssion) {throw ::zsLib::Exceptions::ResourceError(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_UNEXPECTED_ERROR_MSG_IF(xExperssion, xMessage)                                         {if (xExperssion) {throw ::zsLib::Exceptions::UnexpectedError(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_INVALID_USAGE_MSG_IF(xExperssion, xMessage)                                            {if (xExperssion) {throw ::zsLib::Exceptions::InvalidUsage(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_INVALID_ASSUMPTION_MSG_IF(xExperssion, xMessage)                                       {if (xExperssion) {throw ::zsLib::Exceptions::InvalidAssumption(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_NOT_IMPLEMENTED_MSG_IF(xExperssion, xMessage)                                          {if (xExperssion) {throw ::zsLib::Exceptions::NotImplemented(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_CUSTOM_MSG_IF(xObject, xExperssion, xMessage)                                          {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion);}}
+#define ZS_THROW_CUSTOM_MSG_PROPERTIES_1_IF(xObject, xExperssion, xValue1, xMessage)                    {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion, xValue1);}}
+#define ZS_THROW_CUSTOM_MSG_PROPERTIES_2_IF(xObject, xExperssion, xValue1, xValue2, xMessage)           {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion, xValue1, xValue2);}}
+#define ZS_THROW_CUSTOM_MSG_PROPERTIES_3_IF(xObject, xExperssion, xValue1, xValue2, xValue3, xMessage)  {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion, xValue1, xValue2, xValue3);}}
 
 #endif //ZSLIB_EXCEPTION_H_128581a1508c405cbdac46b96074b91b

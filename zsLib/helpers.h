@@ -41,8 +41,8 @@ namespace zsLib {
 
   Time now();
 
-  time_t toEpoch(Time time);
-  Time toTime(time_t time);
+  Duration timeSinceEpoch(Time time);
+  Time timeSinceEpoch(Duration duration);
 
 } // namespace zsLib
 

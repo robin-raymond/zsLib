@@ -48,19 +48,49 @@ namespace zsLib
 
         Unspecified(
                     const Subsystem &subsystem,
+                    CSTR inMessage,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+          Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
+          mErrorCode(inErrorCode)
+        {
+        }
+
+        Unspecified(
+                    const Subsystem &subsystem,
                     const String &inMessage,
                     CSTR inFunction,
                     CSTR inPathName,
                     ULONG inLineNumber,
+                    const char *expression,
                     int inErrorCode
                     ) :
-          Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber),
+          Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
           mErrorCode(inErrorCode)
         {
         }
+
+        Unspecified(
+                    const Subsystem &subsystem,
+                    const Log::Params &inParams,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+          Exception(subsystem, inParams, inFunction, inPathName, inLineNumber, expression),
+          mErrorCode(inErrorCode)
+        {
+        }
+
         ~Unspecified() throw() {}
 
-        error_type getErrorCode() {return mErrorCode;}
+        error_type errorCode() {return mErrorCode;}
 
       private:
         error_type mErrorCode;

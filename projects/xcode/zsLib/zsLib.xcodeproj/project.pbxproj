@@ -41,6 +41,7 @@
 		0066811D16C9CE8700259F81 /* zsLib_XMLUnknown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680D516C9CE8700259F81 /* zsLib_XMLUnknown.cpp */; };
 		00EB8E8C177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */; };
 		00EB8E8D177D32EE00FFD40F /* zsLib_RegEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E8B177D32EE00FFD40F /* zsLib_RegEx.cpp */; };
+		00EF0B10184A543D00101BEE /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -123,6 +124,7 @@
 		00EB8E87177D32C800FFD40F /* zsLib_RegEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_RegEx.h; sourceTree = "<group>"; };
 		00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		00EB8E8B177D32EE00FFD40F /* zsLib_RegEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_RegEx.cpp; sourceTree = "<group>"; };
+		00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +190,7 @@
 			children = (
 				006680B716C9CE8700259F81 /* zsLib.cpp */,
 				006680B816C9CE8700259F81 /* zsLib_Event.cpp */,
+				00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */,
 				006680B916C9CE8700259F81 /* zsLib_helpers.cpp */,
 				006680BA16C9CE8700259F81 /* zsLib_IPAddress.cpp */,
 				006680BB16C9CE8700259F81 /* zsLib_Log.cpp */,
@@ -318,6 +321,7 @@
 			files = (
 				006680FF16C9CE8700259F81 /* zsLib.cpp in Sources */,
 				0066810016C9CE8700259F81 /* zsLib_Event.cpp in Sources */,
+				00EF0B10184A543D00101BEE /* zsLib_Exception.cpp in Sources */,
 				0066810116C9CE8700259F81 /* zsLib_helpers.cpp in Sources */,
 				0066810216C9CE8700259F81 /* zsLib_IPAddress.cpp in Sources */,
 				0066810316C9CE8700259F81 /* zsLib_Log.cpp in Sources */,
