@@ -99,12 +99,12 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Unknown::getOutputSizeXML(const GeneratorPtr &inGenerator) const
+      size_t Unknown::getOutputSizeXML(const GeneratorPtr &inGenerator) const
       {
-        ULONG result = 0;
-        result += (ULONG)strlen("<");
+        size_t result = 0;
+        result += strlen("<");
         result += mValue.getLength();
-        result += (ULONG)strlen(">");
+        result += strlen(">");
         return result;
       }
 
@@ -117,9 +117,9 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Unknown::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Unknown::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
       {
-        ULONG result = 0;
+        size_t result = 0;
         return result;
       }
 

@@ -51,7 +51,7 @@ namespace zsLib
 
         ZS_THROW_BAD_STATE_IF(!ioPos.isString("<!--"))
 
-        ioPos += (ULONG)strlen("<!--");
+        ioPos += strlen("<!--");
 
         while ((*ioPos) &&
                (!ioPos.isString("-->")))
@@ -67,17 +67,17 @@ namespace zsLib
         }
         else
         {
-          ioPos += (ULONG)strlen("-->");
+          ioPos += strlen("-->");
         }
       }
 
       //-----------------------------------------------------------------------
-      ULONG Comment::getOutputSizeXML(const GeneratorPtr &inGenerator) const
+      size_t Comment::getOutputSizeXML(const GeneratorPtr &inGenerator) const
       {
-        ULONG result = 0;
-        result += (ULONG)strlen("<!--");
+        size_t result = 0;
+        result += strlen("<!--");
         result += mValue.getLength();
-        result += (ULONG)strlen("-->");
+        result += strlen("-->");
         return result;
       }
 
@@ -90,9 +90,9 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Comment::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Comment::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
       {
-        ULONG result = 0;
+        size_t result = 0;
         return result;
       }
 

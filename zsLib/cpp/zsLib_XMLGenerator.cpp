@@ -54,7 +54,7 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Generator::getOutputSize(const GeneratorPtr &inGenerator, NodePtr inNode)
+      size_t Generator::getOutputSize(const GeneratorPtr &inGenerator, NodePtr inNode)
       {
         if (!inNode)
           return 0;
@@ -339,10 +339,10 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    ULONG Generator::getOutputSize(const NodePtr &onlyThisNode) const
+    size_t Generator::getOutputSize(const NodePtr &onlyThisNode) const
     {
       mGeneratorRoot = onlyThisNode;
-      ULONG result = internal::Generator::getOutputSize(mThis.lock(), onlyThisNode);
+      size_t result = internal::Generator::getOutputSize(mThis.lock(), onlyThisNode);
       bool objectOpen = objectObjectCheck(onlyThisNode);
 
       if (GeneratorMode_JSON == mGeneratorMode) {
@@ -355,9 +355,9 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Generator::write(const NodePtr &onlyThisNode, ULONG *outLength) const
+    boost::shared_array<char> Generator::write(const NodePtr &onlyThisNode, size_t *outLength) const
     {
-      ULONG totalSize = getOutputSize(onlyThisNode);
+      size_t totalSize = getOutputSize(onlyThisNode);
       mGeneratorRoot = onlyThisNode;
       boost::shared_array<char> buffer(new char[totalSize+1]);
       char *pos = buffer.get();

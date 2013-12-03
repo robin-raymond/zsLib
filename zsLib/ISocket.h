@@ -44,24 +44,56 @@ namespace zsLib
       class Unspecified : public Exception
       {
       public:
+        typedef int error_type;
+
+        Unspecified(
+                    const Subsystem &subsystem,
+                    CSTR inMessage,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+          Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
+          mErrorCode(inErrorCode)
+        {
+        }
+
         Unspecified(
                     const Subsystem &subsystem,
                     const String &inMessage,
                     CSTR inFunction,
                     CSTR inPathName,
                     ULONG inLineNumber,
+                    const char *expression,
                     int inErrorCode
                     ) :
-          Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber),
+          Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
           mErrorCode(inErrorCode)
         {
         }
+
+        Unspecified(
+                    const Subsystem &subsystem,
+                    const Log::Params &inParams,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+          Exception(subsystem, inParams, inFunction, inPathName, inLineNumber, expression),
+          mErrorCode(inErrorCode)
+        {
+        }
+
         ~Unspecified() throw() {}
 
-        int getErrorCode() {return mErrorCode;}
+        error_type errorCode() {return mErrorCode;}
 
       private:
-        int mErrorCode;
+        error_type mErrorCode;
       };
 
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(WouldBlock, Unspecified, int)
@@ -214,77 +246,77 @@ namespace zsLib
                                        Exceptions::Unspecified
                                        ) = 0;
 
-    virtual ULONG receive(
-                          BYTE *ioBuffer,
-                          ULONG inBufferLengthInBytes,
+    virtual size_t receive(
+                           BYTE *ioBuffer,
+                           size_t inBufferLengthInBytes,
+                           bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
+                           ULONG flags = (ULONG)(Receive::None),
+                           int *noThrowErrorResult = NULL
+                           ) const throw(
+                                         Exceptions::InvalidSocket,
+                                         Exceptions::WouldBlock,
+                                         Exceptions::Shutdown,
+                                         Exceptions::ConnectionReset,
+                                         Exceptions::ConnectionAborted,
+                                         Exceptions::Timeout,
+                                         Exceptions::BufferTooSmall,
+                                         Exceptions::Unspecified
+                                         ) = 0;
+
+    virtual size_t receiveFrom(
+                               IPAddress &outRemoteIP,
+                               BYTE *ioBuffer,
+                               size_t inBufferLengthInBytes,
+                               bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
+                               ULONG flags = (ULONG)(Receive::None),
+                               int *noThrowErrorResult = NULL
+                               ) const throw(
+                                             Exceptions::InvalidSocket,
+                                             Exceptions::WouldBlock,
+                                             Exceptions::Shutdown,
+                                             Exceptions::ConnectionReset,
+                                             Exceptions::Timeout,
+                                             Exceptions::BufferTooSmall,
+                                             Exceptions::Unspecified
+                                             ) = 0;
+
+    virtual size_t send(
+                        const BYTE *inBuffer,
+                        size_t inBufferLengthInBytes,
+                        bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
+                        ULONG flags = (ULONG)(Send::None),
+                        int *noThrowErrorResult = NULL
+                        ) const throw(
+                                      Exceptions::InvalidSocket,
+                                      Exceptions::WouldBlock,
+                                      Exceptions::Shutdown,
+                                      Exceptions::HostNotReachable,
+                                      Exceptions::ConnectionAborted,
+                                      Exceptions::ConnectionReset,
+                                      Exceptions::Timeout,
+                                      Exceptions::BufferTooSmall,
+                                      Exceptions::Unspecified
+                                      ) = 0;
+
+    virtual size_t sendTo(
+                          const IPAddress &inDestination,
+                          const BYTE *inBuffer,
+                          size_t inBufferLengthInBytes,
                           bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
-                          ULONG flags = (ULONG)(Receive::None),
+                          ULONG flags = (ULONG)(Send::None),
                           int *noThrowErrorResult = NULL
                           ) const throw(
                                         Exceptions::InvalidSocket,
                                         Exceptions::WouldBlock,
                                         Exceptions::Shutdown,
-                                        Exceptions::ConnectionReset,
+                                        Exceptions::Timeout,
+                                        Exceptions::HostNotReachable,
                                         Exceptions::ConnectionAborted,
+                                        Exceptions::ConnectionReset,
                                         Exceptions::Timeout,
                                         Exceptions::BufferTooSmall,
                                         Exceptions::Unspecified
                                         ) = 0;
-
-    virtual ULONG receiveFrom(
-                              IPAddress &outRemoteIP,
-                              BYTE *ioBuffer,
-                              ULONG inBufferLengthInBytes,
-                              bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
-                              ULONG flags = (ULONG)(Receive::None),
-                              int *noThrowErrorResult = NULL
-                              ) const throw(
-                                            Exceptions::InvalidSocket,
-                                            Exceptions::WouldBlock,
-                                            Exceptions::Shutdown,
-                                            Exceptions::ConnectionReset,
-                                            Exceptions::Timeout,
-                                            Exceptions::BufferTooSmall,
-                                            Exceptions::Unspecified
-                                            ) = 0;
-
-    virtual ULONG send(
-                       const BYTE *inBuffer,
-                       ULONG inBufferLengthInBytes,
-                       bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
-                       ULONG flags = (ULONG)(Send::None),
-                       int *noThrowErrorResult = NULL
-                       ) const throw(
-                                     Exceptions::InvalidSocket,
-                                     Exceptions::WouldBlock,
-                                     Exceptions::Shutdown,
-                                     Exceptions::HostNotReachable,
-                                     Exceptions::ConnectionAborted,
-                                     Exceptions::ConnectionReset,
-                                     Exceptions::Timeout,
-                                     Exceptions::BufferTooSmall,
-                                     Exceptions::Unspecified
-                                     ) = 0;
-
-    virtual ULONG sendTo(
-                         const IPAddress &inDestination,
-                         const BYTE *inBuffer,
-                         ULONG inBufferLengthInBytes,
-                         bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
-                         ULONG flags = (ULONG)(Send::None),
-                         int *noThrowErrorResult = NULL
-                         ) const throw(
-                                       Exceptions::InvalidSocket,
-                                       Exceptions::WouldBlock,
-                                       Exceptions::Shutdown,
-                                       Exceptions::Timeout,
-                                       Exceptions::HostNotReachable,
-                                       Exceptions::ConnectionAborted,
-                                       Exceptions::ConnectionReset,
-                                       Exceptions::Timeout,
-                                       Exceptions::BufferTooSmall,
-                                       Exceptions::Unspecified
-                                       ) = 0;
 
     virtual void shutdown(Shutdown::Options inOptions = Shutdown::Both) const throw(Exceptions::InvalidSocket, Exceptions::Unspecified) = 0;
 

@@ -54,7 +54,7 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      static ULONG calculateColumnFromSOL(const char *const inPos, const char *const inStart, ULONG inTabSize)
+      static size_t calculateColumnFromSOL(const char *const inPos, const char *const inStart, ULONG inTabSize)
       {
         // find the start of the line
         const char *startLine = inPos;
@@ -184,7 +184,9 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void ParserPos::setEOF()
     {
-      mPos = NULL;
+      while (!isEOF()) {
+        ++(*this);
+      }
     }
 
     //-------------------------------------------------------------------------
@@ -274,7 +276,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    ParserPos &ParserPos::operator+=(ULONG inDistance)
+    ParserPos &ParserPos::operator+=(size_t inDistance)
     {
       ParserPtr parser(getParser());
 
@@ -335,7 +337,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    ParserPos &ParserPos::operator-=(ULONG inDistance)
+    ParserPos &ParserPos::operator-=(size_t inDistance)
     {
       ParserPtr parser(getParser());
 
@@ -343,7 +345,7 @@ namespace zsLib
       {
         ParserPos temp(*this);
         temp.setSOF();
-        temp += (ULONG)strlen(temp.mPos);
+        temp += strlen(temp.mPos);
         (*this) = temp;
       }
 
@@ -424,10 +426,9 @@ namespace zsLib
     //-------------------------------------------------------------------------
     ParserPos::operator CSTR() const
     {
-      if (isEOF())
-        return "\0\0";
+      if (mPos) return mPos;
 
-      return mPos;
+      return "\0\0";
     }
 
     //-------------------------------------------------------------------------
@@ -459,7 +460,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    ParserPos operator+(const ParserPos &inPos, ULONG inDistance)
+    ParserPos operator+(const ParserPos &inPos, size_t inDistance)
     {
       ParserPos temp(inPos);
       temp += inDistance;
@@ -467,7 +468,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    ParserPos operator-(const ParserPos &inPos, ULONG inDistance)
+    ParserPos operator-(const ParserPos &inPos, size_t inDistance)
     {
       ParserPos temp(inPos);
       temp -= inDistance;
@@ -477,25 +478,25 @@ namespace zsLib
     //-------------------------------------------------------------------------
     ParserPos operator+(const ParserPos &inPos, int inDistance)
     {
-      return inPos + ((ULONG)inDistance);
+      return inPos + ((size_t)inDistance);
     }
 
     //-------------------------------------------------------------------------
     ParserPos operator-(const ParserPos &inPos, int inDistance)
     {
-      return inPos - ((ULONG)inDistance);
+      return inPos - ((size_t)inDistance);
     }
 
     //-------------------------------------------------------------------------
     ParserPos operator+(const ParserPos &inPos, unsigned int inDistance)
     {
-      return inPos + ((ULONG)inDistance);
+      return inPos + ((size_t)inDistance);
     }
 
     //-------------------------------------------------------------------------
     ParserPos operator-(const ParserPos &inPos, unsigned int inDistance)
     {
-      return inPos - ((ULONG)inDistance);
+      return inPos - ((size_t)inDistance);
     }
   } // namespace XML
 

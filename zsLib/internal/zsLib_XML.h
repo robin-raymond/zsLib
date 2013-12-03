@@ -111,10 +111,10 @@ namespace zsLib
                  bool inAttributeNameIsCaseSensative
                  );
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -141,10 +141,10 @@ namespace zsLib
       public:
         void parse(XML::ParserPos &ioPos);
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -179,10 +179,10 @@ namespace zsLib
       public:
         bool parse(XML::ParserPos &ioPos);
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -208,10 +208,10 @@ namespace zsLib
       public:
         void parse(XML::ParserPos &ioPos);
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -241,10 +241,10 @@ namespace zsLib
       public:
         void parse(XML::ParserPos &ioPos);
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -267,10 +267,10 @@ namespace zsLib
       public:
         void parse(XML::ParserPos &ioPos);
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -291,10 +291,10 @@ namespace zsLib
       public:
         void parse(XML::ParserPos &ioPos, const char *start = NULL, const char *ending = NULL);
 
-        ULONG getOutputSizeXML(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
-        ULONG getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
+        size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
         NodePtr cloneAssignParent(NodePtr inParent) const;
@@ -493,7 +493,7 @@ namespace zsLib
         Generator();
 
       protected:
-        static ULONG getOutputSize(const GeneratorPtr &inGenerator, NodePtr inNode);
+        static size_t getOutputSize(const GeneratorPtr &inGenerator, NodePtr inNode);
         static void writeBuffer(const GeneratorPtr &inGenerator, NodePtr inNode, char * &ioPos);
         static void writeBuffer(char * &ioPos, CSTR inString);
 

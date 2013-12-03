@@ -88,6 +88,12 @@ namespace zsLib
 
   typedef ULONG PUID;
 
+#if defined(__LP64__) || defined(_WIN64) || defined(_Wp64)
+#define ZSLIB_64BIT
+#else
+#define ZSLIB_32BIT
+#endif //defined(__LP64__) || defined(_WIN64) || defined(_Wp64)
+
 #if defined(_LP64) || defined(_WIN64) || defined(_Wp64)
   typedef QWORD PTRNUMBER;
 #else

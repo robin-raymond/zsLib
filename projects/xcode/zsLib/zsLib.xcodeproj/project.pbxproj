@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000CBF6217A3EB640075E86C /* zsLib_ProxySubscriptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */; };
 		006680FF16C9CE8700259F81 /* zsLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B716C9CE8700259F81 /* zsLib.cpp */; };
 		0066810016C9CE8700259F81 /* zsLib_Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B816C9CE8700259F81 /* zsLib_Event.cpp */; };
 		0066810116C9CE8700259F81 /* zsLib_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B916C9CE8700259F81 /* zsLib_helpers.cpp */; };
@@ -40,9 +41,12 @@
 		0066811D16C9CE8700259F81 /* zsLib_XMLUnknown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680D516C9CE8700259F81 /* zsLib_XMLUnknown.cpp */; };
 		00EB8E8C177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */; };
 		00EB8E8D177D32EE00FFD40F /* zsLib_RegEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E8B177D32EE00FFD40F /* zsLib_RegEx.cpp */; };
+		00EF0B10184A543D00101BEE /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		000CBF6017A3E5090075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
+		000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxySubscriptions.h; sourceTree = "<group>"; };
 		006680AE16C9CE4300259F81 /* libzsLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libzsLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		006680B716C9CE8700259F81 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
 		006680B816C9CE8700259F81 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
@@ -120,6 +124,7 @@
 		00EB8E87177D32C800FFD40F /* zsLib_RegEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_RegEx.h; sourceTree = "<group>"; };
 		00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		00EB8E8B177D32EE00FFD40F /* zsLib_RegEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_RegEx.cpp; sourceTree = "<group>"; };
+		00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +173,7 @@
 				006680F516C9CE8700259F81 /* MessageQueueThread.h */,
 				006680F616C9CE8700259F81 /* Numeric.h */,
 				006680F716C9CE8700259F81 /* Proxy.h */,
+				000CBF6017A3E5090075E86C /* ProxySubscriptions.h */,
 				00EB8E84177D328700FFD40F /* RegEx.h */,
 				006680F816C9CE8700259F81 /* Socket.h */,
 				006680F916C9CE8700259F81 /* String.h */,
@@ -184,6 +190,7 @@
 			children = (
 				006680B716C9CE8700259F81 /* zsLib.cpp */,
 				006680B816C9CE8700259F81 /* zsLib_Event.cpp */,
+				00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */,
 				006680B916C9CE8700259F81 /* zsLib_helpers.cpp */,
 				006680BA16C9CE8700259F81 /* zsLib_IPAddress.cpp */,
 				006680BB16C9CE8700259F81 /* zsLib_Log.cpp */,
@@ -237,6 +244,7 @@
 				00EB8E86177D32C800FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */,
 				006680E616C9CE8700259F81 /* zsLib_Numeric.h */,
 				006680E716C9CE8700259F81 /* zsLib_Proxy.h */,
+				000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */,
 				006680E816C9CE8700259F81 /* zsLib_ProxyPack.h */,
 				00EB8E87177D32C800FFD40F /* zsLib_RegEx.h */,
 				006680E916C9CE8700259F81 /* zsLib_Socket.h */,
@@ -256,6 +264,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				000CBF6217A3EB640075E86C /* zsLib_ProxySubscriptions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +321,7 @@
 			files = (
 				006680FF16C9CE8700259F81 /* zsLib.cpp in Sources */,
 				0066810016C9CE8700259F81 /* zsLib_Event.cpp in Sources */,
+				00EF0B10184A543D00101BEE /* zsLib_Exception.cpp in Sources */,
 				0066810116C9CE8700259F81 /* zsLib_helpers.cpp in Sources */,
 				0066810216C9CE8700259F81 /* zsLib_IPAddress.cpp in Sources */,
 				0066810316C9CE8700259F81 /* zsLib_Log.cpp in Sources */,
@@ -354,6 +364,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -364,19 +376,16 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					../../../../boost/osx/framework/boost.framework/Headers/,
 					../../../,
-					../../../../boost/boost,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
@@ -389,6 +398,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -399,13 +410,15 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					../../../../boost/osx/framework/boost.framework/Headers/,
 					../../../,
-					../../../../boost/boost,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
@@ -416,6 +429,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -425,6 +439,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"NDEBUG=1",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

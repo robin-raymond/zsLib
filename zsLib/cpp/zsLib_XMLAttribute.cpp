@@ -162,11 +162,11 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Attribute::getOutputSizeXML(const GeneratorPtr &inGenerator) const
+      size_t Attribute::getOutputSizeXML(const GeneratorPtr &inGenerator) const
       {
         bool hasQuotes = mHasQuotes;
 
-        ULONG result = 0;
+        size_t result = 0;
         ZS_THROW_INVALID_USAGE_IF(mName.isEmpty())
         result += mName.getLength();
         if (!mValuelessAttribute)
@@ -177,9 +177,9 @@ namespace zsLib
             hasQuotes = true;
           }
           if (hasQuotes) {
-            result += (ULONG)strlen("=\"\"");
+            result += strlen("=\"\"");
           } else {
-            result += (ULONG)strlen("=");
+            result += strlen("=");
           }
           result += value.getLength();
         }
@@ -216,10 +216,10 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      ULONG Attribute::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Attribute::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
       {
         bool hasQuotes = mHasQuotes;
-        ULONG result = 0;
+        size_t result = 0;
 
         if (hasQuotes) {
           result += strlen("\"\":\"\"");

@@ -51,18 +51,16 @@ namespace zsLib
       ~MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper()
       {
         mThreadQueue->waitForShutdown();
+        mThreadQueue.reset();
       }
 
     public:
       MessageQueueThreadUsingMainThreadMessageQueueForApplePtr mThreadQueue;
     };
 
-
     static MessageQueueThreadUsingMainThreadMessageQueueForApplePtr getThreadMessageQueue()
     {
       static MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper wrapper;
-      //if (! getGlobal().mThreadQueueWrapper.get())
-      //getGlobal().mThreadQueueWrapper.reset(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper);
       return wrapper.mThreadQueue;
     }
 
@@ -179,7 +177,7 @@ namespace zsLib
       queue->post(message);
     }
 
-    UINT MessageQueueThreadUsingMainThreadMessageQueueForApple::getTotalUnprocessedMessages() const
+    IMessageQueue::size_type MessageQueueThreadUsingMainThreadMessageQueueForApple::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
       if (!mQueue)

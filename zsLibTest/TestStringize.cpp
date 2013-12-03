@@ -23,6 +23,7 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
 #include <zsLib/Numeric.h>
+#include <zsLib/IPAddress.h>
 
 //#include <boost/test/unit_test_suite.hpp>
 //#include <boost/test/unit_test.hpp>
@@ -34,6 +35,7 @@
 using zsLib::BYTE;
 using zsLib::LONGLONG;
 using zsLib::ULONGLONG;
+using zsLib::IPAddress;
 
 BOOST_AUTO_TEST_SUITE(zsLibStringize)
 
@@ -50,15 +52,15 @@ BOOST_AUTO_TEST_SUITE(zsLibStringize)
 
     BOOST_EQUAL("ffff", zsLib::Stringize<unsigned short>(0xFFFF, 16).string());
     BOOST_EQUAL("ffffffff", zsLib::Stringize<unsigned int>(0xFFFFFFFF, 16).string());
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 1
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 2
-    //BOOST_EQUAL("ffffffffffffffff", zsLib::Stringize<ULONGLONG>(0xFFFFFFFFFFFFFFFF, 16).string());
+#ifdef ZSLIBG_64BIT
+    BOOST_EQUAL("ffffffffffffffff", zsLib::Stringize<ULONGLONG>(0xFFFFFFFFFFFFFFFF, 16).string());
+#endif // ZSLIBG_64BIT
 
     BOOST_EQUAL("f0f0", zsLib::Stringize<unsigned short>(0xF0F0, 16).string());
     BOOST_EQUAL("f0f0f0f0", zsLib::Stringize<unsigned int>(0xF0F0F0F0, 16).string());
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 3
-    #define COMMENTED_BECAUSE_32BIT_COMPILE 4
-    //BOOST_EQUAL("f0f0f0f0f0f0f0f0", zsLib::Stringize<ULONGLONG>(0xF0F0F0F0F0F0F0F0, 16).string());
+#ifdef ZSLIB_64BIT
+    BOOST_EQUAL("f0f0f0f0f0f0f0f0", zsLib::Stringize<ULONGLONG>(0xF0F0F0F0F0F0F0F0, 16).string());
+#endif // ZSLIBG_64BIT
 
     BOOST_EQUAL("0", zsLib::Stringize<float>(0.0f).string());
     BOOST_EQUAL("0.5", zsLib::Stringize<float>(0.5).string());
@@ -71,6 +73,8 @@ BOOST_AUTO_TEST_SUITE(zsLibStringize)
     zsLib::UUID uuid = zsLib::Numeric<zsLib::UUID>("b0a01e87-2be5-4daa-8155-1380c98400a1");
     zsLib::String uuidStr = zsLib::Stringize<zsLib::UUID>(uuid);
     BOOST_EQUAL("b0a01e87-2be5-4daa-8155-1380c98400a1", uuidStr);
+
+    BOOST_EQUAL(IPAddress("192.168.1.10:5060").string(), string(IPAddress("192.168.1.10:5060")))
   }
 
 BOOST_AUTO_TEST_SUITE_END()

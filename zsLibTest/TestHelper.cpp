@@ -21,6 +21,7 @@
  */
 
 #include <zsLib/helpers.h>
+#include <zsLib/Stringize.h>
 
 //#include <boost/test/unit_test_suite.hpp>
 //#include <boost/test/unit_test.hpp>
@@ -28,7 +29,44 @@
 
 #include "boost_replacement.h"
 
-BOOST_AUTO_TEST_SUITE(zsLibStringTest)
+static int get99()
+{
+  return 99;
+}
+
+BOOST_AUTO_TEST_SUITE(zsLibHelperTest)
+
+  BOOST_AUTO_TEST_CASE(Test_AUTO)
+  {
+    zsLib::AutoBool testBool;
+    BOOST_CHECK(!testBool)
+
+    zsLib::AutoBool autoBool;
+
+    zsLib::String resultAutoBool = zsLib::string(autoBool);
+    BOOST_EQUAL("false", resultAutoBool);
+
+    boost::value_initialized<int> value;
+
+    BOOST_CHECK(0 == value)
+
+    zsLib::AutoDWORD autoDword;
+    BOOST_EQUAL("0", zsLib::string(autoDword));
+
+    get(autoDword) = 15;
+    BOOST_EQUAL("15", zsLib::string(autoDword));
+
+    zsLib::PUID puid1 = zsLib::createPUID();
+
+    zsLib::AutoPUID autoPuid1;
+
+    BOOST_CHECK(get(autoPuid1) == (puid1 + 1))
+
+    BOOST_EQUAL(zsLib::string(autoPuid1), zsLib::Stringize<zsLib::PUID>(puid1+1).string())
+
+    BOOST_EQUAL("99", zsLib::string(get99()));
+    BOOST_EQUAL("99", zsLib::Stringize<int>(get99()).string());
+  }
 
   BOOST_AUTO_TEST_CASE(Test_PUID_GUID)
   {

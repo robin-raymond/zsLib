@@ -165,7 +165,7 @@ namespace zsLib
     }
 
     //-----------------------------------------------------------------------
-    UINT MessageQueueThreadUsingBlackberryChannels::getTotalUnprocessedMessages() const
+    IMessageQueue::size_type MessageQueueThreadUsingBlackberryChannels::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
       if (!mQueue)

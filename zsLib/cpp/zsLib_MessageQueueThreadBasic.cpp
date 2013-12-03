@@ -138,7 +138,7 @@ namespace zsLib
       queue->post(message);
     }
 
-    UINT MessageQueueThreadBasic::getTotalUnprocessedMessages() const
+    IMessageQueue::size_type MessageQueueThreadBasic::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
       if (!mQueue)

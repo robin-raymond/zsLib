@@ -65,7 +65,7 @@ namespace zsLib
       // IMessageQueue
       virtual void post(IMessageQueueMessagePtr message);
 
-      virtual UINT getTotalUnprocessedMessages() const;
+      virtual size_type getTotalUnprocessedMessages() const;
 
       // IMessageQueueNotify
       virtual void notifyMessagePosted();

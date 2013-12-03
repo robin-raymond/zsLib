@@ -29,20 +29,36 @@
 
 namespace zsLib
 {
+  class IPAddress;
+
   template<typename t_type>
   class Stringize
   {
   public:
-    Stringize(t_type value, size_t base = 10) : mValue(value), mBase(base)        {}
+    Stringize(const t_type &value, size_t base = 10) : mValue(value), mBase(base)        {}
     Stringize(const Stringize &value) : mValue(value.mValue), mBase(value.mBase)  {}
 
     operator String() const;
     String string() {return (String)(*this);}
 
   private:
-    t_type mValue;
+    const t_type &mValue;
     size_t mBase;
   };
+
+  template<class T>
+  String string( const boost::value_initialized<T>& x, size_t base = 10 )
+  {
+    return Stringize<T>(get(x), base).string();
+  }
+
+  template<class T>
+  String string( const T & x, size_t base = 10  )
+  {
+    return Stringize<T>(x, base).string();
+  }
+
+  String string( const IPAddress & x, bool includePort = true);
 
 } // namespace zsLib
 

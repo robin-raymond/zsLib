@@ -37,6 +37,7 @@
 #include <boost/thread/locks.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/tss.hpp>
+#include <boost/utility/value_init.hpp>
 
 #pragma warning(push)
 #pragma warning(disable:4244)

@@ -80,10 +80,10 @@ namespace zsLib
     message->processMessage();
   }
 
-  UINT MessageQueue::getTotalUnprocessedMessages() const
+  IMessageQueue::size_type MessageQueue::getTotalUnprocessedMessages() const
   {
     AutoLock lock(mLock);
-    return mMessages.size();
+    return static_cast<size_type>(mMessages.size());
   }
 
 }

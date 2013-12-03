@@ -34,6 +34,8 @@ namespace zsLib
   namespace internal
   {
     String convert(ULONGLONG value, size_t base);
+
+    String timeToString(const Time &value);
   }
 } // namespace zsLib
 
@@ -165,8 +167,9 @@ namespace zsLib
   template<>
   inline Stringize<Time>::operator String() const
   {
-    return String(boost::posix_time::to_simple_string(mValue));
+    return internal::timeToString(mValue);
   }
+
 }
 #else
 #define ZSLIB_INTERNAL_STRINGIZE_H_0c235f6defcccb275d602da44da60e58_SECOND_INCLUDE
