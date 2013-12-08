@@ -315,8 +315,8 @@ namespace zsLib
       void setAttributeNameIsCaseSensative(bool inCaseSensative = true);
       bool isAttributeNameIsCaseSensative() const;
 
-      boost::shared_array<char> writeAsXML(size_t *outLength = NULL) const;
-      boost::shared_array<char> writeAsJSON(size_t *outLength = NULL) const;
+      boost::shared_array<char> writeAsXML(size_t *outLengthInChars = NULL) const;
+      boost::shared_array<char> writeAsJSON(size_t *outLengthInChars = NULL) const;
 
       // overrides
       virtual NodePtr clone() const;
@@ -815,7 +815,7 @@ namespace zsLib
                                               );
 
       virtual size_t getOutputSize(const NodePtr &onlyThisNode) const;
-      virtual boost::shared_array<char> write(const NodePtr &onlyThisNode, size_t *outLength = NULL) const;
+      virtual boost::shared_array<char> write(const NodePtr &onlyThisNode, size_t *outLengthInChars = NULL) const;
 
       virtual GeneratorPtr toGenerator() const   {return mThis.lock();}
 
