@@ -184,6 +184,9 @@ namespace zsLib
   void proxyDump();
 }
 
+
+#define ZS_DECLARE_INTERACTION_PROXY(xInteractionName)                                                                                                        ZS_INTERNAL_DECLARE_INTERACTION_PROXY(xInteractionName)
+
 #define ZS_DECLARE_PROXY_BEGIN(xInterface)                                                                                                                    ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, true)
 #define ZS_DECLARE_PROXY_WITH_DELEGATE_MESSAGE_QUEUE_OPTIONAL_BEGIN(xInterface)                                                                               ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, false)
 #define ZS_DECLARE_PROXY_END()                                                                                                                                ZS_INTERNAL_DECLARE_PROXY_END()

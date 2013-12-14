@@ -39,6 +39,25 @@
 #define interaction struct
 #endif //interaction
 
+#define ZS_INTERNAL_DECLARE_PTR(xExistingType)                        \
+  typedef boost::shared_ptr<xExistingType> xExistingType##Ptr;        \
+  typedef boost::weak_ptr<xExistingType> xExistingType##WeakPtr;
+
+#define ZS_INTERNAL_DECLARE_CLASS_PTR(xClassName)                     \
+  class xClassName;                                                   \
+  typedef boost::shared_ptr<xClassName> xClassName##Ptr;              \
+  typedef boost::weak_ptr<xClassName> xClassName##WeakPtr;
+
+#define ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)                   \
+  struct xStructName;                                                 \
+  typedef boost::shared_ptr<xStructName> xStructName##Ptr;            \
+  typedef boost::weak_ptr<xStructName> xStructName##WeakPtr;
+
+#define ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)  \
+  typedef xOriginalType xNewTypeName;                                 \
+  typedef boost::shared_ptr<xNewTypeName> xNewTypeName##Ptr;          \
+  typedef boost::weak_ptr<xNewTypeName> xNewTypeName##WeakPtr;
+
 namespace zsLib
 {
   typedef char CHAR;

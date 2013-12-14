@@ -27,6 +27,13 @@
 
 #include <zsLib/internal/types.h>
 
+#define ZS_DECLARE_PTR(xExistingType)                                               ZS_INTERNAL_DECLARE_PTR(xExistingType)
+#define ZS_DECLARE_CLASS_PTR(xClassName)                                            ZS_INTERNAL_DECLARE_CLASS_PTR(xClassName)
+#define ZS_DECLARE_STRUCT_PTR(xStructName)                                          ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)
+#define ZS_DECLARE_INTERACTION_PTR(xInteractionName)                                ZS_INTERNAL_DECLARE_STRUCT_PTR(xInteractionName)
+#define ZS_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)                         ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)
+
+
 namespace zsLib
 {
   typedef boost::thread Thread;

@@ -99,6 +99,13 @@ namespace zsLib
   }
 }
 
+#define ZS_INTERNAL_DECLARE_INTERACTION_PROXY(xInteractionName)                                               \
+  interaction xInteractionName;                                                                               \
+  typedef boost::shared_ptr<xInteractionName> xInteractionName##Ptr;                                          \
+  typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                        \
+  typedef zsLib::Proxy<xInteractionName> xInteractionName##Proxy;
+
+
 #define ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, xDelegateMustHaveQueue)                                   \
 namespace zsLib                                                                                               \
 {                                                                                                             \
