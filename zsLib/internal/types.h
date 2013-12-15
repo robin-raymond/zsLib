@@ -43,6 +43,11 @@
   typedef boost::shared_ptr<xExistingType> xExistingType##Ptr;        \
   typedef boost::weak_ptr<xExistingType> xExistingType##WeakPtr;
 
+#define ZS_INTERNAL_DECLARE_USING_PTR(xNamespace, xExistingType)      \
+  using xNamespace::xExistingType;                                    \
+  using xNamespace::xExistingType##Ptr;                               \
+  using xNamespace::xExistingType##WeakPtr;
+
 #define ZS_INTERNAL_DECLARE_CLASS_PTR(xClassName)                     \
   class xClassName;                                                   \
   typedef boost::shared_ptr<xClassName> xClassName##Ptr;              \

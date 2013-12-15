@@ -254,6 +254,13 @@ namespace zsLib
   }
 }
 
+#define ZS_INTERNAL_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(xInteractionName, xDelegateName)                                       \
+  interaction xInteractionName;                                                                                                   \
+  typedef boost::shared_ptr<xInteractionName> xInteractionName##Ptr;                                                              \
+  typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                                            \
+  typedef zsLib::ProxySubscriptions<xDelegateName, xInteractionName> xDelegateName##Subscriptions;
+
+
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_BEGIN(xInterface, xSubscriptionClass)                                             \
 namespace zsLib                                                                                                                   \
 {                                                                                                                                 \

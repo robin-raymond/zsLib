@@ -120,6 +120,8 @@ namespace zsLib
 
 #include <zsLib/internal/zsLib_ProxySubscriptions.h>
 
+#define ZS_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(xInteractionName, xDelegateName)                                                                            ZS_INTERNAL_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(xInteractionName, xDelegateName)
+
 #define ZS_DECLARE_PROXY_SUBSCRIPTIONS_BEGIN(xInterface, xSubscriptionClass)                                                                                  ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_BEGIN(xInterface, xSubscriptionClass)
 #define ZS_DECLARE_PROXY_SUBSCRIPTIONS_END()                                                                                                                  ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_END()
 

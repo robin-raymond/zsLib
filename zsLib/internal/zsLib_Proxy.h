@@ -105,6 +105,11 @@ namespace zsLib
   typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                        \
   typedef zsLib::Proxy<xInteractionName> xInteractionName##Proxy;
 
+#define ZS_INTERNAL_DECLARE_USING_PROXY(xNamespace, xExistingType)                                            \
+  using xNamespace::xExistingType;                                                                            \
+  using xNamespace::xExistingType##Ptr;                                                                       \
+  using xNamespace::xExistingType##WeakPtr;                                                                   \
+  using xNamespace::xExistingType##Proxy;
 
 #define ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, xDelegateMustHaveQueue)                                   \
 namespace zsLib                                                                                               \
