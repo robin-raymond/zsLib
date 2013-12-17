@@ -68,7 +68,7 @@ namespace zsLib
       memcpy(&mCondition, &defaultCondition, sizeof(mCondition));
       memcpy(&mMutex, &defaultMutex, sizeof(mMutex));
 #endif //__QNX__
-      ZS_LOG_DEBUG("created")
+      ZS_LOG_DETAIL("created")
     }
 
     //-------------------------------------------------------------------------
@@ -80,7 +80,7 @@ namespace zsLib
     TimerMonitor::~TimerMonitor()
     {
       mThisWeak.reset();
-      ZS_LOG_DEBUG("destroyed")
+      ZS_LOG_DETAIL("destroyed")
       cancel();
 
 #ifdef __QNX__
