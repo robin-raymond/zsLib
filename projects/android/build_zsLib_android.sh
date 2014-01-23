@@ -14,6 +14,18 @@ else
         ARCHTYPE="x86_64"
 fi
 
+#Get the Host OS
+HOST_OS=`uname -s`
+case "$HOST_OS" in
+    Darwin)
+        HOST_OS=darwin
+        ;;
+    Linux)
+        HOST_OS=linux
+        ;;
+esac
+
+#NDK-path
 if [[ $1 == *ndk* ]]; then
 	echo "----------------- NDK Path is : $1 ----------------"
 	Input=$1;
@@ -28,9 +40,9 @@ fi
 
 #Set path
 if [ "$ARCHTYPE" = "x86" ] ; then
-	export PATH=$PATH:$Input:$Input/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin
+	export PATH=$PATH:$Input:$Input/toolchains/arm-linux-androideabi-4.4.3/prebuilt/$HOST_OS-x86/bin
 else
-	export PATH=$PATH:$Input:$Input/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86_64/bin
+        export PATH=$PATH:$Input:$Input/toolchains/arm-linux-androideabi-4.4.3/prebuilt/$HOST_OS-x86_64/bin
 fi
 
 #create install directories
