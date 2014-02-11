@@ -6,6 +6,7 @@ LOCAL_ARM_MODE := arm
 
 LOCAL_CFLAGS	:= -Wall \
 -W \
+-std=gnu++11 \
 -O2 \
 -pipe \
 -fPIC \
@@ -14,13 +15,16 @@ LOCAL_CFLAGS	:= -Wall \
 -D_ANDROID \
 
 LOCAL_MODULE    := zslib_android
+
+LOCAL_EXPORT_C_INCLUDES:= $(LOCAL_PATH) \
+
 $(warning $(LOCAL_PATH))
 LOCAL_C_INCLUDES:= \
 $(LOCAL_PATH) \
 $(ANDROIDNDK_PATH)/platforms/android-9/arch-arm/usr/include \
 $(LOCAL_PATH)/../build/android/boost/include/boost-1_53 \
-$(ANDROIDNDK_PATH)/sources/cxx-stl/gnu-libstdc++/4.4.3/include \
-$(ANDROIDNDK_PATH)/sources/cxx-stl/gnu-libstdc++/4.4.3/libs/armeabi/include \
+$(ANDROIDNDK_PATH)/sources/cxx-stl/gnu-libstdc++/4.7/include \
+$(ANDROIDNDK_PATH)/sources/cxx-stl/gnu-libstdc++/4.7/libs/armeabi/include \
 
 LOCAL_SRC_FILES := zsLib/cpp/zsLib.cpp \
 zsLib/cpp/zsLib_Event.cpp \
