@@ -163,6 +163,7 @@ namespace zsLib
                        WORD inPort          // host byte order
                        )
   {
+    clear();
     mIPAddress = reinterpret_cast<const IPv6Address &>(inIPAddress);
     mPort = htons(inPort);
   }
@@ -172,6 +173,7 @@ namespace zsLib
                        WORD inPort          // host byte order
                        )
   {
+    clear();
     mIPAddress = reinterpret_cast<const IPv6Address &>(inIPAddress.sin6_addr);
     mPort = inIPAddress.sin6_port;
     if (0 != inPort)
