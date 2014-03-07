@@ -348,7 +348,7 @@ namespace zsLib
 #ifndef _ANDROID
   //---------------------------------------------------------------------------
   Log::Param::Param(const char *name, bool value) :
-    Param(name, "true", true)
+    Param(name, value ? "true" : "false", true)
   {
   }
 
