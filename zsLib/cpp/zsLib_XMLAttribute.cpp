@@ -216,46 +216,53 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      size_t Attribute::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Attribute::actualWriteJSON(
+                                        const GeneratorPtr &inGenerator,
+                                        char * &ioPos
+                                        ) const
       {
-        bool hasQuotes = mHasQuotes;
+        const Generator &generator = (*inGenerator);
+
         size_t result = 0;
 
-        if (hasQuotes) {
-          result += strlen("\"\":\"\"");
-        } else {
-          result += strlen("\"\":");
-        }
+        bool hasQuotes = mHasQuotes;
+
+        result += generator.fill(ioPos, generator.jsonStrs().mAttributeNameOpen);
+
         char prefix[2];
         prefix[0] = inGenerator->mJSONAttributePrefix;
         prefix[1] = 0;
-        result += strlen(&(prefix[0]));
-        result += strlen(XML::Parser::convertToJSONEncoding(mThis.lock()->getName()));
-        result += strlen(XML::Parser::convertToJSONEncoding(mThis.lock()->getValueDecoded()));
+        result += generator.copy(ioPos, &(prefix[0]));
 
+        result += generator.copy(ioPos, XML::Parser::convertToJSONEncoding(mThis.lock()->getName()));
+
+        if (hasQuotes) {
+          result += generator.fill(ioPos, generator.jsonStrs().mAttributeNameCloseStr);
+        } else {
+          result += generator.fill(ioPos, generator.jsonStrs().mAttributeNameCloseNumber);
+        }
+
+        result += generator.copy(ioPos, XML::Parser::convertToJSONEncoding(mThis.lock()->getValueDecoded()));
+
+        if (hasQuotes) {
+          result += generator.fill(ioPos, generator.jsonStrs().mAttributeValueCloseStr);
+        } else {
+          result += generator.fill(ioPos, generator.jsonStrs().mAttributeValueCloseNumber);
+        }
         return result;
+      }
+
+      //-----------------------------------------------------------------------
+      size_t Attribute::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      {
+        char *ioPos = NULL;
+        return actualWriteJSON(inGenerator, ioPos);
       }
 
       //-----------------------------------------------------------------------
       void Attribute::writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const
       {
-        bool hasQuotes = mHasQuotes;
-
-        Generator::writeBuffer(ioPos, "\"");
-        char prefix[2];
-        prefix[0] = inGenerator->mJSONAttributePrefix;
-        prefix[1] = 0;
-        Generator::writeBuffer(ioPos, &(prefix[0]));
-        Generator::writeBuffer(ioPos, XML::Parser::convertToJSONEncoding(mThis.lock()->getName()));
-        if (hasQuotes) {
-          Generator::writeBuffer(ioPos, "\":\"");
-        } else {
-          Generator::writeBuffer(ioPos, "\":");
-        }
-        Generator::writeBuffer(ioPos, XML::Parser::convertToJSONEncoding(mThis.lock()->getValueDecoded()));
-        if (hasQuotes) {
-          Generator::writeBuffer(ioPos, "\"");
-        }
+        actualWriteJSON(inGenerator, ioPos);
       }
 
       //-----------------------------------------------------------------------

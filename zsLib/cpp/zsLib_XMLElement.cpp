@@ -214,13 +214,25 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      size_t Element::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      size_t Element::actualWriteJSON(
+                                      const GeneratorPtr &inGenerator,
+                                      char * &ioPos
+                                      ) const
       {
         class Walker : public WalkSink
         {
         public:
-          Walker(size_t &outResult, const GeneratorPtr &inGenerator) :
-            mResult(outResult), mGenerator(inGenerator)
+          Walker(
+                 const GeneratorPtr &inGenerator,
+                 char * &ioPos,
+                 size_t &result
+                 ) :
+          mGeneratorPtr(inGenerator),
+          mGenerator(*inGenerator),
+          mPos(ioPos),
+          mResult(result),
+          mWriteFlags(inGenerator->getJSONWriteFlags()),
+          mStrs(inGenerator->jsonStrs())
           {}
 
           virtual bool onElementEnter(ElementPtr el)
@@ -230,16 +242,17 @@ namespace zsLib
             Generator::GeneratorJSONELementArrayPositions position = Generator::GeneratorJSONELementArrayPositions_First;
             Generator::GeneratorJSONTextModes textMode = Generator::GeneratorJSONTextMode_Number;
             bool nextInList = false;
-            mGenerator->getJSONEncodingMode(el, mode, childState, position, textMode, nextInList);
+            mGenerator.getJSONEncodingMode(el, mode, childState, position, textMode, nextInList);
 
             switch (mode) {
               case Generator::GeneratorJSONElementMode_ObjectType:
               {
                 if (nextInList) {
-                  mResult += strlen(",");
+                  mResult += mGenerator.fill(mPos, mStrs.mNextObjectInList);
                 }
-                mResult += strlen("\"\":");
-                mResult += XML::Parser::convertToJSONEncoding(el->getValue()).getLength();
+                mResult += mGenerator.fill(mPos, mStrs.mObjectNameOpen);
+                mResult += mGenerator.copy(mPos, XML::Parser::convertToJSONEncoding(el->getValue()));
+                mResult += mGenerator.fill(mPos, mStrs.mObjectNameClose);
                 break;
               }
               case Generator::GeneratorJSONElementMode_ArrayType:
@@ -248,25 +261,26 @@ namespace zsLib
                   case Generator::GeneratorJSONELementArrayPositions_First:
                   {
                     if (nextInList) {
-                      mResult += strlen(",");
+                      mResult += mGenerator.fill(mPos, mStrs.mNextArrayInList);
                     }
-
+                    mGenerator.plusDepth();
                     if (el->getValue().isEmpty()) {
-                      mResult += strlen("[");
+                      mResult += mGenerator.fill(mPos, mStrs.mFirstArrayEmptyName);
                     } else {
-                      mResult += strlen("\"\":[");
+                      mResult += mGenerator.fill(mPos, mStrs.mFirstArrayNameOpen);
+                      mResult += mGenerator.copy(mPos, XML::Parser::convertToJSONEncoding(el->getValue()));
+                      mResult += mGenerator.fill(mPos, mStrs.mFirstArrayNameClose);
                     }
-                    mResult += XML::Parser::convertToJSONEncoding(el->getValue()).getLength();
                     break;
                   }
                   case Generator::GeneratorJSONELementArrayPositions_Middle:
                   {
-                    mResult += strlen(",");
+                    mResult += mGenerator.fill(mPos, mStrs.mMiddleArray);
                     break;
                   }
                   case Generator::GeneratorJSONELementArrayPositions_Last:
                   {
-                    mResult += strlen(",]");
+                    mResult += mGenerator.fill(mPos, mStrs.mLastArrayOpen);
                     break;
                   }
                 }
@@ -276,183 +290,47 @@ namespace zsLib
 
             switch (childState) {
               case Generator::GeneratorJSONELementChildState_None:      {
-                mResult += strlen("\"\"");
+                mResult += mGenerator.fill(mPos, mStrs.mChildNone);
                 break;
               }
               case Generator::GeneratorJSONELementChildState_TextOnly:  {
                 if (Generator::GeneratorJSONTextMode_String == textMode) {
-                  mResult += strlen("\"\"");
+                  mResult += mGenerator.fill(mPos, mStrs.mChildTextOnlyOpen);
                 }
                 NodePtr node = el->getFirstChild();
                 while (node) {
-                  mResult += Generator::getOutputSize(mGenerator, node);
-                  node = node->getNextSibling();
-                }
-                break;
-              }
-              case Generator::GeneratorJSONELementChildState_Complex:   {
-                mResult += strlen("{}");
-
-                bool first = true;
-
-                NodePtr attribute = el->getFirstAttribute();
-                while (attribute) {
-                  if (!first) {
-                    mResult += strlen(",");
-                  }
-                  first = false;
-
-                  mResult += Generator::getOutputSize(mGenerator, attribute);
-
-                  attribute = attribute->getNextSibling();
-                }
-
-                bool found = false;
-
-                NodePtr node = el->getFirstChild();
-                while (node) {
-                  if (node->isText()) {
-                    found = true;
-                    mResult += Generator::getOutputSize(mGenerator, node);
-                  }
-                  node = node->getNextSibling();
-                }
-
-                if (found) {
-                  if (!first) {
-                    mResult += strlen(",");
-                  }
-                  first = false;
-                  if (Generator::GeneratorJSONTextMode_String == textMode) {
-                    mResult += strlen("\"\":\"\"");
+                  if (mPos) {
+                    Generator::writeBuffer(mGeneratorPtr, node, mPos);
                   } else {
-                    mResult += strlen("\"\":");
+                    mResult += Generator::getOutputSize(mGeneratorPtr, node);
                   }
-                  mResult += strlen(mGenerator->mJSONForcedText);
-                }
-
-                if ((!first) &&
-                    (el->getFirstChildElement())) {
-                  mResult += strlen(",");
-                }
-                break;
-              }
-            }
-
-            return false;
-          }
-
-        private:
-          const GeneratorPtr &mGenerator;
-          size_t &mResult;
-        };
-
-        ElementPtr self(mThis.lock());
-
-        size_t result = 0;
-        XML::Node::FilterList filter;
-        filter.push_back(XML::Node::NodeType::Element);
-        Walker walker(result, inGenerator);
-        self->walk(walker, &filter);
-
-        return result;
-      }
-
-      //-----------------------------------------------------------------------
-      void Element::writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const
-      {
-        class Walker : public WalkSink
-        {
-        public:
-          Walker(const GeneratorPtr &inGenerator, char * &ioPos) :
-          mGenerator(inGenerator),
-          mPos(ioPos)
-          {}
-
-          virtual bool onElementEnter(ElementPtr el)
-          {
-            Generator::GeneratorJSONElementModes mode = Generator::GeneratorJSONElementMode_ObjectType;
-            Generator::GeneratorJSONELementChildStates childState = Generator::GeneratorJSONELementChildState_None;
-            Generator::GeneratorJSONELementArrayPositions position = Generator::GeneratorJSONELementArrayPositions_First;
-            Generator::GeneratorJSONTextModes textMode = Generator::GeneratorJSONTextMode_Number;
-            bool nextInList = false;
-            mGenerator->getJSONEncodingMode(el, mode, childState, position, textMode, nextInList);
-
-            switch (mode) {
-              case Generator::GeneratorJSONElementMode_ObjectType:
-              {
-                if (nextInList) {
-                  Generator::writeBuffer(mPos, ",");
-                }
-                Generator::writeBuffer(mPos, "\"");
-                Generator::writeBuffer(mPos, XML::Parser::convertToJSONEncoding(el->getValue()));
-                Generator::writeBuffer(mPos, "\":");
-                break;
-              }
-              case Generator::GeneratorJSONElementMode_ArrayType:
-              {
-                switch (position) {
-                  case Generator::GeneratorJSONELementArrayPositions_First:
-                  {
-                    if (nextInList) {
-                      Generator::writeBuffer(mPos, ",");
-                    }
-                    if (el->getValue().isEmpty()) {
-                      Generator::writeBuffer(mPos, "[");
-                    } else {
-                      Generator::writeBuffer(mPos, "\"");
-                      Generator::writeBuffer(mPos, XML::Parser::convertToJSONEncoding(el->getValue()));
-                      Generator::writeBuffer(mPos, "\":[");
-                    }
-                    break;
-                  }
-                  case Generator::GeneratorJSONELementArrayPositions_Middle:
-                  {
-                    Generator::writeBuffer(mPos, ",");
-                    break;
-                  }
-                  case Generator::GeneratorJSONELementArrayPositions_Last:
-                  {
-                    Generator::writeBuffer(mPos, ",");
-                    break;
-                  }
-                }
-                break;
-              }
-            }
-
-            switch (childState) {
-              case Generator::GeneratorJSONELementChildState_None:      {
-                Generator::writeBuffer(mPos, "\"\"");
-                break;
-              }
-              case Generator::GeneratorJSONELementChildState_TextOnly:  {
-                if (Generator::GeneratorJSONTextMode_String == textMode) {
-                  Generator::writeBuffer(mPos, "\"");
-                }
-                NodePtr node = el->getFirstChild();
-                while (node) {
-                  Generator::writeBuffer(mGenerator, node, mPos);
                   node = node->getNextSibling();
                 }
                 if (Generator::GeneratorJSONTextMode_String == textMode) {
-                  Generator::writeBuffer(mPos, "\"");
+                  mResult += mGenerator.fill(mPos, mStrs.mChildTextOnlyClose);
                 }
                 break;
               }
               case Generator::GeneratorJSONELementChildState_Complex:   {
-                Generator::writeBuffer(mPos, "{");
+                mGenerator.plusDepth();
+                mResult += mGenerator.fill(mPos, mStrs.mChildComplexOpen);
 
                 bool first = true;
 
                 NodePtr attribute = el->getFirstAttribute();
                 while (attribute) {
                   if (!first) {
-                    Generator::writeBuffer(mPos, ",");
+                    mResult += mGenerator.fill(mPos, mStrs.mNextAttribute);
                   }
                   first = false;
 
-                  Generator::writeBuffer(mGenerator, attribute, mPos);
+                  mResult += mGenerator.fill(mPos, mStrs.mAttributeEntry);
+
+                  if (mPos) {
+                    Generator::writeBuffer(mGeneratorPtr, attribute, mPos);
+                  } else {
+                    mResult += Generator::getOutputSize(mGeneratorPtr, attribute);
+                  }
 
                   attribute = attribute->getNextSibling();
                 }
@@ -473,33 +351,39 @@ namespace zsLib
 
                 if (found) {
                   if (!first) {
-                    Generator::writeBuffer(mPos, ",");
+                    mResult += mGenerator.fill(mPos, mStrs.mNextText);
                   }
                   first = false;
-                  Generator::writeBuffer(mPos, "\"");
-                  Generator::writeBuffer(mPos, mGenerator->mJSONForcedText);
+                  mResult += mGenerator.fill(mPos, mStrs.mTextNameOpen);
+                  mResult += mGenerator.copy(mPos, mGenerator.mJSONForcedText);
                   if (Generator::GeneratorJSONTextMode_String == textMode) {
-                    Generator::writeBuffer(mPos, "\":\"");
+                    mResult += mGenerator.fill(mPos, mStrs.mTextNameCloseStr);
                   } else {
-                    Generator::writeBuffer(mPos, "\":");
+                    mResult += mGenerator.fill(mPos, mStrs.mTextNameCloseNumber);
                   }
 
                   NodePtr node = el->getFirstChild();
                   while (node) {
                     if (node->isText()) {
-                      Generator::writeBuffer(mGenerator, node, mPos);
+                      if (mPos) {
+                        Generator::writeBuffer(mGeneratorPtr, node, mPos);
+                      } else {
+                        mResult += Generator::getOutputSize(mGeneratorPtr, node);
+                      }
                     }
                     node = node->getNextSibling();
                   }
 
                   if (Generator::GeneratorJSONTextMode_String == textMode) {
-                    Generator::writeBuffer(mPos, "\"");
+                    mResult += mGenerator.fill(mPos, mStrs.mTextValueCloseStr);
+                  } else {
+                    mResult += mGenerator.fill(mPos, mStrs.mTextValueCloseNumer);
                   }
                 }
 
                 if ((!first) &&
                     (el->getFirstChildElement())) {
-                  Generator::writeBuffer(mPos, ",");
+                  mResult += mGenerator.fill(mPos, mStrs.mNextInnerElementAfterText);
                 }
                 break;
               }
@@ -515,7 +399,7 @@ namespace zsLib
             Generator::GeneratorJSONELementArrayPositions position = Generator::GeneratorJSONELementArrayPositions_First;
             Generator::GeneratorJSONTextModes textMode = Generator::GeneratorJSONTextMode_Number;
             bool nextInList = false;
-            mGenerator->getJSONEncodingMode(el, mode, childState, position, textMode, nextInList);
+            mGenerator.getJSONEncodingMode(el, mode, childState, position, textMode, nextInList);
 
             switch (childState) {
               case Generator::GeneratorJSONELementChildState_None:      {
@@ -525,7 +409,8 @@ namespace zsLib
                 break;
               }
               case Generator::GeneratorJSONELementChildState_Complex:   {
-                Generator::writeBuffer(mPos, "}");
+                mGenerator.minusDepth();
+                mResult += mGenerator.fill(mPos, mStrs.mChildComplexClose);
                 break;
               }
             }
@@ -548,7 +433,8 @@ namespace zsLib
                   }
                   case Generator::GeneratorJSONELementArrayPositions_Last:
                   {
-                    Generator::writeBuffer(mPos, "]");
+                    mGenerator.minusDepth();
+                    mResult += mGenerator.fill(mPos, mStrs.mLastArrayClose);
                     break;
                   }
                 }
@@ -560,16 +446,37 @@ namespace zsLib
           }
 
         private:
-          const GeneratorPtr &mGenerator;
+          const GeneratorPtr &mGeneratorPtr;
+          const Generator &mGenerator;
           char * &mPos;
+          size_t &mResult;
+          ULONG mWriteFlags;
+          const JSONStrs &mStrs;
         };
+
+        size_t result = 0;
 
         ElementPtr self(mThis.lock());
 
         XML::Node::FilterList filter;
         filter.push_back(XML::Node::NodeType::Element);
-        Walker walker(inGenerator, ioPos);
+        Walker walker(inGenerator, ioPos, result);
         self->walk(walker, &filter);
+
+        return result;
+      }
+
+      //-----------------------------------------------------------------------
+      size_t Element::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      {
+        char *pos = NULL;
+        return actualWriteJSON(inGenerator, pos);
+      }
+      
+      //-----------------------------------------------------------------------
+      void Element::writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const
+      {
+        actualWriteJSON(inGenerator, ioPos);
       }
 
       //-----------------------------------------------------------------------

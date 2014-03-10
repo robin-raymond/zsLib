@@ -42,14 +42,132 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       #pragma mark
+      #pragma mark JSONStrs
+      #pragma mark
+
+      static JSONStrs gJSONPretty =
+      {
+        '*',          // mIndent
+        ' ',          // mIndentChar
+
+        ",\n*",       // mNextObjectInList
+        "\"",         // mObjectNameOpen
+        "\" : ",      // mObjectNameClose
+
+        ",\n*",       // mNextArrayInList
+        "[\n*",       // mFirstArrayEmptyName
+        "\"",         // mFirstArrayNameOpen
+        "\" : [\n*",  // mFirstArrayNameClose
+        ",\n*",       // mMiddleArray
+        ",\n*",       // mLastArrayOpen
+        "\n*]",       // mLastArrayClose
+
+        "\"\"",       // mChildNone
+        "\"",         // mChildTextOnlyOpen
+        "\"",         // mChildTextOnlyClose
+
+        "{\n*",       // mChildComplexOpen
+        "\n*}",       // mChildComplexClose
+
+        ",\n*",       // mNextAttribute
+        "",           // mAttributeEntry
+
+        ",\n*",       // mNextText
+        "\"",         // mTextNameOpen
+        "\" : \"",    // mTextNameCloseStr
+        "\" : ",      // mTextNameCloseNumber
+
+        "\"",         // mTextValueCloseStr
+        "",           // mTextValueCloseNumer
+
+        ",\n*",       // mNextInnerElementAfterText
+
+        "\"",         // mAttributeNameOpen;
+        "\" : \"",    // mAttributeNameCloseStr;
+        "\" : ",      // mAttributeNameCloseNumber;
+
+        "\"",         // mAttributeValueCloseStr;
+        "",           // mAttributeValueCloseNumber;
+
+        NULL
+      };
+
+      static JSONStrs gJSONNormal =
+      {
+        '*',          // mIndent
+        ' ',          // mIndentChar
+
+        ",",          // mNextObjectInList
+        "\"",         // mObjectNameOpen
+        "\":",        // mObjectNameClose
+
+        ",",          // mNextArrayInList
+        "[",          // mFirstArrayEmptyName
+        "\"",         // mFirstArrayNameOpen
+        "\":[",       // mFirstArrayNameClose
+        ",",          // mMiddleArray
+        ",",          // mLastArrayOpen
+        "]",          // mLastArrayClose
+
+        "\"\"",       // mChildNone
+        "\"",         // mChildTextOnlyOpen
+        "\"",         // mChildTextOnlyClose
+
+        "{",          // mChildComplexOpen
+        "}",          // mChildComplexClose
+
+        ",",          // mNextAttribute
+        "",           // mAttributeEntry
+
+        ",",          // mNextText
+        "\"",         // mTextNameOpen
+        "\":\"",      // mTextNameCloseStr
+        "\":",        // mTextNameCloseNumber
+        
+        "\"",         // mTextValueCloseStr
+        "",           // mTextValueCloseNumer
+        
+        ",",          // mNextInnerElementAfterText
+
+        "\"",         // mAttributeNameOpen;
+        "\":\"",      // mAttributeNameCloseStr;
+        "\":",        // mAttributeNameCloseNumber;
+
+        "\"",         // mAttributeValueCloseStr;
+        "",           // mAttributeValueCloseNumber;
+
+        NULL
+      };
+
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark (helpers)
+      #pragma mark
+
+      //-----------------------------------------------------------------------
+      static Log::Params slog(const char *message)
+      {
+        return Log::Params(message, "Generator");
+      }
+      
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      #pragma mark
       #pragma mark XML::internal::Generator
       #pragma mark
 
       //-----------------------------------------------------------------------
-      Generator::Generator() :
-        mWriteFlags(0),
+      Generator::Generator(UINT writeFlags) :
+        mDepth(0),
+        mWriteFlags(writeFlags),
         mJSONForcedText(ZS_JSON_DEFAULT_FORCED_TEXT),
-        mJSONAttributePrefix(ZS_JSON_DEFAULT_ATTRIBUTE_PREFIX)
+        mJSONAttributePrefix(ZS_JSON_DEFAULT_ATTRIBUTE_PREFIX),
+        mStrs(*((XML::Generator::JSONWriteFlag_PrettyPrint & mWriteFlags) != 0 ? &gJSONPretty : &gJSONNormal))
       {
       }
 
@@ -157,6 +275,59 @@ namespace zsLib
         size_t length = strlen(inString);
         strcpy(ioPos, inString);
         ioPos += length;
+      }
+
+      //-----------------------------------------------------------------------
+      size_t Generator::indent(char * &ioPos) const
+      {
+        if ((XML::Generator::JSONWriteFlag_PrettyPrint & mWriteFlags) == 0)
+          return 0;
+
+        if (NULL == ioPos) return mDepth;
+
+        for (size_t index = 0; index < mDepth; ++index) {
+          *ioPos = mStrs.mIndentChar;
+          ++ioPos;
+        }
+
+        return mDepth;
+      }
+
+      //-----------------------------------------------------------------------
+      size_t Generator::copy(char * &ioPos, CSTR inString) const
+      {
+        if (NULL == inString) return 0;
+
+        size_t length = strlen(inString);
+        if (NULL == ioPos) return length;
+
+        strcpy(ioPos, inString);
+        ioPos += length;
+        return length;
+      }
+
+      //-----------------------------------------------------------------------
+      size_t Generator::fill(char * &ioPos, CSTR inString) const
+      {
+        if (NULL == inString) return 0;
+
+        size_t length = 0;
+
+        for (; '\0' != *inString; ++inString) {
+          if (mStrs.mIndent == *inString) {
+            length += indent(ioPos);
+            continue;
+          }
+
+          ++length;
+
+          if (!ioPos) continue;
+
+          *ioPos = *inString;
+          ++ioPos;
+        }
+
+        return length;
       }
 
       //-----------------------------------------------------------------------
@@ -292,10 +463,9 @@ namespace zsLib
     //-------------------------------------------------------------------------
     GeneratorPtr Generator::createXMLGenerator(XMLWriteFlags writeFlags)
     {
-      GeneratorPtr pThis(new Generator);
+      GeneratorPtr pThis(new Generator(writeFlags));
       pThis->mThis = pThis;
       pThis->mGeneratorMode = GeneratorMode_XML;
-      pThis->mWriteFlags = writeFlags;
       return pThis;
     }
 
@@ -305,18 +475,27 @@ namespace zsLib
                                                 char attributePrefix
                                                 )
     {
-      GeneratorPtr pThis(new Generator);
+      return Generator::createJSONGenerator(JSONWriteFlag_None, forcedText, attributePrefix);
+    }
+
+    //-------------------------------------------------------------------------
+    GeneratorPtr Generator::createJSONGenerator(
+                                                JSONWriteFlags writeFlags,
+                                                const char *forcedText,
+                                                char attributePrefix
+                                                )
+    {
+      GeneratorPtr pThis(new Generator(writeFlags));
       pThis->mThis = pThis;
       pThis->mGeneratorMode = GeneratorMode_JSON;
-      pThis->mWriteFlags = 0;
       pThis->mJSONForcedText = (forcedText ? forcedText : "");
       pThis->mJSONAttributePrefix = attributePrefix;
       return pThis;
     }
 
     //-------------------------------------------------------------------------
-    Generator::Generator() :
-      internal::Generator()
+    Generator::Generator(UINT writeFlags) :
+      internal::Generator(writeFlags)
     {
     }
 
@@ -342,15 +521,32 @@ namespace zsLib
     size_t Generator::getOutputSize(const NodePtr &onlyThisNode) const
     {
       mGeneratorRoot = onlyThisNode;
-      size_t result = internal::Generator::getOutputSize(mThis.lock(), onlyThisNode);
+
+      char *ioPos = NULL;
+      size_t result = 0;
+
       bool objectOpen = objectObjectCheck(onlyThisNode);
 
       if (GeneratorMode_JSON == mGeneratorMode) {
         if (objectOpen) {
-          result += strlen("{}"); // the opening and closing object brace
+          plusDepth();
+          result += fill(ioPos, mStrs.mChildComplexOpen);
         }
       }
+
+      result += internal::Generator::getOutputSize(mThis.lock(), onlyThisNode);
+
+      if (GeneratorMode_JSON == mGeneratorMode) {
+        if (objectOpen) {
+          minusDepth();
+          result += fill(ioPos, mStrs.mChildComplexClose);
+        }
+      }
+
       mGeneratorRoot.reset();
+
+      ZS_THROW_BAD_STATE_IF(0 != mDepth)
+
       return result;
     }
 
@@ -358,28 +554,39 @@ namespace zsLib
     boost::shared_array<char> Generator::write(const NodePtr &onlyThisNode, size_t *outLength) const
     {
       size_t totalSize = getOutputSize(onlyThisNode);
+
       mGeneratorRoot = onlyThisNode;
+
       boost::shared_array<char> buffer(new char[totalSize+1]);
-      char *pos = buffer.get();
-      *pos = 0;
+      char *ioPos = buffer.get();
+      *ioPos = 0;
 
       bool objectOpen = objectObjectCheck(onlyThisNode);
 
       if (GeneratorMode_JSON == mGeneratorMode) {
         if (objectOpen) {
-          Generator::writeBuffer(pos, "{");
+          plusDepth();
+          fill(ioPos, mStrs.mChildComplexOpen);
         }
       }
-      Generator::writeBuffer(mThis.lock(), onlyThisNode, pos);
+
+      Generator::writeBuffer(mThis.lock(), onlyThisNode, ioPos);
+
       if (GeneratorMode_JSON == mGeneratorMode) {
         if (objectOpen) {
-          Generator::writeBuffer(pos, "}");
+          minusDepth();
+          fill(ioPos, mStrs.mChildComplexClose);
         }
       }
-      *pos = 0;
+
+      *ioPos = 0;
       if (NULL != outLength)
         *outLength = totalSize;
+
       mGeneratorRoot.reset();
+
+      ZS_THROW_BAD_STATE_IF(0 != mDepth)
+
       return buffer;
     }
 
@@ -387,6 +594,12 @@ namespace zsLib
     Generator::XMLWriteFlags Generator::getXMLWriteFlags() const
     {
       return static_cast<XMLWriteFlags>(mWriteFlags);
+    }
+
+    //-------------------------------------------------------------------------
+    Generator::JSONWriteFlags Generator::getJSONWriteFlags() const
+    {
+      return static_cast<JSONWriteFlags>(mWriteFlags);
     }
 
   } // namespace XML

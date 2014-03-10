@@ -73,6 +73,7 @@
 		0066856C16C9DD6E00259F81 /* TestTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTimer.cpp; sourceTree = "<group>"; };
 		0066856D16C9DD6E00259F81 /* TestXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestXML.cpp; sourceTree = "<group>"; };
 		0066858C16C9E16200259F81 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		00D66D8718CD4AC900E71E42 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +123,7 @@
 				0066856016C9DD6E00259F81 /* boost_replacement.cpp */,
 				0066856116C9DD6E00259F81 /* boost_replacement.h */,
 				0066856216C9DD6E00259F81 /* main.cpp */,
+				00D66D8718CD4AC900E71E42 /* main.h */,
 				0066856316C9DD6E00259F81 /* TestHelper.cpp */,
 				0066856416C9DD6E00259F81 /* TestIPAddress.cpp */,
 				0066856516C9DD6E00259F81 /* TestNumeric.cpp */,

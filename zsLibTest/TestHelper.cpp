@@ -28,6 +28,7 @@
 //#include <boost/test/test_tools.hpp>
 
 #include "boost_replacement.h"
+#include "main.h"
 
 static int get99()
 {
@@ -38,6 +39,8 @@ BOOST_AUTO_TEST_SUITE(zsLibHelperTest)
 
   BOOST_AUTO_TEST_CASE(Test_AUTO)
   {
+    if (!ZSLIB_TEST_HELPER) return;
+
     zsLib::AutoBool testBool;
     BOOST_CHECK(!testBool)
 
@@ -70,6 +73,8 @@ BOOST_AUTO_TEST_SUITE(zsLibHelperTest)
 
   BOOST_AUTO_TEST_CASE(Test_PUID_GUID)
   {
+    if (!ZSLIB_TEST_HELPER) return;
+
     zsLib::PUID puid1 = zsLib::createPUID();
     zsLib::PUID puid2 = zsLib::createPUID();
 
@@ -85,6 +90,8 @@ BOOST_AUTO_TEST_SUITE(zsLibHelperTest)
 
   BOOST_AUTO_TEST_CASE(Test_atomic_inc_dec)
   {
+    if (!ZSLIB_TEST_HELPER) return;
+
     zsLib::ULONG value = 0;
     zsLib::ULONG value1 = zsLib::atomicIncrement(value);
     BOOST_EQUAL(1, value);
@@ -106,6 +113,8 @@ BOOST_AUTO_TEST_SUITE(zsLibHelperTest)
 
   BOOST_AUTO_TEST_CASE(TestHelper_atomic_get_set)
   {
+    if (!ZSLIB_TEST_HELPER) return;
+
     zsLib::DWORD value = 0;
     BOOST_EQUAL(0, zsLib::atomicGetValue32(value))
     zsLib::atomicSetValue32(value, 1);

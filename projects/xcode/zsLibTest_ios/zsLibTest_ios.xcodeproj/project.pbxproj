@@ -52,6 +52,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0024410718CD528E003357CF /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		0063D2B916CB093000E6DB4D /* zsLib_ios.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zsLib_ios.xcodeproj; path = ../zsLib_ios/zsLib_ios.xcodeproj; sourceTree = "<group>"; };
 		0063E710182FE10300AD3DBA /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../../../boost/ios/framework/boost.framework; sourceTree = "<group>"; };
 		0066859816C9E42000259F81 /* zsLibTest_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = zsLibTest_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +148,7 @@
 				006685CB16C9E63500259F81 /* boost_replacement.cpp */,
 				006685CC16C9E63500259F81 /* boost_replacement.h */,
 				006685CD16C9E63500259F81 /* main.cpp */,
+				0024410718CD528E003357CF /* main.h */,
 				006685CE16C9E63500259F81 /* TestHelper.cpp */,
 				006685CF16C9E63500259F81 /* TestIPAddress.cpp */,
 				006685D016C9E63500259F81 /* TestNumeric.cpp */,

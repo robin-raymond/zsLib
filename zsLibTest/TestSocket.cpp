@@ -29,6 +29,7 @@
 
 
 #include "boost_replacement.h"
+#include "main.h"
 
 #define HlZeroStruct(xValue) memset(&(xValue), 0, sizeof(xValue))
 #define HlZeroMemory(xValue, xSize) memset((xValue), 0, xSize)
@@ -43,6 +44,13 @@ class TestSocket
 public:
   TestSocket()
   {
+    srand(static_cast<signed int>(time(NULL)));
+    zsLib::WORD port1 = (rand()%(65550-5000))+5000;
+    zsLib::WORD port2 = (rand()%(65550-5000))+5000;
+    if (port1 == port2) {
+      port2 = port1 + 1;
+    }
+
     {
       zsLib::SocketPtr socket = zsLib::Socket::createUDP();
       BOOST_CHECK(INVALID_SOCKET != socket->getSocket())
@@ -60,8 +68,8 @@ public:
       BOOST_CHECK(INVALID_SOCKET != socket->getSocket())
     }
     {
-      zsLib::IPAddress address1(zsLib::IPAddress::loopbackV4(), 43016);
-      zsLib::IPAddress address2(zsLib::IPAddress::loopbackV4(), 43017);
+      zsLib::IPAddress address1(zsLib::IPAddress::loopbackV4(), port1);
+      zsLib::IPAddress address2(zsLib::IPAddress::loopbackV4(), port2);
       zsLib::SocketPtr socket1 = zsLib::Socket::createUDP();
       socket1->bind(address1);
 
@@ -97,8 +105,8 @@ public:
       BOOST_CHECK(0 == memcmp(&(buffer[0]), "HELLO", sizeof("HELLO")))
     }
     {
-      zsLib::IPAddress address1(zsLib::IPAddress::loopbackV6(), 43016);
-      zsLib::IPAddress address2(zsLib::IPAddress::loopbackV6(), 43017);
+      zsLib::IPAddress address1(zsLib::IPAddress::loopbackV6(), port1);
+      zsLib::IPAddress address2(zsLib::IPAddress::loopbackV6(), port2);
       zsLib::SocketPtr socket1 = zsLib::Socket::createUDP(zsLib::Socket::Create::IPv6);
       socket1->bind(address1);
 
@@ -121,8 +129,8 @@ public:
       BOOST_CHECK(address2 == getaddress2)
     }
     {
-      zsLib::IPAddress address1(zsLib::IPAddress::loopbackV6(), 43016);
-      zsLib::IPAddress address2(zsLib::IPAddress::loopbackV6(), 43017);
+      zsLib::IPAddress address1(zsLib::IPAddress::loopbackV6(), port1);
+      zsLib::IPAddress address2(zsLib::IPAddress::loopbackV6(), port2);
       zsLib::SocketPtr socket1 = zsLib::Socket::createTCP(zsLib::Socket::Create::IPv6);
       zsLib::SocketPtr socket2 = zsLib::Socket::createTCP(zsLib::Socket::Create::IPv6);
 

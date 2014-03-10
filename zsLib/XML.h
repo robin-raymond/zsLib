@@ -317,6 +317,10 @@ namespace zsLib
 
       boost::shared_array<char> writeAsXML(size_t *outLengthInChars = NULL) const;
       boost::shared_array<char> writeAsJSON(size_t *outLengthInChars = NULL) const;
+      boost::shared_array<char> writeAsJSON(
+                                            bool prettyPrint,
+                                            size_t *outLengthInChars = NULL
+                                            ) const;
 
       // overrides
       virtual NodePtr clone() const;
@@ -807,9 +811,20 @@ namespace zsLib
         XMLWriteFlag_NormizeAttributeValue =  0x00000008,
       };
 
+      enum JSONWriteFlags
+      {
+        JSONWriteFlag_None =                   0x00000000,
+        JSONWriteFlag_PrettyPrint =            0x00000010,
+      };
+
     public:
       static GeneratorPtr createXMLGenerator(XMLWriteFlags writeFlags = XMLWriteFlag_None);
       static GeneratorPtr createJSONGenerator(
+                                              const char *forcedText = ZS_JSON_DEFAULT_FORCED_TEXT,
+                                              char attributePrefix = ZS_JSON_DEFAULT_ATTRIBUTE_PREFIX
+                                              );
+      static GeneratorPtr createJSONGenerator(
+                                              JSONWriteFlags writeFlags,
                                               const char *forcedText = ZS_JSON_DEFAULT_FORCED_TEXT,
                                               char attributePrefix = ZS_JSON_DEFAULT_ATTRIBUTE_PREFIX
                                               );
@@ -820,9 +835,10 @@ namespace zsLib
       virtual GeneratorPtr toGenerator() const   {return mThis.lock();}
 
       virtual XMLWriteFlags getXMLWriteFlags() const;
+      virtual JSONWriteFlags getJSONWriteFlags() const;
 
     protected:
-      Generator();
+      Generator(UINT writeFlags);
     };
 
   } // namespace XML
