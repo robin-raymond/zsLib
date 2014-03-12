@@ -31,6 +31,18 @@ namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
+  const char *toString(ThreadPriorities priority)
+  {
+    switch (priority) {
+      case ThreadPriority_LowPriority:      return "Low";
+      case ThreadPriority_NormalPriority:   return "Normal";
+      case ThreadPriority_HighPriority:     return "High";
+      case ThreadPriority_HighestPriority:  return "Highest";
+      case ThreadPriority_RealtimePriority: return "Real-time";
+    }
+    return "UNDEFINED";
+  }
+
   MessageQueueThreadPtr MessageQueueThread::createBasic(const char *threadName, ThreadPriorities threadPriority)
   {
     return internal::MessageQueueThreadBasic::create(threadName);

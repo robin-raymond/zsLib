@@ -41,42 +41,28 @@ namespace zsLib
     void RunLoopSourcePerformRoutine (void *info);
     void MoreMessagesLoopSourcePerformRoutine (void *info);
 
-    class MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper
-    {
-    public:
-      MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper() : mThreadQueue(MessageQueueThreadUsingMainThreadMessageQueueForApple::create())
-      {
-        mThreadQueue->setup();
-      }
-      ~MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper()
-      {
-        mThreadQueue->waitForShutdown();
-        mThreadQueue.reset();
-      }
-
-    public:
-      MessageQueueThreadUsingMainThreadMessageQueueForApplePtr mThreadQueue;
-    };
-
-    static MessageQueueThreadUsingMainThreadMessageQueueForApplePtr getThreadMessageQueue()
-    {
-      static MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper wrapper;
-      return wrapper.mThreadQueue;
-    }
-
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingMainThreadMessageQueueForApplePtr MessageQueueThreadUsingMainThreadMessageQueueForApple::singleton()
     {
-      return getThreadMessageQueue();
+      static SingletonLazySharedPtr<MessageQueueThreadUsingMainThreadMessageQueueForApple> singleton(MessageQueueThreadUsingMainThreadMessageQueueForApple::create());
+      MessageQueueThreadUsingMainThreadMessageQueueForApplePtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
+      return result;
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingMainThreadMessageQueueForApplePtr MessageQueueThreadUsingMainThreadMessageQueueForApple::create()
     {
       MessageQueueThreadUsingMainThreadMessageQueueForApplePtr thread(new MessageQueueThreadUsingMainThreadMessageQueueForApple);
       thread->mQueue = zsLib::MessageQueue::create(thread);
+      thread->init();
       return thread;
     }
 
-    void MessageQueueThreadUsingMainThreadMessageQueueForApple::setup()
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadUsingMainThreadMessageQueueForApple::init()
     {
       //CFRunLoopSourceContext context = {0, this, NULL, NULL, NULL, NULL, NULL, &RunLoopSourceScheduleRoutine,RunLoopSourceCancelRoutine, RunLoopSourcePerformRoutine};
       mRunLoop = CFRunLoopGetMain();
@@ -115,14 +101,18 @@ namespace zsLib
 
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingMainThreadMessageQueueForApple::MessageQueueThreadUsingMainThreadMessageQueueForApple()
     {
       processMessageLoopSource = NULL;
       moreMessagesLoopSource = NULL;
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingMainThreadMessageQueueForApple::~MessageQueueThreadUsingMainThreadMessageQueueForApple()
     {
+      waitForShutdown();
+
       if (NULL != processMessageLoopSource)
       {
         CFRunLoopSourceInvalidate(processMessageLoopSource);
@@ -134,6 +124,7 @@ namespace zsLib
       }
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::process()
     {
       MessageQueuePtr queue;
@@ -164,6 +155,13 @@ namespace zsLib
 
     }
 
+    //-------------------------------------------------------------------------
+    zsLib::Log::Params MessageQueueThreadUsingMainThreadMessageQueueForApple::slog(const char *message)
+    {
+      return zsLib::Log::Params(message, "MessageQueueThreadUsingMainThreadMessageQueueForApple");
+    }
+
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::post(IMessageQueueMessagePtr message)
     {
       MessageQueuePtr queue;
@@ -177,6 +175,7 @@ namespace zsLib
       queue->post(message);
     }
 
+    //-------------------------------------------------------------------------
     IMessageQueue::size_type MessageQueueThreadUsingMainThreadMessageQueueForApple::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
@@ -186,6 +185,7 @@ namespace zsLib
       return mQueue->getTotalUnprocessedMessages();
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::notifyMessagePosted()
     {
       AutoLock lock(mLock);
@@ -197,6 +197,7 @@ namespace zsLib
       CFRunLoopWakeUp(mRunLoop);
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::waitForShutdown()
     {
       AutoLock lock(mLock);
@@ -216,14 +217,14 @@ namespace zsLib
       }
     }
 
-
+    //-------------------------------------------------------------------------
     void RunLoopSourcePerformRoutine (void *info)
     {
       MessageQueueThreadUsingMainThreadMessageQueueForApple* obj = (MessageQueueThreadUsingMainThreadMessageQueueForApple*)info;
       obj->process();
     }
 
-
+    //-------------------------------------------------------------------------
     void MoreMessagesLoopSourcePerformRoutine (void *info)
     {
       MessageQueueThreadUsingMainThreadMessageQueueForApple* obj = (MessageQueueThreadUsingMainThreadMessageQueueForApple*)info;

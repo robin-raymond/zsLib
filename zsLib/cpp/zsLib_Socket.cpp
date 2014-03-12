@@ -20,10 +20,11 @@
  *
  */
 
+#include <zsLib/internal/zsLib_SocketMonitor.h>
+
 #include <zsLib/Socket.h>
 #include <zsLib/IPAddress.h>
 #include <zsLib/Stringize.h>
-#include <zsLib/internal/zsLib_SocketMonitor.h>
 
 #include <fcntl.h>
 #include <signal.h>
@@ -31,7 +32,7 @@
 #pragma warning(push)
 #pragma warning(disable:4290)
 
-namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
+namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib_socket)}
 
 namespace zsLib
 {
@@ -83,7 +84,6 @@ namespace zsLib
       if (!threadLocalData.get()) {
         threadLocalData.reset(new bool);
 #endif
-
         struct sigaction act;
         memset(&act, 0, sizeof(act));
 
@@ -92,7 +92,12 @@ namespace zsLib
         act.sa_flags=0;
         sigaction(SIGPIPE, &act, NULL);
       }
+
+#ifdef __QNX__
     }
+#else 
+    }
+#endif //_QNX__
 
 #ifdef _WIN32
     class SocketInit
@@ -104,16 +109,18 @@ namespace zsLib
         WSADATA data;
         memset(&data, 0, sizeof(data));
         int result = WSAStartup(MAKEWORD(2, 2), &data);
-        if (0 != result)
-			ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
+        if (0 != result) {
+          ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
+        }
       }
 
       //-----------------------------------------------------------------------
       ~SocketInit()
       {
         int result = WSACleanup();
-        if (0 != result)
-			ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
+        if (0 != result) {
+          ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
+        }
       }
     };
 #else
@@ -156,7 +163,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void Socket::notifyReadReady()
     {
-      ISocketPtr socket;
+      SocketPtr socket;
       ISocketDelegatePtr delegate;
       {
         AutoRecursiveLock lock(mLock);
@@ -172,7 +179,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void Socket::notifyWriteReady()
     {
-      ISocketPtr socket;
+      SocketPtr socket;
       ISocketDelegatePtr delegate;
       {
         AutoRecursiveLock lock(mLock);
@@ -188,7 +195,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void Socket::notifyException()
     {
-      ISocketPtr socket;
+      SocketPtr socket;
       ISocketDelegatePtr delegate;
       {
         AutoRecursiveLock lock(mLock);
@@ -202,9 +209,20 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void Socket::resetSocketMonitorGlobalSafeReference()
+    void Socket::linkSocketMonitor()
     {
-      mSocketMonitorGlobalSafeReference.reset();
+      if (mMonitor) return;
+
+      mMonitor = SocketMonitor::singleton();
+    }
+
+    //-------------------------------------------------------------------------
+    void Socket::unlinkSocketMonitor()
+    {
+      mMonitor.reset();
+      mMonitorReadReady = false;
+      mMonitorWriteReady = false;
+      mMonitorException = false;
     }
   }
 
@@ -251,8 +269,11 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Socket::Socket() throw(Exceptions::Unspecified) : mSocket(INVALID_SOCKET)
+  Socket::Socket() throw(Exceptions::Unspecified) :
+    mSocket(INVALID_SOCKET)
   {
+    linkSocketMonitor();
+
     internal::socketInit();
     internal::ignoreSigTermOnThread();
   }
@@ -264,7 +285,7 @@ namespace zsLib
                           )
   {
     close();
-    mSocketMonitorGlobalSafeReference.reset();
+    mMonitor.reset();
   }
 
   //---------------------------------------------------------------------------
@@ -312,7 +333,6 @@ namespace zsLib
     }
 
     bool remove = false;
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
 
     {
       AutoRecursiveLock lock(mLock);
@@ -322,7 +342,7 @@ namespace zsLib
     }
 
     if (remove)
-      monitor->monitorEnd(*this);
+      mMonitor->monitorEnd(*this);
 
     bool monitorRead = true;
     bool monitorWrite = true;
@@ -340,7 +360,7 @@ namespace zsLib
     }
 
     if (delegate)
-      monitor->monitorBegin(mThis.lock(), monitorRead, monitorWrite, monitorException);
+      mMonitor->monitorBegin(mThis.lock(), monitorRead, monitorWrite, monitorException);
   }
 
   //---------------------------------------------------------------------------
@@ -376,10 +396,8 @@ namespace zsLib
       if (!mDelegate) return;
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
-
-    monitor->monitorEnd(*this);
-    monitor->monitorBegin(mThis.lock(), monitorRead, monitorWrite, monitorException);
+    mMonitor->monitorEnd(*this);
+    mMonitor->monitorBegin(mThis.lock(), monitorRead, monitorWrite, monitorException);
   }
 
   //---------------------------------------------------------------------------
@@ -548,9 +566,8 @@ namespace zsLib
       }
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorException)
-      monitor->monitorException(*this);
+      mMonitor->monitorException(*this);
   }
 
   //---------------------------------------------------------------------------
@@ -578,24 +595,23 @@ namespace zsLib
       }
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
     if (mMonitorException)
-      monitor->monitorException(*this);
+      mMonitor->monitorException(*this);
   }
 
   //---------------------------------------------------------------------------
-  ISocketPtr Socket::accept(
-                            IPAddress &outRemoteIP,
-                            int *outNoThrowErrorResult
-                            ) const throw(
-                                          Exceptions::InvalidSocket,
-                                          Exceptions::ConnectionReset,
-                                          Exceptions::Unspecified
-                                          )
+  SocketPtr Socket::accept(
+                           IPAddress &outRemoteIP,
+                           int *outNoThrowErrorResult
+                           ) const throw(
+                                         Exceptions::InvalidSocket,
+                                         Exceptions::ConnectionReset,
+                                         Exceptions::Unspecified
+                                         )
   {
     internal::ignoreSigTermOnThread();
 
@@ -615,7 +631,7 @@ namespace zsLib
       if (INVALID_SOCKET == acceptSocket)
       {
         int error = handleError(0, outNoThrowErrorResult);
-        if (0 == error) return ISocketPtr();
+        if (0 == error) return SocketPtr();
 
         switch (error)
         {
@@ -632,13 +648,12 @@ namespace zsLib
       }
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
     if (mMonitorException)
-      monitor->monitorException(*this);
+      mMonitor->monitorException(*this);
 
     SocketPtr result = create();
     result->adopt(acceptSocket);
@@ -707,13 +722,12 @@ namespace zsLib
 
   connect_final:
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
     if (mMonitorException)
-      monitor->monitorException(*this);
+      mMonitor->monitorException(*this);
   }
 
   //---------------------------------------------------------------------------
@@ -789,11 +803,11 @@ namespace zsLib
         }
       }
     }
+
   receive_final:
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
 
     return result;
   }
@@ -879,9 +893,8 @@ namespace zsLib
     }
   recvfrom_final:
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
 
     return result;
   }
@@ -957,9 +970,8 @@ namespace zsLib
     }
   send_final:
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
 
     return result;
   }
@@ -1045,9 +1057,8 @@ namespace zsLib
 
   sendto_final:
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
 
     return result;
   }
@@ -1068,13 +1079,13 @@ namespace zsLib
         ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Failed to perform a shutdown on the socket, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
     }
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
+
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
     if (mMonitorException)
-      monitor->monitorException(*this);
+      mMonitor->monitorException(*this);
   }
 
   namespace internal
@@ -1302,9 +1313,8 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::DelegateNotSet, !mDelegate)
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorReadReady)
-      monitor->monitorRead(*this);
+      mMonitor->monitorRead(*this);
   }
 
   //---------------------------------------------------------------------------
@@ -1316,9 +1326,8 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::DelegateNotSet, !mDelegate)
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorWriteReady)
-      monitor->monitorWrite(*this);
+      mMonitor->monitorWrite(*this);
   }
 
   //---------------------------------------------------------------------------
@@ -1330,9 +1339,8 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::DelegateNotSet, !mDelegate)
     }
 
-    internal::SocketMonitorPtr monitor = internal::SocketMonitor::singleton();
     if (mMonitorException)
-      monitor->monitorException(*this);
+      mMonitor->monitorException(*this);
   }
 
 } // namespace zsLib

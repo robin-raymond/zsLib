@@ -181,35 +181,36 @@ namespace zsLib
 
     ~Log();
 
-    static LogPtr singleton();
+    static void addListener(ILogDelegatePtr delegate);
+    static void removeListener(ILogDelegatePtr delegate);
 
-    void addListener(ILogDelegatePtr delegate);
-    void removeListener(ILogDelegatePtr delegate);
+    static void notifyNewSubsystem(Subsystem *inSubsystem);
 
-    void notifyNewSubsystem(Subsystem *inSubsystem);
+    static void log(
+                    const Subsystem &subsystem,
+                    Severity severity,
+                    Level level,
+                    const String &message,
+                    CSTR function,
+                    CSTR filePath,
+                    ULONG lineNumber
+                    );
 
-    void log(
-             const Subsystem &subsystem,
-             Severity severity,
-             Level level,
-             const String &message,
-             CSTR function,
-             CSTR filePath,
-             ULONG lineNumber
-             );
+    static void log(
+                    const Subsystem &subsystem,
+                    Severity severity,
+                    Level level,
+                    const Params &params,
+                    CSTR function,
+                    CSTR filePath,
+                    ULONG lineNumber
+                    );
 
-    void log(
-             const Subsystem &subsystem,
-             Severity severity,
-             Level level,
-             const Params &params,
-             CSTR function,
-             CSTR filePath,
-             ULONG lineNumber
-             );
-
-  private:
+  protected:
     Log();
+
+    static LogPtr singleton();
+    static LogPtr create();
   };
 
   //---------------------------------------------------------------------------

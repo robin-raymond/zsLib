@@ -22,6 +22,7 @@
 
 #include <zsLib/zsLib.h>
 namespace zsLib {ZS_IMPLEMENT_SUBSYSTEM(zsLib)}
+namespace zsLib {ZS_IMPLEMENT_SUBSYSTEM(zsLib_socket)}
 
 // The classes below are exported
 //#pragma GCC visibility push(default)  // hidden to hide

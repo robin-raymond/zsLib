@@ -69,7 +69,7 @@ namespace async_socket
       return object;
     }
 
-    virtual void onReadReady(zsLib::ISocketPtr socket)
+    virtual void onReadReady(zsLib::SocketPtr socket)
     {
       std::cout << "ON READ READY\n";
       ++mReadReadyCalled;
@@ -86,13 +86,13 @@ namespace async_socket
       std::cout << "READ " << total << " BYTES.\n";
     }
 
-    virtual void onWriteReady(zsLib::ISocketPtr socket)
+    virtual void onWriteReady(zsLib::SocketPtr socket)
     {
       std::cout << "ON WRITE READY\n";
       ++mWriteReadyCalled;
     }
 
-    virtual void onException(zsLib::ISocketPtr socket)
+    virtual void onException(zsLib::SocketPtr socket)
     {
       std::cout << "ONEXCEPTION\n";
       ++mExceptionCalled;

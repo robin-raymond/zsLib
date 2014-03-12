@@ -25,23 +25,80 @@
 #ifndef ZSLIB_INTERNAL_SOCKET_H_6f504f01bdd331d0c835ccae3872ce91
 #define ZSLIB_INTERNAL_SOCKET_H_6f504f01bdd331d0c835ccae3872ce91
 
-#include <zsLib/ISocket.h>
+#include <zsLib/Exception.h>
+#include <zsLib/Proxy.h>
 #include <boost/noncopyable.hpp>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2def.h>
+#include <ws2tcpip.h>
+#else //!_WIN32
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/ioctl.h>
+#ifndef FIONREAD
+#include <sys/filio.h>
+#endif //ndef FIONREAD
 
 namespace zsLib
 {
-  class Socket;
-  typedef boost::shared_ptr<Socket> SocketPtr;
-  typedef boost::weak_ptr<Socket> SocketWeakPtr;
+  enum MissingSocketOptions
+  {
+    SD_SEND = SHUT_WR,
+    SD_RECEIVE = SHUT_RD,
+    SD_BOTH = SHUT_RDWR,
+
+    SO_CONDITIONAL_ACCEPT = -1,
+    SO_EXCLUSIVEADDRUSE = -1,
+    SO_DONTLINGER = -1,
+    SO_MAX_MSG_SIZE = -1,
+#if (defined _ANDROID || defined __QNX__ || defined _LINUX)
+    SO_NOSIGPIPE = -1,
+#endif //(defined _ANDROID || defined __QNX__ || defined _LINUX)
+
+    INVALID_SOCKET = -1,
+    SOCKET_ERROR = -1,
+
+    WSAEINPROGRESS = EINPROGRESS,
+    WSAEWOULDBLOCK = EWOULDBLOCK,
+    WSAEADDRINUSE = EADDRINUSE,
+    WSAECONNRESET = ECONNRESET,
+    WSAECONNREFUSED = ECONNREFUSED,
+    WSAENETUNREACH = ENETUNREACH,
+    WSAEHOSTUNREACH = EHOSTUNREACH,
+    WSAETIMEDOUT = ETIMEDOUT,
+    WSAESHUTDOWN = ESHUTDOWN,
+    WSAECONNABORTED = ECONNABORTED,
+    WSAENETRESET = ENETRESET,
+    WSAEMSGSIZE = EMSGSIZE
+  };
+}
+
+#endif //_WIN32
+
+namespace zsLib
+{
+  enum WindowsSocketOptions
+  {
+    SO_WINDOWS_CONDITIONAL_ACCEPT = SO_CONDITIONAL_ACCEPT,
+    SO_WINDOWS_EXCLUSIVEADDRUSE = SO_EXCLUSIVEADDRUSE,
+    SO_WINDOWS_DONTLINGER = SO_DONTLINGER,
+    SO_WINDOWS_MAX_MSG_SIZE = SO_MAX_MSG_SIZE
+  };
+}
+
+namespace zsLib
+{
+  ZS_DECLARE_CLASS_PTR(Socket)
 
   namespace internal
   {
-    class SocketMonitorGlobalSafeReference;
-    typedef boost::shared_ptr<SocketMonitorGlobalSafeReference> SocketMonitorGlobalSafeReferencePtr;
-    typedef boost::weak_ptr<SocketMonitorGlobalSafeReference> SocketMonitorGlobalSafeReferenceWeakPtr;
+    ZS_DECLARE_CLASS_PTR(SocketMonitor)
 
-    class Socket : public ISocket,
-                   public boost::noncopyable
+    class Socket : public boost::noncopyable
     {
     protected:
       Socket() :
@@ -56,13 +113,16 @@ namespace zsLib
       void notifyReadReady();
       void notifyWriteReady();
       void notifyException();
-      void resetSocketMonitorGlobalSafeReference();
+
+      void linkSocketMonitor();
+      void unlinkSocketMonitor();
 
     protected:
       ISocketDelegatePtr mDelegate;
       mutable RecursiveLock mLock;
       SocketWeakPtr mThis;
-      SocketMonitorGlobalSafeReferencePtr mSocketMonitorGlobalSafeReference;
+
+      SocketMonitorPtr mMonitor;
 
       bool mMonitorReadReady;
       bool mMonitorWriteReady;

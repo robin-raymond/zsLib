@@ -62,7 +62,8 @@ namespace zsLib
     protected:
       MessageQueueThreadUsingMainThreadMessageQueueForApple();
       static MessageQueueThreadUsingMainThreadMessageQueueForApplePtr create();
-      void setup();
+
+      void init();
 
     public:
       ~MessageQueueThreadUsingMainThreadMessageQueueForApple();
@@ -82,6 +83,9 @@ namespace zsLib
 
     public:
       virtual void process();
+
+    protected:
+      static zsLib::Log::Params slog(const char *message);
 
     protected:
       mutable Lock mLock;

@@ -35,6 +35,9 @@ namespace zsLib {
     ThreadPriority_HighestPriority,
     ThreadPriority_RealtimePriority
   };
+
+  const char *toString(ThreadPriorities priority);
+
 } // namespace zsLib
 
 #include <zsLib/internal/zsLib_MessageQueueThread.h>

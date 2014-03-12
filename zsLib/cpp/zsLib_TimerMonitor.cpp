@@ -20,9 +20,12 @@
  *
  */
 
-#include <zsLib/Timer.h>
-#include <zsLib/Log.h>
 #include <zsLib/internal/zsLib_TimerMonitor.h>
+
+#include <zsLib/Timer.h>
+#include <zsLib/XML.h>
+#include <zsLib/helpers.h>
+
 #include <boost/thread.hpp>
 
 #include <pthread.h>
@@ -37,26 +40,6 @@ namespace zsLib
 {
   namespace internal
   {
-    class TimerMonitorGlobalSafeReferenceInit;
-
-    class TimerMonitorGlobalSafeReference
-    {
-    public:
-      TimerMonitorGlobalSafeReference(TimerMonitorPtr reference)
-        : mSafeReference(reference)
-      {
-      }
-
-      ~TimerMonitorGlobalSafeReference()
-      {
-        mSafeReference->cancel();
-        mSafeReference.reset();
-      }
-
-    private:
-      TimerMonitorPtr mSafeReference;
-    };
-
     //-------------------------------------------------------------------------
     TimerMonitor::TimerMonitor() :
       mShouldShutdown(false)
@@ -68,7 +51,7 @@ namespace zsLib
       memcpy(&mCondition, &defaultCondition, sizeof(mCondition));
       memcpy(&mMutex, &defaultMutex, sizeof(mMutex));
 #endif //__QNX__
-      ZS_LOG_DETAIL("created")
+      ZS_LOG_DETAIL(log("created"))
     }
 
     //-------------------------------------------------------------------------
@@ -80,7 +63,7 @@ namespace zsLib
     TimerMonitor::~TimerMonitor()
     {
       mThisWeak.reset();
-      ZS_LOG_DETAIL("destroyed")
+      ZS_LOG_DETAIL(log("destroyed"))
       cancel();
 
 #ifdef __QNX__
@@ -92,9 +75,12 @@ namespace zsLib
     //-------------------------------------------------------------------------
     TimerMonitorPtr TimerMonitor::singleton()
     {
-      static TimerMonitorPtr singleton = TimerMonitor::create();
-      static TimerMonitorGlobalSafeReference safe(singleton);
-      return singleton;
+      static SingletonLazySharedPtr<TimerMonitor> singleton(TimerMonitor::create());
+      TimerMonitorPtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
+      return result;
     }
 
     //-------------------------------------------------------------------------
@@ -112,7 +98,7 @@ namespace zsLib
       AutoRecursiveLock lock(mLock);
 
       if (!mThread) {
-        mThread = ThreadPtr(new boost::thread(boost::ref(*TimerMonitor::singleton().get())));
+        mThread = ThreadPtr(new boost::thread(boost::ref(*this)));
       }
 
       PUID timerID = timer->getID();
@@ -121,7 +107,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void TimerMonitor::monitorEnd(Timer &timer)
+    void TimerMonitor::monitorEnd(zsLib::Timer &timer)
     {
       AutoRecursiveLock lock(mLock);
 
@@ -222,6 +208,49 @@ namespace zsLib
         }
         mMonitoredTimers.clear();
       }
+    }
+
+    //-----------------------------------------------------------------------
+    static void debugAppend(zsLib::XML::ElementPtr &parentEl, const char *name, const char *value)
+    {
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
+
+      ZS_THROW_INVALID_ARGUMENT_IF(!parentEl)
+      ZS_THROW_INVALID_ARGUMENT_IF(!name)
+
+      if (!value) return;
+      if ('\0' == *value) return;
+
+      ElementPtr element = Element::create(name);
+
+      TextPtr tmpTxt = Text::create();
+      tmpTxt->setValueAndJSONEncode(value);
+      element->adoptAsFirstChild(tmpTxt);
+
+      parentEl->adoptAsLastChild(element);
+    }
+
+    //-----------------------------------------------------------------------
+    zsLib::Log::Params TimerMonitor::log(const char *message) const
+    {
+      ElementPtr objectEl = Element::create("TimerMonitor");
+
+      ElementPtr element = Element::create("id");
+
+      TextPtr tmpTxt = Text::create();
+      tmpTxt->setValueAndJSONEncode(string(mID));
+      element->adoptAsFirstChild(tmpTxt);
+
+      objectEl->adoptAsLastChild(element);
+
+      return zsLib::Log::Params(message, objectEl);
+    }
+
+    //-----------------------------------------------------------------------
+    zsLib::Log::Params TimerMonitor::slog(const char *message)
+    {
+      return zsLib::Log::Params(message, "TimerMonitor");
     }
 
     //-------------------------------------------------------------------------

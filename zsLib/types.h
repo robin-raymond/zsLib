@@ -38,9 +38,9 @@
 namespace zsLib
 {
   ZS_DECLARE_TYPEDEF_PTR(boost::thread, Thread)
+  ZS_DECLARE_TYPEDEF_PTR(boost::mutex, Lock)
+  ZS_DECLARE_TYPEDEF_PTR(boost::recursive_mutex, RecursiveLock)
 
-  typedef boost::mutex Lock;
-  typedef boost::recursive_mutex RecursiveLock;
   typedef boost::lock_guard<Lock> AutoLock;
   typedef boost::lock_guard<RecursiveLock> AutoRecursiveLock;
 
@@ -91,6 +91,8 @@ namespace zsLib
   typedef WSTR ZsDeclareWSTR;
   typedef CWSTR ZsDeclareCWSTR;
 
+  class PrivateGlobalLock;
+
   class Event;
   typedef boost::shared_ptr<Event> EventPtr;
   typedef boost::weak_ptr<Event> EventWeakPtr;
@@ -138,10 +140,6 @@ namespace zsLib
   class MessageQueueThread;
   typedef boost::shared_ptr<MessageQueueThread> MessageQueueThreadPtr;
   typedef boost::weak_ptr<MessageQueueThread> MessageQueueThreadWeakPtr;
-
-  interaction ISocket;
-  typedef boost::shared_ptr<ISocket> ISocketPtr;
-  typedef boost::weak_ptr<ISocket> ISocketWeakPtr;
 
   interaction ISocketDelegate;
   typedef boost::shared_ptr<ISocketDelegate> ISocketDelegatePtr;

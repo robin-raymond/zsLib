@@ -139,7 +139,7 @@ public:
       socket2->connect(address1);
 
       zsLib::IPAddress remoteIP;
-      zsLib::ISocketPtr socket3 = socket1->accept(remoteIP);
+      zsLib::SocketPtr socket3 = socket1->accept(remoteIP);
       BOOST_CHECK(socket3)
       BOOST_CHECK(address2.isAddressEqual(remoteIP))
 

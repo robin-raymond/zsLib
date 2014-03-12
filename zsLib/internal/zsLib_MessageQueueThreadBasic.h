@@ -41,12 +41,6 @@ namespace zsLib
     class MessageQueueThreadBasic : public MessageQueueThread,
                                     public IMessageQueueNotify
     {
-    public:
-      struct Exceptions
-      {
-        ZS_DECLARE_CUSTOM_EXCEPTION(MessageQueueAlreadyDeleted)
-      };
-
     protected:
       MessageQueueThreadBasic(const char *threadName);
 

@@ -132,7 +132,7 @@ namespace zsLib
         AutoLock lock(mLock);
         queue = mQueue;
         if (!queue) {
-          ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
+          ZS_THROW_CUSTOM(IMessageQueue::Exceptions::MessageQueueGone, "message posted to message queue after message queue was deleted.")
         }
       }
       queue->post(message);

@@ -43,6 +43,7 @@ namespace zsLib
     public:
       ProxyTracking()
       {
+        autoDump();
       }
 
       ~ProxyTracking()
@@ -51,8 +52,7 @@ namespace zsLib
 
       static ProxyTracking &singleton()
       {
-        static ProxyTracking tracking;
-        return tracking;
+        return Singleton<ProxyTracking, false>::ref();
       }
 
       void follow(int line, const char *fileName)
@@ -109,6 +109,19 @@ namespace zsLib
         std::cout << "-------------------------------------------------------------------------------\n";
         std::cout << "-------------------------------------------------------------------------------\n";
       }
+    protected:
+
+      static void autoDump()
+      {
+        class AutoDump
+        {
+        public:
+          AutoDump() {}
+          ~AutoDump() {ProxyTracking::singleton().output();}
+        };
+
+        static AutoDump autodump;
+      }
 
     private:
       RecursiveLock mLock;
@@ -119,16 +132,6 @@ namespace zsLib
       LocationCountMap mLocations;
     };
 
-    class ProxyTrackingGlobalInit
-    {
-    public:
-      ProxyTrackingGlobalInit()
-      {
-        ProxyTracking::singleton();
-      }
-    };
-
-    ProxyTrackingGlobalInit gProxyTrackingGlobalInit;
 #endif //DEBUG
 
     static ULONG &getProxyCountGlobal()

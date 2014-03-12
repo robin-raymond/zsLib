@@ -29,26 +29,23 @@
 #include <zsLib/Socket.h>
 #include <zsLib/IPAddress.h>
 #include <zsLib/Event.h>
+#include <zsLib/Log.h>
 
 #include <boost/noncopyable.hpp>
 #include <map>
 #include <set>
 
+#ifndef _WIN32
+#include <sys/poll.h>
+#endif //ndef _WIN32
+
 namespace zsLib
 {
-  class Socket;
-  typedef boost::shared_ptr<Socket> SocketPtr;
-  typedef boost::weak_ptr<Socket> SocketWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Socket)
 
   namespace internal
   {
-    class SocketMonitorGlobalSafeReference;
-    typedef boost::shared_ptr<SocketMonitorGlobalSafeReference> SocketMonitorGlobalSafeReferencePtr;
-    typedef boost::weak_ptr<SocketMonitorGlobalSafeReference> SocketMonitorGlobalSafeReferenceWeakPtr;
-
-    class SocketMonitor;
-    typedef boost::shared_ptr<SocketMonitor> SocketMonitorPtr;
-    typedef boost::weak_ptr<SocketMonitor> SocketMonitorWeakPtr;
+    ZS_DECLARE_CLASS_PTR(SocketMonitor)
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -61,26 +58,82 @@ namespace zsLib
     class SocketSet
     {
     public:
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
+
+      typedef ::pollfd poll_fd;
+      typedef ::nfds_t poll_size;
+      typedef decltype(poll_fd::events) event_type;
+
+      typedef std::map<SOCKET, poll_size> SocketIndexMap;
+
+      typedef std::pair<SocketPtr, event_type> FiredEventPair;
+
+    public:
       SocketSet();
       ~SocketSet();
 
-      ::fd_set *getSet() const;
-      u_int &count() const;
+      poll_fd *preparePollingFDs(poll_size &outSize);
 
-      SOCKET getHighestSocket() const;
+      void firedEvent(
+                      SocketPtr socket,
+                      event_type event
+                      );
+
+      FiredEventPair *getFiredEvents(poll_size &outSize);
+
+      void delegateGone(SocketPtr socket);
+      SocketPtr *getSocketsWithDelegateGone(poll_size &outSize);
 
       void clear();
 
-      void add(SOCKET inSocket);
-      void remove(SOCKET inSocket);
-      bool isSet(SOCKET inSocket);
+      bool isDirty() const {return mDirty;}
+
+      void reset(SOCKET socket);
+      void reset(
+                 SOCKET socket,
+                 event_type events
+                 );
+
+      void addEvents(
+                     SOCKET socket,
+                     event_type events
+                     );
+      void removeEvents(
+                        SOCKET socket,
+                        event_type events
+                        );
+
+    protected:
+      void minOfficialAllocation(poll_size minSize);
+      void minPollingAllocation(poll_size minSize);
+
+      void append(
+                  SOCKET socket,
+                  event_type events
+                  );
+
+      zsLib::Log::Params log(const char *message) const;
 
     private:
-      mutable u_int mCount;
-      ::fd_set mSet;
+      AutoPUID mID;
+      poll_size mOfficialAllocationSize;
+      poll_size mOfficialCount;
+      poll_fd *mOfficialSet;
 
-      typedef std::set<SOCKET> MonitoredSocketSet;
-      MonitoredSocketSet mMonitoredSockets;
+      poll_size mPollingAllocationSize;
+      poll_size mPollingCount;
+      poll_fd *mPollingSet;
+
+      poll_size mPollingFiredEventCount;
+      FiredEventPair *mPollingFiredEvents;
+
+      poll_size mPollingSocketsWithDelegateGoneCount;
+      SocketPtr *mPollingSocketsWithDelegateGone;
+
+      SocketIndexMap mSocketIndexes;
+
+      bool mDirty;
     };
 
     //-------------------------------------------------------------------------
@@ -94,7 +147,13 @@ namespace zsLib
     class SocketMonitor : public boost::noncopyable
     {
     public:
-      friend class SocketMonitorGlobalSafeReference;
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
+
+      typedef SocketSet::event_type event_type;
+      typedef SocketSet::poll_size poll_size;
+      typedef SocketSet::poll_fd poll_fd;
+      typedef SocketSet::FiredEventPair FiredEventPair;
 
     protected:
       SocketMonitor();
@@ -126,7 +185,11 @@ namespace zsLib
       void wakeUp();
       void createWakeUpSocket();
 
+      zsLib::Log::Params log(const char *message) const;
+      static zsLib::Log::Params slog(const char *message);
+
     private:
+      AutoPUID mID;
       RecursiveLock mLock;
       SocketMonitorWeakPtr mThisWeak;
       SocketMonitorPtr mGracefulReference;
@@ -142,9 +205,7 @@ namespace zsLib
       IPAddress mWakeUpAddress;
       SocketPtr mWakeUpSocket;
 
-      SocketSet mReadSet;
-      SocketSet mWriteSet;
-      SocketSet mExceptionSet;
+      SocketSet mSocketSet;
     };
   }
 }

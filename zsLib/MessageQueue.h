@@ -26,6 +26,7 @@
 #define ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f
 
 #include <zsLib/types.h>
+#include <zsLib/Exception.h>
 
 namespace zsLib
 {
@@ -44,6 +45,11 @@ namespace zsLib
 
   interaction IMessageQueue
   {
+    struct Exceptions
+    {
+      ZS_DECLARE_CUSTOM_EXCEPTION(MessageQueueGone)
+    };
+
     typedef size_t size_type;
 
     virtual void post(IMessageQueueMessagePtr message) = 0;

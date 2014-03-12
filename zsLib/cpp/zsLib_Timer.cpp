@@ -32,6 +32,7 @@ namespace zsLib
 {
   namespace internal
   {
+    //-------------------------------------------------------------------------
     bool Timer::tick(const Time &time, Duration &sleepTime)
     {
       AutoRecursiveLock lock(mLock);
@@ -85,6 +86,7 @@ namespace zsLib
     }
   }
 
+  //---------------------------------------------------------------------------
   Timer::Timer(
                ITimerDelegatePtr delegate,
                Duration timeout,
@@ -104,12 +106,14 @@ namespace zsLib
     mFireNextAt = (boost::posix_time::microsec_clock::universal_time() + timeout);
   }
 
+  //---------------------------------------------------------------------------
   Timer::~Timer()
   {
     mThisWeak.reset();
     cancel();
   }
 
+  //---------------------------------------------------------------------------
   TimerPtr Timer::create(
                          ITimerDelegatePtr delegate,
                          Duration timeout,
@@ -120,12 +124,15 @@ namespace zsLib
     TimerPtr timer = TimerPtr(new Timer(delegate, timeout, repeat, maxFiringTimerAtOnce));
     timer->mThisWeak = timer;
 
-    internal::TimerMonitorPtr monitor = internal::TimerMonitor::singleton();
-    monitor->monitorBegin(timer);
+    internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
+    if (singleton) {
+      singleton->monitorBegin(timer);
+    }
     timer->mMonitored = true;
     return timer;
   }
 
+  //---------------------------------------------------------------------------
   void Timer::cancel()
   {
     {
@@ -135,8 +142,10 @@ namespace zsLib
         return;
     }
 
-    internal::TimerMonitorPtr monitor = internal::TimerMonitor::singleton();
-    monitor->monitorEnd(*this);
+    internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
+    if (singleton) {
+      singleton->monitorEnd(*this);
+    }
 
     {
       AutoRecursiveLock lock(mLock);
@@ -145,6 +154,7 @@ namespace zsLib
     }
   }
 
+  //---------------------------------------------------------------------------
   void Timer::background(bool background)
   {
     AutoRecursiveLock lock(mLock);
