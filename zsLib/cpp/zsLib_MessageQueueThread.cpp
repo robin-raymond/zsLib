@@ -31,6 +31,43 @@ namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
+  namespace internal
+  {
+    void setThreadPriority(
+                           Thread::native_handle_type handle,
+                           ThreadPriorities threadPriority
+                           )
+    {
+#ifndef _WIN32
+      const int policy = SCHED_RR;
+      const int minPrio = sched_get_priority_min(policy);
+      const int maxPrio = sched_get_priority_max(policy);
+      sched_param param;
+      switch (threadPriority)
+      {
+        case ThreadPriority_LowPriority:
+          param.sched_priority = minPrio + 1;
+          break;
+        case ThreadPriority_NormalPriority:
+          param.sched_priority = (minPrio + maxPrio) / 2;
+          break;
+        case ThreadPriority_HighPriority:
+          param.sched_priority = maxPrio - 3;
+          break;
+        case ThreadPriority_HighestPriority:
+          param.sched_priority = maxPrio - 2;
+          break;
+        case ThreadPriority_RealtimePriority:
+          param.sched_priority = maxPrio - 1;
+          break;
+      }
+      pthread_setschedparam(handle, policy, &param);
+#else
+#error MUST IMPLEMENT THIS
+#endif //_WIN32
+    }
+  }
+
   const char *toString(ThreadPriorities priority)
   {
     switch (priority) {
@@ -41,6 +78,84 @@ namespace zsLib
       case ThreadPriority_RealtimePriority: return "Real-time";
     }
     return "UNDEFINED";
+  }
+
+  namespace internal
+  {
+    struct StrToPriority
+    {
+      const char *mStr;
+      ThreadPriorities mPriority;
+    };
+
+    static StrToPriority *getPriorities()
+    {
+      static StrToPriority gPriorities[] = {
+        {
+          "low",
+          ThreadPriority_LowPriority
+        },
+        {
+          "normal",
+          ThreadPriority_NormalPriority
+        },
+        {
+          "high",
+          ThreadPriority_HighPriority
+        },
+        {
+          "highest",
+          ThreadPriority_HighestPriority
+        },
+        {
+          "real-time",
+          ThreadPriority_RealtimePriority
+        },
+        {
+          "real time",
+          ThreadPriority_RealtimePriority
+        },
+        {
+          "realtime",
+          ThreadPriority_RealtimePriority
+        },
+        {
+          NULL,
+          ThreadPriority_NormalPriority
+        }
+      };
+      return gPriorities;
+    }
+  }
+
+  using internal::StrToPriority;
+
+  ThreadPriorities threadPriorityFromString(const char *str)
+  {
+    if (!str) return ThreadPriority_NormalPriority;
+
+    String compareTo(str);
+    compareTo.trim();
+
+    StrToPriority *priorities = internal::getPriorities();
+
+    for (size_t index = 0; NULL != priorities[index].mStr; ++index)
+    {
+      String compareStr(priorities[index].mStr);
+      if (0 == String(priorities[index].mStr).compareNoCase(compareTo)) {
+        return priorities[index].mPriority;
+      }
+    }
+
+    return ThreadPriority_NormalPriority;
+  }
+
+  void setThreadPriority(
+                         Thread &thread,
+                         ThreadPriorities threadPriority
+                         )
+  {
+    internal::setThreadPriority(thread.native_handle(), threadPriority);
   }
 
   MessageQueueThreadPtr MessageQueueThread::createBasic(const char *threadName, ThreadPriorities threadPriority)

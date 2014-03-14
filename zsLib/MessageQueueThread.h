@@ -25,6 +25,8 @@
 #ifndef ZSLIB_MESSAGEQUEUETHREAD_H_573a8d930ea451693ccd53632e481cb0
 #define ZSLIB_MESSAGEQUEUETHREAD_H_573a8d930ea451693ccd53632e481cb0
 
+#include <zsLib/types.h>
+
 namespace zsLib {
 
   enum ThreadPriorities
@@ -37,7 +39,12 @@ namespace zsLib {
   };
 
   const char *toString(ThreadPriorities priority);
+  ThreadPriorities threadPriorityFromString(const char *str);
 
+  void setThreadPriority(
+                         Thread &thread,
+                         ThreadPriorities threadPriority
+                         );
 } // namespace zsLib
 
 #include <zsLib/internal/zsLib_MessageQueueThread.h>
@@ -47,6 +54,8 @@ namespace zsLib
   interaction IMessageQueueThread : public IMessageQueue
   {
     virtual void waitForShutdown() = 0;
+
+    virtual void setThreadPriority(ThreadPriorities priority) = 0;
   };
 
   class MessageQueueThread : public IMessageQueueThread

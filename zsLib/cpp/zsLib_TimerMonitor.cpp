@@ -41,6 +41,13 @@ namespace zsLib
   namespace internal
   {
     //-------------------------------------------------------------------------
+    static MonitorPriorityHelper &getTimerMonitorPrioritySingleton()
+    {
+      static Singleton<MonitorPriorityHelper, false> singleton;
+      return singleton.singleton();
+    }
+
+    //-------------------------------------------------------------------------
     TimerMonitor::TimerMonitor() :
       mShouldShutdown(false)
     {
@@ -76,6 +83,11 @@ namespace zsLib
     TimerMonitorPtr TimerMonitor::singleton()
     {
       static SingletonLazySharedPtr<TimerMonitor> singleton(TimerMonitor::create());
+      class Once {
+      public: Once() {getTimerMonitorPrioritySingleton().notify();}
+      };
+      static Once once;
+
       TimerMonitorPtr result = singleton.singleton();
       if (!result) {
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
@@ -93,12 +105,32 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
+    void TimerMonitor::setPriority(ThreadPriorities priority)
+    {
+      MonitorPriorityHelper &prioritySingleton = getTimerMonitorPrioritySingleton();
+
+      bool changed = prioritySingleton.setPriority(priority);
+      if (!changed) return;
+
+      if (!prioritySingleton.wasNotified()) return;
+
+      TimerMonitorPtr singleton = TimerMonitor::singleton();
+      if (!singleton) return;
+
+      AutoRecursiveLock lock(singleton->mLock);
+      if (!singleton->mThread) return;
+
+      setThreadPriority(*singleton->mThread, priority);
+    }
+
+    //-------------------------------------------------------------------------
     void TimerMonitor::monitorBegin(TimerPtr timer)
     {
       AutoRecursiveLock lock(mLock);
 
       if (!mThread) {
         mThread = ThreadPtr(new boost::thread(boost::ref(*this)));
+        setThreadPriority(mThread->native_handle(), getTimerMonitorPrioritySingleton().getPriority());
       }
 
       PUID timerID = timer->getID();

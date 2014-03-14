@@ -27,6 +27,7 @@
 
 #include <zsLib/types.h>
 #include <zsLib/Log.h>
+#include <zsLib/MessageQueueThread.h>
 
 #include <boost/noncopyable.hpp>
 #include <map>
@@ -65,6 +66,8 @@ namespace zsLib
 
       static TimerMonitorPtr singleton();
       static TimerMonitorPtr create();
+
+      static void setPriority(ThreadPriorities priority);
 
       void monitorBegin(TimerPtr timer);
       void monitorEnd(zsLib::Timer &timer);

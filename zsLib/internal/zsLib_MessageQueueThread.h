@@ -26,11 +26,72 @@
 #define ZSLIB_INTERNAL_MESSAGEQUEUETHREAD_H_5d1955ad9e4c1689e30f9affd5ea319e
 
 #include <zsLib/MessageQueue.h>
+#include <boost/thread.hpp>
 
 namespace zsLib
 {
   namespace internal
   {
+    void setThreadPriority(
+                           Thread::native_handle_type handle,
+                           ThreadPriorities threadPriority
+                           );
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark MonitorPriorityHelper
+    #pragma mark
+
+    class MonitorPriorityHelper
+    {
+    public:
+      //-----------------------------------------------------------------------
+      MonitorPriorityHelper() :
+        mPriority(ThreadPriority_NormalPriority)
+      {
+      }
+
+      //-----------------------------------------------------------------------
+      ThreadPriorities getPriority() const
+      {
+        AutoRecursiveLock lock(mLock);
+        return mPriority;
+      }
+
+      //-----------------------------------------------------------------------
+      bool setPriority(ThreadPriorities priority)
+      {
+        AutoRecursiveLock lock(mLock);
+        if (priority == mPriority) return false;
+
+        mPriority = priority;
+        return true;
+      }
+
+      //-----------------------------------------------------------------------
+      bool wasNotified() const
+      {
+        AutoRecursiveLock lock(mLock);
+        return mNotified;
+      }
+
+      //-----------------------------------------------------------------------
+      void notify()
+      {
+        AutoRecursiveLock lock(mLock);
+        get(mNotified) = true;
+      }
+
+    private:
+
+      mutable RecursiveLock mLock;
+      ThreadPriorities mPriority;
+      AutoBool mNotified;
+    };
+    
   }
 }
 

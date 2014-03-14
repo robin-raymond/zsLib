@@ -39,8 +39,17 @@ namespace zsLib
 {
   namespace internal
   {
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+
     static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     class MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper
     {
     public:
@@ -59,6 +68,10 @@ namespace zsLib
 
     typedef boost::thread_specific_ptr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper> MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapperThreadPtr;
 
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     class MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsGlobal
     {
     public:
@@ -107,12 +120,14 @@ namespace zsLib
       UINT mCustomMessage;
     };
 
+    //-------------------------------------------------------------------------
     static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsGlobal &getGlobal()
     {
       static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsGlobal global;
       return global;
     }
 
+    //-------------------------------------------------------------------------
     static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr getThreadMessageQueue()
     {
       if (! getGlobal().mThreadQueueWrapper.get())
@@ -120,11 +135,13 @@ namespace zsLib
       return getGlobal().mThreadQueueWrapper->mThreadQueue;
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton()
     {
       return getThreadMessageQueue();
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create()
     {
       MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr thread(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindows);
@@ -132,6 +149,7 @@ namespace zsLib
       return thread;
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setup()
     {
       // make sure the window message queue was created by peeking a message
@@ -155,11 +173,13 @@ namespace zsLib
       ZS_THROW_BAD_STATE_IF(NULL == mHWND)
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows() :
       mHWND(NULL)
     {
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::~MessageQueueThreadUsingCurrentGUIMessageQueueForWindows()
     {
       if (NULL != mHWND)
@@ -169,6 +189,7 @@ namespace zsLib
       }
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::process()
     {
       MessageQueuePtr queue;
@@ -183,6 +204,7 @@ namespace zsLib
       queue->processOnlyOneMessage(); // process only one messsage at a time since this must be syncrhonized through the GUI message queue
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::post(IMessageQueueMessagePtr message)
     {
       MessageQueuePtr queue;
@@ -196,6 +218,7 @@ namespace zsLib
       queue->post(message);
     }
 
+    //-------------------------------------------------------------------------
     IMessageQueue::size_type MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
@@ -205,6 +228,7 @@ namespace zsLib
       return mQueue->getTotalUnprocessedMessages();
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::notifyMessagePosted()
     {
       AutoLock lock(mLock);
@@ -215,6 +239,7 @@ namespace zsLib
       ZS_THROW_BAD_STATE_IF(0 == ::PostMessage(mHWND, getGlobal().mCustomMessage, (WPARAM)0, (LPARAM)0))
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::waitForShutdown()
     {
       AutoLock lock(mLock);
@@ -227,6 +252,13 @@ namespace zsLib
       }
     }
 
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setThreadPriority(ThreadPriorities threadPriority)
+    {
+      // no-op
+    }
+
+    //-------------------------------------------------------------------------
     static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
       if (getGlobal().mCustomMessage != uMsg)

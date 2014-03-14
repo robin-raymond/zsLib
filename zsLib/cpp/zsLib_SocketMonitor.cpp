@@ -80,6 +80,13 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
+    static MonitorPriorityHelper &getSocketMonitorPrioritySingleton()
+    {
+      static Singleton<MonitorPriorityHelper, false> singleton;
+      return singleton.singleton();
+    }
+
+    //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -477,11 +484,36 @@ namespace zsLib
     SocketMonitorPtr SocketMonitor::singleton()
     {
       static SingletonLazySharedPtr<SocketMonitor> singleton(SocketMonitor::create());
+
+      class Once {
+      public: Once() {getSocketMonitorPrioritySingleton().notify();}
+      };
+      static Once once;
+
       SocketMonitorPtr result = singleton.singleton();
       if (!result) {
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
       }
       return result;
+    }
+
+    //-------------------------------------------------------------------------
+    void SocketMonitor::setPriority(ThreadPriorities priority)
+    {
+      MonitorPriorityHelper &prioritySingleton = getSocketMonitorPrioritySingleton();
+
+      bool changed = prioritySingleton.setPriority(priority);
+      if (!changed) return;
+
+      if (!prioritySingleton.wasNotified()) return;
+
+      SocketMonitorPtr singleton = SocketMonitor::singleton();
+      if (!singleton) return;
+
+      AutoRecursiveLock lock(singleton->mLock);
+      if (!singleton->mThread) return;
+
+      setThreadPriority(*singleton->mThread, priority);
     }
 
     //-------------------------------------------------------------------------
@@ -498,14 +530,7 @@ namespace zsLib
 
         if (!mThread) {
           mThread = ThreadPtr(new boost::thread(boost::ref(*(singleton().get()))));
-#ifndef _WIN32
-          const int policy = SCHED_RR;
-          const int maxPrio = sched_get_priority_max(policy);
-          boost::thread::native_handle_type threadHandle = mThread->native_handle();
-          sched_param param;
-          param.sched_priority = maxPrio - 1; // maximum thread priority
-          pthread_setschedparam(threadHandle, policy, &param);
-#endif //_WIN32
+          setThreadPriority(mThread->native_handle(), getSocketMonitorPrioritySingleton().getPriority());
         }
 
         SOCKET socketHandle = socket->getSocket();

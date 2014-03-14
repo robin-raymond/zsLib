@@ -91,14 +91,15 @@ namespace zsLib
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
   template <typename T, bool allowDestroy = true>
-  class Singleton
+  class Singleton : BoxedAllocation<T, allowDestroy>
   {
   public:
-    static T &ref()
+    T &singleton()
     {
-      static BoxedAllocation<T, allowDestroy> singleton;
-      return singleton.ref();
+      return BoxedAllocation<T, allowDestroy>::ref();
     }
+
+  private:
   };
 
   //---------------------------------------------------------------------------

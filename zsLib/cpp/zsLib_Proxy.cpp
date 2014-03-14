@@ -52,7 +52,8 @@ namespace zsLib
 
       static ProxyTracking &singleton()
       {
-        return Singleton<ProxyTracking, false>::ref();
+        static Singleton<ProxyTracking, false> singleton;
+        return singleton.singleton();
       }
 
       void follow(int line, const char *fileName)

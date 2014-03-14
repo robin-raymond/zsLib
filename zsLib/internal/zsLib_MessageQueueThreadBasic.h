@@ -60,6 +60,8 @@ namespace zsLib
       // IMessageQueueThread
       virtual void waitForShutdown();
 
+      virtual void setThreadPriority(ThreadPriorities threadPriority);
+
     protected:
       ThreadPtr mThread;
       String mThreadName;
@@ -69,6 +71,7 @@ namespace zsLib
 
       mutable Lock mLock;
       DWORD mMustShutdown;
+      ThreadPriorities mThreadPriority;
     };
   }
 }

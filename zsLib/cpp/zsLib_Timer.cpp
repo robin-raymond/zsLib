@@ -114,6 +114,12 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
+  void Timer::setMonitorPriority(ThreadPriorities priority)
+  {
+    internal::TimerMonitor::setPriority(priority);
+  }
+
+  //---------------------------------------------------------------------------
   TimerPtr Timer::create(
                          ITimerDelegatePtr delegate,
                          Duration timeout,

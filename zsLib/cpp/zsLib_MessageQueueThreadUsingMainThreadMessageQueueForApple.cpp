@@ -218,6 +218,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
+    void MessageQueueThreadUsingMainThreadMessageQueueForApple::setThreadPriority(ThreadPriorities threadPriority)
+    {
+      // no-op
+    }
+
+    //-------------------------------------------------------------------------
     void RunLoopSourcePerformRoutine (void *info)
     {
       MessageQueueThreadUsingMainThreadMessageQueueForApple* obj = (MessageQueueThreadUsingMainThreadMessageQueueForApple*)info;

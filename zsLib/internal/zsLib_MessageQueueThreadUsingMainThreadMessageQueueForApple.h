@@ -81,6 +81,8 @@ namespace zsLib
       // IMessageQueueThread
       virtual void waitForShutdown();
 
+      virtual void setThreadPriority(ThreadPriorities threadPriority);
+
     public:
       virtual void process();
 

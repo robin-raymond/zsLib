@@ -164,6 +164,8 @@ namespace zsLib
       ~SocketMonitor();
       static SocketMonitorPtr singleton();
 
+      static void setPriority(ThreadPriorities priority);
+
       void monitorBegin(
                         SocketPtr socket,
                         bool monitorRead,

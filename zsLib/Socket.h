@@ -26,6 +26,7 @@
 #define ZSLIB_SOCKET_H_e70b2dd35334d2e569aea2d714e24c6a
 
 #include <zsLib/internal/zsLib_Socket.h>
+#include <zsLib/MessageQueueThread.h>
 
 #pragma warning(push)
 #pragma warning(disable: 4290)
@@ -215,6 +216,7 @@ namespace zsLib
 
   public:
     static void ignoreSIGPIPEOnThisThread();
+    static void setMonitorPriority(ThreadPriorities priority);  // must be called before any socket is used
 
     static SocketPtr create() throw(Exceptions::Unspecified);
     static SocketPtr createUDP(Create::Family inFamily = Create::IPv4) throw(Exceptions::Unspecified);

@@ -233,6 +233,12 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
+  void Socket::setMonitorPriority(ThreadPriorities priority)
+  {
+    internal::SocketMonitor::setPriority(priority);
+  }
+
+  //---------------------------------------------------------------------------
   SocketPtr Socket::create() throw(Exceptions::Unspecified)
   {
     SocketPtr object(new Socket);
