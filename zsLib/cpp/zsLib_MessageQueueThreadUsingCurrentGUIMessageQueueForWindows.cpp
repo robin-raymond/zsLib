@@ -50,28 +50,6 @@ namespace zsLib
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
-    class MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper
-    {
-    public:
-      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper() : mThreadQueue(MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create())
-      {
-        mThreadQueue->setup();
-      }
-      ~MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper()
-      {
-        mThreadQueue->waitForShutdown();
-      }
-
-    public:
-      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr mThreadQueue;
-    };
-
-    typedef boost::thread_specific_ptr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper> MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapperThreadPtr;
-
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
     class MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsGlobal
     {
     public:
@@ -112,7 +90,6 @@ namespace zsLib
       }
 
     public:
-      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapperThreadPtr mThreadQueueWrapper;
       HMODULE mModule;
       ATOM mRegisteredWindowClass;
       const TCHAR *mHiddenWindowClassName;
@@ -128,17 +105,10 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr getThreadMessageQueue()
-    {
-      if (! getGlobal().mThreadQueueWrapper.get())
-        getGlobal().mThreadQueueWrapper.reset(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper);
-      return getGlobal().mThreadQueueWrapper->mThreadQueue;
-    }
-
-    //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton()
     {
-      return getThreadMessageQueue();
+      static SingletonLazySharedPtr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindows> singleton(MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create());
+      return singleton.singleton();
     }
 
     //-------------------------------------------------------------------------
@@ -175,7 +145,8 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows() :
-      mHWND(NULL)
+      mHWND(NULL),
+      mIsShutdown(false)
     {
     }
 
@@ -192,39 +163,21 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::process()
     {
-      MessageQueuePtr queue;
-
-      {
-        AutoLock lock(mLock);
-        queue = mQueue;
-        if (!mQueue)
-          return;
-      }
-
-      queue->processOnlyOneMessage(); // process only one messsage at a time since this must be syncrhonized through the GUI message queue
+      mQueue->processOnlyOneMessage(); // process only one messsage at a time since this must be syncrhonized through the GUI message queue
     }
 
     //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::post(IMessageQueueMessagePtr message)
     {
-      MessageQueuePtr queue;
-      {
-        AutoLock lock(mLock);
-        queue = mQueue;
-        if (!queue) {
-          ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
-        }
+      if (mIsShutdown) {
+        ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
       }
-      queue->post(message);
+      mQueue->post(message);
     }
 
     //-------------------------------------------------------------------------
     IMessageQueue::size_type MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::getTotalUnprocessedMessages() const
     {
-      AutoLock lock(mLock);
-      if (!mQueue)
-        return 0;
-
       return mQueue->getTotalUnprocessedMessages();
     }
 
@@ -243,13 +196,14 @@ namespace zsLib
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::waitForShutdown()
     {
       AutoLock lock(mLock);
-      mQueue.reset();
 
       if (NULL != mHWND)
       {
         ZS_THROW_BAD_STATE_IF(0 == ::DestroyWindow(mHWND))
         mHWND = NULL;
       }
+
+      mIsShutdown = true;
     }
 
     //-------------------------------------------------------------------------
@@ -264,8 +218,8 @@ namespace zsLib
       if (getGlobal().mCustomMessage != uMsg)
         return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
 
-      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr queue(getThreadMessageQueue());
-      queue->process();
+      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr singleton = MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton();
+      singleton->process();
       return (LRESULT)0;
     }
   }

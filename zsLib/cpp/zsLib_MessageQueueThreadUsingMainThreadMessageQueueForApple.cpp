@@ -68,12 +68,12 @@ namespace zsLib
       mRunLoop = CFRunLoopGetMain();
 
       CFRunLoopSourceContext context = {0, this, NULL, NULL, NULL, NULL, NULL, NULL,NULL, &RunLoopSourcePerformRoutine};
-      processMessageLoopSource = CFRunLoopSourceCreate(NULL, 1, &context);
-      if ( (NULL != processMessageLoopSource) && CFRunLoopSourceIsValid(processMessageLoopSource))
+      mProcessMessageLoopSource = CFRunLoopSourceCreate(NULL, 1, &context);
+      if ( (NULL != mProcessMessageLoopSource) && CFRunLoopSourceIsValid(mProcessMessageLoopSource))
       {
-        CFRunLoopAddSource(mRunLoop, processMessageLoopSource, kCFRunLoopDefaultMode);
+        CFRunLoopAddSource(mRunLoop, mProcessMessageLoopSource, kCFRunLoopDefaultMode);
 
-        if (!CFRunLoopContainsSource(mRunLoop, processMessageLoopSource, kCFRunLoopDefaultMode))
+        if (!CFRunLoopContainsSource(mRunLoop, mProcessMessageLoopSource, kCFRunLoopDefaultMode))
         {
           ZS_THROW_CUSTOM(Exceptions::MessageQueueSourceNotAdded, "run loop input source is not added.")
         }
@@ -84,12 +84,12 @@ namespace zsLib
       }
 
       CFRunLoopSourceContext contextMoreMessages = {0, this, NULL, NULL, NULL, NULL, NULL, NULL,NULL, &MoreMessagesLoopSourcePerformRoutine};
-      moreMessagesLoopSource = CFRunLoopSourceCreate(NULL, 1, &contextMoreMessages);
-      if ( (NULL != moreMessagesLoopSource)  && CFRunLoopSourceIsValid(moreMessagesLoopSource))
+      mMoreMessagesLoopSource = CFRunLoopSourceCreate(NULL, 1, &contextMoreMessages);
+      if ( (NULL != mMoreMessagesLoopSource)  && CFRunLoopSourceIsValid(mMoreMessagesLoopSource))
       {
-        CFRunLoopAddSource(mRunLoop, moreMessagesLoopSource, kCFRunLoopDefaultMode);
+        CFRunLoopAddSource(mRunLoop, mMoreMessagesLoopSource, kCFRunLoopDefaultMode);
 
-        if (!CFRunLoopContainsSource(mRunLoop, moreMessagesLoopSource, kCFRunLoopDefaultMode))
+        if (!CFRunLoopContainsSource(mRunLoop, mMoreMessagesLoopSource, kCFRunLoopDefaultMode))
         {
           ZS_THROW_CUSTOM(Exceptions::MessageQueueSourceNotAdded, "run loop input source is not added.")
         }
@@ -102,10 +102,11 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    MessageQueueThreadUsingMainThreadMessageQueueForApple::MessageQueueThreadUsingMainThreadMessageQueueForApple()
+    MessageQueueThreadUsingMainThreadMessageQueueForApple::MessageQueueThreadUsingMainThreadMessageQueueForApple() :
+      mIsShutdown(false),
+      mProcessMessageLoopSource(NULL),
+      mMoreMessagesLoopSource(NULL)
     {
-      processMessageLoopSource = NULL;
-      moreMessagesLoopSource = NULL;
     }
 
     //-------------------------------------------------------------------------
@@ -113,42 +114,33 @@ namespace zsLib
     {
       waitForShutdown();
 
-      if (NULL != processMessageLoopSource)
+      if (NULL != mProcessMessageLoopSource)
       {
-        CFRunLoopSourceInvalidate(processMessageLoopSource);
+        CFRunLoopSourceInvalidate(mProcessMessageLoopSource);
       }
 
-      if (NULL != moreMessagesLoopSource)
+      if (NULL != mMoreMessagesLoopSource)
       {
-        CFRunLoopSourceInvalidate(moreMessagesLoopSource);
+        CFRunLoopSourceInvalidate(mMoreMessagesLoopSource);
       }
     }
 
     //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::process()
     {
-      MessageQueuePtr queue;
-
-      {
-        AutoLock lock(mLock);
-        queue = mQueue;
-        if (!mQueue)
-          return;
-      }
-
       //process only one message in que
-      queue->processOnlyOneMessage();
+      mQueue->processOnlyOneMessage();
 
       //if there are more messages to process signal it
       if (this->getTotalUnprocessedMessages() > 0)
       {
-        if ( (NULL == moreMessagesLoopSource) || !CFRunLoopSourceIsValid(moreMessagesLoopSource))
+        if ( (NULL == mMoreMessagesLoopSource) || !CFRunLoopSourceIsValid(mMoreMessagesLoopSource))
         {
           ZS_THROW_CUSTOM(Exceptions::MessageQueueSourceNotValid, "run loop input source is not valid.")
         }
         else
         {
-          CFRunLoopSourceSignal(moreMessagesLoopSource);
+          CFRunLoopSourceSignal(mMoreMessagesLoopSource);
           CFRunLoopWakeUp(mRunLoop);
         }
       }
@@ -164,24 +156,16 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::post(IMessageQueueMessagePtr message)
     {
-      MessageQueuePtr queue;
-      {
-        AutoLock lock(mLock);
-        queue = mQueue;
-        if (!queue) {
-          ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
-        }
+      if (mIsShutdown) {
+        ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
       }
-      queue->post(message);
+      mQueue->post(message);
     }
 
     //-------------------------------------------------------------------------
     IMessageQueue::size_type MessageQueueThreadUsingMainThreadMessageQueueForApple::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
-      if (!mQueue)
-        return 0;
-
       return mQueue->getTotalUnprocessedMessages();
     }
 
@@ -189,11 +173,11 @@ namespace zsLib
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::notifyMessagePosted()
     {
       AutoLock lock(mLock);
-      if ( (NULL == processMessageLoopSource) || !CFRunLoopSourceIsValid(processMessageLoopSource))
+      if ( (NULL == mProcessMessageLoopSource) || !CFRunLoopSourceIsValid(mProcessMessageLoopSource))
       {
         ZS_THROW_CUSTOM(Exceptions::MessageQueueSourceNotValid, "run loop input source is not valid.")
       }
-      CFRunLoopSourceSignal(processMessageLoopSource);
+      CFRunLoopSourceSignal(mProcessMessageLoopSource);
       CFRunLoopWakeUp(mRunLoop);
     }
 
@@ -203,24 +187,32 @@ namespace zsLib
       AutoLock lock(mLock);
       mQueue.reset();
 
-      if (NULL != processMessageLoopSource)
+      if (NULL != mProcessMessageLoopSource)
       {
-        CFRunLoopSourceInvalidate(processMessageLoopSource);
-        processMessageLoopSource = NULL;
+        CFRunLoopSourceInvalidate(mProcessMessageLoopSource);
+        mProcessMessageLoopSource = NULL;
 
       }
 
-      if (NULL != moreMessagesLoopSource)
+      if (NULL != mMoreMessagesLoopSource)
       {
-        CFRunLoopSourceInvalidate(moreMessagesLoopSource);
-        moreMessagesLoopSource = NULL;
+        CFRunLoopSourceInvalidate(mMoreMessagesLoopSource);
+        mMoreMessagesLoopSource = NULL;
       }
+
+      mIsShutdown = true;
     }
 
     //-------------------------------------------------------------------------
     void MessageQueueThreadUsingMainThreadMessageQueueForApple::setThreadPriority(ThreadPriorities threadPriority)
     {
       // no-op
+    }
+
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadUsingMainThreadMessageQueueForApple::processMessagesFromThread()
+    {
+      mQueue->process();
     }
 
     //-------------------------------------------------------------------------

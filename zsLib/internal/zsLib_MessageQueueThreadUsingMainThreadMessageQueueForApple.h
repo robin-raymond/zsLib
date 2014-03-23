@@ -83,6 +83,8 @@ namespace zsLib
 
       virtual void setThreadPriority(ThreadPriorities threadPriority);
 
+      virtual void processMessagesFromThread();
+
     public:
       virtual void process();
 
@@ -96,8 +98,10 @@ namespace zsLib
       MessageQueuePtr mQueue;
 
       CFRunLoopRef mRunLoop;
-      CFRunLoopSourceRef processMessageLoopSource;
-      CFRunLoopSourceRef moreMessagesLoopSource;
+      CFRunLoopSourceRef mProcessMessageLoopSource;
+      CFRunLoopSourceRef mMoreMessagesLoopSource;
+
+      volatile bool mIsShutdown;
     };
   }
 }

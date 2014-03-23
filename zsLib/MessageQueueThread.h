@@ -56,6 +56,8 @@ namespace zsLib
     virtual void waitForShutdown() = 0;
 
     virtual void setThreadPriority(ThreadPriorities priority) = 0;
+
+    virtual void processMessagesFromThread() = 0;
   };
 
   class MessageQueueThread : public IMessageQueueThread

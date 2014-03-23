@@ -62,6 +62,8 @@ namespace zsLib
 
       virtual void setThreadPriority(ThreadPriorities threadPriority);
 
+      virtual void processMessagesFromThread();
+
     protected:
       ThreadPtr mThread;
       String mThreadName;
@@ -72,6 +74,8 @@ namespace zsLib
       mutable Lock mLock;
       DWORD mMustShutdown;
       ThreadPriorities mThreadPriority;
+
+      volatile bool mIsShutdown;
     };
   }
 }

@@ -49,8 +49,9 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     MessageQueueThreadBasic::MessageQueueThreadBasic(const char *threadName) :
-      mThreadName(threadName ? threadName : ""),
-      mMustShutdown(0)
+      mThreadName(threadName),
+      mMustShutdown(0),
+      mIsShutdown(false)
     {
     }
 
@@ -58,32 +59,24 @@ namespace zsLib
     {
       bool shouldShutdown = false;
 
-      do
-      {
-        MessageQueuePtr queue;
+      MessageQueuePtr queue = mQueue;
 
-        {
-          AutoLock lock(mLock);
 #ifdef __QNX__
-          if (!mThreadName.isEmpty()) {
-            pthread_setname_np(pthread_self(), mThreadName);
-          }
+      if (!mThreadName.isEmpty()) {
+        pthread_setname_np(pthread_self(), mThreadName);
+      }
 #else
 #ifndef _LINUX
 #ifndef _ANDROID
-          if (!mThreadName.isEmpty()) {
-            pthread_setname_np(mThreadName);
-          }
+      if (!mThreadName.isEmpty()) {
+        pthread_setname_np(mThreadName);
+      }
 #endif // _ANDROID
 #endif // _LINUX
 #endif // __QNX__
 
-
-          queue = mQueue;
-          if (!mQueue)
-            return;
-        }
-
+      do
+      {
         queue->process(); // process all pending data now
         mEvent.reset();   // should be safe to reset the notification now that we are done processing
 
@@ -98,33 +91,22 @@ namespace zsLib
         shouldShutdown = (0 != zsLib::atomicGetValue32(mMustShutdown));
       } while(!shouldShutdown);
 
-      {
-        AutoLock lock(mLock);
-        mQueue.reset();
-      }
+      mIsShutdown = true;
     }
 
     //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::post(IMessageQueueMessagePtr message)
     {
-      MessageQueuePtr queue;
-      {
-        AutoLock lock(mLock);
-        queue = mQueue;
-        if (!queue) {
-          ZS_THROW_CUSTOM(IMessageQueue::Exceptions::MessageQueueGone, "message posted to message queue after message queue was deleted.")
-        }
+      if (mIsShutdown) {
+        ZS_THROW_CUSTOM(IMessageQueue::Exceptions::MessageQueueGone, "message posted to message queue after message queue was deleted.")
       }
-      queue->post(message);
+      mQueue->post(message);
     }
 
     //-------------------------------------------------------------------------
     IMessageQueue::size_type MessageQueueThreadBasic::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
-      if (!mQueue)
-        return 0;
-
       return mQueue->getTotalUnprocessedMessages();
     }
 
@@ -154,7 +136,6 @@ namespace zsLib
       {
         AutoLock lock(mLock);
         mThread.reset();
-        mQueue.reset();
       }
     }
 
@@ -169,6 +150,12 @@ namespace zsLib
       mThreadPriority = threadPriority;
 
       zsLib::setThreadPriority(*mThread, threadPriority);
+    }
+
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadBasic::processMessagesFromThread()
+    {
+      mQueue->process();
     }
   }
 }
