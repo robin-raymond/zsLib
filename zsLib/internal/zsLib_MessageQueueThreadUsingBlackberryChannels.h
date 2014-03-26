@@ -74,6 +74,8 @@ namespace zsLib
       // IMessageQueueThread
       virtual void waitForShutdown();
 
+      virtual void setThreadPriority(ThreadPriorities threadPriority);
+
       // IQtCrossThreadNotifierDelegate
       virtual void processMessageFromThread();
 

@@ -26,6 +26,8 @@
 #define ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
 
 #include <zsLib/types.h>
+#include <zsLib/Log.h>
+#include <zsLib/MessageQueueThread.h>
 
 #include <boost/noncopyable.hpp>
 #include <map>
@@ -44,15 +46,16 @@ namespace zsLib
 
   namespace internal
   {
-    class TimerMonitorGlobalSafeReference;
-
     class TimerMonitor;
     typedef boost::shared_ptr<TimerMonitor> TimerMonitorPtr;
     typedef boost::weak_ptr<TimerMonitor> TimerMonitorWeakPtr;
 
     class TimerMonitor : public boost::noncopyable
     {
-      friend class TimerMonitorGlobalSafeReference;
+    public:
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
+
     protected:
       TimerMonitor();
 
@@ -64,18 +67,25 @@ namespace zsLib
       static TimerMonitorPtr singleton();
       static TimerMonitorPtr create();
 
+      static void setPriority(ThreadPriorities priority);
+
       void monitorBegin(TimerPtr timer);
-      void monitorEnd(Timer &timer);
+      void monitorEnd(zsLib::Timer &timer);
 
       void operator()();
 
     private:
+      zsLib::Log::Params log(const char *message) const;
+      static zsLib::Log::Params slog(const char *message);
+
       void cancel();
 
       Duration fireTimers();
       void wakeUp();
 
     private:
+      AutoPUID mID;
+
       RecursiveLock mLock;
       Lock mFlagLock;
       boost::condition_variable mFlagNotify;

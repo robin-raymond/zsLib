@@ -41,12 +41,6 @@ namespace zsLib
     class MessageQueueThreadBasic : public MessageQueueThread,
                                     public IMessageQueueNotify
     {
-    public:
-      struct Exceptions
-      {
-        ZS_DECLARE_CUSTOM_EXCEPTION(MessageQueueAlreadyDeleted)
-      };
-
     protected:
       MessageQueueThreadBasic(const char *threadName);
 
@@ -66,6 +60,10 @@ namespace zsLib
       // IMessageQueueThread
       virtual void waitForShutdown();
 
+      virtual void setThreadPriority(ThreadPriorities threadPriority);
+
+      virtual void processMessagesFromThread();
+
     protected:
       ThreadPtr mThread;
       String mThreadName;
@@ -75,6 +73,9 @@ namespace zsLib
 
       mutable Lock mLock;
       DWORD mMustShutdown;
+      ThreadPriorities mThreadPriority;
+
+      volatile bool mIsShutdown;
     };
   }
 }

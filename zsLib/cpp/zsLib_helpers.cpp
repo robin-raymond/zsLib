@@ -35,24 +35,36 @@ using namespace boost::interprocess;
 namespace zsLib
 {
 
-  namespace internal {
-    ULONG &globalPUID() {
+  namespace internal
+  {
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma (helpers)
+
+    //-------------------------------------------------------------------------
+    ULONG &globalPUID()
+    {
       static ULONG global = 0;
       return global;
     }
   }
 
+  //---------------------------------------------------------------------------
   PUID createPUID()
   {
     return (PUID)atomicIncrement(zsLib::internal::globalPUID());
   }
 
+  //---------------------------------------------------------------------------
   UUID createUUID()
   {
     boost::uuids::random_generator gen;
     return gen();
   }
 
+  //---------------------------------------------------------------------------
   ULONG atomicIncrement(ULONG &value)
   {
 #ifdef __GNUC__
@@ -62,6 +74,7 @@ namespace zsLib
 #endif //__GNUC__
   }
 
+  //---------------------------------------------------------------------------
   ULONG atomicDecrement(ULONG &value)
   {
 #ifdef __GNUC__
@@ -71,6 +84,7 @@ namespace zsLib
 #endif //__GNUC__
   }
 
+  //---------------------------------------------------------------------------
   ULONG atomicGetValue(ULONG &value)
   {
 #ifdef __GNUC__
@@ -80,6 +94,7 @@ namespace zsLib
 #endif //__GNUC__
   }
 
+  //---------------------------------------------------------------------------
   DWORD atomicGetValue32(DWORD &value)
   {
 #ifdef __GNUC__
@@ -89,6 +104,7 @@ namespace zsLib
 #endif //__GNUC__
   }
 
+  //---------------------------------------------------------------------------
   void atomicSetValue32(DWORD &value, DWORD newValue)
   {
 #ifdef __GNUC__
@@ -98,11 +114,13 @@ namespace zsLib
 #endif //__GNUC__
   }
 
+  //---------------------------------------------------------------------------
   Time now()
   {
     return boost::posix_time::microsec_clock::universal_time();
   }
 
+  //---------------------------------------------------------------------------
   Duration timeSinceEpoch(Time time)
   {
     if (Time() == time) {
@@ -113,6 +131,7 @@ namespace zsLib
     return (time - epoch);
   }
 
+  //---------------------------------------------------------------------------
   Time timeSinceEpoch(Duration duration)
   {
     if (0 == time) {

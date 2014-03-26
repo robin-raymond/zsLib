@@ -34,6 +34,7 @@
 #endif
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::ULONG;
 using zsLib::IMessageQueue;
@@ -219,7 +220,9 @@ BOOST_AUTO_TEST_SUITE(zsLibProxyUsingGUIThread)
 
   BOOST_AUTO_TEST_CASE(TestProxyUsingGUIThread)
   {
-    testingUsingGUIThread::TestProxy test;
+    if (ZSLIB_TEST_PROXY_USING_GUI) {
+      testingUsingGUIThread::TestProxy test;
+    }
   }
 
 BOOST_AUTO_TEST_SUITE_END()

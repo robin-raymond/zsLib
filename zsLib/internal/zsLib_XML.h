@@ -114,6 +114,11 @@ namespace zsLib
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
+        size_t actualWriteJSON(
+                               const GeneratorPtr &inGenerator,
+                               char * &ioPos
+                               ) const;
+
         size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
 
@@ -143,6 +148,11 @@ namespace zsLib
 
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
+
+        size_t actualWriteJSON(
+                               const GeneratorPtr &inGenerator,
+                               char * &ioPos
+                               ) const;
 
         size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
@@ -181,6 +191,11 @@ namespace zsLib
 
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
+
+        size_t actualWriteJSON(
+                               const GeneratorPtr &inGenerator,
+                               char * &ioPos
+                               ) const;
 
         size_t getOutputSizeJSON(const GeneratorPtr &inGenerator) const;
         void writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const;
@@ -429,6 +444,63 @@ namespace zsLib
         char mJSONAttributePrefix;
       };
 
+      struct JSONStrs;
+
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark JSONStrs
+      #pragma mark
+
+      struct JSONStrs
+      {
+        const char mIndent;
+        const char mIndentChar;
+
+        const char *mNextObjectInList;
+        const char *mObjectNameOpen;
+        const char *mObjectNameClose;
+
+        const char *mNextArrayInList;
+        const char *mFirstArrayEmptyName;
+        const char *mFirstArrayNameOpen;
+        const char *mFirstArrayNameClose;
+        const char *mMiddleArray;
+        const char *mLastArrayOpen;
+        const char *mLastArrayClose;
+
+        const char *mChildNone;
+        const char *mChildTextOnlyOpen;
+        const char *mChildTextOnlyClose;
+
+        const char *mChildComplexOpen;
+        const char *mChildComplexClose;
+
+        const char *mNextAttribute;
+        const char *mAttributeEntry;
+
+        const char *mNextText;
+        const char *mTextNameOpen;
+        const char *mTextNameCloseStr;
+        const char *mTextNameCloseNumber;
+
+        const char *mTextValueCloseStr;
+        const char *mTextValueCloseNumer;
+
+        const char *mNextInnerElementAfterText;
+
+        const char *mAttributeNameOpen;
+        const char *mAttributeNameCloseStr;
+        const char *mAttributeNameCloseNumber;
+
+        const char *mAttributeValueCloseStr;
+        const char *mAttributeValueCloseNumber;
+
+        const char *mNULL;
+      };
+
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
@@ -490,12 +562,22 @@ namespace zsLib
         };
 
       public:
-        Generator();
+        Generator(UINT writeFlags);
 
       protected:
         static size_t getOutputSize(const GeneratorPtr &inGenerator, NodePtr inNode);
         static void writeBuffer(const GeneratorPtr &inGenerator, NodePtr inNode, char * &ioPos);
+
         static void writeBuffer(char * &ioPos, CSTR inString);
+
+        JSONStrs &jsonStrs() const {return mStrs;}
+
+        size_t indent(char * &ioPos) const;                 // output 1 indent length (based on depth)
+        size_t copy(char * &ioPos, CSTR inString) const;    // non-interpreted copy
+        size_t fill(char * &ioPos, CSTR inString) const;    // interpreted output
+
+        void plusDepth() const  {++mDepth;}
+        void minusDepth() const {--mDepth;}
 
         void getJSONEncodingMode(
                                  const ElementPtr &el,
@@ -516,6 +598,9 @@ namespace zsLib
         char mJSONAttributePrefix;
 
         mutable NodePtr mGeneratorRoot;
+
+        mutable ULONG mDepth;
+        JSONStrs &mStrs;
       };
 
     } // namespace internal

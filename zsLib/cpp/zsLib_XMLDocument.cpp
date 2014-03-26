@@ -84,38 +84,15 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      size_t Document::getOutputSizeJSON(const GeneratorPtr &generator) const
+      size_t Document::actualWriteJSON(
+                                       const GeneratorPtr &inGenerator,
+                                       char * &ioPos
+                                       ) const
       {
-        DocumentPtr self(mThis.lock());
-
-        bool foundText = false;
+        const Generator &generator = (*inGenerator);
 
         size_t result = 0;
-        NodePtr child = self->getFirstChild();
-        while (child)
-        {
-          if (child->isText()) {
-            foundText = true;
-          }
-          result += Generator::getOutputSize(generator, child);
-          child = child->getNextSibling();
-        }
 
-        if (foundText) {
-          // text at the root will have to become encoded as a single entry text node
-          result += strlen("\"\":\"\"");
-          if (self->getFirstChildElement()) {
-            result += strlen(",");
-          }
-          result += strlen(generator->mJSONForcedText);
-        }
-
-        return result;
-      }
-
-      //-----------------------------------------------------------------------
-      void Document::writeBufferJSON(const GeneratorPtr &generator, char * &ioPos) const
-      {
         DocumentPtr self(mThis.lock());
 
         bool foundText = false;
@@ -125,19 +102,25 @@ namespace zsLib
         {
           if (child->isText()) {
             if (!foundText) {
-              Generator::writeBuffer(ioPos, "\"");
-              Generator::writeBuffer(ioPos, generator->mJSONForcedText);
-              Generator::writeBuffer(ioPos, "\":\"");
+              result += generator.fill(ioPos, generator.jsonStrs().mTextNameOpen);
+              result += generator.fill(ioPos, generator.mJSONForcedText);
+              result += generator.fill(ioPos, generator.jsonStrs().mTextNameCloseStr);
             }
-            Generator::writeBuffer(generator, child, ioPos);
+            if (ioPos) {
+              Generator::writeBuffer(inGenerator, child, ioPos);
+            } else {
+              result += Generator::getOutputSize(inGenerator, child);
+            }
             foundText = true;
           }
           child = child->getNextSibling();
         }
+
         if (foundText) {
-          Generator::writeBuffer(ioPos, "\"");
+          result += generator.fill(ioPos, generator.jsonStrs().mTextValueCloseStr);
+
           if (self->getFirstChildElement()) {
-            Generator::writeBuffer(ioPos, ",");
+            result += generator.fill(ioPos, generator.jsonStrs().mNextInnerElementAfterText);
           }
         }
 
@@ -146,10 +129,29 @@ namespace zsLib
         {
           if (!child->isText()) {
             // text was already handled, now write out all the non-text
-            Generator::writeBuffer(generator, child, ioPos);
+            if (ioPos) {
+              Generator::writeBuffer(inGenerator, child, ioPos);
+            } else {
+              result += Generator::getOutputSize(inGenerator, child);
+            }
           }
           child = child->getNextSibling();
         }
+
+        return result;
+      }
+
+      //-----------------------------------------------------------------------
+      size_t Document::getOutputSizeJSON(const GeneratorPtr &inGenerator) const
+      {
+        char *ioPos = NULL;
+        return actualWriteJSON(inGenerator, ioPos);
+      }
+
+      //-----------------------------------------------------------------------
+      void Document::writeBufferJSON(const GeneratorPtr &inGenerator, char * &ioPos) const
+      {
+        actualWriteJSON(inGenerator, ioPos);
       }
 
       //-----------------------------------------------------------------------
@@ -262,6 +264,16 @@ namespace zsLib
     boost::shared_array<char> Document::writeAsXML(size_t *outLength) const
     {
       GeneratorPtr generator = Generator::createXMLGenerator();
+      return generator->write(mThis.lock(), outLength);
+    }
+
+    //-------------------------------------------------------------------------
+    boost::shared_array<char> Document::writeAsJSON(
+                                                    bool prettyPrint,
+                                                    size_t *outLength
+                                                    ) const
+    {
+      GeneratorPtr generator = Generator::createJSONGenerator(Generator::JSONWriteFlag_PrettyPrint);
       return generator->write(mThis.lock(), outLength);
     }
 

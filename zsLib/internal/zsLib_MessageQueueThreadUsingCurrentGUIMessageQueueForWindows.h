@@ -35,8 +35,6 @@ namespace zsLib
 {
   namespace internal
   {
-    class MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper;
-
     class MessageQueueThreadUsingCurrentGUIMessageQueueForWindows;
     typedef boost::shared_ptr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindows> MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr;
     typedef boost::weak_ptr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindows> MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWeakPtr;
@@ -44,8 +42,6 @@ namespace zsLib
     class MessageQueueThreadUsingCurrentGUIMessageQueueForWindows : public MessageQueueThread,
                                                                     public IMessageQueueNotify
     {
-      friend class MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWrapper;
-
     public:
       struct Exceptions
       {
@@ -73,6 +69,8 @@ namespace zsLib
       // IMessageQueueThread
       virtual void waitForShutdown();
 
+      virtual void setThreadPriority(ThreadPriorities threadPriority);
+
     public:
       virtual void process();
 
@@ -81,6 +79,8 @@ namespace zsLib
 
       MessageQueuePtr mQueue;
       HWND mHWND;
+
+      volatile mIsShutdown;
     };
   }
 }

@@ -31,6 +31,7 @@
 
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::BYTE;
 using zsLib::LONGLONG;
@@ -41,6 +42,8 @@ BOOST_AUTO_TEST_SUITE(zsLibStringize)
 
   BOOST_AUTO_TEST_CASE(TestStringize)
   {
+    if (!ZSLIB_TEST_STRINGIZE) return;
+
     BOOST_EQUAL("0", zsLib::Stringize<char>(0).string());
     BOOST_EQUAL("-128", zsLib::Stringize<char>(-128).string());
     BOOST_EQUAL("127", zsLib::Stringize<char>(127).string());
