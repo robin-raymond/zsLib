@@ -87,7 +87,6 @@
 		006680DC16C9CE8700259F81 /* zsLib_Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Event.h; sourceTree = "<group>"; };
 		006680DD16C9CE8700259F81 /* zsLib_Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Exception.h; sourceTree = "<group>"; };
 		006680DE16C9CE8700259F81 /* zsLib_IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_IPAddress.h; sourceTree = "<group>"; };
-		006680DF16C9CE8700259F81 /* zsLib_ISocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_ISocket.h; sourceTree = "<group>"; };
 		006680E016C9CE8700259F81 /* zsLib_Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Log.h; sourceTree = "<group>"; };
 		006680E116C9CE8700259F81 /* zsLib_MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueue.h; sourceTree = "<group>"; };
 		006680E216C9CE8700259F81 /* zsLib_MessageQueueThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThread.h; sourceTree = "<group>"; };
@@ -104,7 +103,6 @@
 		006680ED16C9CE8700259F81 /* zsLib_TimerMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_TimerMonitor.h; sourceTree = "<group>"; };
 		006680EE16C9CE8700259F81 /* zsLib_XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_XML.h; sourceTree = "<group>"; };
 		006680EF16C9CE8700259F81 /* IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPAddress.h; sourceTree = "<group>"; };
-		006680F016C9CE8700259F81 /* ISocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISocket.h; sourceTree = "<group>"; };
 		006680F116C9CE8700259F81 /* lgpl-3.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "lgpl-3.0.txt"; sourceTree = "<group>"; };
 		006680F216C9CE8700259F81 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
 		006680F316C9CE8700259F81 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueue.h; sourceTree = "<group>"; };
@@ -166,7 +164,6 @@
 				006680D716C9CE8700259F81 /* Exception.h */,
 				006680D816C9CE8700259F81 /* helpers.h */,
 				006680EF16C9CE8700259F81 /* IPAddress.h */,
-				006680F016C9CE8700259F81 /* ISocket.h */,
 				006680F216C9CE8700259F81 /* Log.h */,
 				006680F316C9CE8700259F81 /* MessageQueue.h */,
 				006680F416C9CE8700259F81 /* MessageQueueAssociator.h */,
@@ -234,7 +231,6 @@
 				006680DC16C9CE8700259F81 /* zsLib_Event.h */,
 				006680DD16C9CE8700259F81 /* zsLib_Exception.h */,
 				006680DE16C9CE8700259F81 /* zsLib_IPAddress.h */,
-				006680DF16C9CE8700259F81 /* zsLib_ISocket.h */,
 				006680E016C9CE8700259F81 /* zsLib_Log.h */,
 				006680E116C9CE8700259F81 /* zsLib_MessageQueue.h */,
 				006680E216C9CE8700259F81 /* zsLib_MessageQueueThread.h */,

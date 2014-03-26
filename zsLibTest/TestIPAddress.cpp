@@ -33,6 +33,7 @@
 
 
 #include "boost_replacement.h"
+#include "main.h"
 
 #define HlZeroStruct(xValue) memset(&(xValue), 0, sizeof(xValue))
 
@@ -1145,7 +1146,9 @@ BOOST_AUTO_TEST_SUITE(zsLibIPAddress)
 
   BOOST_AUTO_TEST_CASE(TestIPAddress)
   {
-    TestIPAddress test;
+    if (ZSLIB_TEST_IP_ADDRESS) {
+      TestIPAddress test;
+    }
   }
 
 BOOST_AUTO_TEST_SUITE_END()

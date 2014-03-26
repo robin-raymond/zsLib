@@ -195,6 +195,13 @@ namespace zsLib
         mCrossThreadNotifier.reset();
       }
     }
+
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadUsingBlackberryChannels::setThreadPriority(ThreadPriorities threadPriority)
+    {
+      // no-op
+    }
+
     //-----------------------------------------------------------------------
     void MessageQueueThreadUsingBlackberryChannels::processMessageFromThread()
     {

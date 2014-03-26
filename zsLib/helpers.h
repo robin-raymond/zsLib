@@ -27,22 +27,123 @@
 
 #include <zsLib/types.h>
 
-namespace zsLib {
+namespace zsLib
+{
 
+  //---------------------------------------------------------------------------
   PUID createPUID();
   UUID createUUID();
 
+  //---------------------------------------------------------------------------
   ULONG atomicIncrement(ULONG &value);
   ULONG atomicDecrement(ULONG &value);
   ULONG atomicGetValue(ULONG &value);
 
+  //---------------------------------------------------------------------------
   DWORD atomicGetValue32(DWORD &value);
   void atomicSetValue32(DWORD &value, DWORD newValue);
 
+  //---------------------------------------------------------------------------
   Time now();
 
   Duration timeSinceEpoch(Time time);
   Time timeSinceEpoch(Duration duration);
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  template <typename T, bool allowDestroy = true>
+  class BoxedAllocation
+  {
+  public:
+    BoxedAllocation()
+    {
+      BYTE *buffer = (&(mBuffer[0]));
+      BYTE *alignedBuffer = buffer + alignof(T) - reinterpret_cast<uintptr_t>(buffer) % alignof(T);
+      mObject = new (alignedBuffer) T;
+    }
+
+    ~BoxedAllocation()
+    {
+      if (!allowDestroy) return;
+
+      mObject->~T();
+    }
+
+    T &ref()
+    {
+      return *mObject;
+    }
+
+    const T &ref() const
+    {
+      return *mObject;
+    }
+
+  private:
+    BYTE mBuffer[sizeof(T) + alignof(T)];
+    T *mObject;
+  };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  template <typename T, bool allowDestroy = true>
+  class Singleton : BoxedAllocation<T, allowDestroy>
+  {
+  public:
+    T &singleton()
+    {
+      return BoxedAllocation<T, allowDestroy>::ref();
+    }
+
+  private:
+  };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark SingletonLazySharedPtr<T, bool allowDestroy>
+  #pragma mark
+
+  template <typename T, bool allowDestroy = true>
+  class SingletonLazySharedPtr : BoxedAllocation< boost::weak_ptr<T>, false >
+  {
+  public:
+    typedef boost::shared_ptr<T> TPtr;
+    typedef boost::weak_ptr<T> TWeakPtr;
+
+  public:
+    SingletonLazySharedPtr(TPtr pThis)
+    {
+      mThis = pThis;
+      weakRef() = pThis;
+
+      if (!allowDestroy) {
+        // throw away an extra reference to "pThis" intentionally
+        BoxedAllocation<TPtr, false> bogusReference;
+        (bogusReference.ref()) = pThis;
+      }
+    }
+
+    TPtr singleton()
+    {
+      return weakRef().lock();
+    }
+
+  private:
+    TWeakPtr &weakRef()
+    {
+      return BoxedAllocation< boost::weak_ptr<T>, false >::ref();
+    }
+
+  private:
+    TPtr mThis;
+  };
 
 } // namespace zsLib
 

@@ -28,6 +28,7 @@
 //#include <boost/test/test_tools.hpp>
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::BYTE;
 using zsLib::DWORD;
@@ -49,6 +50,8 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTest)
 
   BOOST_AUTO_TEST_CASE(TestString)
   {
+    if (!ZSLIB_TEST_STRING) return;
+
     class NullTestString
     {
     public:
@@ -724,6 +727,8 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTestMore)
 
   BOOST_AUTO_TEST_CASE(TestStringMore)
   {
+    if (!ZSLIB_TEST_STRING) return;
+
     {
       // test convert to unicode then back
       CWSTR wStr = &(gWArray1[0]);

@@ -62,7 +62,8 @@ namespace zsLib
     protected:
       MessageQueueThreadUsingMainThreadMessageQueueForApple();
       static MessageQueueThreadUsingMainThreadMessageQueueForApplePtr create();
-      void setup();
+
+      void init();
 
     public:
       ~MessageQueueThreadUsingMainThreadMessageQueueForApple();
@@ -80,8 +81,15 @@ namespace zsLib
       // IMessageQueueThread
       virtual void waitForShutdown();
 
+      virtual void setThreadPriority(ThreadPriorities threadPriority);
+
+      virtual void processMessagesFromThread();
+
     public:
       virtual void process();
+
+    protected:
+      static zsLib::Log::Params slog(const char *message);
 
     protected:
       mutable Lock mLock;
@@ -90,8 +98,10 @@ namespace zsLib
       MessageQueuePtr mQueue;
 
       CFRunLoopRef mRunLoop;
-      CFRunLoopSourceRef processMessageLoopSource;
-      CFRunLoopSourceRef moreMessagesLoopSource;
+      CFRunLoopSourceRef mProcessMessageLoopSource;
+      CFRunLoopSourceRef mMoreMessagesLoopSource;
+
+      volatile bool mIsShutdown;
     };
   }
 }

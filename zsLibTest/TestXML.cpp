@@ -30,6 +30,7 @@
 
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::CSTR;
 using zsLib::ULONG;
@@ -1730,6 +1731,7 @@ public:
     zsLib::XML::GeneratorPtr generatorXML = zsLib::XML::Generator::createXMLGenerator();
     zsLib::XML::GeneratorPtr generatorJSON = zsLib::XML::Generator::createJSONGenerator("#text",'$');
     zsLib::XML::GeneratorPtr reGeneratorJSON = zsLib::XML::Generator::createJSONGenerator("#text",'$');
+    zsLib::XML::GeneratorPtr generatorJSONPretty = zsLib::XML::Generator::createJSONGenerator(zsLib::XML::Generator::JSONWriteFlag_PrettyPrint, "#text", '$');
 
     size_t lengthXML = 0;
     boost::shared_array<char> outputXML = generatorXML->write(cloneDocument, &lengthXML);
@@ -1737,8 +1739,12 @@ public:
     size_t lengthJSON = 0;
     boost::shared_array<char> outputJSON = generatorJSON->write(cloneDocument, &lengthJSON);
 
+    size_t lengthJSONPretty = 0;
+    boost::shared_array<char> outputJSONPretty = generatorJSONPretty->write(cloneDocument, &lengthJSONPretty);
+
     BOOST_CHECK(lengthXML == strlen(outputXML.get()))
     BOOST_CHECK(lengthJSON == strlen(outputJSON.get()))
+    BOOST_CHECK(lengthJSONPretty == strlen(outputJSONPretty.get()))
 
     BOOST_CHECK(0 == strcmp(results.mOutputXML, outputXML.get()))
     BOOST_CHECK(0 == strcmp(results.mOutputJSON, outputJSON.get()))
@@ -1749,6 +1755,7 @@ public:
       std::cout << "--- SOR:JSON(compare) ---\n" << results.mOutputJSON << "\n--- EOR:JSON(compare) ---\n";
     }
     std::cout << "--- SOR:JSON(result) ---\n" << outputJSON.get() << "\n" << lengthJSON << " (calculated) -vs- " << strlen(outputJSON.get()) << " (actual)\n--- EOR:JSON(result) ---\n";
+    std::cout << "--- SOR:JSON(pretty) ---\n" << outputJSONPretty.get() << "\n" << lengthJSONPretty << " (calculated) -vs- " << strlen(outputJSONPretty.get()) << " (actual)\n--- EOR:JSON(pretty) ---\n";
 
     // parse document from the JSON and then regenerate output again - results must match
     zsLib::XML::ParserPtr reParser = ::zsLib::XML::Parser::createAutoDetectParser("#text",'$');
@@ -2623,7 +2630,9 @@ BOOST_AUTO_TEST_SUITE(zsLibXMLTest)
 
   BOOST_AUTO_TEST_CASE(TestXML)
   {
-    TestXML test;
+    if (ZSLIB_TEST_XML) {
+      TestXML test;
+    }
   }
 
 BOOST_AUTO_TEST_SUITE_END()

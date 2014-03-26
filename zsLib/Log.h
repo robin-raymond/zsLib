@@ -46,13 +46,21 @@
 #define ZS_PARAM(xName, xValue)                                         ZS_INTERNAL_PARAM(xName, xValue)
 
 #define ZS_GET_LOG_LEVEL()                                              ZS_INTERNAL_GET_LOG_LEVEL()
+#define ZS_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                          ZS_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
 #define ZS_IS_LOGGING(xLevel)                                           ZS_INTERNAL_IS_LOGGING(xLevel)
+#define ZS_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)                     ZS_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)
 
 #define ZS_LOG_BASIC(xMsg)                                              ZS_INTERNAL_LOG_BASIC(xMsg)
 #define ZS_LOG_DETAIL(xMsg)                                             ZS_INTERNAL_LOG_DETAIL(xMsg)
 #define ZS_LOG_DEBUG(xMsg)                                              ZS_INTERNAL_LOG_DEBUG(xMsg)
 #define ZS_LOG_TRACE(xMsg)                                              ZS_INTERNAL_LOG_TRACE(xMsg)
 #define ZS_LOG_INSANE(xMsg)                                             ZS_INTERNAL_LOG_INSANE(xMsg)
+
+#define ZS_LOG_SUBSYSTEM_BASIC(xSubsystem, xMsg)                        ZS_INTERNAL_LOG_SUBSYSTEM_BASIC(xSubsystem, xMsg)
+#define ZS_LOG_SUBSYSTEM_DETAIL(xSubsystem, xMsg)                       ZS_INTERNAL_LOG_SUBSYSTEM_DETAIL(xSubsystem, xMsg)
+#define ZS_LOG_SUBSYSTEM_DEBUG(xSubsystem, xMsg)                        ZS_INTERNAL_LOG_SUBSYSTEM_DEBUG(xSubsystem, xMsg)
+#define ZS_LOG_SUBSYSTEM_TRACE(xSubsystem,xMsg)                         ZS_INTERNAL_LOG_SUBSYSTEM_TRACE(xSubsystem, xMsg)
+#define ZS_LOG_SUBSYSTEM_INSANE(xSubsystem, xMsg)                       ZS_INTERNAL_LOG_SUBSYSTEM_INSANE(xSubsystem, xMsg)
 
 #define ZS_TRACE()                                                      ZS_INTERNAL_LOG_TRACE("[TRACE]")
 #define ZS_TRACE_THIS()                                                 ZS_INTERNAL_LOG_TRACE("[TRACE THIS=" + (::zsLib::string((::zsLib::PTRNUMBER)this)) + "]")
@@ -64,6 +72,11 @@
 #define ZS_LOG_WARNING(xLevel, xMsg)                                    ZS_INTERNAL_LOG_WARNING(xLevel, xMsg)
 #define ZS_LOG_ERROR(xLevel, xMsg)                                      ZS_INTERNAL_LOG_ERROR(xLevel, xMsg)
 #define ZS_LOG_FATAL(xLevel, xMsg)                                      ZS_INTERNAL_LOG_FATAL(xLevel, xMsg)
+
+#define ZS_LOG_SUBSYSTEM(xSubsystem, xLevel, xMsg)                      ZS_INTERNAL_LOG_SUBSYSTEM(xSubsystem, xLevel, xMsg)
+#define ZS_LOG_SUBSYSTEM_WARNING(xSubsystem, xLevel, xMsg)              ZS_INTERNAL_LOG_SUBSYSTEM_WARNING(xSubsystem, xLevel, xMsg)
+#define ZS_LOG_SUBSYSTEM_ERROR(xSubsystem, xLevel, xMsg)                ZS_INTERNAL_LOG_SUBSYSTEM_ERROR(xSubsystem, xLevel, xMsg)
+#define ZS_LOG_SUBSYSTEM_FATAL(xSubsystem, xLevel, xMsg)                ZS_INTERNAL_LOG_SUBSYSTEM_FATAL(xSubsystem, xLevel, xMsg)
 
 #define ZS_LOG_IF(xCond, xLevel, xMsg)                                  ZS_INTERNAL_LOG_IF(xCond, xLevel, xMsg)
 #define ZS_LOG_WARNING_IF(xCond, xLevel, xMsg)                          ZS_INTERNAL_LOG_WARNING_IF(xCond, xLevel, xMsg)
@@ -181,35 +194,36 @@ namespace zsLib
 
     ~Log();
 
-    static LogPtr singleton();
+    static void addListener(ILogDelegatePtr delegate);
+    static void removeListener(ILogDelegatePtr delegate);
 
-    void addListener(ILogDelegatePtr delegate);
-    void removeListener(ILogDelegatePtr delegate);
+    static void notifyNewSubsystem(Subsystem *inSubsystem);
 
-    void notifyNewSubsystem(Subsystem *inSubsystem);
+    static void log(
+                    const Subsystem &subsystem,
+                    Severity severity,
+                    Level level,
+                    const String &message,
+                    CSTR function,
+                    CSTR filePath,
+                    ULONG lineNumber
+                    );
 
-    void log(
-             const Subsystem &subsystem,
-             Severity severity,
-             Level level,
-             const String &message,
-             CSTR function,
-             CSTR filePath,
-             ULONG lineNumber
-             );
+    static void log(
+                    const Subsystem &subsystem,
+                    Severity severity,
+                    Level level,
+                    const Params &params,
+                    CSTR function,
+                    CSTR filePath,
+                    ULONG lineNumber
+                    );
 
-    void log(
-             const Subsystem &subsystem,
-             Severity severity,
-             Level level,
-             const Params &params,
-             CSTR function,
-             CSTR filePath,
-             ULONG lineNumber
-             );
-
-  private:
+  protected:
     Log();
+
+    static LogPtr singleton();
+    static LogPtr create();
   };
 
   //---------------------------------------------------------------------------

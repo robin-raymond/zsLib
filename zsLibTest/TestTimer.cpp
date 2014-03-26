@@ -28,6 +28,7 @@
 //#include <boost/test/test_tools.hpp>
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::ULONG;
 using zsLib::IMessageQueue;
@@ -68,6 +69,8 @@ BOOST_AUTO_TEST_SUITE(zsLibTimer)
 
   BOOST_AUTO_TEST_CASE(TestTimer)
   {
+    if (!ZSLIB_TEST_TIMER) return;
+
     zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
 
     TestTimerCallbackPtr testObject = TestTimerCallback::create(thread);

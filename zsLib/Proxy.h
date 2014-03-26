@@ -36,6 +36,7 @@ namespace zsLib
     struct Exceptions
     {
       ZS_DECLARE_CUSTOM_EXCEPTION(DelegateGone)
+      ZS_DECLARE_CUSTOM_EXCEPTION(MissingDelegateMessageQueue)
     };
   };
 
@@ -183,7 +184,12 @@ namespace zsLib
   void proxyDump();
 }
 
-#define ZS_DECLARE_PROXY_BEGIN(xInterface)                                                                                                                    ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface)
+
+#define ZS_DECLARE_INTERACTION_PROXY(xInteractionName)                                                                                                        ZS_INTERNAL_DECLARE_INTERACTION_PROXY(xInteractionName)
+#define ZS_DECLARE_USING_PROXY(xNamespace, xExistingType)                                                                                                     ZS_INTERNAL_DECLARE_USING_PROXY(xNamespace, xExistingType)
+
+#define ZS_DECLARE_PROXY_BEGIN(xInterface)                                                                                                                    ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, true)
+#define ZS_DECLARE_PROXY_WITH_DELEGATE_MESSAGE_QUEUE_OPTIONAL_BEGIN(xInterface)                                                                               ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, false)
 #define ZS_DECLARE_PROXY_END()                                                                                                                                ZS_INTERNAL_DECLARE_PROXY_END()
 
 #define ZS_DECLARE_PROXY_TYPEDEF(xOriginalType, xTypeAlias)                                                                                                   ZS_INTERNAL_DECLARE_PROXY_TYPEDEF(xOriginalType, xTypeAlias)

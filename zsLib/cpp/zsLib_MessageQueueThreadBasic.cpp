@@ -35,43 +35,23 @@ namespace zsLib
 {
   namespace internal
   {
+    //-------------------------------------------------------------------------
     MessageQueueThreadBasicPtr MessageQueueThreadBasic::create(const char *threadName, ThreadPriorities threadPriority)
     {
       MessageQueueThreadBasicPtr thread(new MessageQueueThreadBasic(threadName));
       thread->mQueue = zsLib::MessageQueue::create(thread);
       thread->mThread = ThreadPtr(new boost::thread(boost::ref(*thread.get())));
-#ifndef _WIN32
-      const int policy = SCHED_RR;
-      const int minPrio = sched_get_priority_min(policy);
-      const int maxPrio = sched_get_priority_max(policy);
-      sched_param param;
-      switch (threadPriority)
-      {
-        case ThreadPriority_LowPriority:
-          param.sched_priority = minPrio + 1;
-          break;
-        case ThreadPriority_NormalPriority:
-          param.sched_priority = (minPrio + maxPrio) / 2;
-          break;
-        case ThreadPriority_HighPriority:
-          param.sched_priority = maxPrio - 3;
-          break;
-        case ThreadPriority_HighestPriority:
-          param.sched_priority = maxPrio - 2;
-          break;
-        case ThreadPriority_RealtimePriority:
-          param.sched_priority = maxPrio - 1;
-          break;
-      }
-      boost::thread::native_handle_type threadHandle = thread->mThread->native_handle();
-      pthread_setschedparam(threadHandle, policy, &param);
-#endif //_WIN32
+      thread->mThreadPriority = threadPriority;
+
+      zsLib::setThreadPriority(*(thread->mThread), threadPriority);
       return thread;
     }
 
+    //-------------------------------------------------------------------------
     MessageQueueThreadBasic::MessageQueueThreadBasic(const char *threadName) :
-      mThreadName(threadName ? threadName : ""),
-      mMustShutdown(0)
+      mThreadName(threadName),
+      mMustShutdown(0),
+      mIsShutdown(false)
     {
     }
 
@@ -79,32 +59,24 @@ namespace zsLib
     {
       bool shouldShutdown = false;
 
-      do
-      {
-        MessageQueuePtr queue;
+      MessageQueuePtr queue = mQueue;
 
-        {
-          AutoLock lock(mLock);
 #ifdef __QNX__
-          if (!mThreadName.isEmpty()) {
-            pthread_setname_np(pthread_self(), mThreadName);
-          }
+      if (!mThreadName.isEmpty()) {
+        pthread_setname_np(pthread_self(), mThreadName);
+      }
 #else
 #ifndef _LINUX
 #ifndef _ANDROID
-          if (!mThreadName.isEmpty()) {
-            pthread_setname_np(mThreadName);
-          }
+      if (!mThreadName.isEmpty()) {
+        pthread_setname_np(mThreadName);
+      }
 #endif // _ANDROID
 #endif // _LINUX
 #endif // __QNX__
 
-
-          queue = mQueue;
-          if (!mQueue)
-            return;
-        }
-
+      do
+      {
         queue->process(); // process all pending data now
         mEvent.reset();   // should be safe to reset the notification now that we are done processing
 
@@ -119,39 +91,32 @@ namespace zsLib
         shouldShutdown = (0 != zsLib::atomicGetValue32(mMustShutdown));
       } while(!shouldShutdown);
 
-      {
-        AutoLock lock(mLock);
-        mQueue.reset();
-      }
+      mIsShutdown = true;
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::post(IMessageQueueMessagePtr message)
     {
-      MessageQueuePtr queue;
-      {
-        AutoLock lock(mLock);
-        queue = mQueue;
-        if (!queue) {
-          ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
-        }
+      if (mIsShutdown) {
+        ZS_THROW_CUSTOM(IMessageQueue::Exceptions::MessageQueueGone, "message posted to message queue after message queue was deleted.")
       }
-      queue->post(message);
+      mQueue->post(message);
     }
 
+    //-------------------------------------------------------------------------
     IMessageQueue::size_type MessageQueueThreadBasic::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
-      if (!mQueue)
-        return 0;
-
       return mQueue->getTotalUnprocessedMessages();
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::notifyMessagePosted()
     {
       mEvent.notify();
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::waitForShutdown()
     {
       ThreadPtr thread;
@@ -171,8 +136,26 @@ namespace zsLib
       {
         AutoLock lock(mLock);
         mThread.reset();
-        mQueue.reset();
       }
+    }
+
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadBasic::setThreadPriority(ThreadPriorities threadPriority)
+    {
+      AutoLock lock(mLock);
+      if (!mThread) return;
+
+      if (threadPriority == mThreadPriority) return;
+
+      mThreadPriority = threadPriority;
+
+      zsLib::setThreadPriority(*mThread, threadPriority);
+    }
+
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadBasic::processMessagesFromThread()
+    {
+      mQueue->process();
     }
   }
 }

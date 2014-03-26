@@ -26,13 +26,16 @@
 #define ZSLIB_SOCKET_H_e70b2dd35334d2e569aea2d714e24c6a
 
 #include <zsLib/internal/zsLib_Socket.h>
+#include <zsLib/MessageQueueThread.h>
 
 #pragma warning(push)
 #pragma warning(disable: 4290)
 
 namespace zsLib
 {
-  class Socket : public internal::Socket
+  ZS_DECLARE_INTERACTION_PROXY(ISocketDelegate)
+
+  class Socket  : public internal::Socket
   {
   public:
     struct Create {
@@ -52,8 +55,168 @@ namespace zsLib
       };
     };
 
+    struct Exceptions {
+      ZS_DECLARE_CUSTOM_EXCEPTION(InvalidSocket)
+      ZS_DECLARE_CUSTOM_EXCEPTION(DelegateNotSet)
+
+      class Unspecified : public Exception
+      {
+      public:
+        typedef int error_type;
+
+        Unspecified(
+                    const Subsystem &subsystem,
+                    CSTR inMessage,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+        Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
+        mErrorCode(inErrorCode)
+        {
+        }
+
+        Unspecified(
+                    const Subsystem &subsystem,
+                    const String &inMessage,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+        Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
+        mErrorCode(inErrorCode)
+        {
+        }
+
+        Unspecified(
+                    const Subsystem &subsystem,
+                    const Log::Params &inParams,
+                    CSTR inFunction,
+                    CSTR inPathName,
+                    ULONG inLineNumber,
+                    const char *expression,
+                    int inErrorCode
+                    ) :
+        Exception(subsystem, inParams, inFunction, inPathName, inLineNumber, expression),
+        mErrorCode(inErrorCode)
+        {
+        }
+
+        ~Unspecified() throw() {}
+
+        error_type errorCode() {return mErrorCode;}
+
+      private:
+        error_type mErrorCode;
+      };
+
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(WouldBlock, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(ConnectionReset, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(AddressInUse, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(ConnectionRefused, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(NetworkNotReachable, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(HostNotReachable, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(Timeout, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(Shutdown, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(ConnectionAborted, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(BufferTooSmall, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(BufferTooBig, Unspecified, int)
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(UnsupportedSocketOption, Unspecified, int)
+    };
+
+    struct Receive {
+      enum Options {
+        None     = 0,
+        Peek     = MSG_PEEK,
+        OOB      = MSG_OOB,
+        WaitAll  = MSG_WAITALL
+      };
+    };
+
+    struct Send {
+      enum Options {
+        None = 0,
+        OOB  = MSG_OOB
+      };
+    };
+
+    struct Shutdown {
+      enum Options {
+        Send =      SD_SEND,
+        Receive =   SD_RECEIVE,
+        Both =      SD_BOTH
+      };
+    };
+
+    struct SetOptionFlag {
+      enum Options {
+        NonBlocking          = FIONBIO,
+        IgnoreSigPipe        = SO_NOSIGPIPE,
+        Broadcast            = SO_BROADCAST,
+        Debug                = SO_DEBUG,
+        DontRoute            = SO_DONTROUTE,
+        KeepAlive            = SO_KEEPALIVE,
+        OOBInLine            = SO_OOBINLINE,
+        ReuseAddress         = SO_REUSEADDR,
+        ConditionalAccept    = SO_WINDOWS_CONDITIONAL_ACCEPT,
+        ExclusiveAddressUse  = SO_WINDOWS_EXCLUSIVEADDRUSE,
+        TCPNoDelay           = TCP_NODELAY,
+      };
+    };
+
+    struct SetOptionValue {
+      enum Options {
+        ReceiverBufferSizeInBytes = SO_RCVBUF,
+        SendBufferSizeInBytes     = SO_SNDBUF,
+        LingerTimeInSeconds       = SO_LINGER, // specifying a time of 0 will disable linger
+      };
+    };
+
+    struct GetOptionFlag {
+      enum Options {
+        IsListening             = SO_ACCEPTCONN,
+        IsBroadcast             = SO_BROADCAST,
+        IsDebugging             = SO_DEBUG,
+        IsDontRoute             = SO_DONTROUTE,
+        IsKeepAlive             = SO_KEEPALIVE,
+        IsOOBInLine             = SO_OOBINLINE,
+        IsReuseAddress          = SO_REUSEADDR,
+        IsOOBAllRead            = SIOCATMARK,
+        IsConditionalAccept     = SO_WINDOWS_CONDITIONAL_ACCEPT,
+        IsLingering             = SO_WINDOWS_DONTLINGER,
+        IsExclusiveAddressUse   = SO_EXCLUSIVEADDRUSE,
+        IsTCPNoDelay            = TCP_NODELAY,
+      };
+    };
+
+    struct GetOptionValue {
+      enum Options {
+        ErrorCode                  = SO_ERROR,
+        ReceiverBufferSizeInBytes  = SO_RCVBUF,
+        SendBufferSizeInBytes      = SO_SNDBUF,
+        ReadyToReadSizeInBytes     = FIONREAD,    // how much data is available in a single recv method for stream types (more data may be pending), or how much data is in the buffer total for message oriented socket (however read will return the message size even if more data is available)
+        Type                       = SO_TYPE,
+        MaxMessageSizeInBytes      = SO_WINDOWS_MAX_MSG_SIZE
+      };
+    };
+
+    struct Monitor {
+      enum Options {
+        Read      = 0x01,
+        Write     = 0x02,
+        Exception = 0x04,
+        
+        All       = (Read | Write | Exception),
+      };
+    };
+
   public:
     static void ignoreSIGPIPEOnThisThread();
+    static void setMonitorPriority(ThreadPriorities priority);  // must be called before any socket is used
 
     static SocketPtr create() throw(Exceptions::Unspecified);
     static SocketPtr createUDP(Create::Family inFamily = Create::IPv4) throw(Exceptions::Unspecified);
@@ -95,14 +258,14 @@ namespace zsLib
                                       Exceptions::Unspecified
                                       );
 
-    virtual ISocketPtr accept(
-                              IPAddress &outRemoteIP,
-                              int *noThrowErrorResult = NULL
-                              ) const throw(
-                                            Exceptions::InvalidSocket,
-                                            Exceptions::ConnectionReset,
-                                            Exceptions::Unspecified
-                                            );
+    virtual SocketPtr accept(
+                             IPAddress &outRemoteIP,
+                             int *noThrowErrorResult = NULL
+                             ) const throw(
+                                           Exceptions::InvalidSocket,
+                                           Exceptions::ConnectionReset,
+                                           Exceptions::Unspecified
+                                           );
 
     virtual void connect(
                          const IPAddress &inDestination,     // destination of the connection
@@ -192,6 +355,8 @@ namespace zsLib
 
     virtual void shutdown(Shutdown::Options inOptions = Shutdown::Both) const throw(Exceptions::InvalidSocket, Exceptions::Unspecified);
 
+    virtual void setBlocking(bool enabled) const throw(Exceptions::InvalidSocket, Exceptions::Unspecified) {setOptionFlag(SetOptionFlag::NonBlocking, !enabled);}
+
     virtual void setOptionFlag(SetOptionFlag::Options inOption, bool inEnabled) const throw(Exceptions::InvalidSocket, Exceptions::UnsupportedSocketOption, Exceptions::Unspecified);
     virtual void setOptionValue(SetOptionValue::Options inOption, ULONG inValue) const throw(Exceptions::InvalidSocket, Exceptions::UnsupportedSocketOption, Exceptions::Unspecified);
 
@@ -207,8 +372,22 @@ namespace zsLib
 
     SOCKET mSocket;
   };
+
+  interaction ISocketDelegate
+  {
+    virtual void onReadReady(SocketPtr socket) = 0;
+    virtual void onWriteReady(SocketPtr socket) = 0;
+    virtual void onException(SocketPtr socket) = 0;
+  };
 }
 
 #pragma warning(pop)
+
+ZS_DECLARE_PROXY_BEGIN(zsLib::ISocketDelegate)
+ZS_DECLARE_PROXY_TYPEDEF(zsLib::SocketPtr, SocketPtr)
+ZS_DECLARE_PROXY_METHOD_1(onReadReady, SocketPtr)
+ZS_DECLARE_PROXY_METHOD_1(onWriteReady, SocketPtr)
+ZS_DECLARE_PROXY_METHOD_1(onException, SocketPtr)
+ZS_DECLARE_PROXY_END()
 
 #endif //ZSLIB_SOCKET_H_e70b2dd35334d2e569aea2d714e24c6a

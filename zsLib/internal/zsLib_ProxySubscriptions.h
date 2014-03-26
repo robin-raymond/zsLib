@@ -51,17 +51,23 @@ namespace zsLib
       class Subscription;
       class DelegateImpl;
 
+      typedef SUBSCRIPTIONBASECLASS SubscriptionBaseClass;
+      typedef boost::shared_ptr<SubscriptionBaseClass> SubscriptionBaseClassPtr;
+      typedef boost::weak_ptr<SubscriptionBaseClass>   SubscriptionBaseClassWeakPtr;
+
+      typedef boost::shared_ptr<Subscription> SubscriptionPtr;
+      typedef boost::weak_ptr<Subscription>   SubscriptionWeakPtr;
+
       typedef boost::shared_ptr<XINTERFACE> DelegatePtr;
       typedef boost::weak_ptr<XINTERFACE>   DelegateWeakPtr;
       typedef zsLib::Proxy<XINTERFACE>      DelegateProxy;
 
-      typedef std::map<Subscription *, DelegatePtr> SubscriptionDelegateMap;
+      typedef std::pair<SubscriptionWeakPtr, DelegatePtr> SubscriptionDelegatePair;
+
+      typedef std::map<Subscription *, SubscriptionDelegatePair> SubscriptionDelegateMap;
       typedef boost::shared_ptr<SubscriptionDelegateMap> SubscriptionDelegateMapPtr;
       typedef boost::weak_ptr<SubscriptionDelegateMap> SubscriptionDelegateMapWeakPtr;
       typedef typename SubscriptionDelegateMap::size_type size_type;
-
-      typedef boost::shared_ptr<Subscription> SubscriptionPtr;
-      typedef boost::weak_ptr<Subscription>   SubscriptionWeakPtr;
 
       typedef bool Bogus;
       typedef std::map<SubscriptionPtr, Bogus> SubscriptionBackgroundMap;
@@ -94,7 +100,7 @@ namespace zsLib
           } else {
             delegate = DelegateProxy::createWeak(queue, originalDelegate);
           }
-          mDelegateImpl->subscribe(subscription.get(), delegate);
+          mDelegateImpl->subscribe(subscription, delegate);
         }
 
         return subscription;
@@ -189,11 +195,24 @@ namespace zsLib
         DelegateImpl() : mSubscriptions(new SubscriptionDelegateMap) {}
         ~DelegateImpl() {}
 
-        void subscribe(Subscription *subscription, DelegatePtr &delegate)
+        template<typename PARAM>
+        static void fillWithSubscription(PARAM &, SubscriptionWeakPtr &, SubscriptionPtr &, bool &filled)
+        {
+        }
+
+        template<typename PARAM>
+        static void fillWithSubscription(SubscriptionBaseClassPtr &result, SubscriptionWeakPtr &source, SubscriptionPtr &output, bool &filled)
+        {
+          output = source.lock();
+          result = output;
+          filled = true;
+        }
+
+        void subscribe(SubscriptionPtr &subscription, DelegatePtr &delegate)
         {
           AutoRecursiveLock lock(mLock);
           SubscriptionDelegateMapPtr temp(new SubscriptionDelegateMap(*mSubscriptions));
-          (*temp)[subscription] = delegate;
+          (*temp)[subscription.get()] = SubscriptionDelegatePair(subscription, delegate);
           mSubscriptions = temp;
         }
 
@@ -233,7 +252,7 @@ namespace zsLib
           typename SubscriptionDelegateMap::iterator found = mSubscriptions->find(subscription);
           if (found == mSubscriptions->end()) return DelegatePtr();
 
-          return (*found).second;
+          return (*found).second.second;
         }
 
       public:
@@ -253,6 +272,13 @@ namespace zsLib
     };
   }
 }
+
+#define ZS_INTERNAL_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(xInteractionName, xDelegateName)                                       \
+  interaction xInteractionName;                                                                                                   \
+  typedef boost::shared_ptr<xInteractionName> xInteractionName##Ptr;                                                              \
+  typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                                            \
+  typedef zsLib::ProxySubscriptions<xDelegateName, xInteractionName> xDelegateName##Subscriptions;
+
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_BEGIN(xInterface, xSubscriptionClass)                                             \
 namespace zsLib                                                                                                                   \
@@ -295,7 +321,12 @@ namespace zsLib                                                                 
   }                                                                                                                                                                                                       \
   xSubscriptionsMapTypename &xSubscriptionsMapVariable = (*_temp_subscriptions);
 
-#define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_ERASE_KEY(xSubscriptionsMapKeyValue)                                                                          \
+#define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_ITERATOR_VALUES(xIterator, xKeyValueName, xSusbcriptionWeakPtrValueName, xDelegatePtrValueName)  \
+  const ProxySubscriptionsType::SubscriptionDelegateMap::key_type &xKeyValueName = (*xIterator).first; (void)xKeyValueName;                             \
+  ProxySubscriptionsType::SubscriptionWeakPtr &xSusbcriptionWeakPtrValueName = (*xIterator).second.first; (void)xSusbcriptionWeakPtrValueName;          \
+  ProxySubscriptionsType::DelegatePtr &xDelegatePtrValueName = (*xIterator).second.second; (void)xDelegatePtrValueName;
+
+#define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_ERASE_KEY(xSubscriptionsMapKeyValue)                                                             \
   {DelegateImpl::cancel(xSubscriptionsMapKeyValue);}
 
 
@@ -309,7 +340,7 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod();                                                                                                             \
+          (*current).second.second->xMethod();                                                                                                      \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -326,7 +357,11 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1);                                                                                                           \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1);                                                                                                    \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -343,7 +378,12 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2);                                                                                                        \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2);                                                                                                 \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -360,7 +400,13 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3);                                                                                                     \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3);                                                                                              \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -377,7 +423,14 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4);                                                                                                  \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4);                                                                                           \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -394,7 +447,15 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5);                                                                                               \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5);                                                                                        \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -411,7 +472,16 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6);                                                                                            \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6);                                                                                     \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -428,7 +498,17 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7);                                                                                         \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7);                                                                                  \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -445,7 +525,18 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8);                                                                                      \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8);                                                                               \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -462,7 +553,19 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9);                                                                                   \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9);                                                                            \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -479,7 +582,20 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10);                                                                               \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                  \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10);                                                                        \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -496,7 +612,21 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11);                                                                           \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                  \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11);                                                                    \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -513,7 +643,22 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12);                                                                       \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                  \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12);                                                                \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -530,7 +675,23 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13);                                                                   \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                  \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13);                                                            \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -547,7 +708,24 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14);                                                               \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                  \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14);                                                        \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -564,7 +742,25 @@ namespace zsLib                                                                 
       for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                   \
         try {                                                                                                                                       \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15);                                                           \
+          bool filled = false;                                                                                                                      \
+          SubscriptionPtr result;                                                                                                                   \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                    \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                  \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                  \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                          \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15);                                                    \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                        \
           cancel((*current).first);                                                                                                                 \
         }                                                                                                                                           \
@@ -573,170 +769,405 @@ namespace zsLib                                                                 
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_16(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16)                                                                                                                   \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16) {                                                                                    \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16);                                                                                                                                               \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16);                                                                                                                                        \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_17(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17)                                                                                                               \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17) {                                                                           \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17);                                                                                                                                           \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17);                                                                                                                                    \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_18(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18)                                                                                                           \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18) {                                                                  \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18);                                                                                                                                       \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18);                                                                                                                                \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_19(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19)                                                                                                       \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19) {                                                         \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19);                                                                                                                                   \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19);                                                                                                                            \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_20(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20)                                                                                                   \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19, t20 v20) {                                                \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20);                                                                                                                               \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t20>(v20, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20);                                                                                                                        \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_21(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21)                                                                                               \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19, t20 v20, t21 v21) {                                       \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21);                                                                                                                           \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t20>(v20, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t21>(v21, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21);                                                                                                                    \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_22(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22)                                                                                           \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19, t20 v20, t21 v21, t22 v22) {                              \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22);                                                                                                                       \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t20>(v20, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t21>(v21, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t22>(v22, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22);                                                                                                                \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_23(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23)                                                                                       \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19, t20 v20, t21 v21, t22 v22, t23 v23) {                     \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23);                                                                                                                   \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t20>(v20, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t21>(v21, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t22>(v22, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t23>(v23, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23);                                                                                                            \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_24(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24)                                                                                   \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19, t20 v20, t21 v21, t22 v22, t23 v23, t24 v24) {            \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24);                                                                                                               \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t20>(v20, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t21>(v21, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t22>(v22, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t23>(v23, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t24>(v24, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24);                                                                                                        \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_SUBSCRIPTIONS_METHOD_25(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25)                                                                               \
     virtual void xMethod(t1 v1, t2 v2, t3 v3, t4 v4, t5 v5, t6 v6, t7 v7, t8 v8, t9 v9, t10 v10, t11 v11, t12 v12, t13 v13, t14 v14, t15 v15, t16 v16, t17 v17, t18 v18, t19 v19, t20 v20, t21 v21, t22 v22, t23 v23, t24 v24, t25 v25) {   \
-      SubscriptionDelegateMapPtr subscription;                                                                                                      \
-      {                                                                                                                                             \
-        AutoRecursiveLock lock(mLock);                                                                                                              \
-        subscription = mSubscriptions;                                                                                                              \
-      }                                                                                                                                             \
-      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                         \
+      SubscriptionDelegateMapPtr subscription;                                                                                                                                                                                              \
+      {                                                                                                                                                                                                                                     \
+        AutoRecursiveLock lock(mLock);                                                                                                                                                                                                      \
+        subscription = mSubscriptions;                                                                                                                                                                                                      \
+      }                                                                                                                                                                                                                                     \
+      for (SubscriptionDelegateMap::iterator iter = subscription->begin(); iter != subscription->end(); ) {                                                                                                                                 \
         SubscriptionDelegateMap::iterator current = iter; ++iter;                                                                                                                                                                           \
         try {                                                                                                                                                                                                                               \
-          (*current).second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25);                                                                                                           \
+          bool filled = false;                                                                                                                                                                                                              \
+          SubscriptionPtr result;                                                                                                                                                                                                           \
+          fillWithSubscription<t1>(v1, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t2>(v2, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t3>(v3, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t4>(v4, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t5>(v5, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t6>(v6, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t7>(v7, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t8>(v8, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t9>(v9, (*current).second.first, result, filled);                                                                                                                                                            \
+          fillWithSubscription<t10>(v10, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t11>(v11, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t12>(v12, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t13>(v13, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t14>(v14, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t15>(v15, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t16>(v16, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t17>(v17, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t18>(v18, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t19>(v19, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t20>(v20, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t21>(v21, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t22>(v22, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t23>(v23, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t24>(v24, (*current).second.first, result, filled);                                                                                                                                                          \
+          fillWithSubscription<t25>(v25, (*current).second.first, result, filled);                                                                                                                                                          \
+          if ((filled) && (!result)) {cancel((*current).first); continue;}                                                                                                                                                                  \
+          (*current).second.second->xMethod(v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25);                                                                                                    \
         } catch(DelegateProxy::Exceptions::DelegateGone &) {                                                                                                                                                                                \
-          cancel((*current).first);                                                                                                                 \
+          cancel((*current).first);                                                                                                                                                                                                         \
         }                                                                                                                                                                                                                                   \
       }                                                                                                                                                                                                                                     \
     }

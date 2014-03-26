@@ -30,6 +30,7 @@
 
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::BYTE;
 using zsLib::LONGLONG;
@@ -39,6 +40,8 @@ BOOST_AUTO_TEST_SUITE(zsLibNumeric)
 
   BOOST_AUTO_TEST_CASE(TestNumeric)
   {
+    if (!ZSLIB_TEST_NUMERIC) return;
+
     BOOST_EQUAL(0, (char)zsLib::Numeric<char>("0"));
     BOOST_EQUAL(127, (char)zsLib::Numeric<char>("127"));
     BOOST_EQUAL(127, (char)zsLib::Numeric<char>("+127"));

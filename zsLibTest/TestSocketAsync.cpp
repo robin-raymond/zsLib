@@ -30,6 +30,7 @@
 
 
 #include "boost_replacement.h"
+#include "main.h"
 
 using zsLib::BYTE;
 using zsLib::ULONG;
@@ -68,7 +69,7 @@ namespace async_socket
       return object;
     }
 
-    virtual void onReadReady(zsLib::ISocketPtr socket)
+    virtual void onReadReady(zsLib::SocketPtr socket)
     {
       std::cout << "ON READ READY\n";
       ++mReadReadyCalled;
@@ -85,13 +86,13 @@ namespace async_socket
       std::cout << "READ " << total << " BYTES.\n";
     }
 
-    virtual void onWriteReady(zsLib::ISocketPtr socket)
+    virtual void onWriteReady(zsLib::SocketPtr socket)
     {
       std::cout << "ON WRITE READY\n";
       ++mWriteReadyCalled;
     }
 
-    virtual void onException(zsLib::ISocketPtr socket)
+    virtual void onException(zsLib::SocketPtr socket)
     {
       std::cout << "ONEXCEPTION\n";
       ++mExceptionCalled;
@@ -117,12 +118,15 @@ namespace async_socket
   public:
     SocketTest()
     {
+      srand(static_cast<signed int>(time(NULL)));
+      zsLib::WORD port1 = (rand()%(65550-5000))+5000;
+
       zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
 
       SocketServerPtr server(SocketServer::create(thread));
 
       boost::this_thread::sleep(zsLib::Seconds(1));
-      zsLib::IPAddress address = zsLib::IPAddress(zsLib::IPAddress::loopbackV4(), 43217);
+      zsLib::IPAddress address = zsLib::IPAddress(zsLib::IPAddress::loopbackV4(), port1);
       zsLib::SocketPtr socket = zsLib::Socket::createUDP();
       socket->bind(address);
 
@@ -165,7 +169,9 @@ BOOST_AUTO_TEST_SUITE(zsLibSocketAsync)
 
 BOOST_AUTO_TEST_CASE(TestSocketAsync)
 {
-  async_socket::SocketTest test;
+  if (ZSLIB_TEST_SOCKET_ASYNC) {
+    async_socket::SocketTest test;
+  }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

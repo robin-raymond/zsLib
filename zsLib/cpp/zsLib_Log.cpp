@@ -30,54 +30,6 @@ namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
-
-  namespace internal
-  {
-    class GlobalLog;
-    typedef boost::shared_ptr<GlobalLog> GlobalLogPtr;
-
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    #pragma mark
-    #pragma mark GlobalLog
-    #pragma mark
-
-    class GlobalLog
-    {
-    private:
-      GlobalLog() {mLog = zsLib::Log::create();}
-
-    public:
-      //-----------------------------------------------------------------------
-      static GlobalLogPtr create() {return GlobalLogPtr(new GlobalLog);}
-
-      LogPtr mLog;
-    };
-
-    //-----------------------------------------------------------------------
-    static GlobalLogPtr &getGlobalLog()
-    {
-      static GlobalLogPtr log = GlobalLog::create();
-      return log;
-    }
-
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    #pragma mark
-    #pragma mark Log
-    #pragma mark
-
-    //-------------------------------------------------------------------------
-    LogPtr Log::create()
-    {
-      return LogPtr(new zsLib::Log);
-    }
-  } // internal;
-
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
@@ -96,7 +48,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Subsystem::notifyNewSubsystem()
   {
-    Log::singleton()->notifyNewSubsystem(this);
+    Log::notifyNewSubsystem(this);
   }
 
   //---------------------------------------------------------------------------
@@ -159,28 +111,40 @@ namespace zsLib
   //---------------------------------------------------------------------------
   LogPtr Log::singleton()
   {
-    return internal::getGlobalLog()->mLog;
+    static SingletonLazySharedPtr<Log> singleton(create());
+    return singleton.singleton();
+  }
+
+  //---------------------------------------------------------------------------
+  LogPtr Log::create()
+  {
+    return LogPtr(new Log);
   }
 
   //---------------------------------------------------------------------------
   void Log::addListener(ILogDelegatePtr delegate)
   {
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
     SubsystemList notifyList;
     // copy the list but notify without the lock
     {
-      AutoRecursiveLock lock(mLock);
+      AutoRecursiveLock lock(refThis.mLock);
 
       ListenerListPtr replaceList(new ListenerList);
 
-      if (mListeners) {
-        (*replaceList) = (*mListeners);
+      if (refThis.mListeners) {
+        (*replaceList) = (*refThis.mListeners);
       }
 
       replaceList->push_back(delegate);
 
-      mListeners = replaceList;
+      refThis.mListeners = replaceList;
 
-      notifyList = mSubsystems;
+      notifyList = refThis.mSubsystems;
     }
 
     for (SubsystemList::iterator iter = notifyList.begin(); iter != notifyList.end(); ++iter)
@@ -194,12 +158,17 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Log::removeListener(ILogDelegatePtr delegate)
   {
-    AutoRecursiveLock lock(mLock);
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    AutoRecursiveLock lock(refThis.mLock);
 
     ListenerListPtr replaceList(new ListenerList);
 
-    if (mListeners) {
-      (*replaceList) = (*mListeners);
+    if (refThis.mListeners) {
+      (*replaceList) = (*refThis.mListeners);
     }
 
     for (ListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
@@ -208,23 +177,29 @@ namespace zsLib
       {
         replaceList->erase(iter);
 
-        mListeners = replaceList;
+        refThis.mListeners = replaceList;
         return;
       }
     }
+
     ZS_THROW_INVALID_ARGUMENT("cound not remove log listener as it was not found")
   }
 
   //---------------------------------------------------------------------------
   void Log::notifyNewSubsystem(Subsystem *inSubsystem)
   {
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
     ListenerListPtr notifyList;
 
     // scope: remember the subsystem
     {
-      AutoRecursiveLock lock(mLock);
-      mSubsystems.push_back(inSubsystem);
-      notifyList = mListeners;
+      AutoRecursiveLock lock(refThis.mLock);
+      refThis.mSubsystems.push_back(inSubsystem);
+      notifyList = refThis.mListeners;
     }
 
     if (!notifyList) return;
@@ -265,11 +240,16 @@ namespace zsLib
     if (inLevel > inSubsystem.getOutputLevel())
       return;
 
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
     ListenerListPtr notifyList;
 
     {
-      AutoRecursiveLock lock(mLock);
-      notifyList = mListeners;
+      AutoRecursiveLock lock(refThis.mLock);
+      notifyList = refThis.mListeners;
     }
 
     if (!notifyList) return;
@@ -347,7 +327,7 @@ namespace zsLib
 
   //---------------------------------------------------------------------------
   Log::Param::Param(const char *name, bool value) :
-    Param(name, "true", true)
+    Param(name, value ? "true" : "false", true)
   {
   }
 

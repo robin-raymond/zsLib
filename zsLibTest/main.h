@@ -20,28 +20,15 @@
  *
  */
 
-#pragma once
 
-#ifndef ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a
-#define ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a
-
-#include <zsLib/helpers.h>
-#include <zsLib/Event.h>
-#include <zsLib/Exception.h>
-#include <zsLib/IPAddress.h>
-#include <zsLib/Log.h>
-#include <zsLib/MessageQueue.h>
-#include <zsLib/MessageQueueAssociator.h>
-#include <zsLib/MessageQueueThread.h>
-#include <zsLib/Numeric.h>
-#include <zsLib/Proxy.h>
-#include <zsLib/ProxySubscriptions.h>
-#include <zsLib/Socket.h>
-#include <zsLib/String.h>
-#include <zsLib/Stringize.h>
-#include <zsLib/Timer.h>
-#include <zsLib/XML.h>
-//#include <zsLib/zsLib.h>
-#include <zsLib/types.h>
-
-#endif // ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a
+#define ZSLIB_TEST_HELPER           (true)
+#define ZSLIB_TEST_IP_ADDRESS       (true)
+#define ZSLIB_TEST_NUMERIC          (true)
+#define ZSLIB_TEST_PROXY            (true)
+#define ZSLIB_TEST_PROXY_USING_GUI  (true)
+#define ZSLIB_TEST_SOCKET           (true)
+#define ZSLIB_TEST_SOCKET_ASYNC     (true)
+#define ZSLIB_TEST_STRING           (true)
+#define ZSLIB_TEST_STRINGIZE        (true)
+#define ZSLIB_TEST_TIMER            (true)
+#define ZSLIB_TEST_XML              (true)

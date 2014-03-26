@@ -27,13 +27,20 @@
 
 #include <zsLib/internal/types.h>
 
+#define ZS_DECLARE_PTR(xExistingType)                                               ZS_INTERNAL_DECLARE_PTR(xExistingType)
+#define ZS_DECLARE_USING_PTR(xNamespace, xExistingType)                             ZS_INTERNAL_DECLARE_USING_PTR(xNamespace, xExistingType)
+#define ZS_DECLARE_CLASS_PTR(xClassName)                                            ZS_INTERNAL_DECLARE_CLASS_PTR(xClassName)
+#define ZS_DECLARE_STRUCT_PTR(xStructName)                                          ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)
+#define ZS_DECLARE_INTERACTION_PTR(xInteractionName)                                ZS_INTERNAL_DECLARE_STRUCT_PTR(xInteractionName)
+#define ZS_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)                         ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)
+
+
 namespace zsLib
 {
-  typedef boost::thread Thread;
-  typedef boost::shared_ptr<Thread> ThreadPtr;
+  ZS_DECLARE_TYPEDEF_PTR(boost::thread, Thread)
+  ZS_DECLARE_TYPEDEF_PTR(boost::mutex, Lock)
+  ZS_DECLARE_TYPEDEF_PTR(boost::recursive_mutex, RecursiveLock)
 
-  typedef boost::mutex Lock;
-  typedef boost::recursive_mutex RecursiveLock;
   typedef boost::lock_guard<Lock> AutoLock;
   typedef boost::lock_guard<RecursiveLock> AutoRecursiveLock;
 
@@ -84,6 +91,8 @@ namespace zsLib
   typedef WSTR ZsDeclareWSTR;
   typedef CWSTR ZsDeclareCWSTR;
 
+  class PrivateGlobalLock;
+
   class Event;
   typedef boost::shared_ptr<Event> EventPtr;
   typedef boost::weak_ptr<Event> EventWeakPtr;
@@ -131,10 +140,6 @@ namespace zsLib
   class MessageQueueThread;
   typedef boost::shared_ptr<MessageQueueThread> MessageQueueThreadPtr;
   typedef boost::weak_ptr<MessageQueueThread> MessageQueueThreadWeakPtr;
-
-  interaction ISocket;
-  typedef boost::shared_ptr<ISocket> ISocketPtr;
-  typedef boost::weak_ptr<ISocket> ISocketWeakPtr;
 
   interaction ISocketDelegate;
   typedef boost::shared_ptr<ISocketDelegate> ISocketDelegatePtr;
@@ -187,49 +192,19 @@ namespace zsLib
 
   namespace XML
   {
-    class Node;
-    typedef boost::shared_ptr<Node> NodePtr;
-    typedef boost::weak_ptr<Node> NodeWeakPtr;
-
-    class Document;
-    typedef boost::shared_ptr<Document> DocumentPtr;
-    typedef boost::weak_ptr<Document> DocumentWeakPtr;
-
-    class Element;
-    typedef boost::shared_ptr<Element> ElementPtr;
-    typedef boost::weak_ptr<Element> ElementWeakPtr;
-
-    class Attribute;
-    typedef boost::shared_ptr<Attribute> AttributePtr;
-    typedef boost::weak_ptr<Attribute> AttributeWeakPtr;
-
-    class Text;
-    typedef boost::shared_ptr<Text> TextPtr;
-    typedef boost::weak_ptr<Text> TextWeakPtr;
-
-    class Comment;
-    typedef boost::shared_ptr<Comment> CommentPtr;
-    typedef boost::weak_ptr<Comment> CommentWeakPtr;
-
-    class Declaration;
-    typedef boost::shared_ptr<Declaration> DeclarationPtr;
-    typedef boost::weak_ptr<Declaration> DeclarationWeakPtr;
-
-    class Unknown;
-    typedef boost::shared_ptr<Unknown> UnknownPtr;
-    typedef boost::weak_ptr<Unknown> UnknownWeakPtr;
-
-    class Parser;
-    typedef boost::shared_ptr<Parser> ParserPtr;
-    typedef boost::weak_ptr<Parser> ParserWeakPtr;
-
-    class Generator;
-    typedef boost::shared_ptr<Generator> GeneratorPtr;
-    typedef boost::weak_ptr<Generator> GeneratorWeakPtr;
+    ZS_DECLARE_CLASS_PTR(Node)
+    ZS_DECLARE_CLASS_PTR(Document)
+    ZS_DECLARE_CLASS_PTR(Element)
+    ZS_DECLARE_CLASS_PTR(Attribute)
+    ZS_DECLARE_CLASS_PTR(Text)
+    ZS_DECLARE_CLASS_PTR(Comment)
+    ZS_DECLARE_CLASS_PTR(Declaration)
+    ZS_DECLARE_CLASS_PTR(Unknown)
+    ZS_DECLARE_CLASS_PTR(Parser)
+    ZS_DECLARE_CLASS_PTR(Generator)
 
     class ParserPos;
     class ParserWarning;
-
     class WalkSink;
   }
 

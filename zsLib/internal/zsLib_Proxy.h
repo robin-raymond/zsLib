@@ -27,6 +27,7 @@
 
 #include <zsLib/types.h>
 #include <zsLib/MessageQueueAssociator.h>
+#include <zsLib/Log.h>
 #include <zsLib/internal/zsLib_ProxyPack.h>
 
 #define ZS_LIB_NO_CONST
@@ -44,7 +45,7 @@ namespace zsLib
     void proxyCountIncrement(int line, const char *fileName);
     void proxyCountDecrement(int line, const char *fileName);
 
-    template <typename XINTERFACE>
+    template <typename XINTERFACE, bool XDELEGATEMUSTHAVEQUEUE>
     class Proxy : public XINTERFACE
     {
     public:
@@ -59,7 +60,7 @@ namespace zsLib
           return mDelegate;
         }
         boost::shared_ptr<XINTERFACE> result = mWeakDelegate.lock();
-        if (!result) {throwDelegateGone(typeid(XINTERFACE).name());}
+        if (!result) {throwDelegateGone();}
         return result;
       }
 
@@ -82,7 +83,9 @@ namespace zsLib
       bool ignoreMethodCall() const {return mIgnoreMethodCall;}
 
     protected:
-      virtual void throwDelegateGone(const char *name) const = 0;
+      static const char *getInterfaceName() {return typeid(XINTERFACE).name();}
+
+      virtual void throwDelegateGone() const = 0;
 
     protected:
       IMessageQueuePtr mQueue;
@@ -96,16 +99,29 @@ namespace zsLib
   }
 }
 
-#define ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface)                                                           \
+#define ZS_INTERNAL_DECLARE_INTERACTION_PROXY(xInteractionName)                                               \
+  interaction xInteractionName;                                                                               \
+  typedef boost::shared_ptr<xInteractionName> xInteractionName##Ptr;                                          \
+  typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                        \
+  typedef zsLib::Proxy<xInteractionName> xInteractionName##Proxy;
+
+#define ZS_INTERNAL_DECLARE_USING_PROXY(xNamespace, xExistingType)                                            \
+  using xNamespace::xExistingType;                                                                            \
+  using xNamespace::xExistingType##Ptr;                                                                       \
+  using xNamespace::xExistingType##WeakPtr;                                                                   \
+  using xNamespace::xExistingType##Proxy;
+
+#define ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, xDelegateMustHaveQueue)                                   \
 namespace zsLib                                                                                               \
 {                                                                                                             \
   template<>                                                                                                  \
-  class Proxy<xInterface> : public internal::Proxy<xInterface>                                                \
+  class Proxy<xInterface> : public internal::Proxy<xInterface, xDelegateMustHaveQueue>                        \
   {                                                                                                           \
   public:                                                                                                     \
     struct Exceptions                                                                                         \
     {                                                                                                         \
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(DelegateGone, ProxyBase::Exceptions::DelegateGone)                 \
+      ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(MissingDelegateMessageQueue, ProxyBase::Exceptions::MissingDelegateMessageQueue) \
     };                                                                                                        \
     typedef xInterface                    Delegate;                                                           \
     typedef boost::shared_ptr<xInterface> DelegatePtr;                                                        \
@@ -114,12 +130,12 @@ namespace zsLib                                                                 
     typedef boost::shared_ptr<ProxyType>  ProxyPtr;                                                           \
                                                                                                               \
   private:                                                                                                    \
-    Proxy(IMessageQueuePtr queue, DelegatePtr delegate, int line, const char *fileName) : internal::Proxy<xInterface>(queue, delegate, line, fileName) {}     \
-    Proxy(IMessageQueuePtr queue, DelegateWeakPtr delegate, int line, const char *fileName) : internal::Proxy<xInterface>(queue, delegate, line, fileName) {} \
-    Proxy(IMessageQueuePtr queue, bool throwsDelegateGone, int line, const char *fileName) : internal::Proxy<xInterface>(queue, throwsDelegateGone, line, fileName) {} \
+    Proxy(IMessageQueuePtr queue, DelegatePtr delegate, int line, const char *fileName) : internal::Proxy<xInterface, xDelegateMustHaveQueue>(queue, delegate, line, fileName) {}     \
+    Proxy(IMessageQueuePtr queue, DelegateWeakPtr delegate, int line, const char *fileName) : internal::Proxy<xInterface, xDelegateMustHaveQueue>(queue, delegate, line, fileName) {} \
+    Proxy(IMessageQueuePtr queue, bool throwsDelegateGone, int line, const char *fileName) : internal::Proxy<xInterface, xDelegateMustHaveQueue>(queue, throwsDelegateGone, line, fileName) {} \
                                                                                                               \
   public:                                                                                                     \
-    static DelegatePtr create(DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__)   \
+    static DelegatePtr create(DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)   \
     {                                                                                                         \
       if (!delegate)                                                                                          \
         return delegate;                                                                                      \
@@ -140,13 +156,15 @@ namespace zsLib                                                                 
       if (associator)                                                                                         \
         queue =  associator->getAssociatedMessageQueue();                                                     \
                                                                                                               \
-      if (!queue)                                                                                             \
+      if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
         return delegate;                                                                                      \
+      }                                                                                                       \
                                                                                                               \
       return ProxyPtr(new ProxyType(queue, delegate, line, fileName));                                        \
     }                                                                                                         \
                                                                                                               \
-    static DelegatePtr create(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__)   \
+    static DelegatePtr create(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)   \
     {                                                                                                         \
       if (!delegate)                                                                                          \
         return delegate;                                                                                      \
@@ -167,13 +185,14 @@ namespace zsLib                                                                 
         queue = (associator->getAssociatedMessageQueue() ? associator->getAssociatedMessageQueue() : queue);  \
                                                                                                               \
       if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
       return ProxyPtr(new ProxyType(queue, delegate, line, fileName));                                        \
     }                                                                                                         \
                                                                                                               \
-    static DelegatePtr createWeak(DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__)                       \
+    static DelegatePtr createWeak(DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)                       \
     {                                                                                                         \
       if (!delegate)                                                                                          \
         return delegate;                                                                                      \
@@ -194,13 +213,15 @@ namespace zsLib                                                                 
       if (associator)                                                                                         \
         queue =  associator->getAssociatedMessageQueue();                                                     \
                                                                                                               \
-      if (!queue)                                                                                             \
+      if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
         return delegate;                                                                                      \
+      }                                                                                                       \
                                                                                                               \
       return ProxyPtr(new ProxyType(queue, DelegateWeakPtr(delegate), line, fileName));                       \
     }                                                                                                         \
                                                                                                               \
-    static DelegatePtr createWeak(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__) \
+    static DelegatePtr createWeak(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
     {                                                                                                         \
       if (!delegate)                                                                                          \
         return delegate;                                                                                      \
@@ -221,15 +242,17 @@ namespace zsLib                                                                 
         queue = (associator->getAssociatedMessageQueue() ? associator->getAssociatedMessageQueue() : queue);  \
                                                                                                               \
       if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
       return ProxyPtr(new ProxyType(queue, DelegateWeakPtr(delegate), line, fileName));                       \
     }                                                                                                         \
                                                                                                               \
-    static DelegatePtr createNoop(IMessageQueuePtr queue, bool throwsDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__) \
+    static DelegatePtr createNoop(IMessageQueuePtr queue, bool throwsDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
     {                                                                                                         \
       if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
         return DelegatePtr();                                                                                 \
       }                                                                                                       \
                                                                                                               \
@@ -276,11 +299,15 @@ namespace zsLib                                                                 
       return IMessageQueuePtr();                                                                              \
     }                                                                                                         \
                                                                                                               \
-    void throwDelegateGone(const char *name) const                                                            \
+    void throwDelegateGone() const                                                                            \
     {                                                                                                         \
-      throw Exceptions::DelegateGone(ZS_GET_OTHER_SUBSYSTEM(::zsLib, zsLib), ::zsLib::String("Proxy points to destroyed delegate: ") + name, __FUNCTION__, __FILE__, __LINE__); \
+      throw Exceptions::DelegateGone(ZS_GET_OTHER_SUBSYSTEM(::zsLib, zsLib), ::zsLib::Log::Params("proxy points to destroyed delegate", getInterfaceName()), __FUNCTION__, __FILE__, __LINE__); \
+    }                                                                                                         \
+                                                                                                              \
+    static void throwMissingMessageQueue()                                                                    \
+    {                                                                                                         \
+      throw Exceptions::MissingDelegateMessageQueue(ZS_GET_OTHER_SUBSYSTEM(::zsLib, zsLib), ::zsLib::Log::Params("proxy missing message queue", getInterfaceName()), __FUNCTION__, __FILE__, __LINE__); \
     }
-
 
 #define ZS_INTERNAL_DECLARE_PROXY_END()                                                                       \
   };                                                                                                          \

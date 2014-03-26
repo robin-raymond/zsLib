@@ -26,6 +26,7 @@
 #define ZSLIB_TIMER_H_625827a73b7747cea09db99f967d6a64
 
 #include <zsLib/internal/zsLib_Timer.h>
+#include <zsLib/MessageQueueThread.h>
 
 #define ZSLIB_MAX_TIMER_FIRED_AT_ONCE   5
 
@@ -38,6 +39,9 @@ namespace zsLib
   private:
     Timer(ITimerDelegatePtr delegate, Duration timeout, bool repeat, UINT maxFiringTimerAtOnce);
   public:
+
+    static void setMonitorPriority(ThreadPriorities priority);  // must be called before any timer is used
+
     //-------------------------------------------------------------------------
     // PURPOSE: Create a timer which will fire once or at a repeat interval
     //          until cancelled.

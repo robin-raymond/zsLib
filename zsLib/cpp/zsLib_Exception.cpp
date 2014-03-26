@@ -62,7 +62,7 @@ namespace zsLib
     }
 
     // force log of event
-    Log::singleton()->log(subsystem, Log::Error, Log::Basic, mParams, function, filePath, lineNumber);
+    Log::log(subsystem, Log::Error, Log::Basic, mParams, function, filePath, lineNumber);
   }
 
   //---------------------------------------------------------------------------
@@ -85,7 +85,7 @@ namespace zsLib
     }
 
     // force log of event
-    Log::singleton()->log(subsystem, Log::Error, Log::Basic, mParams, function, filePath, lineNumber);
+    Log::log(subsystem, Log::Error, Log::Basic, mParams, function, filePath, lineNumber);
   }
 
   //---------------------------------------------------------------------------
@@ -109,7 +109,7 @@ namespace zsLib
     }
 
     // force log of event
-    Log::singleton()->log(subsystem, Log::Error, Log::Basic, mParams, function, filePath, lineNumber);
+    Log::log(subsystem, Log::Error, Log::Basic, mParams, function, filePath, lineNumber);
   }
 
   //---------------------------------------------------------------------------
