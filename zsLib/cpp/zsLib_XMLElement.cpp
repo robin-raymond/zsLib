@@ -1091,6 +1091,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
+    bool Element::hasAttributes() const
+    {
+      return (bool)mFirstAttribute;
+    }
+
+    //-------------------------------------------------------------------------
     AttributePtr Element::getFirstAttribute() const
     {
       return mFirstAttribute;

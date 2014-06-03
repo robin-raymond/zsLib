@@ -367,6 +367,7 @@ namespace zsLib
       AttributePtr findAttribute(String inName) const;
       String getAttributeValue(String inName) const;
 
+      bool hasAttributes() const;
       AttributePtr findAttributeChecked(String inName) const throw(Exceptions::CheckFailed);
       String getAttributeValueChecked(String inName) const throw(Exceptions::CheckFailed);
 
