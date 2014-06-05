@@ -273,7 +273,7 @@ namespace zsLib
                                                     size_t *outLength
                                                     ) const
     {
-      GeneratorPtr generator = Generator::createJSONGenerator(Generator::JSONWriteFlag_PrettyPrint);
+      GeneratorPtr generator = Generator::createJSONGenerator(prettyPrint ? Generator::JSONWriteFlag_PrettyPrint : Generator::JSONWriteFlag_None);
       return generator->write(mThis.lock(), outLength);
     }
 
