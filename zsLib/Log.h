@@ -107,6 +107,7 @@ namespace zsLib
     };
 
     static const char *toString(Severity severity);
+    static Severity toSeverity(const char *severityStr);
 
     enum Level
     {
@@ -119,6 +120,7 @@ namespace zsLib
     };
 
     static const char *toString(Level level);
+    static Level toLevel(const char *levelStr);
 
     //-------------------------------------------------------------------------
     #pragma mark

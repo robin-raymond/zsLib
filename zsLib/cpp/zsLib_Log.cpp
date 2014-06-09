@@ -85,6 +85,28 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
+  Log::Severity Log::toSeverity(const char *inSeverityStr)
+  {
+    static Severity severityArray[] = {
+      Warning,
+      Error,
+      Fatal,
+
+      Informational
+    };
+
+    String severityStr(inSeverityStr);
+
+    for (int index = 0; Informational != severityArray[index]; ++index) {
+      if (severityStr == toString(severityArray[index])) {
+        return severityArray[index];
+      }
+    }
+
+    return Informational;
+  }
+  
+  //---------------------------------------------------------------------------
   const char *Log::toString(Level level)
   {
     switch (level) {
@@ -96,6 +118,30 @@ namespace zsLib
       case Insane:        return "insane";
     }
     return "undefined";
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Level Log::toLevel(const char *inLevelStr)
+  {
+    static Level levelArray[] = {
+      Basic,
+      Detail,
+      Debug,
+      Trace,
+      Insane,
+
+      None
+    };
+
+    String levelStr(inLevelStr);
+
+    for (int index = 0; None != levelArray[index]; ++index) {
+      if (levelStr == toString(levelArray[index])) {
+        return levelArray[index];
+      }
+    }
+
+    return None;
   }
 
   //---------------------------------------------------------------------------
