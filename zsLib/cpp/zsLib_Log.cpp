@@ -325,7 +325,6 @@ namespace zsLib
     mParam->adoptAsLastChild(value);
   }
 
-#ifndef _ANDROID
   //---------------------------------------------------------------------------
   Log::Param::Param(const char *name, bool value) :
     Param(name, value ? "true" : "false", true)
@@ -403,72 +402,7 @@ namespace zsLib
     Param(name, string(value), true)
   {
   }
-#else
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, bool value) {
-    Param(name, "true", true);
-  }
 
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, CHAR value) {
-    Param(name, (INT)value);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, UCHAR value) {
-    Param(name, (UINT)value);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, SHORT value) {
-    Param(name, (INT)value);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, USHORT value) {
-    Param(name, (UINT)value);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, INT value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, UINT value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, LONG value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, ULONG value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, LONGLONG value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, ULONGLONG value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, FLOAT value) {
-    Param(name, string(value), true);
-  }
-
-  //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, DOUBLE value) {
-    Param(name, string(value), true);
-  }
-#endif
   //---------------------------------------------------------------------------
   Log::Param::Param(const char *name, const Time &value)
   {
