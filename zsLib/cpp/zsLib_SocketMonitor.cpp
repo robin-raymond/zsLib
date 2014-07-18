@@ -697,6 +697,10 @@ namespace zsLib
           ZS_LOG_INSANE(log("prepared FDs") + ZS_PARAM("total", size))
         }
 
+#ifdef _ANDROID
+        boost::thread::yield();
+#endif //_ANDROID
+
         int result =
 
 #ifdef _WIN32
