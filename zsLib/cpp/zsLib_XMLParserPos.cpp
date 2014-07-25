@@ -487,30 +487,6 @@ namespace zsLib
       return inPos - ((size_t)inDistance);
     }
 
-    //-------------------------------------------------------------------------
-#ifdef _ANDROID
-  /*  ParserPos operator+(const ParserPos &inPos, unsigned int inDistance)
-    {
-      return inPos + ((size_t)inDistance);
-    }*/
-
-    //-------------------------------------------------------------------------
-/*    ParserPos operator-(const ParserPos &inPos, unsigned int inDistance)
-    {
-      return inPos - ((size_t)inDistance);
-    }*/
-#else
-    ParserPos operator+(const ParserPos &inPos, unsigned int inDistance)
-    {
-      return inPos + ((size_t)inDistance);
-    }
-
-    //-------------------------------------------------------------------------
-    ParserPos operator-(const ParserPos &inPos, unsigned int inDistance)
-    {
-      return inPos - ((size_t)inDistance);
-    }
-#endif
   } // namespace XML
 
 } // namespace zsLib
