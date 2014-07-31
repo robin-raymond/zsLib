@@ -152,6 +152,25 @@ namespace zsLib
       {
         return Log::Params(message, "Generator");
       }
+
+      //-------------------------------------------------------------------------
+      static bool objectObjectCheck(const NodePtr &onlyThisNode)
+      {
+        if (onlyThisNode->isDocument()) {
+          ElementPtr el = onlyThisNode->toDocument()->getFirstChildElement();
+          if (el) {
+            if (el->getValue().isEmpty()) {
+              return false;
+            }
+          }
+        }
+        if (onlyThisNode->isElement()) {
+          if (onlyThisNode->toElement()->getValue().isEmpty()) {
+            return false;
+          }
+        }
+        return true;
+      }
       
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
@@ -163,6 +182,7 @@ namespace zsLib
 
       //-----------------------------------------------------------------------
       Generator::Generator(UINT writeFlags) :
+        mCaseSensitive(true),
         mDepth(0),
         mWriteFlags(writeFlags),
         mJSONForcedText(ZS_JSON_DEFAULT_FORCED_TEXT),
@@ -367,12 +387,7 @@ namespace zsLib
               nextName = nextSibling->getValue();
             }
 
-            bool caseSensitive = true;
-
-            NodePtr root = el->getRoot();
-            if (root->isDocument()) {
-              caseSensitive = root->toDocument()->isElementNameIsCaseSensative();
-            }
+            bool caseSensitive = mCaseSensitive;
 
             if (caseSensitive) {
               beforeMatch = (prevSibling) && (currentName == prevName);
@@ -499,28 +514,15 @@ namespace zsLib
     {
     }
 
-    static bool objectObjectCheck(const NodePtr &onlyThisNode)
-    {
-      if (onlyThisNode->isDocument()) {
-        ElementPtr el = onlyThisNode->toDocument()->getFirstChildElement();
-        if (el) {
-          if (el->getValue().isEmpty()) {
-            return false;
-          }
-        }
-      }
-      if (onlyThisNode->isElement()) {
-        if (onlyThisNode->toElement()->getValue().isEmpty()) {
-          return false;
-        }
-      }
-      return true;
-    }
-
     //-------------------------------------------------------------------------
     size_t Generator::getOutputSize(const NodePtr &onlyThisNode) const
     {
       mGeneratorRoot = onlyThisNode;
+
+      NodePtr root = onlyThisNode->getRoot();
+      if (root->isDocument()) {
+        mCaseSensitive = root->toDocument()->isElementNameIsCaseSensative();
+      }
 
       char *ioPos = NULL;
       size_t result = 0;
@@ -556,6 +558,11 @@ namespace zsLib
       size_t totalSize = getOutputSize(onlyThisNode);
 
       mGeneratorRoot = onlyThisNode;
+
+      NodePtr root = onlyThisNode->getRoot();
+      if (root->isDocument()) {
+        mCaseSensitive = root->toDocument()->isElementNameIsCaseSensative();
+      }
 
       boost::shared_array<char> buffer(new char[totalSize+1]);
       char *ioPos = buffer.get();
