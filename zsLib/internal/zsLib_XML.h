@@ -599,6 +599,7 @@ namespace zsLib
 
         mutable NodePtr mGeneratorRoot;
 
+        mutable bool mCaseSensitive;
         mutable ULONG mDepth;
         JSONStrs &mStrs;
       };
