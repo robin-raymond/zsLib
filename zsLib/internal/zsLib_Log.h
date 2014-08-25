@@ -108,6 +108,8 @@ namespace zsLib
 #define ZS_INTERNAL_LOG_SUBSYSTEM_TRACE(xSubsystem, xMsg)               if (ZS_INTERNAL_IS_LOGGING(Trace))  {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Informational, ::zsLib::Log::Trace, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
 #define ZS_INTERNAL_LOG_SUBSYSTEM_INSANE(xSubsystem, xMsg)              if (ZS_INTERNAL_IS_LOGGING(Insane)) {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Informational, ::zsLib::Log::Insane, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
 
+#define ZS_INTERNAL_LOG_FORCED(xSeverity, xLevel, xMsg)                 {::zsLib::Log::log(ZS_GET_SUBSYSTEM(), ::zsLib::Log::xSeverity, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
+
 #define ZS_INTERNAL_LOG_BASIC(xMsg)                                     ZS_INTERNAL_LOG_SUBSYSTEM_BASIC(ZS_GET_SUBSYSTEM(), xMsg)
 #define ZS_INTERNAL_LOG_DETAIL(xMsg)                                    ZS_INTERNAL_LOG_SUBSYSTEM_DETAIL(ZS_GET_SUBSYSTEM(), xMsg)
 #define ZS_INTERNAL_LOG_DEBUG(xMsg)                                     ZS_INTERNAL_LOG_SUBSYSTEM_DEBUG(ZS_GET_SUBSYSTEM(), xMsg)

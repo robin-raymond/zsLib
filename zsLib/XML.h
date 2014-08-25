@@ -697,10 +697,6 @@ namespace zsLib
     ParserPos operator-(const ParserPos &inPos, size_t inDistance);
     ParserPos operator+(const ParserPos &inPos, int inDistance);
     ParserPos operator-(const ParserPos &inPos, int inDistance);
-    ParserPos operator+(const ParserPos &inPos, unsigned int inDistance);
-    ParserPos operator-(const ParserPos &inPos, unsigned int inDistance);
-    ParserPos operator+(const ParserPos &inPos, size_t inDistance);
-    ParserPos operator-(const ParserPos &inPos, size_t inDistance);
 
 
     //-------------------------------------------------------------------------
