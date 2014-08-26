@@ -82,14 +82,14 @@ namespace zsLib
       void notify()
       {
         AutoRecursiveLock lock(mLock);
-        get(mNotified) = true;
+        mNotified = true;
       }
 
     private:
 
       mutable RecursiveLock mLock;
       ThreadPriorities mPriority;
-      AutoBool mNotified;
+      bool mNotified {};
     };
     
   }

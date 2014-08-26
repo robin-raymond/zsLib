@@ -40,15 +40,11 @@
 
 namespace zsLib
 {
-  class Timer;
-  typedef boost::shared_ptr<Timer> TimerPtr;
-  typedef boost::weak_ptr<Timer> TimerWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Timer)
 
   namespace internal
   {
-    class TimerMonitor;
-    typedef boost::shared_ptr<TimerMonitor> TimerMonitorPtr;
-    typedef boost::weak_ptr<TimerMonitor> TimerMonitorWeakPtr;
+    ZS_DECLARE_CLASS_PTR(TimerMonitor)
 
     class TimerMonitor : public boost::noncopyable
     {

@@ -33,6 +33,7 @@
 #define ZS_DECLARE_STRUCT_PTR(xStructName)                                          ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)
 #define ZS_DECLARE_INTERACTION_PTR(xInteractionName)                                ZS_INTERNAL_DECLARE_STRUCT_PTR(xInteractionName)
 #define ZS_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)                         ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)
+#define ZS_DYNAMIC_PTR_CAST(xType, xObject)                                         ZS_INTERNAL_DYNAMIC_PTR_CAST(xType, xObject)
 
 
 namespace zsLib
@@ -93,73 +94,31 @@ namespace zsLib
 
   class PrivateGlobalLock;
 
-  class Event;
-  typedef boost::shared_ptr<Event> EventPtr;
-  typedef boost::weak_ptr<Event> EventWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Event)
+  ZS_DECLARE_CLASS_PTR(Exception)
+  ZS_DECLARE_CLASS_PTR(IPAddress)
 
-  class Exception;
-  typedef boost::shared_ptr<Exception> ExceptionPtr;
-  typedef boost::weak_ptr<Exception> ExceptionWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Log)
+  ZS_DECLARE_INTERACTION_PTR(ILogDelegate)
 
-  class IPAddress;
-  typedef boost::shared_ptr<IPAddress> IPAddressPtr;
-  typedef boost::weak_ptr<IPAddress> IPAddressWeakPtr;
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueMessage)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueNotify)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueue)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueThread)
 
-  class IPAddress;
-  typedef boost::shared_ptr<IPAddress> IPAddressPtr;
-  typedef boost::weak_ptr<IPAddress> IPAddressWeakPtr;
+  ZS_DECLARE_CLASS_PTR(MessageQueue)
+  ZS_DECLARE_CLASS_PTR(MessageQueueThread)
 
-  interaction ILogDelegate;
-  typedef boost::shared_ptr<ILogDelegate> ILogDelegatePtr;
-  typedef boost::weak_ptr<ILogDelegate> ILogDelegateWeakPtr;
 
-  class Log;
-  typedef boost::shared_ptr<Log> LogPtr;
-  typedef boost::weak_ptr<Log> LogWeakPtr;
+  ZS_DECLARE_INTERACTION_PTR(ISocketDelegate)
 
-  interaction IMessageQueueMessage;
-  typedef boost::shared_ptr<IMessageQueueMessage> IMessageQueueMessagePtr;
-  typedef boost::weak_ptr<IMessageQueueMessage> IMessageQueueMessageWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Socket)
+  ZS_DECLARE_CLASS_PTR(String)
 
-  interaction IMessageQueueNotify;
-  typedef boost::shared_ptr<IMessageQueueNotify> IMessageQueueNotifyPtr;
-  typedef boost::weak_ptr<IMessageQueueNotify> IMessageQueueNotifyWeakPtr;
 
-  interaction IMessageQueue;
-  typedef boost::shared_ptr<IMessageQueue> IMessageQueuePtr;
-  typedef boost::weak_ptr<IMessageQueue> IMessageQueueWeakPtr;
+  ZS_DECLARE_INTERACTION_PTR(ITimerDelegate)
 
-  class MessageQueue;
-  typedef boost::shared_ptr<MessageQueue> MessageQueuePtr;
-  typedef boost::weak_ptr<MessageQueue> MessageQueueWeakPtr;
-
-  interaction IMessageQueueThread;
-  typedef boost::shared_ptr<IMessageQueueThread> IMessageQueueThreadPtr;
-  typedef boost::weak_ptr<IMessageQueueThread> IMessageQueueThreadWeakPtr;
-
-  class MessageQueueThread;
-  typedef boost::shared_ptr<MessageQueueThread> MessageQueueThreadPtr;
-  typedef boost::weak_ptr<MessageQueueThread> MessageQueueThreadWeakPtr;
-
-  interaction ISocketDelegate;
-  typedef boost::shared_ptr<ISocketDelegate> ISocketDelegatePtr;
-  typedef boost::weak_ptr<ISocketDelegate> ISocketDelegateWeakPtr;
-
-  class Socket;
-  typedef boost::shared_ptr<Socket> SocketPtr;
-  typedef boost::weak_ptr<Socket> SocketWeakPtr;
-
-  class String;
-  typedef boost::shared_ptr<String> StringPtr;
-  typedef boost::weak_ptr<String> StringWeakPtr;
-
-  interaction ITimerDelegate;
-  typedef boost::shared_ptr<ITimerDelegate> ITimerDelegatePtr;
-  typedef boost::weak_ptr<ITimerDelegate> ITimerDelegateWeakPtr;
-
-  class Timer;
-  typedef boost::shared_ptr<Timer> TimerPtr;
-  typedef boost::weak_ptr<Timer> TimerWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Timer)
 
   struct Noop
   {
@@ -171,24 +130,18 @@ namespace zsLib
     bool mNoop;
   };
 
-  class AutoInitializedPUID : public boost::value_initialized<PUID>
+  class AutoInitializedPUID
   {
   public:
     AutoInitializedPUID();
+
+    operator PUID() const {return mValue;}
+
+  private:
+    PUID mValue;
   };
 
   typedef AutoInitializedPUID AutoPUID;
-  typedef boost::value_initialized<bool> AutoBool;
-  typedef boost::value_initialized<BYTE> AutoBYTE;
-  typedef boost::value_initialized<WORD> AutoWORD;
-  typedef boost::value_initialized<DWORD> AutoDWORD;
-  typedef boost::value_initialized<QWORD> AutoQWORD;
-  typedef boost::value_initialized<ULONG> AutoULONG;
-  typedef boost::value_initialized<LONGLONG> AutoLONGLONG;
-  typedef boost::value_initialized<ULONGLONG> AutoULONGLONG;
-  typedef boost::value_initialized<FLOAT> AutoFLOAT;
-  typedef boost::value_initialized<DOUBLE> AutoDOUBLE;
-  typedef boost::value_initialized<size_t> AutoSizeT;
 
   namespace XML
   {
@@ -207,6 +160,11 @@ namespace zsLib
     class ParserWarning;
     class WalkSink;
   }
+
+  namespace JSON
+  {
+    using namespace XML;
+  };
 
 } // namespace zsLib
 

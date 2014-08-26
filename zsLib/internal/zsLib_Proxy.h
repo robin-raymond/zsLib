@@ -49,22 +49,25 @@ namespace zsLib
     class Proxy : public XINTERFACE
     {
     public:
-      Proxy(IMessageQueuePtr queue, boost::shared_ptr<XINTERFACE> delegate, int line, const char *fileName) : mQueue(queue), mDelegate(delegate), mNoop(false), mIgnoreMethodCall(false), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
-      Proxy(IMessageQueuePtr queue, boost::weak_ptr<XINTERFACE> delegateWeakPtr, int line, const char *fileName) : mQueue(queue), mWeakDelegate(delegateWeakPtr), mNoop(false), mIgnoreMethodCall(false), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
+      ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, Delegate)
+
+    public:
+      Proxy(IMessageQueuePtr queue, DelegatePtr delegate, int line, const char *fileName) : mQueue(queue), mDelegate(delegate), mNoop(false), mIgnoreMethodCall(false), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
+      Proxy(IMessageQueuePtr queue, DelegateWeakPtr delegateWeakPtr, int line, const char *fileName) : mQueue(queue), mWeakDelegate(delegateWeakPtr), mNoop(false), mIgnoreMethodCall(false), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
       Proxy(IMessageQueuePtr queue, bool throwsDelegateGone, int line, const char *fileName) : mQueue(queue), mNoop(true), mIgnoreMethodCall(!throwsDelegateGone), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
       ~Proxy() {proxyCountDecrement(mLine, mFileName);}
 
-      boost::shared_ptr<XINTERFACE> getDelegate() const
+      DelegatePtr getDelegate() const
       {
         if (mDelegate) {
           return mDelegate;
         }
-        boost::shared_ptr<XINTERFACE> result = mWeakDelegate.lock();
+        DelegatePtr result = mWeakDelegate.lock();
         if (!result) {throwDelegateGone();}
         return result;
       }
 
-      boost::shared_ptr<XINTERFACE> getDelegate(bool throwDelegateGone) const
+      DelegatePtr getDelegate(bool throwDelegateGone) const
       {
         if (throwDelegateGone) return getDelegate();
         if (mDelegate) {
@@ -89,8 +92,8 @@ namespace zsLib
 
     protected:
       IMessageQueuePtr mQueue;
-      boost::shared_ptr<XINTERFACE> mDelegate;
-      boost::weak_ptr<XINTERFACE> mWeakDelegate;
+      DelegatePtr mDelegate;
+      DelegateWeakPtr mWeakDelegate;
       int mLine;
       const char *mFileName;
       bool mNoop;
@@ -104,6 +107,12 @@ namespace zsLib
   typedef boost::shared_ptr<xInteractionName> xInteractionName##Ptr;                                          \
   typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                        \
   typedef zsLib::Proxy<xInteractionName> xInteractionName##Proxy;
+
+#define ZS_INTERNAL_DECLARE_TYPEDEF_PROXY(xOriginalType, xNewTypeName)                                        \
+  typedef xOriginalType xNewTypeName;                                                                         \
+  typedef boost::shared_ptr<xNewTypeName> xNewTypeName##Ptr;                                                  \
+  typedef boost::weak_ptr<xNewTypeName> xNewTypeName##WeakPtr;                                                \
+  typedef zsLib::Proxy<xNewTypeName> xNewTypeName##Proxy;
 
 #define ZS_INTERNAL_DECLARE_USING_PROXY(xNamespace, xExistingType)                                            \
   using xNamespace::xExistingType;                                                                            \
@@ -123,11 +132,8 @@ namespace zsLib                                                                 
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(DelegateGone, ProxyBase::Exceptions::DelegateGone)                 \
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(MissingDelegateMessageQueue, ProxyBase::Exceptions::MissingDelegateMessageQueue) \
     };                                                                                                        \
-    typedef xInterface                    Delegate;                                                           \
-    typedef boost::shared_ptr<xInterface> DelegatePtr;                                                        \
-    typedef boost::weak_ptr<xInterface>   DelegateWeakPtr;                                                    \
-    typedef Proxy<xInterface>             ProxyType;                                                          \
-    typedef boost::shared_ptr<ProxyType>  ProxyPtr;                                                           \
+    ZS_DECLARE_TYPEDEF_PTR(xInterface, Delegate)                                                              \
+    ZS_DECLARE_TYPEDEF_PTR(Proxy<xInterface>, ProxyType)                                                      \
                                                                                                               \
   private:                                                                                                    \
     Proxy(IMessageQueuePtr queue, DelegatePtr delegate, int line, const char *fileName) : internal::Proxy<xInterface, xDelegateMustHaveQueue>(queue, delegate, line, fileName) {}     \
@@ -161,7 +167,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyPtr(new ProxyType(queue, delegate, line, fileName));                                        \
+      return ProxyTypePtr(new ProxyType(queue, delegate, line, fileName));                                    \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr create(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)   \
@@ -189,7 +195,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyPtr(new ProxyType(queue, delegate, line, fileName));                                        \
+      return ProxyTypePtr(new ProxyType(queue, delegate, line, fileName));                                    \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr createWeak(DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)                       \
@@ -218,7 +224,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyPtr(new ProxyType(queue, DelegateWeakPtr(delegate), line, fileName));                       \
+      return ProxyTypePtr(new ProxyType(queue, DelegateWeakPtr(delegate), line, fileName));                   \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr createWeak(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
@@ -246,7 +252,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyPtr(new ProxyType(queue, DelegateWeakPtr(delegate), line, fileName));                       \
+      return ProxyTypePtr(new ProxyType(queue, DelegateWeakPtr(delegate), line, fileName));                   \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr createNoop(IMessageQueuePtr queue, bool throwsDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
@@ -256,7 +262,7 @@ namespace zsLib                                                                 
         return DelegatePtr();                                                                                 \
       }                                                                                                       \
                                                                                                               \
-      return ProxyPtr(new ProxyType(queue, throwsDelegateGone, line, fileName));                              \
+      return ProxyTypePtr(new ProxyType(queue, throwsDelegateGone, line, fileName));                          \
     }                                                                                                         \
                                                                                                               \
     static bool isProxy(DelegatePtr delegate)                                                                 \
@@ -623,7 +629,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod() {                                                                                                                        \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_0_##xMethod> stub(new Stub_0_##xMethod(getDelegate()));                                                                \
+      ZS_DECLARE_PTR(Stub_0_##xMethod)                                                                                                              \
+      Stub_0_##xMethod##Ptr stub(new Stub_0_##xMethod(getDelegate()));                                                                              \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -650,7 +657,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1) {                                                                                                                   \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_1_##xMethod> stub(new Stub_1_##xMethod(getDelegate(),v1));                                                             \
+      ZS_DECLARE_PTR(Stub_1_##xMethod)                                                                                                              \
+      Stub_1_##xMethod##Ptr stub(new Stub_1_##xMethod(getDelegate(),v1));                                                                           \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -679,7 +687,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2) {                                                                                                             \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_2_##xMethod> stub(new Stub_2_##xMethod(getDelegate(),v1,v2));                                                          \
+      ZS_DECLARE_PTR(Stub_2_##xMethod)                                                                                                              \
+      Stub_2_##xMethod##Ptr stub(new Stub_2_##xMethod(getDelegate(),v1,v2));                                                                        \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -710,7 +719,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3) {                                                                                                       \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_3_##xMethod> stub(new Stub_3_##xMethod(getDelegate(),v1,v2,v3));                                                       \
+      ZS_DECLARE_PTR(Stub_3_##xMethod)                                                                                                              \
+      Stub_3_##xMethod##Ptr stub(new Stub_3_##xMethod(getDelegate(),v1,v2,v3));                                                                     \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -743,7 +753,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4) {                                                                                                 \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_4_##xMethod> stub(new Stub_4_##xMethod(getDelegate(),v1,v2,v3,v4));                                                    \
+      ZS_DECLARE_PTR(Stub_4_##xMethod)                                                                                                              \
+      Stub_4_##xMethod##Ptr stub(new Stub_4_##xMethod(getDelegate(),v1,v2,v3,v4));                                                                  \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -778,7 +789,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5) {                                                                                           \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_5_##xMethod> stub(new Stub_5_##xMethod(getDelegate(),v1,v2,v3,v4,v5));                                                 \
+      ZS_DECLARE_PTR(Stub_5_##xMethod)                                                                                                              \
+      Stub_5_##xMethod##Ptr stub(new Stub_5_##xMethod(getDelegate(),v1,v2,v3,v4,v5));                                                               \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -815,7 +827,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6) {                                                                                     \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_6_##xMethod> stub(new Stub_6_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6));                                              \
+      ZS_DECLARE_PTR(Stub_6_##xMethod)                                                                                                              \
+      Stub_6_##xMethod##Ptr stub(new Stub_6_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6));                                                            \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -854,7 +867,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7) {                                                                               \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_7_##xMethod> stub(new Stub_7_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7));                                           \
+      ZS_DECLARE_PTR(Stub_7_##xMethod)                                                                                                              \
+      Stub_7_##xMethod##Ptr stub(new Stub_7_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7));                                                         \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -895,7 +909,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8) {                                                                         \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_8_##xMethod> stub(new Stub_8_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8));                                        \
+      ZS_DECLARE_PTR(Stub_8_##xMethod)                                                                                                              \
+      Stub_8_##xMethod##Ptr stub(new Stub_8_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8));                                                      \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -938,7 +953,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9) {                                                                   \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_9_##xMethod> stub(new Stub_9_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9));                                     \
+      ZS_DECLARE_PTR(Stub_9_##xMethod)                                                                                                              \
+      Stub_9_##xMethod##Ptr stub(new Stub_9_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9));                                                   \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -983,7 +999,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10) {                                                           \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_10_##xMethod> stub(new Stub_10_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10));                               \
+      ZS_DECLARE_PTR(Stub_10_##xMethod)                                                                                                             \
+      Stub_10_##xMethod##Ptr stub(new Stub_10_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10));                                             \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -1030,7 +1047,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11) {                                                   \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_11_##xMethod> stub(new Stub_11_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11));                           \
+      ZS_DECLARE_PTR(Stub_11_##xMethod)                                                                                                             \
+      Stub_11_##xMethod##Ptr stub(new Stub_11_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11));                                         \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -1079,7 +1097,8 @@ namespace zsLib                                                                 
                                                                                                                                                     \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12) {                                           \
       if (ignoreMethodCall()) return;                                                                                                               \
-      boost::shared_ptr<Stub_12_##xMethod> stub(new Stub_12_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12));                       \
+      ZS_DECLARE_PTR(Stub_12_##xMethod)                                                                                                             \
+      Stub_12_##xMethod##Ptr stub(new Stub_12_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12));                                     \
       mQueue->post(stub);                                                                                                                           \
     }
 
@@ -1130,7 +1149,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13) {                                                                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_13_##xMethod> stub(new Stub_13_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13));                                                                               \
+      ZS_DECLARE_PTR(Stub_13_##xMethod)                                                                                                                                                                         \
+      Stub_13_##xMethod##Ptr stub(new Stub_13_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13));                                                                                             \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1183,7 +1203,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14) {                                                                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_14_##xMethod> stub(new Stub_14_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14));                                                                           \
+      ZS_DECLARE_PTR(Stub_14_##xMethod)                                                                                                                                                                         \
+      Stub_14_##xMethod##Ptr stub(new Stub_14_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14));                                                                                         \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1238,7 +1259,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15) {                                                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_15_##xMethod> stub(new Stub_15_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15));                                                                       \
+      ZS_DECLARE_PTR(Stub_15_##xMethod)                                                                                                                                                                         \
+      Stub_15_##xMethod##Ptr stub(new Stub_15_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15));                                                                                     \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1295,7 +1317,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16) {                                                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_16_##xMethod> stub(new Stub_16_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16));                                                                   \
+      ZS_DECLARE_PTR(Stub_16_##xMethod)                                                                                                                                                                         \
+      Stub_16_##xMethod##Ptr stub(new Stub_16_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16));                                                                                 \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1354,7 +1377,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17) {                                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_17_##xMethod> stub(new Stub_17_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17));                                                               \
+      ZS_DECLARE_PTR(Stub_17_##xMethod)                                                                                                                                                                         \
+      Stub_17_##xMethod##Ptr stub(new Stub_17_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17));                                                                             \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1415,7 +1439,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18) {                                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_18_##xMethod> stub(new Stub_18_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18));                                                           \
+      ZS_DECLARE_PTR(Stub_18_##xMethod)                                                                                                                                                                         \
+      Stub_18_##xMethod##Ptr stub(new Stub_18_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18));                                                                         \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1478,7 +1503,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19) {                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_19_##xMethod> stub(new Stub_19_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19));                                                       \
+      ZS_DECLARE_PTR(Stub_19_##xMethod)                                                                                                                                                                         \
+      Stub_19_##xMethod##Ptr stub(new Stub_19_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19));                                                                     \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1543,7 +1569,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20) {                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_20_##xMethod> stub(new Stub_20_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20));                                                   \
+      ZS_DECLARE_PTR(Stub_20_##xMethod)                                                                                                                                                                         \
+      Stub_20_##xMethod##Ptr stub(new Stub_20_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20));                                                                 \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1610,7 +1637,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21) {                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_21_##xMethod> stub(new Stub_21_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21));                                               \
+      ZS_DECLARE_PTR(Stub_21_##xMethod)                                                                                                                                                                         \
+      Stub_21_##xMethod##Ptr stub(new Stub_21_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21));                                                             \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1679,7 +1707,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22) {                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_22_##xMethod> stub(new Stub_22_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22));                                           \
+      ZS_DECLARE_PTR(Stub_22_##xMethod)                                                                                                                                                                         \
+      Stub_22_##xMethod##Ptr stub(new Stub_22_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22));                                                         \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1750,7 +1779,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22,t23 v23) {               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_23_##xMethod> stub(new Stub_23_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23));                                       \
+      ZS_DECLARE_PTR(Stub_23_##xMethod)                                                                                                                                                                         \
+      Stub_23_##xMethod##Ptr stub(new Stub_23_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23));                                                     \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1823,7 +1853,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22,t23 v23,t24 v24) {       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_24_##xMethod> stub(new Stub_24_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24));                                   \
+      ZS_DECLARE_PTR(Stub_24_##xMethod)                                                                                                                                                                         \
+      Stub_24_##xMethod##Ptr stub(new Stub_24_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24));                                                 \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 
@@ -1898,7 +1929,8 @@ namespace zsLib                                                                 
                                                                                                                                                                                                                 \
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22,t23 v23,t24 v24,t25 v25) { \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
-      boost::shared_ptr<Stub_25_##xMethod> stub(new Stub_25_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25));                               \
+      ZS_DECLARE_PTR(Stub_25_##xMethod)                                                                                                                                                                         \
+      Stub_25_##xMethod##Ptr stub(new Stub_25_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25));                                             \
       mQueue->post(stub);                                                                                                                                                                                       \
     }
 

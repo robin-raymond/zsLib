@@ -69,16 +69,20 @@ namespace zsLib
 
 #ifdef __QNX__
 
+  ZS_DECLARE_INTERACTION_PTR(IQtCrossThreadNotifierDelegate)
+
   interaction IQtCrossThreadNotifierDelegate
   {
     virtual void processMessageFromThread() = 0;
   };
 
+  ZS_DECLARE_INTERACTION_PTR(IQtCrossThreadNotifier)
+
   interaction IQtCrossThreadNotifier
   {
-    static boost::shared_ptr<IQtCrossThreadNotifier> createNotifier();
+    static IQtCrossThreadNotifierPtr createNotifier();
 
-    virtual void setDelegate(boost::shared_ptr<IQtCrossThreadNotifierDelegate> delegate) = 0;
+    virtual void setDelegate(IQtCrossThreadNotifierDelegatePtr delegate) = 0;
     virtual void notifyMessagePosted() = 0;
   };
 

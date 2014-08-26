@@ -114,8 +114,7 @@ namespace zsLib
   class SingletonLazySharedPtr : BoxedAllocation< boost::weak_ptr<T>, false >
   {
   public:
-    typedef boost::shared_ptr<T> TPtr;
-    typedef boost::weak_ptr<T> TWeakPtr;
+    ZS_DECLARE_PTR(T)
 
   public:
     SingletonLazySharedPtr(TPtr pThis)
@@ -138,7 +137,7 @@ namespace zsLib
   private:
     TWeakPtr &weakRef()
     {
-      return BoxedAllocation< boost::weak_ptr<T>, false >::ref();
+      return BoxedAllocation< TWeakPtr, false >::ref();
     }
 
   private:

@@ -30,14 +30,6 @@
 
 namespace zsLib
 {
-  interaction ITimerDelegate;
-  typedef boost::shared_ptr<ITimerDelegate> ITimerDelegatePtr;
-  typedef boost::weak_ptr<ITimerDelegate> ITimerDelegateWeakPtr;
-
-  class Timer;
-  typedef boost::shared_ptr<Timer> TimerPtr;
-  typedef boost::weak_ptr<Timer> TimerWeakPtr;
-
   namespace internal
   {
     class Timer

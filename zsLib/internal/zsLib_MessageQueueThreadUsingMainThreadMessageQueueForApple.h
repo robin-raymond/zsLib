@@ -37,19 +37,10 @@ namespace zsLib
 {
   namespace internal
   {
-    class MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper;
-
-    class MessageQueueThreadUsingMainThreadMessageQueueForApple;
-
-    typedef boost::shared_ptr<MessageQueueThreadUsingMainThreadMessageQueueForApple> MessageQueueThreadUsingMainThreadMessageQueueForApplePtr;
-    typedef boost::weak_ptr<MessageQueueThreadUsingMainThreadMessageQueueForApple> MessageQueueThreadUsingMainThreadMessageQueueForAppleWeakPtr;
-    typedef boost::thread_specific_ptr<MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper> MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapperThreadPtr;
-
+    ZS_DECLARE_CLASS_PTR(MessageQueueThreadUsingMainThreadMessageQueueForApple)
 
     class MessageQueueThreadUsingMainThreadMessageQueueForApple : public MessageQueueThread, public IMessageQueueNotify
     {
-      friend class MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapper;
-
     public:
       struct Exceptions
       {
@@ -93,7 +84,6 @@ namespace zsLib
 
     protected:
       mutable Lock mLock;
-      MessageQueueThreadUsingMainThreadMessageQueueForAppleWrapperThreadPtr mThreadQueueWrapper;
 
       MessageQueuePtr mQueue;
 

@@ -43,8 +43,11 @@ namespace zsLib
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     #pragma mark
-    #pragma mark zsLib::internal::MessageQueueThreadUsingBlackberryChannelsWrapper
+    #pragma mark MessageQueueThreadUsingBlackberryChannelsWrapper
     #pragma mark
+
+    ZS_DECLARE_CLASS_PTR(MessageQueueThreadUsingBlackberryChannelsWrapper)
+
     class MessageQueueThreadUsingBlackberryChannelsWrapper
     {
     public:
@@ -70,7 +73,7 @@ namespace zsLib
     //-----------------------------------------------------------------------
 
     void messageQueueKeyDestructor(void* value) {
-      boost::shared_ptr<MessageQueueThreadUsingBlackberryChannelsWrapper>* ptr = (boost::shared_ptr<MessageQueueThreadUsingBlackberryChannelsWrapper>*) value;
+      MessageQueueThreadUsingBlackberryChannelsWrapperPtr *ptr = (MessageQueueThreadUsingBlackberryChannelsWrapperPtr *) value;
       (*ptr).reset();
       delete ptr;
       pthread_setspecific(messageQueueKey, NULL);
@@ -88,11 +91,11 @@ namespace zsLib
       pthread_once(&messageQueueKeyOnce, makeMessageQueueKeyOnce);
 
       if (!pthread_getspecific(messageQueueKey)) {
-        boost::shared_ptr<MessageQueueThreadUsingBlackberryChannelsWrapper>* ptr = new boost::shared_ptr<MessageQueueThreadUsingBlackberryChannelsWrapper>(new MessageQueueThreadUsingBlackberryChannelsWrapper());
+        MessageQueueThreadUsingBlackberryChannelsWrapperPtr * ptr = new MessageQueueThreadUsingBlackberryChannelsWrapperPtr(new MessageQueueThreadUsingBlackberryChannelsWrapper());
         pthread_setspecific(messageQueueKey, (void*) ptr);
       }
 
-      boost::shared_ptr<MessageQueueThreadUsingBlackberryChannelsWrapper>* returnPtr = (boost::shared_ptr<MessageQueueThreadUsingBlackberryChannelsWrapper>*) pthread_getspecific(messageQueueKey);
+      MessageQueueThreadUsingBlackberryChannelsWrapperPtr *returnPtr = (MessageQueueThreadUsingBlackberryChannelsWrapperPtr *) pthread_getspecific(messageQueueKey);
       return (*returnPtr).get()->mThreadQueue;
     }
 

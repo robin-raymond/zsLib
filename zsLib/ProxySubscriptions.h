@@ -45,16 +45,11 @@ namespace zsLib
   {
   public:
     typedef size_t size_type;
-    typedef boost::shared_ptr<XINTERFACE> DelegatePtr;
-    typedef boost::weak_ptr<XINTERFACE>   DelegateWeakPtr;
 
-    typedef SUBSCRIPTIONBASECLASS BaseSubscription;
-    typedef boost::shared_ptr<BaseSubscription> BaseSubscriptionPtr;
-    typedef boost::weak_ptr<BaseSubscription>   BaseSubscriptionWeakPtr;
+    ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, Delegate)
+    ZS_DECLARE_TYPEDEF_PTR(SUBSCRIPTIONBASECLASS, BaseSubscription)
 
-    class Subscription;
-    typedef boost::shared_ptr<Subscription> SubscriptionPtr;
-    typedef boost::weak_ptr<Subscription>   SubscriptionWeakPtr;
+    ZS_DECLARE_CLASS_PTR(Subscription)
 
   public:
     //-------------------------------------------------------------------------

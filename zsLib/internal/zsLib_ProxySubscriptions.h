@@ -48,36 +48,23 @@ namespace zsLib
     class ProxySubscriptions
     {
     public:
-      class Subscription;
-      class DelegateImpl;
+      ZS_DECLARE_CLASS_PTR(Subscription)
+      ZS_DECLARE_CLASS_PTR(DelegateImpl)
 
-      typedef SUBSCRIPTIONBASECLASS SubscriptionBaseClass;
-      typedef boost::shared_ptr<SubscriptionBaseClass> SubscriptionBaseClassPtr;
-      typedef boost::weak_ptr<SubscriptionBaseClass>   SubscriptionBaseClassWeakPtr;
+      ZS_DECLARE_TYPEDEF_PTR(SUBSCRIPTIONBASECLASS, SubscriptionBaseClass)
 
-      typedef boost::shared_ptr<Subscription> SubscriptionPtr;
-      typedef boost::weak_ptr<Subscription>   SubscriptionWeakPtr;
-
-      typedef boost::shared_ptr<XINTERFACE> DelegatePtr;
-      typedef boost::weak_ptr<XINTERFACE>   DelegateWeakPtr;
-      typedef zsLib::Proxy<XINTERFACE>      DelegateProxy;
+      ZS_DECLARE_TYPEDEF_PROXY(XINTERFACE, Delegate)
 
       typedef std::pair<SubscriptionWeakPtr, DelegatePtr> SubscriptionDelegatePair;
 
       typedef std::map<Subscription *, SubscriptionDelegatePair> SubscriptionDelegateMap;
-      typedef boost::shared_ptr<SubscriptionDelegateMap> SubscriptionDelegateMapPtr;
-      typedef boost::weak_ptr<SubscriptionDelegateMap> SubscriptionDelegateMapWeakPtr;
+      ZS_DECLARE_PTR(SubscriptionDelegateMap)
       typedef typename SubscriptionDelegateMap::size_type size_type;
 
       typedef bool Bogus;
       typedef std::map<SubscriptionPtr, Bogus> SubscriptionBackgroundMap;
 
-      typedef SUBSCRIPTIONBASECLASS BaseSubscription;
-      typedef boost::shared_ptr<SUBSCRIPTIONBASECLASS> BaseSubscriptionPtr;
-      typedef boost::weak_ptr<SUBSCRIPTIONBASECLASS> BaseSubscriptionWeakPtr;
-
-      typedef boost::shared_ptr<DelegateImpl> DelegateImplPtr;
-      typedef boost::weak_ptr<DelegateImpl>   DelegateImplWeakPtr;
+      ZS_DECLARE_TYPEDEF_PTR(SUBSCRIPTIONBASECLASS, BaseSubscription)
 
     public:
       ProxySubscriptions() {}

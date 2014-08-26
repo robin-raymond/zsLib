@@ -63,6 +63,10 @@
   typedef boost::shared_ptr<xNewTypeName> xNewTypeName##Ptr;          \
   typedef boost::weak_ptr<xNewTypeName> xNewTypeName##WeakPtr;
 
+#define ZS_INTERNAL_DYNAMIC_PTR_CAST(xType, xObject)                  \
+  boost::dynamic_pointer_cast<xType>(xObject)
+
+
 namespace zsLib
 {
   typedef char CHAR;

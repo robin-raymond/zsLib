@@ -49,8 +49,7 @@ namespace zsLib
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(DelegateGone, ProxyBase::Exceptions::DelegateGone)
     };
 
-    typedef boost::shared_ptr<XINTERFACE> DelegatePtr;
-    typedef boost::weak_ptr<XINTERFACE>   DelegateWeakPtr;
+    ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, Delegate)
 
   public:
     //------------------------------------------------------------------------
@@ -186,6 +185,7 @@ namespace zsLib
 
 
 #define ZS_DECLARE_INTERACTION_PROXY(xInteractionName)                                                                                                        ZS_INTERNAL_DECLARE_INTERACTION_PROXY(xInteractionName)
+#define ZS_DECLARE_TYPEDEF_PROXY(xOriginalType, xNewTypeName)                                                                                                 ZS_INTERNAL_DECLARE_TYPEDEF_PROXY(xOriginalType, xNewTypeName)
 #define ZS_DECLARE_USING_PROXY(xNamespace, xExistingType)                                                                                                     ZS_INTERNAL_DECLARE_USING_PROXY(xNamespace, xExistingType)
 
 #define ZS_DECLARE_PROXY_BEGIN(xInterface)                                                                                                                    ZS_INTERNAL_DECLARE_PROXY_BEGIN(xInterface, true)

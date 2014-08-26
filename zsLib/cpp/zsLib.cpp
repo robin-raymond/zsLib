@@ -33,7 +33,7 @@ namespace zsLib
 {
   AutoInitializedPUID::AutoInitializedPUID()
   {
-    get(*this) = createPUID();
+    mValue = createPUID();
   }
 
 };

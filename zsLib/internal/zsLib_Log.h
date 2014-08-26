@@ -31,23 +31,10 @@
 
 namespace zsLib
 {
-  namespace XML
-  {
-    class Element;
-    typedef boost::shared_ptr<Element> ElementPtr;
-  };
-
   class String;
   class Exception;
 
   class Subsystem;
-
-  interaction ILogDelegate;
-  typedef boost::shared_ptr<ILogDelegate> ILogDelegatePtr;
-
-  class Log;
-  typedef boost::shared_ptr<Log> LogPtr;
-  typedef boost::weak_ptr<Log> LogWeakPtr;
 
   namespace internal
   {
@@ -56,9 +43,7 @@ namespace zsLib
     protected:
       RecursiveLock mLock;
       typedef std::list<ILogDelegatePtr> ListenerList;
-
-      typedef boost::shared_ptr<ListenerList> ListenerListPtr;
-      typedef boost::weak_ptr<ListenerList> ListenerListWeakPtr;
+      ZS_DECLARE_PTR(ListenerList)
 
       ListenerListPtr mListeners;
 

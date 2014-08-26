@@ -37,9 +37,7 @@ namespace zsLib
   {
     class MessageQueueThreadUsingBlackberryChannelsWrapper;
 
-    class MessageQueueThreadUsingBlackberryChannels;
-    typedef boost::shared_ptr<MessageQueueThreadUsingBlackberryChannels> MessageQueueThreadUsingBlackberryChannelsPtr;
-    typedef boost::weak_ptr<MessageQueueThreadUsingBlackberryChannels> MessageQueueThreadUsingBlackberryChannelsWeakPtr;
+    ZS_DECLARE_CLASS_PTR(MessageQueueThreadUsingBlackberryChannels)
 
     class MessageQueueThreadUsingBlackberryChannels : public MessageQueueThread,
                                                       public IMessageQueueNotify,
@@ -85,7 +83,7 @@ namespace zsLib
     protected:
       mutable Lock mLock;
 
-      boost::shared_ptr<IQtCrossThreadNotifier> mCrossThreadNotifier;
+      IQtCrossThreadNotifierPtr mCrossThreadNotifier;
       MessageQueuePtr mQueue;
     };
   }

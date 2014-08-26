@@ -34,9 +34,7 @@ namespace zsLib
 {
   namespace internal
   {
-    class MessageQueueThreadBasic;
-    typedef boost::shared_ptr<MessageQueueThreadBasic> MessageQueueThreadBasicPtr;
-    typedef boost::weak_ptr<MessageQueueThreadBasic> MessageQueueThreadBasicWeakPtr;
+    ZS_DECLARE_CLASS_PTR(MessageQueueThreadBasic)
 
     class MessageQueueThreadBasic : public MessageQueueThread,
                                     public IMessageQueueNotify
