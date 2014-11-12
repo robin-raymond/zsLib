@@ -64,9 +64,8 @@ namespace testing
     return gCheck;
   }
 
-  interaction ITestProxyDelegate;
-  typedef boost::shared_ptr<ITestProxyDelegate> ITestProxyDelegatePtr;
-  typedef zsLib::Proxy<ITestProxyDelegate> ITestProxyDelegateProxy;
+  ZS_DECLARE_INTERACTION_PTR(Subscription)
+  ZS_DECLARE_INTERACTION_PTR(ITestProxyDelegate)
 
   interaction ITestProxyDelegate
   {
@@ -88,13 +87,11 @@ namespace testing
     virtual void cancel() = 0;
   };
 
-  typedef boost::shared_ptr<ITestSubscriptionProxyDelegate> ITestSubscriptionProxyDelegatePtr;
-  typedef zsLib::Proxy<ITestSubscriptionProxyDelegate> ITestSubscriptionProxyDelegateWeakPtr;
-  typedef zsLib::Proxy<ITestSubscriptionProxyDelegate> ITestSubscriptionProxyDelegateProxy;
-  typedef zsLib::ProxySubscriptions<ITestSubscriptionProxyDelegate, Subscription> ITestSubscriptionProxyDelegateProxySubscriptions;
+  ZS_DECLARE_INTERACTION_PROXY(ITestProxyDelegate)
 
-  typedef boost::shared_ptr<Subscription> SubscriptionPtr;
-  typedef boost::weak_ptr<Subscription> SubscriptionWeakPtr;
+  ZS_DECLARE_INTERACTION_PROXY(ITestSubscriptionProxyDelegate)
+  ZS_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(Subscription, ITestSubscriptionProxyDelegate)
+
 }
 
 
@@ -118,8 +115,7 @@ ZS_DECLARE_PROXY_SUBSCRIPTIONS_END()
 
 namespace testing
 {
-  class TestProxyCallback;
-  typedef boost::shared_ptr<TestProxyCallback> TestProxyCallbackPtr;
+  ZS_DECLARE_CLASS_PTR(TestProxyCallback)
 
   class TestProxyCallback : public ITestProxyDelegate,
                             public ITestSubscriptionProxyDelegate,
@@ -185,8 +181,7 @@ namespace testing
       ITestProxyDelegatePtr delegate = ITestProxyDelegateProxy::create(testObject);
       ITestSubscriptionProxyDelegatePtr subscriptionDelegate = ITestSubscriptionProxyDelegateProxy::create(testObject);
 
-
-      ITestSubscriptionProxyDelegateProxySubscriptions subscriptions;
+      ITestSubscriptionProxyDelegateSubscriptions subscriptions;
 
       SubscriptionPtr subscription = subscriptions.subscribe(subscriptionDelegate);
 

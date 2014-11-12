@@ -111,7 +111,7 @@ namespace zsLib
   #pragma mark
 
   template <typename T, bool allowDestroy = true>
-  class SingletonLazySharedPtr : BoxedAllocation< boost::weak_ptr<T>, false >
+  class SingletonLazySharedPtr : BoxedAllocation< std::weak_ptr<T>, false >
   {
   public:
     ZS_DECLARE_PTR(T)

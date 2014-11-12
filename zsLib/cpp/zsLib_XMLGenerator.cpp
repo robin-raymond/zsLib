@@ -553,7 +553,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Generator::write(const NodePtr &onlyThisNode, size_t *outLength) const
+    std::unique_ptr<char[]> Generator::write(const NodePtr &onlyThisNode, size_t *outLength) const
     {
       size_t totalSize = getOutputSize(onlyThisNode);
 
@@ -564,7 +564,7 @@ namespace zsLib
         mCaseSensitive = root->toDocument()->isElementNameIsCaseSensative();
       }
 
-      boost::shared_array<char> buffer(new char[totalSize+1]);
+      std::unique_ptr<char[]> buffer(new char[totalSize+1]);
       char *ioPos = buffer.get();
       *ioPos = 0;
 

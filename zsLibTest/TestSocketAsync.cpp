@@ -38,9 +38,7 @@ using zsLib::IMessageQueue;
 
 namespace async_socket
 {
-  class SocketServer;
-  typedef boost::shared_ptr<SocketServer> SocketServerPtr;
-  typedef boost::weak_ptr<SocketServer> SocketServerWeakPtr;
+  ZS_DECLARE_CLASS_PTR(SocketServer)
 
   class SocketServer : public zsLib::MessageQueueAssociator,
                        public zsLib::ISocketDelegate

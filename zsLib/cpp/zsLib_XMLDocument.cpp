@@ -261,14 +261,14 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Document::writeAsXML(size_t *outLength) const
+    std::unique_ptr<char[]> Document::writeAsXML(size_t *outLength) const
     {
       GeneratorPtr generator = Generator::createXMLGenerator();
       return generator->write(mThis.lock(), outLength);
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Document::writeAsJSON(
+    std::unique_ptr<char[]> Document::writeAsJSON(
                                                     bool prettyPrint,
                                                     size_t *outLength
                                                     ) const
@@ -278,7 +278,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Document::writeAsJSON(size_t *outLength) const
+    std::unique_ptr<char[]> Document::writeAsJSON(size_t *outLength) const
     {
       GeneratorPtr generator = Generator::createJSONGenerator();
       return generator->write(mThis.lock(), outLength);

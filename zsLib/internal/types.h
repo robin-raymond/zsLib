@@ -39,32 +39,36 @@
 #define interaction struct
 #endif //interaction
 
-#define ZS_INTERNAL_DECLARE_PTR(xExistingType)                        \
-  typedef boost::shared_ptr<xExistingType> xExistingType##Ptr;        \
-  typedef boost::weak_ptr<xExistingType> xExistingType##WeakPtr;
+#include <memory>
 
-#define ZS_INTERNAL_DECLARE_USING_PTR(xNamespace, xExistingType)      \
-  using xNamespace::xExistingType;                                    \
-  using xNamespace::xExistingType##Ptr;                               \
+#define ZS_INTERNAL_SMART_POINTER_NAMESPACE std
+
+#define ZS_INTERNAL_DECLARE_PTR(xExistingType)                                                      \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::shared_ptr<xExistingType> xExistingType##Ptr;        \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::weak_ptr<xExistingType> xExistingType##WeakPtr;
+
+#define ZS_INTERNAL_DECLARE_USING_PTR(xNamespace, xExistingType)                                    \
+  using xNamespace::xExistingType;                                                                  \
+  using xNamespace::xExistingType##Ptr;                                                             \
   using xNamespace::xExistingType##WeakPtr;
 
-#define ZS_INTERNAL_DECLARE_CLASS_PTR(xClassName)                     \
-  class xClassName;                                                   \
-  typedef boost::shared_ptr<xClassName> xClassName##Ptr;              \
-  typedef boost::weak_ptr<xClassName> xClassName##WeakPtr;
+#define ZS_INTERNAL_DECLARE_CLASS_PTR(xClassName)                                                   \
+  class xClassName;                                                                                 \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::shared_ptr<xClassName> xClassName##Ptr;              \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::weak_ptr<xClassName> xClassName##WeakPtr;
 
-#define ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)                   \
-  struct xStructName;                                                 \
-  typedef boost::shared_ptr<xStructName> xStructName##Ptr;            \
-  typedef boost::weak_ptr<xStructName> xStructName##WeakPtr;
+#define ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)                                                 \
+  struct xStructName;                                                                               \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::shared_ptr<xStructName> xStructName##Ptr;            \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::weak_ptr<xStructName> xStructName##WeakPtr;
 
-#define ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)  \
-  typedef xOriginalType xNewTypeName;                                 \
-  typedef boost::shared_ptr<xNewTypeName> xNewTypeName##Ptr;          \
-  typedef boost::weak_ptr<xNewTypeName> xNewTypeName##WeakPtr;
+#define ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)                                \
+  typedef xOriginalType xNewTypeName;                                                               \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::shared_ptr<xNewTypeName> xNewTypeName##Ptr;          \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::weak_ptr<xNewTypeName> xNewTypeName##WeakPtr;
 
-#define ZS_INTERNAL_DYNAMIC_PTR_CAST(xType, xObject)                  \
-  boost::dynamic_pointer_cast<xType>(xObject)
+#define ZS_INTERNAL_DYNAMIC_PTR_CAST(xType, xObject)                                                \
+  ZS_INTERNAL_SMART_POINTER_NAMESPACE::dynamic_pointer_cast<xType>(xObject)
 
 
 namespace zsLib

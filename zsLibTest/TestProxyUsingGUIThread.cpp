@@ -62,8 +62,7 @@ namespace testingUsingGUIThread
     return gCheck;
   }
 
-  interaction ITestProxyDelegate;
-  typedef boost::shared_ptr<ITestProxyDelegate> ITestProxyDelegatePtr;
+  ZS_DECLARE_INTERACTION_PTR(ITestProxyDelegate)
 
   interaction ITestProxyDelegate
   {
@@ -86,8 +85,7 @@ ZS_DECLARE_PROXY_END()
 
 namespace testingUsingGUIThread
 {
-  class TestProxyCallback;
-  typedef boost::shared_ptr<TestProxyCallback> TestProxyCallbackPtr;
+  ZS_DECLARE_CLASS_PTR(TestProxyCallback)
 
   class TestProxyCallback : public ITestProxyDelegate,
                             public zsLib::MessageQueueAssociator

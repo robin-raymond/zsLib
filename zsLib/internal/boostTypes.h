@@ -29,8 +29,8 @@
 #pragma GCC system_header
 #endif //_WIN32
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/weak_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/recursive_mutex.hpp>

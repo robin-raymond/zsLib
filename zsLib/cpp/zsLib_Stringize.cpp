@@ -25,8 +25,6 @@
 #include <zsLib/IPAddress.h>
 #include <zsLib/helpers.h>
 
-#include <boost/shared_array.hpp>
-
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
@@ -44,7 +42,7 @@ namespace zsLib
     {
       ZS_THROW_INVALID_USAGE_IF((base < 2) || (base > (10+26)))
 
-      boost::shared_array<char> buffer(new char[sizeof(ULONGLONG)*8+2]);
+      std::unique_ptr<char[]> buffer(new char[sizeof(ULONGLONG)*8+2]);
       memset(buffer.get(), 0, sizeof(char)*((sizeof(ULONGLONG)*8)+2));
 
       STR end = (buffer.get() + (sizeof(ULONGLONG)*8));

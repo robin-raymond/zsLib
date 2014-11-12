@@ -27,7 +27,6 @@
 #include <zsLib/Log.h>
 #include <zsLib/Exception.h>
 
-#include <boost/shared_array.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -112,7 +111,7 @@ namespace zsLib
   {
     if (!source) return String();
 
-    boost::shared_array<char> copy(new char[maxCharacters+1]);
+    std::unique_ptr<char[]> copy(new char[maxCharacters+1]);
 
     STR dest = copy.get();
     for (; *source && (maxCharacters > 0); ++source, --maxCharacters, ++dest)
@@ -127,7 +126,7 @@ namespace zsLib
   {
     if (!source) return String();
 
-    boost::shared_array<char> copy(new char[(maxCharacters*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
+    std::unique_ptr<char[]> copy(new char[(maxCharacters*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
 
     STR dest = copy.get();
     for (; *source && (maxCharacters > 0); --maxCharacters)
@@ -605,16 +604,16 @@ namespace zsLib
       return (WCHAR)(utf8ToUTF32(ioUTF8));
     }
 
-    static boost::shared_array<WCHAR> utf8ToUnicodeConvert(CSTR szInUTF8)
+    static std::unique_ptr<WCHAR[]> utf8ToUnicodeConvert(CSTR szInUTF8)
     {
       if (NULL == szInUTF8)
-        return boost::shared_array<WCHAR>();
+        return std::unique_ptr<WCHAR[]>();
 
       size_t actualLength = strlen(szInUTF8);
 
       // create a temporary buffer to convert into
       // heap allocated blocks do not require memset
-      boost::shared_array<WCHAR> result(new WCHAR[(actualLength*2)+1]);
+      std::unique_ptr<WCHAR[]> result(new WCHAR[(actualLength*2)+1]);
 
       CSTR szSource = szInUTF8;
       WCHAR *pDest = result.get();
@@ -638,10 +637,10 @@ namespace zsLib
       return result;
     }
 
-    static boost::shared_array<CHAR> unicodeToUTF8Convert(CWSTR szInUnicodeString)
+    static std::unique_ptr<CHAR[]> unicodeToUTF8Convert(CWSTR szInUnicodeString)
     {
       if (NULL == szInUnicodeString)
-        return boost::shared_array<CHAR>();
+        return std::unique_ptr<CHAR[]>();
 
       size_t actualLength = wcslen(szInUnicodeString);
 
@@ -649,7 +648,7 @@ namespace zsLib
       // wasteful, but at least it doesn't have to double process
       // the input string)
       // ULONG = 4 bytes, should be plenty
-      boost::shared_array<CHAR> result(new char[(actualLength*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
+      std::unique_ptr<CHAR[]> result(new char[(actualLength*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
 
       // convert to a unicode string for easier processing
       CWSTR szSource = szInUnicodeString;
@@ -684,14 +683,14 @@ namespace zsLib
     std::string convertToString(CWSTR value)
     {
       if (!value) return std::string();
-      boost::shared_array<CHAR> result(unicodeToUTF8Convert(value));
+      std::unique_ptr<CHAR[]> result(unicodeToUTF8Convert(value));
       return std::string(result.get());
     }
 
     std::wstring convertToWString(CSTR value)
     {
       if (!value) return std::wstring();
-      boost::shared_array<WCHAR> result(utf8ToUnicodeConvert(value));
+      std::unique_ptr<WCHAR[]> result(utf8ToUnicodeConvert(value));
       return std::wstring(result.get());
     }
 

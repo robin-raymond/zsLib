@@ -652,7 +652,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       String Parser::compressWhiteSpace(const String &inString)
       {
-        boost::shared_array<char> temp(new char[inString.getLength()+1]);
+        std::unique_ptr<char[]> temp(new char[inString.getLength()+1]);
 
         bool lastWasWhiteSpace = false;
 
@@ -1368,7 +1368,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::convertFromEntities(const String &inString)
     {
-      boost::shared_array<char> result(new char[inString.getLength()*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE+1]);
+      std::unique_ptr<char[]> result(new char[inString.getLength()*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE+1]);
       memset(result.get(), 0, sizeof(char)*(inString.getLength()*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE+1));
 
       char *dest = result.get();
@@ -1482,7 +1482,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::makeTextEntitySafe(const String &inString, bool entityEncode0xD)
     {
-      boost::shared_array<char>buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
+      std::unique_ptr<char[]>buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
 
       const char *source = inString;
       char *dest = buffer.get();
@@ -1563,7 +1563,7 @@ namespace zsLib
         }
       }
 
-      boost::shared_array<char> buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
+      std::unique_ptr<char[]> buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
 
       const char *source = inString;
       char *dest = buffer.get();
@@ -1651,7 +1651,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::convertFromJSONEncoding(const String &inString)
     {
-      boost::shared_array<char> temp(new char[inString.getLength()+1]);
+      std::unique_ptr<char[]> temp(new char[inString.getLength()+1]);
 
       const char *source = inString.c_str();
       char *dest = temp.get();
@@ -1722,7 +1722,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::convertToJSONEncoding(const String &inString)
     {
-      boost::shared_array<char> temp(new char[(inString.getLength()*2)+1]);
+      std::unique_ptr<char[]> temp(new char[(inString.getLength()*2)+1]);
 
       const char *source = inString.c_str();
       char *dest = temp.get();

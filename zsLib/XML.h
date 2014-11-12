@@ -27,7 +27,6 @@
 
 #include <zsLib/types.h>
 #include <zsLib/Exception.h>
-#include <boost/shared_array.hpp>
 
 #pragma warning(push)
 #pragma warning(disable: 4290)
@@ -315,12 +314,12 @@ namespace zsLib
       void setAttributeNameIsCaseSensative(bool inCaseSensative = true);
       bool isAttributeNameIsCaseSensative() const;
 
-      boost::shared_array<char> writeAsXML(size_t *outLengthInChars = NULL) const;
-      boost::shared_array<char> writeAsJSON(size_t *outLengthInChars = NULL) const;
-      boost::shared_array<char> writeAsJSON(
-                                            bool prettyPrint,
-                                            size_t *outLengthInChars = NULL
-                                            ) const;
+      std::unique_ptr<char[]> writeAsXML(size_t *outLengthInChars = NULL) const;
+      std::unique_ptr<char[]> writeAsJSON(size_t *outLengthInChars = NULL) const;
+      std::unique_ptr<char[]> writeAsJSON(
+                                          bool prettyPrint,
+                                          size_t *outLengthInChars = NULL
+                                          ) const;
 
       // overrides
       virtual NodePtr clone() const;
@@ -827,7 +826,7 @@ namespace zsLib
                                               );
 
       virtual size_t getOutputSize(const NodePtr &onlyThisNode) const;
-      virtual boost::shared_array<char> write(const NodePtr &onlyThisNode, size_t *outLengthInChars = NULL) const;
+      virtual std::unique_ptr<char[]> write(const NodePtr &onlyThisNode, size_t *outLengthInChars = NULL) const;
 
       virtual GeneratorPtr toGenerator() const   {return mThis.lock();}
 

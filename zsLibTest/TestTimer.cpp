@@ -33,8 +33,7 @@
 using zsLib::ULONG;
 using zsLib::IMessageQueue;
 
-class TestTimerCallback;
-typedef boost::shared_ptr<TestTimerCallback> TestTimerCallbackPtr;
+ZS_DECLARE_CLASS_PTR(TestTimerCallback)
 
 class TestTimerCallback : public zsLib::ITimerDelegate,
                           public zsLib::MessageQueueAssociator
