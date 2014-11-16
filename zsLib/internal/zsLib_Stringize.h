@@ -32,11 +32,10 @@
 #ifndef ZSLIB_INTERNAL_STRINGIZE_H_0c235f6defcccb275d602da44da60e58
 #define ZSLIB_INTERNAL_STRINGIZE_H_0c235f6defcccb275d602da44da60e58
 
+#include <uuid/uuid.h>
+
 #include <zsLib/types.h>
 #include <zsLib/String.h>
-
-#include <boost/lexical_cast.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 namespace zsLib
 {
@@ -45,6 +44,9 @@ namespace zsLib
     String convert(ULONGLONG value, size_t base);
 
     String timeToString(const Time &value);
+    String durationToString(const Duration &value);
+
+    void trimTrailingZeros(std::string &value);
   }
 } // namespace zsLib
 
@@ -58,7 +60,7 @@ namespace zsLib
   inline Stringize<t_type>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
 
     return internal::convert((ULONGLONG)mValue, mBase);
   }
@@ -79,7 +81,7 @@ namespace zsLib
   inline Stringize<CHAR>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>((int)mValue);
+      return std::to_string((int)mValue);
     return internal::convert((ULONGLONG)((UCHAR)mValue), mBase);
   }
 
@@ -87,7 +89,7 @@ namespace zsLib
   inline Stringize<UCHAR>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>((UINT)mValue);
+      return std::to_string((UINT)mValue);
     return internal::convert((ULONGLONG)((UINT)mValue), mBase);
   }
 
@@ -95,7 +97,7 @@ namespace zsLib
   inline Stringize<SHORT>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string((INT)mValue);
     return internal::convert((ULONGLONG)((USHORT)mValue), mBase);
   }
 
@@ -103,7 +105,7 @@ namespace zsLib
   inline Stringize<USHORT>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string((UINT)mValue);
     return internal::convert((ULONGLONG)mValue, mBase);
   }
 
@@ -111,7 +113,7 @@ namespace zsLib
   inline Stringize<INT>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
     return internal::convert((ULONGLONG)((UINT)mValue), mBase);
   }
 
@@ -119,7 +121,7 @@ namespace zsLib
   inline Stringize<UINT>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
     return internal::convert((ULONGLONG)mValue, mBase);
   }
 
@@ -127,7 +129,7 @@ namespace zsLib
   inline Stringize<LONG>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
     return internal::convert((ULONGLONG)((ULONG)mValue), mBase);
   }
 
@@ -135,7 +137,7 @@ namespace zsLib
   inline Stringize<ULONG>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
     return internal::convert((ULONGLONG)mValue, mBase);
   }
 
@@ -143,7 +145,7 @@ namespace zsLib
   inline Stringize<LONGLONG>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
     return internal::convert((ULONGLONG)mValue, mBase);
   }
 
@@ -151,32 +153,44 @@ namespace zsLib
   inline Stringize<ULONGLONG>::operator String() const
   {
     if (10 == mBase)
-      return boost::lexical_cast<String>(mValue);
+      return std::to_string(mValue);
     return internal::convert(mValue, mBase);
   }
 
   template<>
   inline Stringize<float>::operator String() const
   {
-    return boost::lexical_cast<String>(mValue);
+    std::string result = std::to_string(mValue);
+    internal::trimTrailingZeros(result);
+    return result;
   }
 
   template<>
   inline Stringize<double>::operator String() const
   {
-    return boost::lexical_cast<String>(mValue);
+    std::string result = std::to_string(mValue);
+    internal::trimTrailingZeros(result);
+    return result;
   }
 
   template<>
   inline Stringize<UUID>::operator String() const
   {
-    return String(boost::lexical_cast<std::string>(mValue));
+    char buffer[(sizeof(mValue)*3)+3];  // allow for 00-FF and '{', '}', '-' and nul at end
+    uuid_unparse_lower(mValue.mUUID, buffer);
+    return String((CSTR)buffer);
   }
 
   template<>
   inline Stringize<Time>::operator String() const
   {
     return internal::timeToString(mValue);
+  }
+
+  template<>
+  inline Stringize<Duration>::operator String() const
+  {
+    return internal::durationToString(mValue);
   }
 
 }

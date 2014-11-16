@@ -8,11 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0063D2C116CB094D00E6DB4D /* libzsLib_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0063D2BE16CB093100E6DB4D /* libzsLib_ios.a */; };
-		0063E711182FE10300AD3DBA /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0063E710182FE10300AD3DBA /* boost.framework */; };
 		0066859C16C9E42000259F81 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859B16C9E42000259F81 /* UIKit.framework */; };
 		0066859E16C9E42000259F81 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859D16C9E42000259F81 /* Foundation.framework */; };
 		006685A016C9E42000259F81 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859F16C9E42000259F81 /* CoreGraphics.framework */; };
-		006685D916C9E63500259F81 /* boost_replacement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006685CB16C9E63500259F81 /* boost_replacement.cpp */; };
 		006685DB16C9E63500259F81 /* TestHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006685CE16C9E63500259F81 /* TestHelper.cpp */; };
 		006685DC16C9E63500259F81 /* TestIPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006685CF16C9E63500259F81 /* TestIPAddress.cpp */; };
 		006685DD16C9E63500259F81 /* TestNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006685D016C9E63500259F81 /* TestNumeric.cpp */; };
@@ -30,8 +28,8 @@
 		0066861516C9E6CC00259F81 /* MainWindow_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0066860916C9E6CC00259F81 /* MainWindow_iPhone.xib */; };
 		0066861616C9E6CC00259F81 /* zsLibTest_iosAppDelegate_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 0066860C16C9E6CC00259F81 /* zsLibTest_iosAppDelegate_iPhone.m */; };
 		0066861716C9E6CC00259F81 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0066860D16C9E6CC00259F81 /* main.m */; };
-		0066861816C9E6CC00259F81 /* zsLibTest_ios-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0066860E16C9E6CC00259F81 /* zsLibTest_ios-Info.plist */; };
 		0066861916C9E6CC00259F81 /* zsLibTest_iosAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0066861116C9E6CC00259F81 /* zsLibTest_iosAppDelegate.m */; };
+		00C60FDE1A180E1600E0139B /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00C60FDC1A180E1600E0139B /* testing.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,13 +52,10 @@
 /* Begin PBXFileReference section */
 		0024410718CD528E003357CF /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		0063D2B916CB093000E6DB4D /* zsLib_ios.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zsLib_ios.xcodeproj; path = ../zsLib_ios/zsLib_ios.xcodeproj; sourceTree = "<group>"; };
-		0063E710182FE10300AD3DBA /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../../../boost/ios/framework/boost.framework; sourceTree = "<group>"; };
 		0066859816C9E42000259F81 /* zsLibTest_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = zsLibTest_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0066859B16C9E42000259F81 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0066859D16C9E42000259F81 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0066859F16C9E42000259F81 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		006685CB16C9E63500259F81 /* boost_replacement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = boost_replacement.cpp; sourceTree = "<group>"; };
-		006685CC16C9E63500259F81 /* boost_replacement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boost_replacement.h; sourceTree = "<group>"; };
 		006685CD16C9E63500259F81 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		006685CE16C9E63500259F81 /* TestHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestHelper.cpp; sourceTree = "<group>"; };
 		006685CF16C9E63500259F81 /* TestIPAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestIPAddress.cpp; sourceTree = "<group>"; };
@@ -85,6 +80,8 @@
 		0066860F16C9E6CC00259F81 /* zsLibTest_ios-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "zsLibTest_ios-Prefix.pch"; sourceTree = "<group>"; };
 		0066861016C9E6CC00259F81 /* zsLibTest_iosAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLibTest_iosAppDelegate.h; sourceTree = "<group>"; };
 		0066861116C9E6CC00259F81 /* zsLibTest_iosAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = zsLibTest_iosAppDelegate.m; sourceTree = "<group>"; };
+		00C60FDC1A180E1600E0139B /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
+		00C60FDD1A180E1600E0139B /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +90,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0063D2C116CB094D00E6DB4D /* libzsLib_ios.a in Frameworks */,
-				0063E711182FE10300AD3DBA /* boost.framework in Frameworks */,
 				006685A016C9E42000259F81 /* CoreGraphics.framework in Frameworks */,
 				0066859E16C9E42000259F81 /* Foundation.framework in Frameworks */,
 				0066859C16C9E42000259F81 /* UIKit.framework in Frameworks */,
@@ -134,7 +130,6 @@
 		0066859A16C9E42000259F81 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0063E710182FE10300AD3DBA /* boost.framework */,
 				0066859B16C9E42000259F81 /* UIKit.framework */,
 				0066859D16C9E42000259F81 /* Foundation.framework */,
 				0066859F16C9E42000259F81 /* CoreGraphics.framework */,
@@ -145,8 +140,8 @@
 		006685CA16C9E63500259F81 /* zsLibTest */ = {
 			isa = PBXGroup;
 			children = (
-				006685CB16C9E63500259F81 /* boost_replacement.cpp */,
-				006685CC16C9E63500259F81 /* boost_replacement.h */,
+				00C60FDC1A180E1600E0139B /* testing.cpp */,
+				00C60FDD1A180E1600E0139B /* testing.h */,
 				006685CD16C9E63500259F81 /* main.cpp */,
 				0024410718CD528E003357CF /* main.h */,
 				006685CE16C9E63500259F81 /* TestHelper.cpp */,
@@ -286,7 +281,6 @@
 				0066861216C9E6CC00259F81 /* InfoPlist.strings in Resources */,
 				0066861316C9E6CC00259F81 /* MainWindow_iPad.xib in Resources */,
 				0066861516C9E6CC00259F81 /* MainWindow_iPhone.xib in Resources */,
-				0066861816C9E6CC00259F81 /* zsLibTest_ios-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,7 +291,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				006685D916C9E63500259F81 /* boost_replacement.cpp in Sources */,
 				006685DB16C9E63500259F81 /* TestHelper.cpp in Sources */,
 				006685DC16C9E63500259F81 /* TestIPAddress.cpp in Sources */,
 				006685DD16C9E63500259F81 /* TestNumeric.cpp in Sources */,
@@ -308,6 +301,7 @@
 				006685E216C9E63500259F81 /* TestString.cpp in Sources */,
 				006685E316C9E63500259F81 /* TestStringize.cpp in Sources */,
 				006685E416C9E63500259F81 /* TestTimer.cpp in Sources */,
+				00C60FDE1A180E1600E0139B /* testing.cpp in Sources */,
 				006685E516C9E63500259F81 /* TestXML.cpp in Sources */,
 				0066861416C9E6CC00259F81 /* zsLibTest_iosAppDelegate_iPad.mm in Sources */,
 				0066861616C9E6CC00259F81 /* zsLibTest_iosAppDelegate_iPhone.m in Sources */,
@@ -367,18 +361,16 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = ../../../../boost/ios/framework;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../..,
-					../../../../boost/ios/framework/boost.framework/Headers/,
+					"$(inherited)",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "";
@@ -401,16 +393,14 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = ../../../../boost/ios/framework;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../..,
-					../../../../boost/ios/framework/boost.framework/Headers/,
+					"$(inherited)",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "";
@@ -430,6 +420,7 @@
 					"$(inherited)",
 					"DEBUG=1",
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "zsLibTest_ios/zsLibTest_ios-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";

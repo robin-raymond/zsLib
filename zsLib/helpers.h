@@ -44,13 +44,7 @@ namespace zsLib
   UUID createUUID();
 
   //---------------------------------------------------------------------------
-  ULONG atomicIncrement(ULONG &value);
-  ULONG atomicDecrement(ULONG &value);
-  ULONG atomicGetValue(ULONG &value);
-
-  //---------------------------------------------------------------------------
-  DWORD atomicGetValue32(DWORD &value);
-  void atomicSetValue32(DWORD &value, DWORD newValue);
+  void debugSetCurrentThreadName(const char *name);
 
   //---------------------------------------------------------------------------
   Time now();

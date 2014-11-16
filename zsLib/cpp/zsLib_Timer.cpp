@@ -48,8 +48,7 @@ namespace zsLib
       bool fired = false;
       UINT totalFires = 0;
 
-      boost::posix_time::time_iterator iterator(mFireNextAt, mTimeout);
-      while (iterator < time)
+      while (mFireNextAt < time)
       {
         fired = true;
         try {
@@ -58,7 +57,8 @@ namespace zsLib
           mOnceOnly = true;   // this has to stop firing now that the proxy to the delegate points to something that is now gone
           break;
         }
-        ++iterator;
+
+        mFireNextAt += mTimeout;
         ++totalFires;
 
         if (mOnceOnly)  // do not allow the timer to fire more than once
@@ -74,7 +74,6 @@ namespace zsLib
           mFireNextAt = time + mTimeout;  // the next timeout resets to the clock plus the timeout
           break;
         }
-        mFireNextAt = *iterator;
       }
 
       if (!mOnceOnly) {
@@ -112,7 +111,7 @@ namespace zsLib
     mTimeout = timeout;
     mID = createPUID();
     mMonitored = false;
-    mFireNextAt = (boost::posix_time::microsec_clock::universal_time() + timeout);
+    mFireNextAt = (std::chrono::system_clock::now() + timeout);
   }
 
   //---------------------------------------------------------------------------

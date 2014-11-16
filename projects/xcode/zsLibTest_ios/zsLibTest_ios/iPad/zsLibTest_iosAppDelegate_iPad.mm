@@ -25,7 +25,7 @@
 #import "zsLib/Stringize.h"
 #import "zsLib/types.h"
 
-#import "boost_replacement.h"
+#import "testing.h"
 
 @implementation zsLibTest_iosAppDelegate_iPad
 
@@ -33,7 +33,7 @@
 {
   zsLib::String s = zsLib::Stringize<int>(24);
 
-  BoostReplacement::output();
+  Testing::output();
 }
 
 - (void)dealloc

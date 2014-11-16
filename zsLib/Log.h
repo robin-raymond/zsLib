@@ -276,7 +276,7 @@ namespace zsLib
   class Subsystem
   {
   public:
-    typedef DWORD LevelType;
+    typedef Log::Level LevelType;
 
   public:
     Subsystem(CSTR inName, Log::Level inLevel = Log::Basic);
@@ -290,7 +290,7 @@ namespace zsLib
 
   private:
     CSTR mSubsystem;
-    mutable LevelType mLevel;
+    mutable std::atomic<LevelType> mLevel;
   };
 
 } // namespace zsLib

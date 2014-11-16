@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/helpers.h>
@@ -25,12 +34,8 @@
 #include <zsLib/Numeric.h>
 #include <zsLib/IPAddress.h>
 
-//#include <boost/test/unit_test_suite.hpp>
-//#include <boost/test/unit_test.hpp>
-//#include <boost/test/test_tools.hpp>
 
-
-#include "boost_replacement.h"
+#include "testing.h"
 #include "main.h"
 
 using zsLib::BYTE;
@@ -38,46 +43,81 @@ using zsLib::LONGLONG;
 using zsLib::ULONGLONG;
 using zsLib::IPAddress;
 
-BOOST_AUTO_TEST_SUITE(zsLibStringize)
+TESTING_AUTO_TEST_SUITE(zsLibStringize)
 
-  BOOST_AUTO_TEST_CASE(TestStringize)
+  TESTING_AUTO_TEST_CASE(TestStringize)
   {
     if (!ZSLIB_TEST_STRINGIZE) return;
 
-    BOOST_EQUAL("0", zsLib::Stringize<char>(0).string());
-    BOOST_EQUAL("-128", zsLib::Stringize<char>(-128).string());
-    BOOST_EQUAL("127", zsLib::Stringize<char>(127).string());
-    BOOST_EQUAL("80", zsLib::Stringize<char>(-128, 16).string());
+    TESTING_EQUAL("0", zsLib::Stringize<char>(0).string());
+    TESTING_EQUAL("-128", zsLib::Stringize<char>(-128).string());
+    TESTING_EQUAL("127", zsLib::Stringize<char>(127).string());
+    TESTING_EQUAL("80", zsLib::Stringize<char>(-128, 16).string());
 
-    BOOST_EQUAL("0", zsLib::Stringize<unsigned char>(0).string());
-    BOOST_EQUAL("255", zsLib::Stringize<unsigned char>(255).string());
-    BOOST_EQUAL("ff", zsLib::Stringize<unsigned char>(0xFF, 16).string());
+    TESTING_EQUAL("0", zsLib::Stringize<unsigned char>(0).string());
+    TESTING_EQUAL("255", zsLib::Stringize<unsigned char>(255).string());
+    TESTING_EQUAL("ff", zsLib::Stringize<unsigned char>(0xFF, 16).string());
 
-    BOOST_EQUAL("ffff", zsLib::Stringize<unsigned short>(0xFFFF, 16).string());
-    BOOST_EQUAL("ffffffff", zsLib::Stringize<unsigned int>(0xFFFFFFFF, 16).string());
+    TESTING_EQUAL("ffff", zsLib::Stringize<unsigned short>(0xFFFF, 16).string());
+    TESTING_EQUAL("ffffffff", zsLib::Stringize<unsigned int>(0xFFFFFFFF, 16).string());
 #ifdef ZSLIBG_64BIT
-    BOOST_EQUAL("ffffffffffffffff", zsLib::Stringize<ULONGLONG>(0xFFFFFFFFFFFFFFFF, 16).string());
+    TESTING_EQUAL("ffffffffffffffff", zsLib::Stringize<ULONGLONG>(0xFFFFFFFFFFFFFFFF, 16).string());
 #endif // ZSLIBG_64BIT
 
-    BOOST_EQUAL("f0f0", zsLib::Stringize<unsigned short>(0xF0F0, 16).string());
-    BOOST_EQUAL("f0f0f0f0", zsLib::Stringize<unsigned int>(0xF0F0F0F0, 16).string());
+    TESTING_EQUAL("f0f0", zsLib::Stringize<unsigned short>(0xF0F0, 16).string());
+    TESTING_EQUAL("f0f0f0f0", zsLib::Stringize<unsigned int>(0xF0F0F0F0, 16).string());
 #ifdef ZSLIB_64BIT
-    BOOST_EQUAL("f0f0f0f0f0f0f0f0", zsLib::Stringize<ULONGLONG>(0xF0F0F0F0F0F0F0F0, 16).string());
+    TESTING_EQUAL("f0f0f0f0f0f0f0f0", zsLib::Stringize<ULONGLONG>(0xF0F0F0F0F0F0F0F0, 16).string());
 #endif // ZSLIBG_64BIT
 
-    BOOST_EQUAL("0", zsLib::Stringize<float>(0.0f).string());
-    BOOST_EQUAL("0.5", zsLib::Stringize<float>(0.5).string());
-    BOOST_EQUAL("-0.5", zsLib::Stringize<float>(-0.5).string());
+    TESTING_EQUAL("5", zsLib::Stringize<float>(5.0f).string());
+    TESTING_EQUAL("0", zsLib::Stringize<float>(0.0f).string());
+    TESTING_EQUAL("0.5", zsLib::Stringize<float>(0.5).string());
+    TESTING_EQUAL("0.05", zsLib::Stringize<float>(0.05).string());
+    TESTING_EQUAL("-0.5", zsLib::Stringize<float>(-0.5).string());
+    TESTING_EQUAL("-0.05", zsLib::Stringize<float>(-0.05).string());
 
-    BOOST_EQUAL("0", zsLib::Stringize<double>(0.0).string());
-    BOOST_EQUAL("123456.789", zsLib::Stringize<double>(123456.789).string());
-    BOOST_EQUAL("-123456.789", zsLib::Stringize<double>(-123456.789).string());
+    TESTING_EQUAL("0", zsLib::Stringize<double>(0.0).string());
+    TESTING_EQUAL("123456.789", zsLib::Stringize<double>(123456.789).string());
+    TESTING_EQUAL("123456.0789", zsLib::Stringize<double>(123456.0789).string());
+    TESTING_EQUAL("-123456.789", zsLib::Stringize<double>(-123456.789).string());
 
     zsLib::UUID uuid = zsLib::Numeric<zsLib::UUID>("b0a01e87-2be5-4daa-8155-1380c98400a1");
     zsLib::String uuidStr = zsLib::Stringize<zsLib::UUID>(uuid);
-    BOOST_EQUAL("b0a01e87-2be5-4daa-8155-1380c98400a1", uuidStr);
+    TESTING_EQUAL("b0a01e87-2be5-4daa-8155-1380c98400a1", uuidStr);
 
-    BOOST_EQUAL(IPAddress("192.168.1.10:5060").string(), string(IPAddress("192.168.1.10:5060")))
+    TESTING_EQUAL(IPAddress("192.168.1.10:5060").string(), string(IPAddress("192.168.1.10:5060")))
+
+    {
+      zsLib::Duration duration;
+      duration = zsLib::Hours(5) + zsLib::Minutes(1) + zsLib::Seconds(44);
+      zsLib::ULONG seconds = (5*60*60) + (1*60) + 44;
+      zsLib::String result = zsLib::string(seconds);
+
+      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Duration>(duration).string());
+    }
+
+    {
+      zsLib::Duration duration;
+      duration = zsLib::Hours(75) + zsLib::Minutes(47) + zsLib::Seconds(3) + zsLib::Milliseconds(453) + zsLib::Microseconds(912);
+      zsLib::ULONG seconds = (75*60*60) + (47*60) + 3;
+      zsLib::ULONG micro = (453 * 1000) + 912;
+      zsLib::String result = zsLib::string(seconds) + "." + zsLib::string(micro);
+
+      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Duration>(duration).string());
+      TESTING_EQUAL(result, zsLib::string(duration));
+    }
+
+    {
+      zsLib::Duration duration;
+      duration = zsLib::Hours(75) + zsLib::Minutes(47) + zsLib::Seconds(3) + zsLib::Milliseconds(53) + zsLib::Microseconds(2);
+      zsLib::ULONG seconds = (75*60*60) + (47*60) + 3;
+      zsLib::ULONG micro = (53 * 1000) + 2;
+      zsLib::String result = zsLib::string(seconds) + ".0" + zsLib::string(micro);
+
+      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Duration>(duration).string());
+      TESTING_EQUAL(result, zsLib::string(duration));
+    }
   }
 
-BOOST_AUTO_TEST_SUITE_END()
+TESTING_AUTO_TEST_SUITE_END()

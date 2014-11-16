@@ -47,25 +47,21 @@
 
 namespace zsLib
 {
-  ZS_DECLARE_TYPEDEF_PTR(boost::thread, Thread)
-  ZS_DECLARE_TYPEDEF_PTR(boost::mutex, Lock)
-  ZS_DECLARE_TYPEDEF_PTR(boost::recursive_mutex, RecursiveLock)
+  ZS_DECLARE_TYPEDEF_PTR(std::thread, Thread)
+  ZS_DECLARE_TYPEDEF_PTR(std::mutex, Lock)
+  ZS_DECLARE_TYPEDEF_PTR(std::recursive_mutex, RecursiveLock)
 
-  typedef boost::lock_guard<Lock> AutoLock;
-  typedef boost::lock_guard<RecursiveLock> AutoRecursiveLock;
+  typedef std::lock_guard<Lock> AutoLock;
+  typedef std::lock_guard<RecursiveLock> AutoRecursiveLock;
 
-  typedef boost::posix_time::ptime Time;
-  typedef boost::posix_time::time_duration Duration;
-  typedef boost::posix_time::seconds Seconds;
-  typedef boost::posix_time::minutes Minutes;
-  typedef boost::posix_time::hours Hours;
-  typedef boost::posix_time::milliseconds Milliseconds;
-  typedef boost::posix_time::microseconds Microseconds;
-#if defined(BOOST_DATE_TIME_HAS_NANOSECONDS)
-  typedef boost::posix_time::nanoseconds Nanoseconds;
-#endif
-  typedef boost::posix_time::time_period TimePeriod;
-  typedef boost::posix_time::time_iterator TimeIterator;
+  typedef std::chrono::system_clock::time_point Time;
+  typedef std::chrono::duration<LONGLONG, std::micro > Duration;
+  typedef std::chrono::seconds Seconds;
+  typedef std::chrono::minutes Minutes;
+  typedef std::chrono::hours Hours;
+  typedef std::chrono::milliseconds Milliseconds;
+  typedef std::chrono::microseconds Microseconds;
+  typedef std::chrono::nanoseconds Nanoseconds;
 
   typedef CHAR ZsDeclareCHAR;
   typedef UCHAR ZsDeclareUCHAR;

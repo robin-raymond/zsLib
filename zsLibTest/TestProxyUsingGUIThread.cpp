@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/Proxy.h>
@@ -25,15 +34,11 @@
 #include <zsLib/Stringize.h>
 #include <iostream>
 
-//#include <boost/test/unit_test_suite.hpp>
-//#include <boost/test/unit_test.hpp>
-//#include <boost/test/test_tools.hpp>
-
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-#include "boost_replacement.h"
+#include "testing.h"
 #include "main.h"
 
 using zsLib::ULONG;
@@ -149,9 +154,9 @@ namespace testingUsingGUIThread
       str = "bogus3";
 
       delegate->func4(0xFFFF);
-      BOOST_EQUAL(getCheck().mCalledFunc4, 0xFFFF);
+      TESTING_EQUAL(getCheck().mCalledFunc4, 0xFFFF);
 
-      BOOST_EQUAL(delegate->func5(0xABC, 0xDEF), "abc def");
+      TESTING_EQUAL(delegate->func5(0xABC, 0xDEF), "abc def");
     }
 
     ~TestProxy()
@@ -165,7 +170,7 @@ namespace testingUsingGUIThread
       memset(&msg, 0, sizeof(msg));
       while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
       {
-        BOOST_CHECK(-1 != result)
+        TESTING_CHECK(-1 != result)
 
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
@@ -192,20 +197,20 @@ namespace testingUsingGUIThread
         count = mThread->getTotalUnprocessedMessages();
         count += mThreadNeverCalled->getTotalUnprocessedMessages();
         if (0 != count)
-          boost::this_thread::yield();
+          std::this_thread::yield();
       } while (count > 0);
 #endif //_WIN32
 
-      BOOST_EQUAL(0, mThread->getTotalUnprocessedMessages());
-      BOOST_EQUAL(0, mThreadNeverCalled->getTotalUnprocessedMessages());
+      TESTING_EQUAL(0, mThread->getTotalUnprocessedMessages());
+      TESTING_EQUAL(0, mThreadNeverCalled->getTotalUnprocessedMessages());
 
       mThread->waitForShutdown();
       mThreadNeverCalled->waitForShutdown();
 
-      BOOST_EQUAL(getCheck().mCalledFunc3, "func3");
-      BOOST_EQUAL(getCheck().mCalledFunc2, 1000);
-      BOOST_CHECK(getCheck().mCalledFunc1);
-      BOOST_CHECK(getCheck().mDestroyedTestProxyCallback);
+      TESTING_EQUAL(getCheck().mCalledFunc3, "func3");
+      TESTING_EQUAL(getCheck().mCalledFunc2, 1000);
+      TESTING_CHECK(getCheck().mCalledFunc1);
+      TESTING_CHECK(getCheck().mDestroyedTestProxyCallback);
     }
 
     zsLib::MessageQueueThreadPtr mThread;
@@ -214,13 +219,13 @@ namespace testingUsingGUIThread
 
 }
 
-BOOST_AUTO_TEST_SUITE(zsLibProxyUsingGUIThread)
+TESTING_AUTO_TEST_SUITE(zsLibProxyUsingGUIThread)
 
-  BOOST_AUTO_TEST_CASE(TestProxyUsingGUIThread)
+  TESTING_AUTO_TEST_CASE(TestProxyUsingGUIThread)
   {
     if (ZSLIB_TEST_PROXY_USING_GUI) {
       testingUsingGUIThread::TestProxy test;
     }
   }
 
-BOOST_AUTO_TEST_SUITE_END()
+TESTING_AUTO_TEST_SUITE_END()

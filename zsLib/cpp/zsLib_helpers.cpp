@@ -29,17 +29,12 @@
  
  */
 
-#include <boost/uuid/random_generator.hpp>
-#include <boost/smart_ptr/detail/atomic_count.hpp>
-#include <boost/interprocess/detail/atomic.hpp>
-
 #include <zsLib/helpers.h>
 #include <zsLib/Log.h>
 
-namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
+#include <pthread.h>
 
-using namespace boost;
-using namespace boost::interprocess;
+namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
@@ -53,80 +48,72 @@ namespace zsLib
     #pragma (helpers)
 
     //-------------------------------------------------------------------------
-    ULONG &globalPUID()
+    std::atomic_ulong &globalPUID()
     {
-      static ULONG global = 0;
+      static std::atomic_ulong global {};
       return global;
     }
+
+    class EpochHelper
+    {
+    public:
+      EpochHelper()
+      {
+        std::tm tmepoch {};
+
+        tmepoch.tm_year = 70;
+        tmepoch.tm_mon = 0;
+        tmepoch.tm_mday = 1;
+
+        time_t tepoch = std::mktime(&tmepoch);
+
+        mEpoch = std::chrono::system_clock::from_time_t(tepoch);
+      }
+
+      static Time &epoch()
+      {
+        static EpochHelper singleton;
+        return singleton.mEpoch;
+      }
+
+    private:
+
+    private:
+      Time mEpoch;
+    };
   }
 
   //---------------------------------------------------------------------------
   PUID createPUID()
   {
-    return (PUID)atomicIncrement(zsLib::internal::globalPUID());
+    std::atomic_ulong &global = internal::globalPUID();
+    return ++global;
   }
 
   //---------------------------------------------------------------------------
   UUID createUUID()
   {
-    boost::uuids::random_generator gen;
-    return gen();
+    UUID gen;
+    uuid_generate_random(gen.mUUID);
+    return gen;
   }
 
   //---------------------------------------------------------------------------
-  ULONG atomicIncrement(ULONG &value)
+  void debugSetCurrentThreadName(const char *name)
   {
-#ifdef __GNUC__
-    return __sync_add_and_fetch(&value, 1);
-#else
-    return ++(*(boost::detail::atomic_count *)((LONG *)(&value)));
-#endif //__GNUC__
-  }
+    if (!name) name = "";
 
-  //---------------------------------------------------------------------------
-  ULONG atomicDecrement(ULONG &value)
-  {
-#ifdef __GNUC__
-    return __sync_sub_and_fetch(&value, 1);
+#ifdef __APPLE__
+    pthread_setname_np(name);
 #else
-    return --(*(boost::detail::atomic_count *)((LONG *)(&value)));
-#endif //__GNUC__
-  }
-
-  //---------------------------------------------------------------------------
-  ULONG atomicGetValue(ULONG &value)
-  {
-#ifdef __GNUC__
-    return __sync_add_and_fetch(&value, 0);
-#else
-    return (long)(*(boost::detail::atomic_count *)((LONG *)(&value)));
-#endif //__GNUC__
-  }
-
-  //---------------------------------------------------------------------------
-  DWORD atomicGetValue32(DWORD &value)
-  {
-#ifdef __GNUC__
-    return __sync_add_and_fetch(&value, 0);
-#else
-    return boost::interprocess::detail::atomic_read32((boost::uint32_t *)&value);
-#endif //__GNUC__
-  }
-
-  //---------------------------------------------------------------------------
-  void atomicSetValue32(DWORD &value, DWORD newValue)
-  {
-#ifdef __GNUC__
-    __sync_lock_test_and_set(&value, newValue);
-#else
-	  boost::interprocess::detail::atomic_write32((boost::uint32_t *)&value, newValue);
-#endif //__GNUC__
+    pthread_setname_np(pthread_self(), name);
+#endif //__APPLE__
   }
 
   //---------------------------------------------------------------------------
   Time now()
   {
-    return boost::posix_time::microsec_clock::universal_time();
+    return std::chrono::system_clock::now();
   }
 
   //---------------------------------------------------------------------------
@@ -136,8 +123,7 @@ namespace zsLib
       return Duration();
     }
 
-    static Time epoch(boost::gregorian::date(1970,1,1));
-    return (time - epoch);
+    return (time - internal::EpochHelper::epoch());
   }
 
   //---------------------------------------------------------------------------
@@ -146,7 +132,6 @@ namespace zsLib
     if (0 == time) {
       return Time();
     }
-    static Time epoch(boost::gregorian::date(1970,1,1));
-    return epoch + duration;
+    return internal::EpochHelper::epoch() + duration;
   }
 }

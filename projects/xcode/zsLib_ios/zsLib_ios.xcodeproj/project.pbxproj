@@ -92,7 +92,6 @@
 		006681B416C9D65E00259F81 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		006681B516C9D65E00259F81 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
 		006681B616C9D65E00259F81 /* helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helpers.h; sourceTree = "<group>"; };
-		006681B816C9D65E00259F81 /* boostTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boostTypes.h; sourceTree = "<group>"; };
 		006681B916C9D65E00259F81 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		006681BA16C9D65E00259F81 /* zsLib_Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Event.h; sourceTree = "<group>"; };
 		006681BB16C9D65E00259F81 /* zsLib_Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Exception.h; sourceTree = "<group>"; };
@@ -229,7 +228,6 @@
 		006681B716C9D65E00259F81 /* internal */ = {
 			isa = PBXGroup;
 			children = (
-				006681B816C9D65E00259F81 /* boostTypes.h */,
 				006681B916C9D65E00259F81 /* types.h */,
 				006681BA16C9D65E00259F81 /* zsLib_Event.h */,
 				006681BB16C9D65E00259F81 /* zsLib_Exception.h */,
@@ -359,16 +357,11 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../..,
-					../../../../boost/ios/framework/boost.framework/Headers/,
-				);
+				HEADER_SEARCH_PATHS = ../../..;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -390,15 +383,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../..,
-					../../../../boost/ios/framework/boost.framework/Headers/,
-				);
+				HEADER_SEARCH_PATHS = ../../..;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

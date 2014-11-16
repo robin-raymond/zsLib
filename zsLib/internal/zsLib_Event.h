@@ -38,7 +38,7 @@ namespace zsLib
 {
   namespace internal
   {
-    class Event : public boost::noncopyable
+    class Event : public noncopyable
     {
     public:
       Event();
@@ -47,13 +47,13 @@ namespace zsLib
     protected:
       static int NextEventId;
       int mEventId;
-      DWORD mNotified;
+      std::atomic_bool mNotified;
 #ifdef __QNX__
       pthread_mutex_t mMutex;
       pthread_cond_t mCondition;
 #else
-      boost::mutex mMutex;
-      boost::condition_variable mCondition;
+      std::mutex mMutex;
+      std::condition_variable mCondition;
 #endif
     };
   }

@@ -36,9 +36,6 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
 
-#include <boost/ref.hpp>
-#include <boost/thread.hpp>
-
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -112,7 +109,6 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     MessageQueueThreadUsingMainThreadMessageQueueForApple::MessageQueueThreadUsingMainThreadMessageQueueForApple() :
-      mIsShutdown(false),
       mProcessMessageLoopSource(NULL),
       mMoreMessagesLoopSource(NULL)
     {

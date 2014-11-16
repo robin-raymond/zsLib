@@ -56,12 +56,6 @@ namespace zsLib
   };
 
   template<class T>
-  String string( const boost::value_initialized<T>& x, size_t base = 10 )
-  {
-    return Stringize<T>(get(x), base).string();
-  }
-
-  template<class T>
   String string( const T & x, size_t base = 10  )
   {
     return Stringize<T>(x, base).string();

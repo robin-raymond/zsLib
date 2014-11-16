@@ -67,12 +67,12 @@ namespace zsLib
 
   void Event::reset()
   {
-    zsLib::atomicSetValue32(mNotified, 0);
+    mNotified = false;
   }
 
   void Event::wait()
   {
-    DWORD notified = zsLib::atomicGetValue32(mNotified);
+    bool notified = mNotified;
     if (0 != notified) {
       return;
     }
@@ -81,7 +81,7 @@ namespace zsLib
     int result = pthread_mutex_lock(&mMutex);
     ZS_THROW_BAD_STATE_IF(0 != result)
 
-    notified = zsLib::atomicGetValue32(mNotified);
+    notified = mNotified;
     if (0 != notified) {
       result = pthread_mutex_unlock(&mMutex);
       ZS_THROW_BAD_STATE_IF(0 != result)
@@ -94,8 +94,8 @@ namespace zsLib
     result = pthread_mutex_unlock(&mMutex);
     ZS_THROW_BAD_STATE_IF(0 != result)
 #else
-    boost::unique_lock<boost::mutex> lock(mMutex);
-    notified = zsLib::atomicGetValue32(mNotified);
+    std::unique_lock<std::mutex> lock(mMutex);
+    notified = mNotified;
     if (0 != notified) return;
     mCondition.wait(lock);
 #endif //__QNX__
@@ -110,13 +110,15 @@ namespace zsLib
     result = pthread_cond_signal(&mCondition);
     ZS_THROW_BAD_STATE_IF(0 != result)
 
-    zsLib::atomicSetValue32(mNotified, 1);
+    mNotified = true;
 
     result = pthread_mutex_unlock(&mMutex);
     ZS_THROW_BAD_STATE_IF(0 != result)
 #else
-    boost::lock_guard<boost::mutex> lock(mMutex);
-    zsLib::atomicSetValue32(mNotified, 1);
+    std::lock_guard<std::mutex> lock(mMutex);
+
+    mNotified = true;
+
     mCondition.notify_one();
 #endif //__QNX__
   }

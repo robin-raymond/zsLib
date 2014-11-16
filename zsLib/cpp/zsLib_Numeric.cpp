@@ -32,9 +32,9 @@
 #include <zsLib/Numeric.h>
 #include <zsLib/types.h>
 #include <zsLib/Exception.h>
+#include <zsLib/helpers.h>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/uuid/string_generator.hpp>
+#include <math.h>
 
 #pragma warning(push)
 #pragma warning(disable:4290)
@@ -110,6 +110,16 @@ namespace zsLib
     bool converted = internal::convert(mData, result, mIngoreWhitespace);
     if (!converted)
       ZS_THROW_CUSTOM(ValueOutOfRange, "Cannot convert value (Time): " + mData)
+    outValue = result;
+  }
+
+  template<>
+  void Numeric<Duration>::get(Duration &outValue) const throw (ValueOutOfRange)
+  {
+    Duration result;
+    bool converted = internal::convert(mData, result, mIngoreWhitespace);
+    if (!converted)
+      ZS_THROW_CUSTOM(ValueOutOfRange, "Cannot convert value (Duration): " + mData)
     outValue = result;
   }
 
@@ -359,7 +369,7 @@ namespace zsLib
         temp.trim();
 
       try {
-        float result = boost::lexical_cast<float>(temp);
+        float result = std::stof(temp);
         outResult = result;
       } catch(...) {
         return false;
@@ -374,7 +384,7 @@ namespace zsLib
         temp.trim();
 
       try {
-        double result = boost::lexical_cast<double>(temp);
+        double result = std::stod(temp);
         outResult = result;
       } catch(...) {
         return false;
@@ -388,28 +398,112 @@ namespace zsLib
       if (ignoreWhiteSpace)
         temp.trim();
 
-      try {
-        boost::uuids::string_generator gen;
-        outResult = gen(temp);
-      } catch (...) {
-        return false;
-      }
-      return true;
+      temp.trimLeft("{");
+      temp.trimRight("}");
+
+      if (0 == uuid_parse(temp.c_str(), outResult.mUUID)) return true;
+      return false;
     }
 
     bool convert(const String &input, Time &outResult, bool ignoreWhiteSpace)
     {
+      outResult = Time();
+
       String temp = input;
       if (ignoreWhiteSpace)
         temp.trim();
 
-      try {
-        Time result = boost::posix_time::time_from_string(input);
-        if (result.is_not_a_date_time()) return false;
-        outResult = result;
-      } catch (boost::bad_lexical_cast &) {
-        return  false;
+      String more;
+
+      std::size_t posMore = temp.find('.');
+
+      if (std::string::npos != posMore) {
+        more = temp.substr(posMore+1);
+        temp.erase(posMore);
       }
+
+      if (std::string::npos != temp.find(':')) {
+        std::tm ttm {};
+        const char *parsed = strptime(temp.c_str(), "%Y-%m-%d %H:%M:%S", &ttm);
+        if (NULL == parsed) return false;
+
+        time_t ttime_t = mktime(&ttm);
+
+        outResult = std::chrono::system_clock::from_time_t(ttime_t);
+      } else {
+        try {
+          zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
+          outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
+        } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+          return false;
+        }
+      }
+
+      if (more.hasData()) {
+        String fractionStr("0.");
+        fractionStr += more;
+
+        double x {};
+
+        try {
+          x = std::stod(fractionStr);
+        } catch(...) {
+          return false;
+        }
+
+        x = x * 1000000;
+
+        std::chrono::microseconds fraction(static_cast<unsigned long>(round(x)));
+
+        outResult += fraction;
+      }
+
+      return true;
+    }
+
+    bool convert(const String &input, Duration &outResult, bool ignoreWhiteSpace)
+    {
+      outResult = Duration();
+
+      String temp = input;
+      if (ignoreWhiteSpace)
+        temp.trim();
+
+      String more;
+
+      std::size_t posMore = temp.find('.');
+
+      if (std::string::npos != posMore) {
+        more = temp.substr(posMore+1);
+        temp.erase(posMore);
+      }
+
+      try {
+        zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
+        outResult = zsLib::Seconds(seconds);
+      } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+        return false;
+      }
+
+      if (more.hasData()) {
+        String fractionStr("0.");
+        fractionStr += more;
+
+        double x {};
+
+        try {
+          x = std::stod(fractionStr);
+        } catch(...) {
+          return false;
+        }
+
+        x = x * 1000000;
+
+        std::chrono::microseconds fraction(static_cast<unsigned long>(round(x)));
+        
+        outResult += fraction;
+      }
+      
       return true;
     }
   }

@@ -38,7 +38,6 @@
 #include <zsLib/Log.h>
 #include <zsLib/MessageQueueThread.h>
 
-#include <boost/noncopyable.hpp>
 #include <map>
 #include <list>
 
@@ -55,7 +54,7 @@ namespace zsLib
   {
     ZS_DECLARE_CLASS_PTR(TimerMonitor)
 
-    class TimerMonitor : public boost::noncopyable
+    class TimerMonitor : public noncopyable
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
@@ -93,7 +92,7 @@ namespace zsLib
 
       RecursiveLock mLock;
       Lock mFlagLock;
-      boost::condition_variable mFlagNotify;
+      std::condition_variable mFlagNotify;
 
       TimerMonitorWeakPtr mThisWeak;
       TimerMonitorPtr mGracefulShutdownReference;

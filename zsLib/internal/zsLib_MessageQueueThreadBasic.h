@@ -79,10 +79,10 @@ namespace zsLib
       MessageQueuePtr mQueue;
 
       mutable Lock mLock;
-      DWORD mMustShutdown;
-      ThreadPriorities mThreadPriority;
+      std::atomic_bool mMustShutdown {};
+      ThreadPriorities mThreadPriority {ThreadPriority_NormalPriority};
 
-      volatile bool mIsShutdown;
+      std::atomic_bool mIsShutdown {};
     };
   }
 }

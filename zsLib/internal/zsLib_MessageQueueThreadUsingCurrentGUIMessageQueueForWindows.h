@@ -87,7 +87,7 @@ namespace zsLib
       MessageQueuePtr mQueue;
       HWND mHWND;
 
-      volatile mIsShutdown;
+      std::atomic_bool mIsShutdown {};
     };
   }
 }

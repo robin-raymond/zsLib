@@ -36,10 +36,6 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
 
-#include <boost/ref.hpp>
-#include <boost/thread.hpp>
-#include <boost/thread.hpp>
-
 #include <tchar.h>
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
@@ -154,8 +150,7 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows() :
-      mHWND(NULL),
-      mIsShutdown(false)
+      mHWND(NULL)
     {
     }
 

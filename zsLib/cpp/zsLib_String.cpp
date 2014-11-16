@@ -36,9 +36,6 @@
 #include <zsLib/Log.h>
 #include <zsLib/Exception.h>
 
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
-
 #define ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE (sizeof(BYTE)*6)
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
@@ -237,7 +234,7 @@ namespace zsLib
     delete [] buffer;
     buffer = NULL;
 #else
-    boost::to_lower(*this);
+    for (auto & c: *this) c = tolower((UCHAR)c);
 #endif //__QNX__
   }
 
@@ -259,24 +256,41 @@ namespace zsLib
     delete [] buffer;
     buffer = NULL;
 #else
-    boost::to_upper(*this);
+    for (auto & c: *this) c = toupper((UCHAR)c);
 #endif //__QNX__
+  }
+
+  namespace internal {
+    struct one_of_check : public std::unary_function<char,bool>{
+      one_of_check(CSTR strip) : mStrip(strip) {}
+
+      bool operator()(const char &c)
+      {
+        return NULL != strchr(mStrip, (UCHAR)c);
+      }
+
+      CSTR mStrip;
+    };
   }
 
   void String::trim(CSTR chars)
   {
-    boost::trim_left_if(*this, boost::is_any_of(chars));
-    boost::trim_right_if(*this, boost::is_any_of(chars));
+    const std::string &s = (*this);
+
+    auto  wsfront=std::find_if_not(s.begin(),s.end(), internal::one_of_check(chars));
+    *this = std::string(wsfront,std::find_if_not(s.rbegin(),std::string::const_reverse_iterator(wsfront), internal::one_of_check(chars)).base());
   }
 
   void String::trimLeft(CSTR chars)
   {
-    boost::trim_left_if(*this, boost::is_any_of(chars));
+    const std::string &s = (*this);
+    *this = std::string(std::find_if_not(s.begin(), s.end(), internal::one_of_check(chars)), s.end());
   }
 
   void String::trimRight(CSTR chars)
   {
-    boost::trim_right_if(*this, boost::is_any_of(chars));
+    const std::string &s = (*this);
+    *this = std::string(s.begin(),std::find_if_not(s.rbegin(),std::string::const_reverse_iterator(s.begin()), internal::one_of_check(chars)).base());
   }
 
   size_t String::lengthUnicodeSafe() const

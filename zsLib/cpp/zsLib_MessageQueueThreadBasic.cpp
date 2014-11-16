@@ -33,9 +33,6 @@
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 
-#include <boost/ref.hpp>
-#include <boost/thread.hpp>
-
 #include <pthread.h>
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
@@ -49,7 +46,7 @@ namespace zsLib
     {
       MessageQueueThreadBasicPtr thread(new MessageQueueThreadBasic(threadName));
       thread->mQueue = zsLib::MessageQueue::create(thread);
-      thread->mThread = ThreadPtr(new boost::thread(boost::ref(*thread.get())));
+      thread->mThread = ThreadPtr(new std::thread(std::ref(*thread.get())));
       thread->mThreadPriority = threadPriority;
 
       zsLib::setThreadPriority(*(thread->mThread), threadPriority);
@@ -58,9 +55,7 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     MessageQueueThreadBasic::MessageQueueThreadBasic(const char *threadName) :
-      mThreadName(threadName),
-      mMustShutdown(0),
-      mIsShutdown(false)
+      mThreadName(threadName)
     {
     }
 
@@ -70,19 +65,7 @@ namespace zsLib
 
       MessageQueuePtr queue = mQueue;
 
-#ifdef __QNX__
-      if (!mThreadName.isEmpty()) {
-        pthread_setname_np(pthread_self(), mThreadName);
-      }
-#else
-#ifndef _LINUX
-#ifndef _ANDROID
-      if (!mThreadName.isEmpty()) {
-        pthread_setname_np(mThreadName);
-      }
-#endif // _ANDROID
-#endif // _LINUX
-#endif // __QNX__
+      debugSetCurrentThreadName(mThreadName);
 
       do
       {
@@ -90,14 +73,14 @@ namespace zsLib
         mEvent.reset();   // should be safe to reset the notification now that we are done processing
 
         queue->process(); // small window between the process and the reset where more events could have arrived so process those now
-        shouldShutdown = (0 != zsLib::atomicGetValue32(mMustShutdown));
+        shouldShutdown = mMustShutdown;
 
         if (!shouldShutdown) {
           mEvent.wait();    // wait for the next event to arrive
           queue->process(); // process data in case shutdown gets activated
         }
 
-        shouldShutdown = (0 != zsLib::atomicGetValue32(mMustShutdown));
+        shouldShutdown = mMustShutdown;
       } while(!shouldShutdown);
 
       mIsShutdown = true;
@@ -133,7 +116,7 @@ namespace zsLib
         AutoLock lock(mLock);
         thread = mThread;
 
-        zsLib::atomicSetValue32(mMustShutdown, 1);
+        mMustShutdown = true;
         mEvent.notify();
       }
 

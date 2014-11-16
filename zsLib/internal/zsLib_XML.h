@@ -39,9 +39,6 @@
 #include <zsLib/types.h>
 #include <zsLib/String.h>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/utility.hpp>
-
 #define ZS_INTERNAL_XML_DEFAULT_TAB_SIZE 2
 
 namespace zsLib
@@ -70,7 +67,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Node : public boost::noncopyable
+      class Node : public noncopyable
       {
       protected:
         friend class XML::Document;
@@ -112,7 +109,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Document : public boost::noncopyable
+      class Document : public noncopyable
       {
       public:
         Document(
@@ -144,7 +141,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Element : public boost::noncopyable
+      class Element : public noncopyable
       {
       protected:
         friend class XML::Attribute;
@@ -193,7 +190,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Attribute : public boost::noncopyable
+      class Attribute : public noncopyable
       {
       public:
         bool parse(XML::ParserPos &ioPos);
@@ -227,7 +224,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Text : public boost::noncopyable
+      class Text : public noncopyable
       {
       public:
         void parse(XML::ParserPos &ioPos);
@@ -260,7 +257,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Comment : public boost::noncopyable
+      class Comment : public noncopyable
       {
       public:
         void parse(XML::ParserPos &ioPos);
@@ -283,7 +280,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Declaration : public boost::noncopyable
+      class Declaration : public noncopyable
       {
       protected:
         friend class XML::Attribute;
@@ -310,7 +307,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Unknown : public boost::noncopyable
+      class Unknown : public noncopyable
       {
       public:
         void parse(XML::ParserPos &ioPos, const char *start = NULL, const char *ending = NULL);
@@ -514,7 +511,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Generator : public boost::noncopyable
+      class Generator : public noncopyable
       {
       public:
         friend class XML::Node;

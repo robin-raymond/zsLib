@@ -62,14 +62,13 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Subsystem::setOutputLevel(Log::Level inLevel)
   {
-    ULONG value = (ULONG)inLevel;
-    atomicSetValue32(mLevel, static_cast<Subsystem::LevelType>(value));
+    mLevel = inLevel;
   }
 
   //---------------------------------------------------------------------------
   Log::Level Subsystem::getOutputLevel() const
   {
-    return (Log::Level)atomicGetValue32(mLevel);
+    return mLevel;
   }
 
   //---------------------------------------------------------------------------
@@ -474,23 +473,40 @@ namespace zsLib
 
     if (name) {
       if (strstr(name, "(ms)")) {
-        Param tmp(name, value.total_milliseconds());
+        Param tmp(name, std::chrono::duration_cast<Milliseconds>(value).count());
         mParam = tmp.mParam;
         return;
       }
       if (strstr(name, "(s)")) {
-        Param tmp(name, value.total_seconds());
+        Param tmp(name, std::chrono::duration_cast<Seconds>(value).count());
         mParam = tmp.mParam;
         return;
       }
       if (strstr(name, "(seconds)")) {
-        Param tmp(name, value.total_seconds());
+        Param tmp(name, std::chrono::duration_cast<Seconds>(value).count());
         mParam = tmp.mParam;
         return;
       }
     }
 
-    Param tmp(name, boost::posix_time::to_simple_string(value));
+    Duration extract = value;
+
+    Hours hours = std::chrono::duration_cast<Hours>(extract);
+    extract -= hours;
+
+    Minutes mins = std::chrono::duration_cast<Minutes>(extract);
+    extract -= mins;
+
+    Seconds seconds = std::chrono::duration_cast<Seconds>(extract);
+    extract -= seconds;
+
+    Microseconds micro = std::chrono::duration_cast<Microseconds>(extract);
+
+    char buffer[100] {};
+
+    snprintf(buffer, sizeof(buffer) / sizeof(char), "%02u:%02u:%02u.%06u", ((unsigned int)hours.count()), ((unsigned int)mins.count()), ((unsigned int)seconds.count()), ((unsigned int)micro.count()));
+
+    Param tmp(name, (CSTR) buffer);
     mParam = tmp.mParam;
   }
 

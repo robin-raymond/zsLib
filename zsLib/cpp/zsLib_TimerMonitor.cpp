@@ -35,8 +35,6 @@
 #include <zsLib/XML.h>
 #include <zsLib/helpers.h>
 
-#include <boost/thread.hpp>
-
 #include <pthread.h>
 
 #ifdef __QNX__
@@ -138,7 +136,7 @@ namespace zsLib
       AutoRecursiveLock lock(mLock);
 
       if (!mThread) {
-        mThread = ThreadPtr(new boost::thread(boost::ref(*this)));
+        mThread = ThreadPtr(new std::thread(std::ref(*this)));
         setThreadPriority(mThread->native_handle(), getTimerMonitorPrioritySingleton().getPriority());
       }
 
@@ -167,16 +165,7 @@ namespace zsLib
     {
       bool shouldShutdown = false;
 
-#ifdef __QNX__
-      pthread_setname_np(pthread_self(), "com.zslib.timer");
-#else
-#ifndef _LINUX
-#ifndef _ANDROID
-      pthread_setname_np("com.zslib.timer");
-#endif // _ANDROID
-#endif // _LINUX
-#endif // __QNX__
-
+      debugSetCurrentThreadName("com.zslib.timer");
 
       do
       {
@@ -222,8 +211,8 @@ namespace zsLib
         rc = pthread_mutex_unlock(&mMutex);
         ZS_THROW_BAD_STATE_IF(0 != rc)
 #else
-        boost::unique_lock<boost::mutex> flagLock(mFlagLock);
-        mFlagNotify.timed_wait<Duration>(flagLock, duration);
+        std::unique_lock<std::mutex> flagLock(mFlagLock);
+        mFlagNotify.wait_for(flagLock, duration);
 #endif //__QNX__
 
         // notify all those timers needing to be notified
@@ -323,9 +312,9 @@ namespace zsLib
     {
       AutoRecursiveLock lock(mLock);
 
-      Time time = boost::posix_time::microsec_clock::universal_time();
+      Time time = std::chrono::system_clock::now();
 
-      Duration duration = boost::posix_time::seconds(1);
+      Duration duration = Seconds(1);
 
       for (TimerMap::iterator monIter = mMonitoredTimers.begin(); monIter != mMonitoredTimers.end(); )
       {

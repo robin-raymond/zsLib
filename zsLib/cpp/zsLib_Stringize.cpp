@@ -74,8 +74,54 @@ namespace zsLib
     {
       if (Time() == value) return String();
 
-      Duration duration = zsLib::timeSinceEpoch(value);
-      return string(duration.total_seconds());
+      Duration sinceEpoch = zsLib::timeSinceEpoch(value);
+      return durationToString(sinceEpoch);
+    }
+
+    //-----------------------------------------------------------------------
+    String durationToString(const Duration &value)
+    {
+      if (Duration() == value) return String();
+
+      Duration justSeconds = std::chrono::duration_cast<Seconds>(value);
+
+      Duration remaining = value - justSeconds;
+
+      UINT microSeconds = static_cast<UINT>(std::chrono::duration_cast<Microseconds>(remaining).count());
+
+      String result = string(std::chrono::duration_cast<Seconds>(value).count());
+
+      if (0 == microSeconds) return result;
+
+      char buffer[100] {};
+
+      snprintf(buffer, sizeof(buffer) / sizeof(char), "%06u", microSeconds);
+
+      result += ".";
+      result += buffer;
+
+      return result;
+    }
+
+    //-----------------------------------------------------------------------
+    void trimTrailingZeros(std::string &value)
+    {
+      if (std::string::npos == value.find('.')) return;
+
+      // strip 0
+      {
+        std::size_t found = value.find_last_not_of('0');
+        if (std::string::npos == found) return;
+        value.erase(found+1);
+      }
+
+      // strip .
+      {
+        std::size_t found = value.find_last_not_of('.');
+        if (std::string::npos == found) return;
+        value.erase(found+1);
+      }
+
     }
   }
 

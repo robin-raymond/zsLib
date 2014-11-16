@@ -1,33 +1,37 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/String.h>
 
-//#define BOOST_TEST_MODULE MyTest
-//#include <boost/test/unit_test_suite.hpp>
-//#include <boost/test/unit_test.hpp>
-//#include <boost/test/test_tools.hpp>
-
-#include "boost_replacement.h"
+#include "testing.h"
 #include "main.h"
 
 using zsLib::BYTE;
@@ -46,9 +50,9 @@ using zsLib::WORD;
 #define TEST_UNICODE_3_DIGIT 0x2260
 
 
-BOOST_AUTO_TEST_SUITE(zsLibStringTest)
+TESTING_AUTO_TEST_SUITE(zsLibStringTest)
 
-  BOOST_AUTO_TEST_CASE(TestString)
+  TESTING_AUTO_TEST_CASE(TestString)
   {
     if (!ZSLIB_TEST_STRING) return;
 
@@ -197,72 +201,72 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTest)
     replace6.replaceAll("cream", "");
     replace6.replaceAll(" ,", ",");
 
-    BOOST_CHECK(forceNull.isEmpty());
-    BOOST_EQUAL(zsLib::String(), forceNull);
-    BOOST_EQUAL(forceNullCopied, forceNull);
-    BOOST_EQUAL(zsLib::String(), nullStrObj.getValue())
-    BOOST_CHECK(stdstr_empty.empty());
-    BOOST_CHECK(str1.empty());
-    BOOST_CHECK(str1.isEmpty());
-    BOOST_EQUAL(str2, "this is a test2");
-    BOOST_EQUAL(wstr2, "this is a wide test2");
-    BOOST_EQUAL(str4, "this is a std::test1");
-    BOOST_EQUAL(str5, "this is a wide std::test1");
-    BOOST_EQUAL(zsLib::String::copyFrom(buffer, 15), "012345678901234");
+    TESTING_CHECK(forceNull.isEmpty());
+    TESTING_EQUAL(zsLib::String(), forceNull);
+    TESTING_EQUAL(forceNullCopied, forceNull);
+    TESTING_EQUAL(zsLib::String(), nullStrObj.getValue())
+    TESTING_CHECK(stdstr_empty.empty());
+    TESTING_CHECK(str1.empty());
+    TESTING_CHECK(str1.isEmpty());
+    TESTING_EQUAL(str2, "this is a test2");
+    TESTING_EQUAL(wstr2, "this is a wide test2");
+    TESTING_EQUAL(str4, "this is a std::test1");
+    TESTING_EQUAL(str5, "this is a wide std::test1");
+    TESTING_EQUAL(zsLib::String::copyFrom(buffer, 15), "012345678901234");
     bool equal6 = (0 == strcmp(str6, "Τη γλώσσα μου έδωσαν ελληνική"));  // I have no idea what this says so if it is bad or insulting, my apologies!
-    BOOST_CHECK(equal6);
-    BOOST_EQUAL(str7, buffer7);
+    TESTING_CHECK(equal6);
+    TESTING_EQUAL(str7, buffer7);
     if (sizeof(wchar_t) == sizeof(zsLib::WORD)) {
-      BOOST_EQUAL(wstr7[0], TEST_UNICODE_1_DIGIT);
-      BOOST_EQUAL(wstr7[1], TEST_UNICODE_2_DIGIT);
-      BOOST_EQUAL(wstr7[2], TEST_UNICODE_3_DIGIT);
+      TESTING_EQUAL(wstr7[0], TEST_UNICODE_1_DIGIT);
+      TESTING_EQUAL(wstr7[1], TEST_UNICODE_2_DIGIT);
+      TESTING_EQUAL(wstr7[2], TEST_UNICODE_3_DIGIT);
 
-      BOOST_EQUAL(wstr8[0], wbuffer8_utf16[0]);
-      BOOST_EQUAL(wstr8[1], wbuffer8_utf16[1]);
-      BOOST_EQUAL(wstr8[2], wbuffer8_utf16[2]);
-      BOOST_EQUAL(wstr8[3], wbuffer8_utf16[3]);
-      BOOST_EQUAL(wstr8[4], wbuffer8_utf16[4]);
-      BOOST_EQUAL(wstr8[5], wbuffer8_utf16[5]);
-      BOOST_EQUAL(wstr8[6], wbuffer8_utf16[6]);
-      BOOST_EQUAL(wstr8[7], wbuffer8_utf16[7]);
-      BOOST_EQUAL(wstr8[8], wbuffer8_utf16[8]);
-      BOOST_EQUAL(wstr8[9], wbuffer8_utf16[9]);
-      BOOST_EQUAL(wstr8[10], wbuffer8_utf16[10]);
+      TESTING_EQUAL(wstr8[0], wbuffer8_utf16[0]);
+      TESTING_EQUAL(wstr8[1], wbuffer8_utf16[1]);
+      TESTING_EQUAL(wstr8[2], wbuffer8_utf16[2]);
+      TESTING_EQUAL(wstr8[3], wbuffer8_utf16[3]);
+      TESTING_EQUAL(wstr8[4], wbuffer8_utf16[4]);
+      TESTING_EQUAL(wstr8[5], wbuffer8_utf16[5]);
+      TESTING_EQUAL(wstr8[6], wbuffer8_utf16[6]);
+      TESTING_EQUAL(wstr8[7], wbuffer8_utf16[7]);
+      TESTING_EQUAL(wstr8[8], wbuffer8_utf16[8]);
+      TESTING_EQUAL(wstr8[9], wbuffer8_utf16[9]);
+      TESTING_EQUAL(wstr8[10], wbuffer8_utf16[10]);
     }
     if (sizeof(wchar_t) == sizeof(zsLib::DWORD)) {
       for (size_t loop = 0; loop < 13; ++loop) {
         bool equal = (wstr8[loop] == wbuffer8[loop]);
-        BOOST_CHECK(equal)
+        TESTING_CHECK(equal)
       }
     }
     bool equal9 = (str9 == (sizeof(WORD) == sizeof(wchar_t) ? buffer8_utf16 : buffer8));
-    BOOST_CHECK(equal9);
+    TESTING_CHECK(equal9);
     bool equal10 = (0 == strcmp(((CSTR)str9), (sizeof(WORD) == sizeof(wchar_t) ? buffer8_utf16 : buffer8)));
-    BOOST_CHECK(equal10);
+    TESTING_CHECK(equal10);
     bool equal11 = (str9 == str8);
-    BOOST_CHECK(equal11);
-    BOOST_EQUAL(str10, stdstr1);
-    BOOST_EQUAL(str11, zsLib::String(wstdstr1));
+    TESTING_CHECK(equal11);
+    TESTING_EQUAL(str10, stdstr1);
+    TESTING_EQUAL(str11, zsLib::String(wstdstr1));
     bool equal12 = (str12 == str6);
-    BOOST_CHECK(equal12);
-    BOOST_EQUAL(str13, "this is the proper value");
-    BOOST_EQUAL(str14, "this is the proper wide value");
-    BOOST_EQUAL(strLower, "this is a test");
-    BOOST_EQUAL(strUpper, "THIS IS A TEST");
-    BOOST_EQUAL(0, strLower.compareNoCase(strUpper));
-    BOOST_EQUAL(0, strLower.compareNoCase(strUpper.c_str()));
-    BOOST_EQUAL(strTrim1, "This string is:\t fantastic");
-    BOOST_CHECK(strTrimLeft == "This string is:\t fantastic\t \r\v\n \t");
-    BOOST_CHECK(strTrimRight == " \t\r\n\t\v  This string is:\t fantastic");
-    BOOST_EQUAL(replace1, "chilli, hotdogs, popcorn, chicken, chilli, sour cream, vinegar, cream");
-    BOOST_CHECK(replace2 == "chili\nhotdogs\npopcorn\nchicken\nchili\nsour cream\nvinegar\ncream");
-    BOOST_CHECK(replace3 == "chili\nhotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
-    BOOST_EQUAL(replace4, "chili, hotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
-    BOOST_EQUAL(replace5, "chili, x1, hotdogs, x1, popcorn, x1, chicken, x1, chili, x1, sour cream, x1, vinegar, x1, cream");
-    BOOST_EQUAL(replace6, "chili, hotdogs, popcorn, chicken, chili, sour, vinegar, ");
+    TESTING_CHECK(equal12);
+    TESTING_EQUAL(str13, "this is the proper value");
+    TESTING_EQUAL(str14, "this is the proper wide value");
+    TESTING_EQUAL(strLower, "this is a test");
+    TESTING_EQUAL(strUpper, "THIS IS A TEST");
+    TESTING_EQUAL(0, strLower.compareNoCase(strUpper));
+    TESTING_EQUAL(0, strLower.compareNoCase(strUpper.c_str()));
+    TESTING_EQUAL(strTrim1, "This string is:\t fantastic");
+    TESTING_CHECK(strTrimLeft == "This string is:\t fantastic\t \r\v\n \t");
+    TESTING_CHECK(strTrimRight == " \t\r\n\t\v  This string is:\t fantastic");
+    TESTING_EQUAL(replace1, "chilli, hotdogs, popcorn, chicken, chilli, sour cream, vinegar, cream");
+    TESTING_CHECK(replace2 == "chili\nhotdogs\npopcorn\nchicken\nchili\nsour cream\nvinegar\ncream");
+    TESTING_CHECK(replace3 == "chili\nhotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
+    TESTING_EQUAL(replace4, "chili, hotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
+    TESTING_EQUAL(replace5, "chili, x1, hotdogs, x1, popcorn, x1, chicken, x1, chili, x1, sour cream, x1, vinegar, x1, cream");
+    TESTING_EQUAL(replace6, "chili, hotdogs, popcorn, chicken, chili, sour, vinegar, ");
   }
 
-BOOST_AUTO_TEST_SUITE_END()
+TESTING_AUTO_TEST_SUITE_END()
 
 
 #ifdef ZS_TARGET_WCHAR_IS_UTF16
@@ -723,9 +727,9 @@ static BYTE gUTFByteArray5[] =
 };
 
 
-BOOST_AUTO_TEST_SUITE(zsLibStringTestMore)
+TESTING_AUTO_TEST_SUITE(zsLibStringTestMore)
 
-  BOOST_AUTO_TEST_CASE(TestStringMore)
+  TESTING_AUTO_TEST_CASE(TestStringMore)
   {
     if (!ZSLIB_TEST_STRING) return;
 
@@ -735,21 +739,21 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTestMore)
       zsLib::String string(wStr);
 
       CSTR utf8Str = string;
-      BOOST_CHECK(0 == memcmp(utf8Str, &(gByteArray1[0]), sizeof(gByteArray1)))
+      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray1[0]), sizeof(gByteArray1)))
 
       zsLib::String string2(utf8Str);
       std::wstring wstring2(string2.wstring());
       CWSTR utf16Str = wstring2.c_str();
 
-      BOOST_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray1)))
+      TESTING_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray1)))
 
-      BOOST_EQUAL(string.getLength(), strlen(utf8Str))
-      BOOST_EQUAL(string.lengthUnicodeSafe(), gTEST_ARRAY_1_LINE_LENGTH)
+      TESTING_EQUAL(string.getLength(), strlen(utf8Str))
+      TESTING_EQUAL(string.lengthUnicodeSafe(), gTEST_ARRAY_1_LINE_LENGTH)
 
       size_t length = (sizeof(gWGetAtArray1)/sizeof(WCHAR));
       for (size_t loop = 0; loop < length-1; ++loop)
       {
-        BOOST_EQUAL(gWGetAtArray1[loop], string.atUnicodeSafe(loop))
+        TESTING_EQUAL(gWGetAtArray1[loop], string.atUnicodeSafe(loop))
       }
 
       for (size_t loop = 0; true; ++loop)
@@ -760,7 +764,7 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTestMore)
           break;
 
         zsLib::String result = string.substrUnicodeSafe(pos, count);
-        BOOST_CHECK(0 == memcmp((CSTR)result, gMidTests[loop].mContents, gMidTests[loop].mLength))
+        TESTING_CHECK(0 == memcmp((CSTR)result, gMidTests[loop].mContents, gMidTests[loop].mLength))
       }
     }
     if (sizeof(WORD) == sizeof(WCHAR))  // this test if for UTF-16 systems only, new test requried for UTF-32 systems
@@ -770,14 +774,14 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTestMore)
       zsLib::String string(wStr);
 
       CSTR utf8Str = string;
-      BOOST_CHECK(0 == memcmp(utf8Str, &(gByteArray3[0]), sizeof(gByteArray3)))
+      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray3[0]), sizeof(gByteArray3)))
 
       zsLib::String string2(utf8Str);
       std::wstring wstring2(string2.wstring());
       CWSTR utf16Str = wstring2.c_str();
 
-      BOOST_CHECK(0 == memcmp((void *)utf16Str, &(gWArray3[0]), sizeof(gWArray3)))
-      BOOST_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_3_LINE_LENGTH)
+      TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray3[0]), sizeof(gWArray3)))
+      TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_3_LINE_LENGTH)
     }
     {
       // test illegal UTF-16 encoding
@@ -785,34 +789,34 @@ BOOST_AUTO_TEST_SUITE(zsLibStringTestMore)
       zsLib::String string(wStr);
 
       CSTR utf8Str = string;
-      BOOST_CHECK(0 == memcmp(utf8Str, &(gByteArray4[0]), sizeof(gByteArray4)))
+      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray4[0]), sizeof(gByteArray4)))
 
       zsLib::String string2(utf8Str);
       std::wstring wstring2(string2.wstring());
       CWSTR utf16Str = wstring2.c_str();
 
-      BOOST_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray3)))
-      BOOST_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_4_LINE_LENGTH)
+      TESTING_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray3)))
+      TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_4_LINE_LENGTH)
     }
     {
       // test illegal UTF-8 encoding
       zsLib::String string((CSTR)(&(gByteArray5[0])));
 
       CSTR utf8Str = string;
-      BOOST_CHECK(0 == memcmp(utf8Str, &(gByteArray5[0]), sizeof(gByteArray5)))
+      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray5[0]), sizeof(gByteArray5)))
 
       zsLib::String string2(utf8Str);
       std::wstring wstring2(string2.wstring());
       CWSTR utf16Str = wstring2.c_str();
 
-      BOOST_CHECK(0 == memcmp((void *)utf16Str, &(gWArray5[0]), sizeof(gWArray5)))
-      BOOST_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_5_LINE_LENGTH)
+      TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray5[0]), sizeof(gWArray5)))
+      TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_5_LINE_LENGTH)
 
       zsLib::String string3(utf16Str);
       CSTR utf8Str3 = string3;
 
-      BOOST_CHECK(0 == memcmp(utf8Str3, &(gUTFByteArray5[0]), sizeof(gUTFByteArray5)))
+      TESTING_CHECK(0 == memcmp(utf8Str3, &(gUTFByteArray5[0]), sizeof(gUTFByteArray5)))
     }
   }
 
-BOOST_AUTO_TEST_SUITE_END()
+TESTING_AUTO_TEST_SUITE_END()

@@ -40,7 +40,6 @@
 #include <zsLib/Event.h>
 #include <zsLib/Log.h>
 
-#include <boost/noncopyable.hpp>
 #include <map>
 #include <set>
 
@@ -153,7 +152,7 @@ namespace zsLib
     #pragma mark SocketMonitor
     #pragma mark
 
-    class SocketMonitor : public boost::noncopyable
+    class SocketMonitor : public noncopyable
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)

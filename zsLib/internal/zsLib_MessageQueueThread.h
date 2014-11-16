@@ -35,7 +35,6 @@
 #define ZSLIB_INTERNAL_MESSAGEQUEUETHREAD_H_5d1955ad9e4c1689e30f9affd5ea319e
 
 #include <zsLib/MessageQueue.h>
-#include <boost/thread.hpp>
 
 namespace zsLib
 {

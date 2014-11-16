@@ -26,33 +26,43 @@
  The views and conclusions contained in the software and documentation are those
  of the authors and should not be interpreted as representing official policies,
  either expressed or implied, of the FreeBSD Project.
- 
+
  */
 
-#ifndef ZSLIB_INTERNAL_BOOSTTYPES_H_6f9d2b59fb479e39cbff5e538c98cb1d
-#define ZSLIB_INTERNAL_BOOSTTYPES_H_6f9d2b59fb479e39cbff5e538c98cb1d
+#include <iostream>
 
-#pragma once
+#include <zsLib/helpers.h>
+#include "testing.h"
 
-#ifndef _WIN32
-#pragma GCC system_header
-#endif //_WIN32
+namespace Testing
+{
+  std::atomic_uint &getGlobalPassedVar()
+  {
+    static std::atomic_uint value {};
+    return value;
+  }
 
-//#include <boost/shared_ptr.hpp>
-//#include <boost/weak_ptr.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/thread/recursive_mutex.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/thread/tss.hpp>
-#include <boost/utility/value_init.hpp>
+  std::atomic_uint &getGlobalFailedVar()
+  {
+    static std::atomic_uint value {};
+    return value;
+  }
 
-#pragma warning(push)
-#pragma warning(disable:4244)
+  void passed()
+  {
+    ++(getGlobalPassedVar());
+  }
+  void failed()
+  {
+    ++(getGlobalFailedVar());
+  }
 
-#include <boost/thread/condition_variable.hpp>
+  void output()
+  {
+    TESTING_STDOUT() << "PASSED:       [" << Testing::getGlobalPassedVar() << "]\n";
+    if (0 != Testing::getGlobalFailedVar()) {
+      TESTING_STDOUT() << "***FAILED***: [" << Testing::getGlobalFailedVar() << "]\n";
+    }
+  }
 
-#pragma warning(pop)
-
-#endif //ZSLIB_INTERNAL_BOOSTTYPES_H_6f9d2b59fb479e39cbff5e538c98cb1d
+}

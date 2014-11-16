@@ -144,15 +144,15 @@ namespace zsLib
 
 #endif //DEBUG
 
-    static ULONG &getProxyCountGlobal()
+    static std::atomic_ulong &getProxyCountGlobal()
     {
-      static ULONG total = 0;
+      static std::atomic_ulong total {};
       return total;
     }
 
     void proxyCountIncrement(int line, const char *fileName)
     {
-      atomicIncrement(getProxyCountGlobal());
+      ++getProxyCountGlobal();
 #ifdef DEBUG
       (ProxyTracking::singleton()).follow(line, fileName);
 #endif //DEBUG
@@ -160,7 +160,7 @@ namespace zsLib
 
     void proxyCountDecrement(int line, const char *fileName)
     {
-      atomicDecrement(getProxyCountGlobal());
+      --getProxyCountGlobal();
 #ifdef DEBUG
       (ProxyTracking::singleton()).unfollow(line, fileName);
 #endif //DEBUG
@@ -169,7 +169,7 @@ namespace zsLib
 
   ULONG proxyGetTotalConstructed()
   {
-    return atomicGetValue(internal::getProxyCountGlobal());
+    return internal::getProxyCountGlobal();
   }
 
   void proxyDump()

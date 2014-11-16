@@ -34,7 +34,7 @@
 #include <zsLib/helpers.h>
 #include <zsLib/XML.h>
 
-#include <boost/thread.hpp>
+#include <stdlib.h>
 
 #define ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS (10*(1000))
 
@@ -44,10 +44,6 @@ namespace zsLib
 {
   namespace internal
   {
-#ifndef _WIN32
-    typedef timeval TIMEVAL;
-#endif //_WIN32
-
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -538,7 +534,7 @@ namespace zsLib
         AutoRecursiveLock lock(mLock);
 
         if (!mThread) {
-          mThread = ThreadPtr(new boost::thread(boost::ref(*(singleton().get()))));
+          mThread = ThreadPtr(new std::thread(std::ref(*(singleton().get()))));
           setThreadPriority(mThread->native_handle(), getSocketMonitorPrioritySingleton().getPriority());
         }
 
@@ -676,15 +672,9 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void SocketMonitor::operator()()
     {
-#ifdef __QNX__
-      pthread_setname_np(pthread_self(), "com.zslib.socketMonitor");
-#else
-#ifndef _LINUX
-#ifndef _ANDROID
-      pthread_setname_np("com.zslib.socketMonitor");
-#endif // _ANDROID
-#endif // _LINUX
-#endif // __QNX__
+      debugSetCurrentThreadName("com.zslib.socketMonitor");
+
+      srand(static_cast<unsigned int>(time(NULL)));
 
       bool shouldShutdown = false;
 
@@ -1013,7 +1003,7 @@ namespace zsLib
 
         ZS_LOG_WARNING(Detail, log("unable to create wake-up socket"))
 
-        boost::thread::yield();       // do not hammer CPU
+        std::this_thread::yield();       // do not hammer CPU
 
         if (tries > 10)
           useIPv6 = (tries%2 == 0);   // after 10 tries, start trying to bind using IPv4

@@ -1,35 +1,40 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/XML.h>
 #include <set>
 
 
-//#include <boost/test/unit_test_suite.hpp>
-//#include <boost/test/unit_test.hpp>
-//#include <boost/test/test_tools.hpp>
 
-
-#include "boost_replacement.h"
+#include "testing.h"
 #include "main.h"
 
 using zsLib::CSTR;
@@ -1734,20 +1739,20 @@ public:
     zsLib::XML::GeneratorPtr generatorJSONPretty = zsLib::XML::Generator::createJSONGenerator(zsLib::XML::Generator::JSONWriteFlag_PrettyPrint, "#text", '$');
 
     size_t lengthXML = 0;
-    boost::shared_array<char> outputXML = generatorXML->write(cloneDocument, &lengthXML);
+    std::unique_ptr<char[]> outputXML = generatorXML->write(cloneDocument, &lengthXML);
 
     size_t lengthJSON = 0;
-    boost::shared_array<char> outputJSON = generatorJSON->write(cloneDocument, &lengthJSON);
+    std::unique_ptr<char[]> outputJSON = generatorJSON->write(cloneDocument, &lengthJSON);
 
     size_t lengthJSONPretty = 0;
-    boost::shared_array<char> outputJSONPretty = generatorJSONPretty->write(cloneDocument, &lengthJSONPretty);
+    std::unique_ptr<char[]> outputJSONPretty = generatorJSONPretty->write(cloneDocument, &lengthJSONPretty);
 
-    BOOST_CHECK(lengthXML == strlen(outputXML.get()))
-    BOOST_CHECK(lengthJSON == strlen(outputJSON.get()))
-    BOOST_CHECK(lengthJSONPretty == strlen(outputJSONPretty.get()))
+    TESTING_CHECK(lengthXML == strlen(outputXML.get()))
+    TESTING_CHECK(lengthJSON == strlen(outputJSON.get()))
+    TESTING_CHECK(lengthJSONPretty == strlen(outputJSONPretty.get()))
 
-    BOOST_CHECK(0 == strcmp(results.mOutputXML, outputXML.get()))
-    BOOST_CHECK(0 == strcmp(results.mOutputJSON, outputJSON.get()))
+    TESTING_CHECK(0 == strcmp(results.mOutputXML, outputXML.get()))
+    TESTING_CHECK(0 == strcmp(results.mOutputJSON, outputJSON.get()))
 
     std::cout << "--- SOR:(input) ---\n" << results.mInput << "\n--- EOR ---\n";
     std::cout << "--- SOR:XML(final) ---\n" << outputXML.get() << "\n" << lengthXML << " (calculated) -vs- " << strlen(outputXML.get()) << " (actual)\n--- EOR:XML ---\n";
@@ -1767,14 +1772,14 @@ public:
                                                          );
 
     ULONG reLengthJSON = 0;
-    boost::shared_array<char> reOutputJSON = reGeneratorJSON->write(reDocument, &reLengthJSON);
-    BOOST_CHECK(lengthJSON == reLengthJSON)
-    BOOST_CHECK(reLengthJSON == strlen(reOutputJSON.get()))
-    BOOST_CHECK(0 == strcmp(results.mOutputJSON, reOutputJSON.get()))
+    std::unique_ptr<char[]> reOutputJSON = reGeneratorJSON->write(reDocument, &reLengthJSON);
+    TESTING_CHECK(lengthJSON == reLengthJSON)
+    TESTING_CHECK(reLengthJSON == strlen(reOutputJSON.get()))
+    TESTING_CHECK(0 == strcmp(results.mOutputJSON, reOutputJSON.get()))
 
     if (!results.mReparseMayHaveWarnings) {
       const zsLib::XML::Parser::Warnings &shouldBeEmptyWarnings = reParser->getWarnings();
-      BOOST_CHECK(0 == shouldBeEmptyWarnings.size())
+      TESTING_CHECK(0 == shouldBeEmptyWarnings.size())
       if (0 != shouldBeEmptyWarnings.size()) {
         for (zsLib::XML::Parser::Warnings::const_iterator iter = shouldBeEmptyWarnings.begin(); iter != shouldBeEmptyWarnings.end(); ++iter)
         {
@@ -1797,7 +1802,7 @@ public:
     const zsLib::XML::Parser::Warnings &actualWarnings = parser->getWarnings();
 
     if (NULL == results.mWarnings) {
-      BOOST_CHECK(actualWarnings.size() < 1)
+      TESTING_CHECK(actualWarnings.size() < 1)
     }
 
     for (zsLib::XML::Parser::Warnings::const_iterator iter = actualWarnings.begin(); iter != actualWarnings.end(); ++iter, ++loop)
@@ -1806,7 +1811,7 @@ public:
       if (NULL == resultWarning)
       {
         // found more warnings than results
-        BOOST_CHECK(NULL == "more actual warnings than expected")
+        TESTING_CHECK(NULL == "more actual warnings than expected")
 
         for (; iter != actualWarnings.end(); ++iter)
         {
@@ -1828,7 +1833,7 @@ public:
         const zsLib::XML::ParserPos &pos = (*iter2).mPos;
         if (NULL == resultWarning[loop2+1].mSearchStr)
         {
-          BOOST_CHECK(NULL == "found too many warning positions")
+          TESTING_CHECK(NULL == "found too many warning positions")
           break;
         }
 
@@ -1842,19 +1847,19 @@ public:
           found = results.mInput + strlen(results.mInput);
         }
 
-        BOOST_CHECK(pos.mPos == found)
-        BOOST_CHECK(pos.mRow == resultWarningDetail.mRow)
-        BOOST_CHECK(pos.mColumn == resultWarningDetail.mColumn)
+        TESTING_CHECK(pos.mPos == found)
+        TESTING_CHECK(pos.mRow == resultWarningDetail.mRow)
+        TESTING_CHECK(pos.mColumn == resultWarningDetail.mColumn)
       }
 
-      BOOST_CHECK(actualWarning.mWarningType == resultWarning[loop2].mWarningType)
+      TESTING_CHECK(actualWarning.mWarningType == resultWarning[loop2].mWarningType)
 
-      BOOST_CHECK(0 == strcmp(warningText, resultWarning[loop2].mSearchStr))
+      TESTING_CHECK(0 == strcmp(warningText, resultWarning[loop2].mSearchStr))
       std::cout << "--- SOR:WARNING(compare) -- \n" << resultWarning[loop2].mSearchStr << "\n--- EOR:WARNING(compare) ---\n";
     }
 
     // make sure there aren't more warnings expected than found
-    BOOST_CHECK(NULL == (results.mWarnings ? results.mWarnings[loop] : NULL))
+    TESTING_CHECK(NULL == (results.mWarnings ? results.mWarnings[loop] : NULL))
   }
 
   void treeWalkChecker(zsLib::XML::NodePtr inNode)
@@ -1867,7 +1872,7 @@ public:
   {
     // make sure this node hasn't been seen before
     FoundNodesSet::iterator iter = foundNodes.find(inNode.get());
-    BOOST_CHECK(iter == foundNodes.end())
+    TESTING_CHECK(iter == foundNodes.end())
     foundNodes.insert(inNode.get());
 
     zsLib::XML::AttributePtr firstAttribute;
@@ -1879,18 +1884,18 @@ public:
       case zsLib::XML::Node::NodeType::Document:
       {
         // this cannot have a parent
-        BOOST_CHECK(!(inNode->getParent()))
-        BOOST_CHECK(inNode->getFirstSibling()->isDocument())
-        BOOST_CHECK(inNode->getLastSibling()->isDocument())
+        TESTING_CHECK(!(inNode->getParent()))
+        TESTING_CHECK(inNode->getFirstSibling()->isDocument())
+        TESTING_CHECK(inNode->getLastSibling()->isDocument())
         break;
       }
       case zsLib::XML::Node::NodeType::Element:
       {
         // must have a parent
-        BOOST_CHECK(inNode->getParent())
+        TESTING_CHECK(inNode->getParent())
 
         // parent must be another element or document
-        BOOST_CHECK((inNode->getParent()->isElement()) ||
+        TESTING_CHECK((inNode->getParent()->isElement()) ||
                   (inNode->getParent()->isDocument()))
 
         firstAttribute = inNode->toElement()->getFirstAttribute();
@@ -1900,77 +1905,77 @@ public:
       case zsLib::XML::Node::NodeType::Attribute:
       {
         // must have a parent
-        BOOST_CHECK(inNode->getParent())
+        TESTING_CHECK(inNode->getParent())
 
         // parents has to be an element or a declaration
-        BOOST_CHECK((inNode->getParent()->isElement()) ||
+        TESTING_CHECK((inNode->getParent()->isElement()) ||
                   (inNode->getParent()->isDeclaration()))
 
         // cannot have children
-        BOOST_CHECK(!(inNode->getFirstChild()))
-        BOOST_CHECK(!(inNode->getLastChild()))
+        TESTING_CHECK(!(inNode->getFirstChild()))
+        TESTING_CHECK(!(inNode->getLastChild()))
 
         // check if previous or next are also attributes - they must be
         if (inNode->getPreviousSibling()) {
-          BOOST_CHECK(inNode->getPreviousSibling()->isAttribute())
+          TESTING_CHECK(inNode->getPreviousSibling()->isAttribute())
         }
         if (inNode->getNextSibling()) {
-          BOOST_CHECK(inNode->getNextSibling()->isAttribute())
+          TESTING_CHECK(inNode->getNextSibling()->isAttribute())
         }
 
         if (inNode->getParent()->isElement())
         {
-          BOOST_CHECK(inNode->getFirstSibling() == inNode->getParent()->toElement()->getFirstAttribute())
-          BOOST_CHECK(inNode->getLastSibling() == inNode->getParent()->toElement()->getLastAttribute())
+          TESTING_CHECK(inNode->getFirstSibling() == inNode->getParent()->toElement()->getFirstAttribute())
+          TESTING_CHECK(inNode->getLastSibling() == inNode->getParent()->toElement()->getLastAttribute())
         }
         else
         {
-          BOOST_CHECK(inNode->getParent()->isDeclaration())
-          BOOST_CHECK(inNode->getFirstSibling() == inNode->getParent()->toDeclaration()->getFirstAttribute())
-          BOOST_CHECK(inNode->getLastSibling() == inNode->getParent()->toDeclaration()->getLastAttribute())
+          TESTING_CHECK(inNode->getParent()->isDeclaration())
+          TESTING_CHECK(inNode->getFirstSibling() == inNode->getParent()->toDeclaration()->getFirstAttribute())
+          TESTING_CHECK(inNode->getLastSibling() == inNode->getParent()->toDeclaration()->getLastAttribute())
         }
         break;
       }
       case zsLib::XML::Node::NodeType::Text:
       {
         // must have a parent
-        BOOST_CHECK(inNode->getParent())
+        TESTING_CHECK(inNode->getParent())
 
         // parent must be another element or document
-        BOOST_CHECK((inNode->getParent()->isElement()) ||
+        TESTING_CHECK((inNode->getParent()->isElement()) ||
                   (inNode->getParent()->isDocument()))
 
         // cannot have children
-        BOOST_CHECK(!(inNode->getFirstChild()))
-        BOOST_CHECK(!(inNode->getLastChild()))
+        TESTING_CHECK(!(inNode->getFirstChild()))
+        TESTING_CHECK(!(inNode->getLastChild()))
         break;
       }
       case zsLib::XML::Node::NodeType::Comment:
       {
         // must have a parent
-        BOOST_CHECK(inNode->getParent())
+        TESTING_CHECK(inNode->getParent())
 
         // parent must be another element or document
-        BOOST_CHECK((inNode->getParent()->isElement()) ||
+        TESTING_CHECK((inNode->getParent()->isElement()) ||
                   (inNode->getParent()->isDocument()))
 
         // cannot have children
-        BOOST_CHECK(!(inNode->getFirstChild()))
-        BOOST_CHECK(!(inNode->getLastChild()))
+        TESTING_CHECK(!(inNode->getFirstChild()))
+        TESTING_CHECK(!(inNode->getLastChild()))
         break;
       }
       case zsLib::XML::Node::NodeType::Declaration:
       {
         // must have a parent
-        BOOST_CHECK(inNode->getParent())
+        TESTING_CHECK(inNode->getParent())
 
         // parent must be another element or document
-        BOOST_CHECK((inNode->getParent()->isElement()) ||
+        TESTING_CHECK((inNode->getParent()->isElement()) ||
                   (inNode->getParent()->isDocument()))
 
         // cannot have children
-        BOOST_CHECK(!(inNode->getFirstChild()))
-        BOOST_CHECK(!(inNode->getLastChild()))
+        TESTING_CHECK(!(inNode->getFirstChild()))
+        TESTING_CHECK(!(inNode->getLastChild()))
 
         firstAttribute = inNode->toDeclaration()->getFirstAttribute();
         lastAttribute = inNode->toDeclaration()->getLastAttribute();
@@ -1979,41 +1984,41 @@ public:
       case zsLib::XML::Node::NodeType::Unknown:
       {
         // must have a parent
-        BOOST_CHECK(inNode->getParent())
+        TESTING_CHECK(inNode->getParent())
 
         // parent must be another element or document
-        BOOST_CHECK((inNode->getParent()->isElement()) ||
+        TESTING_CHECK((inNode->getParent()->isElement()) ||
                   (inNode->getParent()->isDocument()))
 
         // cannot have children
-        BOOST_CHECK(!(inNode->getFirstChild()))
-        BOOST_CHECK(!(inNode->getLastChild()))
+        TESTING_CHECK(!(inNode->getFirstChild()))
+        TESTING_CHECK(!(inNode->getLastChild()))
         break;
       }
       default:
       {
         // what is this?
-        BOOST_CHECK(false)
+        TESTING_CHECK(false)
       }
     }
 
     // this node's previous's next must be this node
     if (inNode->getPreviousSibling())
     {
-      BOOST_CHECK(inNode->getPreviousSibling()->getNextSibling().get() == inNode.get())
+      TESTING_CHECK(inNode->getPreviousSibling()->getNextSibling().get() == inNode.get())
       if (!inNode->isAttribute())
       {
-        BOOST_CHECK(inNode->getFirstSibling() == inNode->getParent()->getFirstChild())
+        TESTING_CHECK(inNode->getFirstSibling() == inNode->getParent()->getFirstChild())
       }
     }
 
     // this node's next's previous must be this node
     if (inNode->getNextSibling())
     {
-      BOOST_CHECK(inNode->getNextSibling()->getPreviousSibling().get() == inNode.get())
+      TESTING_CHECK(inNode->getNextSibling()->getPreviousSibling().get() == inNode.get())
       if (!inNode->isAttribute())
       {
-        BOOST_CHECK(inNode->getLastSibling() == inNode->getParent()->getLastChild())
+        TESTING_CHECK(inNode->getLastSibling() == inNode->getParent()->getLastChild())
       }
     }
 
@@ -2025,12 +2030,12 @@ public:
   {
     // if this does not have a first child then it cannot have a last child
     if (!inFirstChild) {
-      BOOST_CHECK(!inLastChild)
+      TESTING_CHECK(!inLastChild)
     }
 
       // if this does not have a last child then it cannot have a first child
     if (!inLastChild) {
-      BOOST_CHECK(!inFirstChild)
+      TESTING_CHECK(!inFirstChild)
     }
 
     bool foundFirstChild = false;
@@ -2042,63 +2047,63 @@ public:
       bool isLastChild = false;
 
       // must have a last child, since a first child was found
-      BOOST_CHECK(inLastChild)
+      TESTING_CHECK(inLastChild)
 
       // if this is the first child, make sure it does not have a previous
       if (child.get() == inFirstChild.get())
       {
         isFirstChild = foundFirstChild = true;
-        BOOST_CHECK(!(child->getPreviousSibling()))
+        TESTING_CHECK(!(child->getPreviousSibling()))
       }
       if (child.get() == inLastChild.get())
       {
         isLastChild = foundLastChild = true;
-        BOOST_CHECK(!(child->getNextSibling()))
+        TESTING_CHECK(!(child->getNextSibling()))
       }
 
       // if this child doesn't have a previous or next then must point to the first or last child respectively
       if (!(child->getPreviousSibling())) {
-        BOOST_CHECK(inFirstChild.get() == child.get())
+        TESTING_CHECK(inFirstChild.get() == child.get())
       }
 
       if (!(child->getNextSibling())) {
-        BOOST_CHECK(inLastChild.get() == child.get())
+        TESTING_CHECK(inLastChild.get() == child.get())
       }
 
         // if the first node equals last node then the child node must not have a previous or next
         if (inFirstChild.get() == inLastChild.get())
         {
           // cannot have a previous or next sibling
-          BOOST_CHECK(!(child->getPreviousSibling()))
-          BOOST_CHECK(!(child->getNextSibling()))
+          TESTING_CHECK(!(child->getPreviousSibling()))
+          TESTING_CHECK(!(child->getNextSibling()))
         }
         else
         {
           // first child must have a next and last child must have a previous
-          BOOST_CHECK(inFirstChild->getNextSibling())
-          BOOST_CHECK(inLastChild->getPreviousSibling())
+          TESTING_CHECK(inFirstChild->getNextSibling())
+          TESTING_CHECK(inLastChild->getPreviousSibling())
         }
 
       // if its not the first child, must have a previous sibling
       if (!isFirstChild) {
-        BOOST_CHECK(child->getPreviousSibling())
+        TESTING_CHECK(child->getPreviousSibling())
       }
       // if its not the last child, must have a next sibling
       if (!isLastChild) {
-        BOOST_CHECK(child->getNextSibling())
+        TESTING_CHECK(child->getNextSibling())
       }
 
       // parent must be this node
-      BOOST_CHECK(child->getParent().get() == inNode.get())
+      TESTING_CHECK(child->getParent().get() == inNode.get())
       treeWalkChecker(child, foundNodes);
 
       child = child->getNextSibling();
     }
     if (foundFirstChild) {
-      BOOST_CHECK(foundLastChild)
+      TESTING_CHECK(foundLastChild)
     }
     if (foundLastChild) {
-      BOOST_CHECK(foundFirstChild)
+      TESTING_CHECK(foundFirstChild)
     }
   }
 
@@ -2177,15 +2182,15 @@ public:
     declaration1->setAttribute(zsLib::String("value1"), zsLib::String("1"));
     document->adoptAsFirstChild(declaration1);
 
-    BOOST_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("value1")), "1"))
-    BOOST_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("whatever")), ""))
+    TESTING_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("value1")), "1"))
+    TESTING_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("whatever")), ""))
 
     // normally wouldn't do this after adding to the document, but this is a test after all
-    BOOST_CHECK(document->isAttributeNameIsCaseSensative())
-    BOOST_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("VALUE1")), ""))
+    TESTING_CHECK(document->isAttributeNameIsCaseSensative())
+    TESTING_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("VALUE1")), ""))
     document->setAttributeNameIsCaseSensative(false);
-    BOOST_CHECK(!document->isAttributeNameIsCaseSensative())
-    BOOST_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("VALUE1")), "1"))
+    TESTING_CHECK(!document->isAttributeNameIsCaseSensative())
+    TESTING_CHECK(0 == strcmp(declaration1->getAttributeValue(zsLib::String("VALUE1")), "1"))
     document->setAttributeNameIsCaseSensative(true);
 
     zsLib::XML::TextPtr bogusText(::zsLib::XML::Text::create());
@@ -2193,11 +2198,11 @@ public:
 
     caught = false;
     try {(declaration1->toNode())->adoptAsFirstChild(bogusText);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
 
     caught = false;
     try {(declaration1->toNode())->adoptAsLastChild(bogusText);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
 
     treeWalkChecker(document);
 
@@ -2228,8 +2233,8 @@ public:
     declaration1->adoptAsFirstChild(attribute4);
     attribute4->setName(zsLib::String("value3"));
 
-    BOOST_CHECK(attribute2 == attribute4->getFirstSibling())
-    BOOST_CHECK(attribute4 == attribute2->getLastSibling())
+    TESTING_CHECK(attribute2 == attribute4->getFirstSibling())
+    TESTING_CHECK(attribute4 == attribute2->getLastSibling())
 
     treeWalkChecker(document);
 
@@ -2244,21 +2249,21 @@ public:
     zsLib::XML::AttributePtr attribute6(::zsLib::XML::Attribute::create());
     attribute6->setName(zsLib::String("value6"));
     attribute6->setValue(zsLib::String("6"));
-    BOOST_CHECK(zsLib::XML::NodePtr() == attribute6->getFirstSibling()) // haven't added yet so shouldn't have any
-    BOOST_CHECK(zsLib::XML::NodePtr() == attribute6->getLastSibling()) // haven't added yet so shouldn't have any
+    TESTING_CHECK(zsLib::XML::NodePtr() == attribute6->getFirstSibling()) // haven't added yet so shouldn't have any
+    TESTING_CHECK(zsLib::XML::NodePtr() == attribute6->getLastSibling()) // haven't added yet so shouldn't have any
     element1->adoptAsLastChild(attribute6);
 
-    BOOST_CHECK(attribute5 == attribute6->getFirstSibling())
-    BOOST_CHECK(attribute6 == attribute5->getLastSibling())
+    TESTING_CHECK(attribute5 == attribute6->getFirstSibling())
+    TESTING_CHECK(attribute6 == attribute5->getLastSibling())
 
     treeWalkChecker(document);
 
     caught = false;
     try {(attribute6->toNode())->adoptAsFirstChild(attribute7);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
     caught = false;
     try {(attribute6->toNode())->adoptAsLastChild(attribute7);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
 
     treeWalkChecker(document);
 
@@ -2273,7 +2278,7 @@ public:
     attribute9->setName(zsLib::String("value9"));
     attribute9->setValue(zsLib::String("9"));
     attribute6->adoptAsPreviousSibling(attribute9);
-    BOOST_CHECK(0 == strcmp(attribute9->getValue(), "9"))
+    TESTING_CHECK(0 == strcmp(attribute9->getValue(), "9"))
 
     treeWalkChecker(document);
 
@@ -2296,13 +2301,13 @@ public:
 
     caught = false;
     try {attribute4->adoptAsNextSibling(text7);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
 
     treeWalkChecker(document);
 
     caught = false;
     try {attribute4->adoptAsPreviousSibling(text7);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
 
     treeWalkChecker(document);
 
@@ -2323,7 +2328,7 @@ public:
     zsLib::XML::CommentPtr comment1(::zsLib::XML::Comment::create());
     comment1->setValue(zsLib::String("comment1"));
     element1->adoptAsFirstChild(comment1);
-    BOOST_CHECK(0 == strcmp(comment1->getValue(), "comment1"))
+    TESTING_CHECK(0 == strcmp(comment1->getValue(), "comment1"))
 
     treeWalkChecker(document);
 
@@ -2361,39 +2366,39 @@ public:
     //"</text>";
 
     zsLib::String result1 = element2->getText(false, true);
-    BOOST_CHECK(0 == strcmp(result1, " this  &lt;is&gt; \n" "a &#96;test&#96; of &nbsp;the " " text " "\telement\n" "\n"))
+    TESTING_CHECK(0 == strcmp(result1, " this  &lt;is&gt; \n" "a &#96;test&#96; of &nbsp;the " " text " "\telement\n" "\n"))
 
     zsLib::String result2 = element2->getText(false, false);
-    BOOST_CHECK(0 == strcmp(result2, " this  &lt;is&gt; \n" "a &#96;test&#96; of &nbsp;the " "\telement\n" "\n"))
+    TESTING_CHECK(0 == strcmp(result2, " this  &lt;is&gt; \n" "a &#96;test&#96; of &nbsp;the " "\telement\n" "\n"))
 
     zsLib::String result3 = element2->getText(true, true);
-    BOOST_CHECK(0 == strcmp(result3, "this &lt;is&gt; " "a &#96;test&#96; of &nbsp;the " "text " "element"))
+    TESTING_CHECK(0 == strcmp(result3, "this &lt;is&gt; " "a &#96;test&#96; of &nbsp;the " "text " "element"))
 
     zsLib::String result4 = element2->getText(true, false);
-    BOOST_CHECK(0 == strcmp(result4, "this &lt;is&gt; " "a &#96;test&#96; of &nbsp;the " "element"))
+    TESTING_CHECK(0 == strcmp(result4, "this &lt;is&gt; " "a &#96;test&#96; of &nbsp;the " "element"))
 
     result1 = zsLib::XML::Parser::convertFromEntities(result1);
-    BOOST_EQUAL(result1, " this  <is> \n" "a `test` of  the " " text " "\telement\n" "\n")
+    TESTING_EQUAL(result1, " this  <is> \n" "a `test` of  the " " text " "\telement\n" "\n")
 
     result1 = zsLib::XML::Parser::convertFromEntities(zsLib::String("&#x23;&#x4c;O&#x4c;&nbsp;&bogus;&#ab;&#xyz;&+;&#195;"));
     result2 = "#LOL &bogus;&#ab;&#xyz;&+;\xC3\x83";
-    BOOST_EQUAL(result1, result2)
+    TESTING_EQUAL(result1, result2)
 
     result1 = zsLib::XML::Parser::makeTextEntitySafe(zsLib::String("&<>;  \"\'"));
     result2 = "&amp;&lt;&gt;;  \"\'";
-    BOOST_CHECK(0 == strcmp(result1, result2))
+    TESTING_CHECK(0 == strcmp(result1, result2))
 
     result1 = zsLib::XML::Parser::makeAttributeEntitySafe(zsLib::String(zsLib::String("&<>;  \"\'")));
     result2 = "&amp;&lt;&gt;;  &quot;&apos;";
-    BOOST_CHECK(0 == strcmp(result1, result2))
+    TESTING_CHECK(0 == strcmp(result1, result2))
 
     result1 = zsLib::XML::Parser::makeAttributeEntitySafe(zsLib::String("&<>;  \""));
     result2 = "&amp;&lt;&gt;;  \"";
-    BOOST_CHECK(0 == strcmp(result1, result2))
+    TESTING_CHECK(0 == strcmp(result1, result2))
 
     result1 = zsLib::XML::Parser::makeAttributeEntitySafe(zsLib::String("&<>;  \'"));
     result2 = "&amp;&lt;&gt;;  \'";
-    BOOST_CHECK(0 == strcmp(result1, result2))
+    TESTING_CHECK(0 == strcmp(result1, result2))
 
     zsLib::XML::TextPtr text11(::zsLib::XML::Text::create());
     text11->setValue(zsLib::String("\n"));
@@ -2413,10 +2418,10 @@ public:
     zsLib::XML::TextPtr text12(::zsLib::XML::Text::create());
     text12->setValue(zsLib::String("<cdata test & result>"), zsLib::XML::Text::Format_CDATA);
     text12->setOutputFormat(zsLib::XML::Text::Format_CDATA);
-    BOOST_CHECK(zsLib::XML::Text::Format_CDATA == text12->getOutputFormat())
+    TESTING_CHECK(zsLib::XML::Text::Format_CDATA == text12->getOutputFormat())
 
     zsLib::String cdataResult = text12->getValueInFormat(zsLib::XML::Text::Format_EntityEncoded);
-    BOOST_CHECK(0 == strcmp(cdataResult, "&lt;cdata test &amp; result&gt;"))
+    TESTING_CHECK(0 == strcmp(cdataResult, "&lt;cdata test &amp; result&gt;"))
 
     element4->adoptAsFirstChild(text12);
 
@@ -2424,13 +2429,13 @@ public:
 
     zsLib::XML::UnknownPtr unknown1(::zsLib::XML::Unknown::create());
     unknown1->setValue(zsLib::String("!unknown!"));
-    BOOST_CHECK(0 == strcmp(unknown1->getValue(), "!unknown!"))
+    TESTING_CHECK(0 == strcmp(unknown1->getValue(), "!unknown!"))
     caught = false;
     try {(unknown1->toNode())->adoptAsFirstChild(attribute7);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
     caught = false;
     try {(unknown1->toNode())->adoptAsLastChild(attribute7);} catch(...) {caught = true;}
-    BOOST_CHECK(caught)
+    TESTING_CHECK(caught)
     element4->adoptAsNextSibling(unknown1);
     treeWalkChecker(document);
 
@@ -2450,53 +2455,53 @@ public:
      */
 
     // check attributes
-    BOOST_CHECK(0 == strcmp(element4->getAttributeValue(zsLib::String("value1")), "&quot;&apos;"))
-    BOOST_CHECK(0 == strcmp(element4->getAttributeValue(zsLib::String("bogus")), ""))
+    TESTING_CHECK(0 == strcmp(element4->getAttributeValue(zsLib::String("value1")), "&quot;&apos;"))
+    TESTING_CHECK(0 == strcmp(element4->getAttributeValue(zsLib::String("bogus")), ""))
 
     // check element walker
-    BOOST_CHECK(element4->findAttribute(zsLib::String("value3"))->getParentElement().get() == element4.get())
-    BOOST_CHECK(!(document->getParentElement()))
-    BOOST_CHECK(!(document->getFirstSiblingElement()))
-    BOOST_CHECK(!(document->getLastSiblingElement()))
-    BOOST_CHECK(!(document->getPreviousSiblingElement()))
-    BOOST_CHECK(!(document->getNextSiblingElement()))
-    BOOST_CHECK(document->getFirstChildElement() == element1)
-    BOOST_CHECK(document->getFirstChildElement()->getLastSiblingElement() == element4)
-    BOOST_CHECK(document->getFirstChildElement()->getNextSiblingElement() == element2)
-    BOOST_CHECK(!(element1->getFirstChildElement()))
-    BOOST_CHECK(!(element1->getLastChildElement()))
-    BOOST_CHECK(document->getLastChildElement() == element4)
-    BOOST_CHECK(document->getLastChildElement()->getFirstSiblingElement() == element1)
-    BOOST_CHECK(document->getLastChildElement()->getPreviousSiblingElement() == element2)
+    TESTING_CHECK(element4->findAttribute(zsLib::String("value3"))->getParentElement().get() == element4.get())
+    TESTING_CHECK(!(document->getParentElement()))
+    TESTING_CHECK(!(document->getFirstSiblingElement()))
+    TESTING_CHECK(!(document->getLastSiblingElement()))
+    TESTING_CHECK(!(document->getPreviousSiblingElement()))
+    TESTING_CHECK(!(document->getNextSiblingElement()))
+    TESTING_CHECK(document->getFirstChildElement() == element1)
+    TESTING_CHECK(document->getFirstChildElement()->getLastSiblingElement() == element4)
+    TESTING_CHECK(document->getFirstChildElement()->getNextSiblingElement() == element2)
+    TESTING_CHECK(!(element1->getFirstChildElement()))
+    TESTING_CHECK(!(element1->getLastChildElement()))
+    TESTING_CHECK(document->getLastChildElement() == element4)
+    TESTING_CHECK(document->getLastChildElement()->getFirstSiblingElement() == element1)
+    TESTING_CHECK(document->getLastChildElement()->getPreviousSiblingElement() == element2)
 
-    BOOST_CHECK(document->findFirstChildElement(zsLib::String("test")) == element1)
-    BOOST_CHECK(document->findFirstChildElement(zsLib::String("text")) == element2)
-    BOOST_CHECK(!(document->findFirstChildElement(zsLib::String("wild"))))
-    BOOST_CHECK(document->findFirstChildElement(zsLib::String("text"))->findFirstChildElement(zsLib::String("wild")) == element3)
-    BOOST_CHECK(document->findFirstChildElement(zsLib::String("encoding")) == element4)
+    TESTING_CHECK(document->findFirstChildElement(zsLib::String("test")) == element1)
+    TESTING_CHECK(document->findFirstChildElement(zsLib::String("text")) == element2)
+    TESTING_CHECK(!(document->findFirstChildElement(zsLib::String("wild"))))
+    TESTING_CHECK(document->findFirstChildElement(zsLib::String("text"))->findFirstChildElement(zsLib::String("wild")) == element3)
+    TESTING_CHECK(document->findFirstChildElement(zsLib::String("encoding")) == element4)
 
     //test case
-    BOOST_CHECK(document->isElementNameIsCaseSensative())
-    BOOST_CHECK(!(document->findFirstChildElement(zsLib::String("TEST"))))
+    TESTING_CHECK(document->isElementNameIsCaseSensative())
+    TESTING_CHECK(!(document->findFirstChildElement(zsLib::String("TEST"))))
 
     // normally don't change case sensativity after a document is formed but this is a special case
     document->setElementNameIsCaseSensative(false);
-    BOOST_CHECK(document->findFirstChildElement(zsLib::String("TEST")) == element1)
+    TESTING_CHECK(document->findFirstChildElement(zsLib::String("TEST")) == element1)
     document->setElementNameIsCaseSensative(true);
 
     zsLib::XML::GeneratorPtr generator = zsLib::XML::Generator::createXMLGenerator();
 
     size_t length = 0;
-    boost::shared_array<char> output = generator->write(document, &length);
+    std::unique_ptr<char[]> output = generator->write(document, &length);
 
-    BOOST_CHECK(length == strlen(output.get()))
+    TESTING_CHECK(length == strlen(output.get()))
 
     // std::cout << "--- SOR ---\n" << output << "--- EOR ---\n";
 
-    BOOST_CHECK(0 == strcmp(gOutput, output.get()))
+    TESTING_CHECK(0 == strcmp(gOutput, output.get()))
 
     document->clear();
-    BOOST_CHECK(zsLib::XML::NodePtr() == document->getLastChild())
+    TESTING_CHECK(zsLib::XML::NodePtr() == document->getLastChild())
 
     {int i = 0; ++i;}
   }
@@ -2504,40 +2509,40 @@ public:
   void parserPosTestConst(const zsLib::XML::ParserPos &constPos)
   {
     zsLib::XML::ParserPos temp1(++constPos);
-    BOOST_CHECK(temp1.isString("OL"))
+    TESTING_CHECK(temp1.isString("OL"))
     zsLib::XML::ParserPos temp2(--constPos);
-    BOOST_CHECK(temp2.isString(" EOL"))
+    TESTING_CHECK(temp2.isString(" EOL"))
     size_t length1 = (size_t)(temp1 - temp2);
-    BOOST_CHECK(2 == length1)
+    TESTING_CHECK(2 == length1)
 
     // move the end to the EOF
     temp1.setEOF();
     length1 = (size_t)(temp1 - temp2);
-    BOOST_CHECK(strlen(" EOL") == length1)
+    TESTING_CHECK(strlen(" EOL") == length1)
 
-    BOOST_CHECK(0 == strcmp((CSTR)temp2, " EOL"))
+    TESTING_CHECK(0 == strcmp((CSTR)temp2, " EOL"))
 
     // reverse the positions
     zsLib::XML::ParserPos temp1a(temp2);
     zsLib::XML::ParserPos temp2a(temp1);
     size_t length1a = temp1a - temp2a;
-    BOOST_CHECK((-1*strlen(" EOL")) == length1a)
+    TESTING_CHECK((-1*strlen(" EOL")) == length1a)
 
     temp1a.setEOF();
     temp2a.setEOF();
     length1a = temp1a - temp2a;
-    BOOST_CHECK(0 == length1a)
-    BOOST_CHECK(NULL != ((CSTR)temp1a))
+    TESTING_CHECK(0 == length1a)
+    TESTING_CHECK(NULL != ((CSTR)temp1a))
     if (NULL != ((CSTR)temp1a))
     {
-      BOOST_CHECK(0 == strcmp((CSTR)temp1a, ""))
+      TESTING_CHECK(0 == strcmp((CSTR)temp1a, ""))
     }
 
     // cause it to go the physical
     --temp2a;
     ++temp2a;
     length1a = temp1a - temp2a;
-    BOOST_CHECK(0 == length1a)
+    TESTING_CHECK(0 == length1a)
   }
 
   void parserPosTest()
@@ -2551,88 +2556,88 @@ public:
 
     zsLib::XML::DocumentPtr document = parser->parse(gParse);
     zsLib::XML::ParserPos pos(parser, document);
-    BOOST_CHECK(pos.isSOF())
-    BOOST_CHECK(pos.isString("<test>"))
+    TESTING_CHECK(pos.isSOF())
+    TESTING_CHECK(pos.isString("<test>"))
 
     pos.setEOF();
-    BOOST_CHECK(pos.isEOF())
+    TESTING_CHECK(pos.isEOF())
 
     pos -= strlen("EOL");
-    BOOST_CHECK(pos.isString("EOL"))
+    TESTING_CHECK(pos.isString("EOL"))
     parserPosTestConst(pos);
 
     pos.setSOF();
-    BOOST_CHECK(pos.isSOF())
+    TESTING_CHECK(pos.isSOF())
 
     ++pos;
 
-    BOOST_CHECK(pos.isString("test>this"))
+    TESTING_CHECK(pos.isString("test>this"))
 
     --pos;
     --pos;   // try and force the pos to be before the start of the parse blob
 
     // that attempt should fail...
-    BOOST_CHECK(pos.isString("<test>"))
-    BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(1 == pos.mColumn)
+    TESTING_CHECK(pos.isString("<test>"))
+    TESTING_CHECK(1 == pos.mRow)
+    TESTING_CHECK(1 == pos.mColumn)
 
     // advance to EOL
     pos += (size_t)(strstr(gParse, "\r\n") - gParse);
-    BOOST_CHECK(pos.isString("\r\n"))
-    BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
+    TESTING_CHECK(pos.isString("\r\n"))
+    TESTING_CHECK(1 == pos.mRow)
+    TESTING_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
 
     // advance passed the \r which should force the column to 1
     ++pos;
-    BOOST_CHECK(pos.isString("\n"))
-    BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
+    TESTING_CHECK(pos.isString("\n"))
+    TESTING_CHECK(1 == pos.mRow)
+    TESTING_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
 
     ++pos;
-    BOOST_CHECK(pos.isString("whatever"))
-    BOOST_CHECK(2 == pos.mRow)
-    BOOST_CHECK(1 == pos.mColumn)
+    TESTING_CHECK(pos.isString("whatever"))
+    TESTING_CHECK(2 == pos.mRow)
+    TESTING_CHECK(1 == pos.mColumn)
 
     --pos;
-    BOOST_CHECK(pos.isString("\n"))
-    BOOST_CHECK(1 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
+    TESTING_CHECK(pos.isString("\n"))
+    TESTING_CHECK(1 == pos.mRow)
+    TESTING_CHECK(pos.mColumn == ((size_t)(strstr(gParse, "\r\n") - gParse))+1)
 
     ++pos;
     pos += strlen("whatever dude!");
-    BOOST_CHECK(pos.isString("\r"))
-    BOOST_CHECK(2 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((ULONG)strlen("whatever dude!")+1))
+    TESTING_CHECK(pos.isString("\r"))
+    TESTING_CHECK(2 == pos.mRow)
+    TESTING_CHECK(pos.mColumn == ((ULONG)strlen("whatever dude!")+1))
 
     ++pos;
-    BOOST_CHECK(pos.isString("WAS MAC EOL"))
-    BOOST_CHECK(3 == pos.mRow)
-    BOOST_CHECK(1 == pos.mColumn)
+    TESTING_CHECK(pos.isString("WAS MAC EOL"))
+    TESTING_CHECK(3 == pos.mRow)
+    TESTING_CHECK(1 == pos.mColumn)
 
     --pos;
-    BOOST_CHECK(pos.isString("\r"))
-    BOOST_CHECK(2 == pos.mRow)
-    BOOST_CHECK(pos.mColumn == ((ULONG)strlen("whatever dude!")+1))
+    TESTING_CHECK(pos.isString("\r"))
+    TESTING_CHECK(2 == pos.mRow)
+    TESTING_CHECK(pos.mColumn == ((ULONG)strlen("whatever dude!")+1))
 
     pos.setSOF();
     pos += 3;
     zsLib::XML::ParserPos pos2(pos - 2);
-    BOOST_CHECK(pos2.isString("test>this"))
+    TESTING_CHECK(pos2.isString("test>this"))
 
     zsLib::XML::ParserPos pos3(pos - strlen("es"));
-    BOOST_CHECK(pos3.isString("test>this"))
+    TESTING_CHECK(pos3.isString("test>this"))
 
     {int i = 0; ++i;}
   }
 };
 
-BOOST_AUTO_TEST_SUITE(zsLibXMLTest)
+TESTING_AUTO_TEST_SUITE(zsLibXMLTest)
 
-  BOOST_AUTO_TEST_CASE(TestXML)
+  TESTING_AUTO_TEST_CASE(TestXML)
   {
     if (ZSLIB_TEST_XML) {
       TestXML test;
     }
   }
 
-BOOST_AUTO_TEST_SUITE_END()
+TESTING_AUTO_TEST_SUITE_END()

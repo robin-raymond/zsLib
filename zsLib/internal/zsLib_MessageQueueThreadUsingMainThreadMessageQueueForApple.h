@@ -100,7 +100,7 @@ namespace zsLib
       CFRunLoopSourceRef mProcessMessageLoopSource;
       CFRunLoopSourceRef mMoreMessagesLoopSource;
 
-      volatile bool mIsShutdown;
+      std::atomic_bool mIsShutdown {};
     };
   }
 }

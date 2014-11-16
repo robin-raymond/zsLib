@@ -36,7 +36,6 @@
 
 #include <zsLib/Exception.h>
 #include <zsLib/Proxy.h>
-#include <boost/noncopyable.hpp>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -107,7 +106,7 @@ namespace zsLib
   {
     ZS_DECLARE_CLASS_PTR(SocketMonitor)
 
-    class Socket : public boost::noncopyable
+    class Socket : public noncopyable
     {
     protected:
       Socket() :

@@ -33,8 +33,11 @@
 #define ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 
 #include <limits.h>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <uuid/uuid.h>
 
-#include <zsLib/internal/boostTypes.h>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -142,8 +145,92 @@ namespace zsLib
 #endif //_LP64
 
   typedef PTRNUMBER USERPARAM;
-  typedef boost::uuids::uuid UUID;
+  namespace internal {
+    struct uuid_wrapper {
+      typedef uuid_t raw_uuid_type;
+      raw_uuid_type mUUID {};
 
+      typedef UCHAR * iterator;
+      typedef UCHAR const* const_iterator;
+
+      iterator begin() { return mUUID; }
+      const_iterator begin() const { return mUUID; }
+      iterator end() { return mUUID + sizeof(raw_uuid_type); }
+      const_iterator end() const { return mUUID + sizeof(raw_uuid_type); }
+
+      uuid_wrapper() {
+        uuid_clear(mUUID);
+      }
+
+      uuid_wrapper(const uuid_wrapper &op2) {
+        uuid_copy(mUUID, op2.mUUID);
+      }
+
+      int compare(const uuid_wrapper &op2) const {
+        return uuid_compare(mUUID, op2.mUUID);
+      }
+
+      bool operator!() const {
+        return !uuid_is_null(mUUID);
+      }
+
+      bool operator==(const uuid_wrapper &op2) const {
+        return 0 == (*this).compare(op2);
+      }
+
+      bool operator!=(const uuid_wrapper &op2) const {
+        return 0 != (*this).compare(op2);
+      }
+
+      bool operator<(const uuid_wrapper &op2) const {
+        return (*this).compare(op2) < 0;
+      }
+
+      bool operator>(const uuid_wrapper &op2) const {
+        return (*this).compare(op2) > 0;
+      }
+
+      bool operator<=(const uuid_wrapper &op2) const {
+        return !((*this).compare(op2) > 0);
+      }
+
+      bool operator>=(const uuid_wrapper &op2) const {
+        return !((*this).compare(op2) < 0);
+      }
+
+      uuid_wrapper &operator=(const uuid_wrapper &op2) {
+        uuid_copy(mUUID, op2.mUUID);
+        return *this;
+      }
+    };
+  }
+
+  typedef internal::uuid_wrapper UUID;
+
+  inline bool operator==(const UUID &op1, const UUID &op2) {
+    return 0 == op1.compare(op2);
+  }
+
+  inline bool operator!=(const UUID &op1, const UUID &op2) {
+    return 0 != op1.compare(op2);
+  }
+
+  inline bool operator<(const UUID &op1, const UUID &op2) {
+    return op1.compare(op2) < 0;
+  }
+
+  inline bool operator>(const UUID &op1, const UUID &op2) {
+    return op1.compare(op2) > 0;
+  }
+
+  inline bool operator<=(const UUID &op1, const UUID &op2) {
+    return !(op1.compare(op2) > 0);
+  }
+
+  inline bool operator>=(const UUID &op1, const UUID &op2) {
+    return !(op1.compare(op2) < 0);
+  }
+  
   typedef char CHAR;
   typedef wchar_t WCHAR;
 
@@ -202,6 +289,22 @@ namespace zsLib
 #endif //__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 
 #endif //__ORDER_BIG_ENDIAN__
+
+  namespace internal
+  {
+    class noncopyable {
+    private:
+      noncopyable(const noncopyable &) = delete;
+      noncopyable &operator=(const noncopyable &) = delete;
+    protected:
+      noncopyable() {}
+    public:
+      ~noncopyable() {}
+    };
+  }
+
+  typedef internal::noncopyable noncopyable;
+
 }
 
 #endif //ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de

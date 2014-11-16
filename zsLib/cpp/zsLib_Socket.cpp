@@ -37,6 +37,7 @@
 
 #include <fcntl.h>
 #include <signal.h>
+#include <unistd.h>
 
 #pragma warning(push)
 #pragma warning(disable:4290)
@@ -63,36 +64,49 @@ namespace zsLib
 
   namespace internal
   {
-#ifdef __QNX__
-    static pthread_once_t ignoreSigTermKeyOnce = PTHREAD_ONCE_INIT;
-    static pthread_key_t ignoreSigTermKey;
+#if defined(__QNX__) || defined(__APPLE__)
+    //-------------------------------------------------------------------------
+    static pthread_once_t &getIgnoreSigTermKeyOnce()
+    {
+      static pthread_once_t ignoreSigTermKeyOnce = PTHREAD_ONCE_INIT;
+      return ignoreSigTermKeyOnce;
+    }
 
-    void ignoreSigTermKeyDestructor(void* value) {
+    //-------------------------------------------------------------------------
+    static pthread_key_t &getIgnoreSigTermKey()
+    {
+      static pthread_key_t ignoreSigTermKey {};
+      return ignoreSigTermKey;
+    }
+
+    //-------------------------------------------------------------------------
+    static void ignoreSigTermKeyDestructor(void* value) {
       delete (bool*) value;
-      pthread_setspecific(ignoreSigTermKey, NULL);
+      pthread_setspecific(getIgnoreSigTermKey(), NULL);
     }
 
-    void makeIgnoreSigTermKeyOnce() {
-      pthread_key_create(&ignoreSigTermKey, ignoreSigTermKeyDestructor);
+    //-------------------------------------------------------------------------
+    static void makeIgnoreSigTermKeyOnce() {
+      pthread_key_create(&(getIgnoreSigTermKey()), ignoreSigTermKeyDestructor);
     }
-
-#else
-    static boost::thread_specific_ptr<bool> threadLocalData;
-#endif
+#endif //defined(__QNX__) || defined(__APPLE__)
 
     //-------------------------------------------------------------------------
     static void ignoreSigTermOnThread()
     {
-#ifdef __QNX__
-      pthread_once(&ignoreSigTermKeyOnce, makeIgnoreSigTermKeyOnce);
+#if defined(__QNX__) || defined(__APPLE__)
+      pthread_once(& (getIgnoreSigTermKeyOnce()), makeIgnoreSigTermKeyOnce);
 
-      if (!pthread_getspecific(ignoreSigTermKey)) {
-        pthread_setspecific(ignoreSigTermKey, new bool);
+      if (!pthread_getspecific(getIgnoreSigTermKey())) {
+        pthread_setspecific(getIgnoreSigTermKey(), new bool {});
 
 #else
-      if (!threadLocalData.get()) {
-        threadLocalData.reset(new bool);
-#endif
+      static thread_local bool alreadyIgnored {};
+
+      if (!alreadyIgnored) {
+        alreadyIgnored = true;
+
+#endif //__QNX__
         struct sigaction act;
         memset(&act, 0, sizeof(act));
 
@@ -102,11 +116,7 @@ namespace zsLib
         sigaction(SIGPIPE, &act, NULL);
       }
 
-#ifdef __QNX__
     }
-#else 
-    }
-#endif //_QNX__
 
 #ifdef _WIN32
     class SocketInit
