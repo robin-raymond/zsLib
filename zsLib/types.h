@@ -55,10 +55,9 @@ namespace zsLib
   typedef std::lock_guard<RecursiveLock> AutoRecursiveLock;
 
   typedef std::chrono::system_clock::time_point Time;
-  typedef std::chrono::duration<LONGLONG, std::micro > Duration;
-  typedef std::chrono::seconds Seconds;
-  typedef std::chrono::minutes Minutes;
   typedef std::chrono::hours Hours;
+  typedef std::chrono::minutes Minutes;
+  typedef std::chrono::seconds Seconds;
   typedef std::chrono::milliseconds Milliseconds;
   typedef std::chrono::microseconds Microseconds;
   typedef std::chrono::nanoseconds Nanoseconds;

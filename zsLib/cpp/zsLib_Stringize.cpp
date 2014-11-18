@@ -34,6 +34,8 @@
 #include <zsLib/IPAddress.h>
 #include <zsLib/helpers.h>
 
+#include <cmath>
+
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
@@ -74,33 +76,39 @@ namespace zsLib
     {
       if (Time() == value) return String();
 
-      Duration sinceEpoch = zsLib::timeSinceEpoch(value);
-      return durationToString(sinceEpoch);
+      Microseconds sinceEpoch = zsLib::timeSinceEpoch<Microseconds>(value);
+      Seconds asSeconds = toSeconds(sinceEpoch);
+
+      if (asSeconds < sinceEpoch) {
+        return durationToString<Microseconds>(sinceEpoch);
+      }
+
+      return std::to_string(asSeconds.count());
     }
 
     //-----------------------------------------------------------------------
-    String durationToString(const Duration &value)
+    String durationToString(
+                            const Seconds &secPart,
+                            std::intmax_t fractionalPart,
+                            std::intmax_t den
+                            )
     {
-      if (Duration() == value) return String();
 
-      Duration justSeconds = std::chrono::duration_cast<Seconds>(value);
-
-      Duration remaining = value - justSeconds;
-
-      UINT microSeconds = static_cast<UINT>(std::chrono::duration_cast<Microseconds>(remaining).count());
-
-      String result = string(std::chrono::duration_cast<Seconds>(value).count());
-
-      if (0 == microSeconds) return result;
+      if (den < 1) {
+        return string(secPart.count());
+      }
 
       char buffer[100] {};
+      char format[50] {};
 
-      snprintf(buffer, sizeof(buffer) / sizeof(char), "%06u", microSeconds);
+      std::intmax_t secValue = static_cast<std::intmax_t>(secPart.count());
 
-      result += ".";
-      result += buffer;
+      int digits = static_cast<int>(log10(den));
 
-      return result;
+      snprintf(format, sizeof(format)-1, "%%lli.%%0%illi", digits);
+      snprintf(buffer, sizeof(buffer)-1, format, (long long)secValue, (long long)fractionalPart);
+
+      return buffer;
     }
 
     //-----------------------------------------------------------------------

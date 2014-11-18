@@ -47,7 +47,6 @@ namespace zsLib
     bool convert(const String &input, double &outResult, bool ignoreWhiteSpace);
     bool convert(const String &input, UUID &outResult, bool ignoreWhiteSpace);
     bool convert(const String &input, Time &outResult, bool ignoreWhiteSpace);
-    bool convert(const String &input, Duration &outResult, bool ignoreWhiteSpace);
   }
 }
 
@@ -76,7 +75,19 @@ namespace zsLib
   void Numeric<Time>::get(Time &outValue) const throw (ValueOutOfRange);
 
   template<>
-  void Numeric<Duration>::get(Duration &outValue) const throw (ValueOutOfRange);
+  void Numeric<Hours>::get(Hours &outValue) const throw (ValueOutOfRange);
+
+  template<>
+  void Numeric<Seconds>::get(Seconds &outValue) const throw (ValueOutOfRange);
+
+  template<>
+  void Numeric<Milliseconds>::get(Milliseconds &outValue) const throw (ValueOutOfRange);
+
+  template<>
+  void Numeric<Microseconds>::get(Microseconds &outValue) const throw (ValueOutOfRange);
+
+  template<>
+  void Numeric<Nanoseconds>::get(Nanoseconds &outValue) const throw (ValueOutOfRange);
 }
 
 #pragma warning(pop)

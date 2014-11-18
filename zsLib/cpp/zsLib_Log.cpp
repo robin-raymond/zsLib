@@ -467,47 +467,57 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, const Duration &value)
+  Log::Param::Param(const char *name, const Hours &value)
   {
-    if (Duration() == value) return;
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    if (name) {
-      if (strstr(name, "(ms)")) {
-        Param tmp(name, std::chrono::duration_cast<Milliseconds>(value).count());
-        mParam = tmp.mParam;
-        return;
-      }
-      if (strstr(name, "(s)")) {
-        Param tmp(name, std::chrono::duration_cast<Seconds>(value).count());
-        mParam = tmp.mParam;
-        return;
-      }
-      if (strstr(name, "(seconds)")) {
-        Param tmp(name, std::chrono::duration_cast<Seconds>(value).count());
-        mParam = tmp.mParam;
-        return;
-      }
-    }
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Minutes &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    Duration extract = value;
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Seconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    Hours hours = std::chrono::duration_cast<Hours>(extract);
-    extract -= hours;
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Milliseconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    Minutes mins = std::chrono::duration_cast<Minutes>(extract);
-    extract -= mins;
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Microseconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    Seconds seconds = std::chrono::duration_cast<Seconds>(extract);
-    extract -= seconds;
-
-    Microseconds micro = std::chrono::duration_cast<Microseconds>(extract);
-
-    char buffer[100] {};
-
-    snprintf(buffer, sizeof(buffer) / sizeof(char), "%02u:%02u:%02u.%06u", ((unsigned int)hours.count()), ((unsigned int)mins.count()), ((unsigned int)seconds.count()), ((unsigned int)micro.count()));
-
-    Param tmp(name, (CSTR) buffer);
-    mParam = tmp.mParam;
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Nanoseconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
   }
 
   //---------------------------------------------------------------------------

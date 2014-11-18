@@ -49,8 +49,64 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Time now();
 
-  Duration timeSinceEpoch(Time time);
-  Time timeSinceEpoch(Duration duration);
+  Time epoch();
+
+  template <typename duration_type>
+  inline duration_type timeSinceEpoch(Time time)
+  {
+    if (Time() == time) return duration_type();
+
+    return std::chrono::duration_cast<duration_type>(time - zsLib::epoch());
+  }
+
+  template <typename duration_type>
+  inline Time timeSinceEpoch(duration_type duration)
+  {
+    if (0 == time) return Time();
+    return zsLib::epoch() + duration;
+  }
+
+  inline Hours toHours(const Hours &v) {return v;}
+  inline Hours toHours(const Minutes &v) {return std::chrono::duration_cast<Hours>(v);}
+  inline Hours toHours(const Seconds &v) {return std::chrono::duration_cast<Hours>(v);}
+  inline Hours toHours(const Milliseconds &v) {return std::chrono::duration_cast<Hours>(v);}
+  inline Hours toHours(const Microseconds &v) {return std::chrono::duration_cast<Hours>(v);}
+  inline Hours toHours(const Nanoseconds &v) {return std::chrono::duration_cast<Hours>(v);}
+
+  inline Minutes toMinutes(const Hours &v) {return std::chrono::duration_cast<Minutes>(v);}
+  inline Minutes toMinutes(const Minutes &v) {return v;}
+  inline Minutes toMinutes(const Seconds &v) {return std::chrono::duration_cast<Minutes>(v);}
+  inline Minutes toMinutes(const Milliseconds &v) {return std::chrono::duration_cast<Minutes>(v);}
+  inline Minutes toMinutes(const Microseconds &v) {return std::chrono::duration_cast<Minutes>(v);}
+  inline Minutes toMinutes(const Nanoseconds &v) {return std::chrono::duration_cast<Minutes>(v);}
+
+  inline Seconds toSeconds(const Hours &v) {return std::chrono::duration_cast<Seconds>(v);}
+  inline Seconds toSeconds(const Minutes &v) {return std::chrono::duration_cast<Seconds>(v);}
+  inline Seconds toSeconds(const Seconds &v) {return v;}
+  inline Seconds toSeconds(const Milliseconds &v) {return std::chrono::duration_cast<Seconds>(v);}
+  inline Seconds toSeconds(const Microseconds &v) {return std::chrono::duration_cast<Seconds>(v);}
+  inline Seconds toSeconds(const Nanoseconds &v) {return std::chrono::duration_cast<Seconds>(v);}
+
+  inline Milliseconds toMilliseconds(const Hours &v) {return std::chrono::duration_cast<Milliseconds>(v);}
+  inline Milliseconds toMilliseconds(const Minutes &v) {return std::chrono::duration_cast<Milliseconds>(v);}
+  inline Milliseconds toMilliseconds(const Seconds &v) {return std::chrono::duration_cast<Milliseconds>(v);}
+  inline Milliseconds toMilliseconds(const Milliseconds &v) {return v;}
+  inline Milliseconds toMilliseconds(const Microseconds &v) {return std::chrono::duration_cast<Milliseconds>(v);}
+  inline Milliseconds toMilliseconds(const Nanoseconds &v) {return std::chrono::duration_cast<Milliseconds>(v);}
+
+  inline Microseconds toMicroseconds(const Hours &v) {return std::chrono::duration_cast<Microseconds>(v);}
+  inline Microseconds toMicroseconds(const Minutes &v) {return std::chrono::duration_cast<Microseconds>(v);}
+  inline Microseconds toMicroseconds(const Seconds &v) {return std::chrono::duration_cast<Microseconds>(v);}
+  inline Microseconds toMicroseconds(const Milliseconds &v) {return std::chrono::duration_cast<Microseconds>(v);}
+  inline Microseconds toMicroseconds(const Microseconds &v) {return v;}
+  inline Microseconds toMicroseconds(const Nanoseconds &v) {return std::chrono::duration_cast<Microseconds>(v);}
+
+  inline Nanoseconds toNanoseconds(const Hours &v) {return std::chrono::duration_cast<Nanoseconds>(v);}
+  inline Nanoseconds toNanoseconds(const Minutes &v) {return std::chrono::duration_cast<Nanoseconds>(v);}
+  inline Nanoseconds toNanoseconds(const Seconds &v) {return std::chrono::duration_cast<Nanoseconds>(v);}
+  inline Nanoseconds toNanoseconds(const Milliseconds &v) {return std::chrono::duration_cast<Nanoseconds>(v);}
+  inline Nanoseconds toNanoseconds(const Microseconds &v) {return std::chrono::duration_cast<Nanoseconds>(v);}
+  inline Nanoseconds toNanoseconds(const Nanoseconds &v) {return v;}
 
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------

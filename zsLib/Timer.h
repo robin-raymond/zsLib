@@ -46,7 +46,7 @@ namespace zsLib
   class Timer : public internal::Timer
   {
   private:
-    Timer(ITimerDelegatePtr delegate, Duration timeout, bool repeat, UINT maxFiringTimerAtOnce);
+    Timer(ITimerDelegatePtr delegate, Microseconds timeout, bool repeat, UINT maxFiringTimerAtOnce);
   public:
 
     static void setMonitorPriority(ThreadPriorities priority);  // must be called before any timer is used
@@ -64,7 +64,7 @@ namespace zsLib
     //          with "maxFiringTimerAtOnce" to prevent timer wakeup floods.
     static TimerPtr create(
                            ITimerDelegatePtr delegate,
-                           Duration timeout,
+                           Microseconds timeout,
                            bool repeat = true,
                            UINT maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
                            );

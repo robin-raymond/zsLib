@@ -113,14 +113,103 @@ namespace zsLib
     outValue = result;
   }
 
-  template<>
-  void Numeric<Duration>::get(Duration &outValue) const throw (ValueOutOfRange)
+  template<class Converter>
+  void simpleDurationConvert(
+                             typename Converter::NumericType &outValue,
+                             const String &data,
+                             bool ignoreWhiteSpace,
+                             CSTR failureMessage
+                             ) throw (typename Converter::ValueOutOfRange)
   {
-    Duration result;
-    bool converted = internal::convert(mData, result, mIngoreWhitespace);
-    if (!converted)
-      ZS_THROW_CUSTOM(ValueOutOfRange, "Cannot convert value (Duration): " + mData)
-    outValue = result;
+    typedef typename Converter::ValueOutOfRange CustomValueOutOfRange;
+    typename Converter::NumericType::rep value = 0;
+
+    try {
+      value = Numeric<typename Converter::NumericType::rep>(data, ignoreWhiteSpace);
+    } catch(typename Numeric<typename Converter::NumericType::rep>::ValueOutOfRange &) {
+      ZS_THROW_CUSTOM(CustomValueOutOfRange, failureMessage + data)
+    }
+    outValue = typename Converter::NumericType(value);
+  }
+
+  template<>
+  void Numeric<Hours>::get(Hours &outValue) const throw (ValueOutOfRange)
+  {
+    simpleDurationConvert< Numeric<Hours> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Hours): ");
+  }
+
+  template<>
+  void Numeric<Minutes>::get(Minutes &outValue) const throw (ValueOutOfRange)
+  {
+    simpleDurationConvert< Numeric<Minutes> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Minutes): ");
+  }
+
+  template<>
+  void Numeric<Seconds>::get(Seconds &outValue) const throw (ValueOutOfRange)
+  {
+    simpleDurationConvert< Numeric<Seconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Seconds): ");
+  }
+
+  template<class Converter>
+  void fractionalDurationConvert(
+                                 typename Converter::NumericType &outValue,
+                                 const String &data,
+                                 bool ignoreWhiteSpace,
+                                 CSTR failureMessage
+                                 ) throw (typename Converter::ValueOutOfRange)
+  {
+    typedef typename Converter::ValueOutOfRange CustomValueOutOfRange;
+
+    typename Converter::NumericType::rep value = 0;
+
+    String temp = data;
+    if (ignoreWhiteSpace) {
+      temp.trim();
+    }
+
+    size_t requiredDigits = static_cast<size_t>(log10(Converter::NumericType::period::den));
+
+    std::size_t found = data.find('.');
+
+    String fractional;
+
+    if (std::string::npos != found) {
+      fractional = temp.substr(found+1);
+      temp.erase(found);
+    }
+
+    if (fractional.length() < requiredDigits) {
+      fractional += std::string(requiredDigits - fractional.length(), '0');
+    } else if (fractional.length() > requiredDigits) {
+      fractional.erase(requiredDigits);
+    }
+
+    temp += fractional;
+
+    try {
+      value = Numeric<typename Converter::NumericType::rep>(temp, false);
+    } catch(typename Numeric<typename Converter::NumericType::rep>::ValueOutOfRange &) {
+      ZS_THROW_CUSTOM(CustomValueOutOfRange, failureMessage + data)
+    }
+    outValue = typename Converter::NumericType(value);
+  }
+
+  template<>
+  void Numeric<Milliseconds>::get(Milliseconds &outValue) const throw (ValueOutOfRange)
+  {
+    fractionalDurationConvert< Numeric<Milliseconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Milliseconds): ");
+  }
+
+  template<>
+  void Numeric<Microseconds>::get(Microseconds &outValue) const throw (ValueOutOfRange)
+  {
+    fractionalDurationConvert< Numeric<Microseconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Microseconds): ");
+  }
+
+  template<>
+  void Numeric<Nanoseconds>::get(Nanoseconds &outValue) const throw (ValueOutOfRange)
+  {
+    fractionalDurationConvert< Numeric<Nanoseconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Nanoseconds): ");
   }
 
   // force templates to be generated for these types
@@ -461,51 +550,6 @@ namespace zsLib
       return true;
     }
 
-    bool convert(const String &input, Duration &outResult, bool ignoreWhiteSpace)
-    {
-      outResult = Duration();
-
-      String temp = input;
-      if (ignoreWhiteSpace)
-        temp.trim();
-
-      String more;
-
-      std::size_t posMore = temp.find('.');
-
-      if (std::string::npos != posMore) {
-        more = temp.substr(posMore+1);
-        temp.erase(posMore);
-      }
-
-      try {
-        zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
-        outResult = zsLib::Seconds(seconds);
-      } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
-        return false;
-      }
-
-      if (more.hasData()) {
-        String fractionStr("0.");
-        fractionStr += more;
-
-        double x {};
-
-        try {
-          x = std::stod(fractionStr);
-        } catch(...) {
-          return false;
-        }
-
-        x = x * 1000000;
-
-        std::chrono::microseconds fraction(static_cast<unsigned long>(round(x)));
-        
-        outResult += fraction;
-      }
-      
-      return true;
-    }
   }
 }
 

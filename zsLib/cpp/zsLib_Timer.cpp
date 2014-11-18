@@ -42,7 +42,7 @@ namespace zsLib
   namespace internal
   {
     //-------------------------------------------------------------------------
-    bool Timer::tick(const Time &time, Duration &sleepTime)
+    bool Timer::tick(const Time &time, Microseconds &sleepTime)
     {
       AutoRecursiveLock lock(mLock);
       bool fired = false;
@@ -77,7 +77,7 @@ namespace zsLib
       }
 
       if (!mOnceOnly) {
-        Duration diff = mFireNextAt - time;
+        Microseconds diff = mFireNextAt - time;
         if (diff < sleepTime)
           sleepTime = diff;
       }
@@ -97,7 +97,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Timer::Timer(
                ITimerDelegatePtr delegate,
-               Duration timeout,
+               Microseconds timeout,
                bool repeat,
                UINT maxFiringsAtOnce
                )
@@ -130,7 +130,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   TimerPtr Timer::create(
                          ITimerDelegatePtr delegate,
-                         Duration timeout,
+                         Microseconds timeout,
                          bool repeat,
                          UINT maxFiringTimerAtOnce
                          )

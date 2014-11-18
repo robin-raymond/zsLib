@@ -45,7 +45,7 @@ namespace zsLib
     {
       friend class zsLib::Timer;
     public:
-      bool tick(const Time &time, Duration &sleepTime);  // returns true if should expire the timer
+      bool tick(const Time &time, Microseconds &sleepTime);  // returns true if should expire the timer
       PUID getID() const {return mID;}
 
     protected:
@@ -57,7 +57,7 @@ namespace zsLib
 
       UINT mMaxFiringsAtOnce;
       Time mFireNextAt;
-      Duration mTimeout;
+      Microseconds mTimeout;
       bool mOnceOnly;
       bool mMonitored;
     };

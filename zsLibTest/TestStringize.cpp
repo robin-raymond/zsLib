@@ -89,33 +89,47 @@ TESTING_AUTO_TEST_SUITE(zsLibStringize)
     TESTING_EQUAL(IPAddress("192.168.1.10:5060").string(), string(IPAddress("192.168.1.10:5060")))
 
     {
-      zsLib::Duration duration;
+      zsLib::Hours duration;
+      duration = zsLib::Hours(5);
+      zsLib::ULONG hours = 5;
+      zsLib::String result = zsLib::string(hours);
+
+      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Hours>(duration).string());
+      TESTING_EQUAL(result, zsLib::string(duration));
+    }
+
+    {
+      zsLib::Seconds duration;
       duration = zsLib::Hours(5) + zsLib::Minutes(1) + zsLib::Seconds(44);
       zsLib::ULONG seconds = (5*60*60) + (1*60) + 44;
       zsLib::String result = zsLib::string(seconds);
 
-      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Duration>(duration).string());
+      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Seconds>(duration).string());
+      TESTING_EQUAL(result, zsLib::string(duration));
     }
 
     {
-      zsLib::Duration duration;
+      zsLib::Microseconds duration;
       duration = zsLib::Hours(75) + zsLib::Minutes(47) + zsLib::Seconds(3) + zsLib::Milliseconds(453) + zsLib::Microseconds(912);
       zsLib::ULONG seconds = (75*60*60) + (47*60) + 3;
       zsLib::ULONG micro = (453 * 1000) + 912;
       zsLib::String result = zsLib::string(seconds) + "." + zsLib::string(micro);
 
-      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Duration>(duration).string());
-      TESTING_EQUAL(result, zsLib::string(duration));
+      zsLib::String result2 = zsLib::Stringize<zsLib::Microseconds>(duration).string();
+      zsLib::String result3 = zsLib::string(duration);
+
+      TESTING_EQUAL(result, result2);
+      TESTING_EQUAL(result, result3);
     }
 
     {
-      zsLib::Duration duration;
+      zsLib::Microseconds duration;
       duration = zsLib::Hours(75) + zsLib::Minutes(47) + zsLib::Seconds(3) + zsLib::Milliseconds(53) + zsLib::Microseconds(2);
       zsLib::ULONG seconds = (75*60*60) + (47*60) + 3;
       zsLib::ULONG micro = (53 * 1000) + 2;
       zsLib::String result = zsLib::string(seconds) + ".0" + zsLib::string(micro);
 
-      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Duration>(duration).string());
+      TESTING_EQUAL(result, zsLib::Stringize<zsLib::Microseconds>(duration).string());
       TESTING_EQUAL(result, zsLib::string(duration));
     }
   }

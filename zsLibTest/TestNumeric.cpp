@@ -144,33 +144,103 @@ TESTING_AUTO_TEST_SUITE(zsLibNumeric)
     { bool thrown = false; try { auto val = (LONGLONG)zsLib::Numeric<LONGLONG>("9223372036854775808"); (void)val; } catch(zsLib::Numeric<LONGLONG>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
     { bool thrown = false; try { auto val = (LONGLONG)zsLib::Numeric<LONGLONG>("-9223372036854775809"); (void)val; } catch(zsLib::Numeric<LONGLONG>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
+    {
+      zsLib::String durStr = "10";
+      zsLib::Hours result = zsLib::Numeric<zsLib::Hours>(durStr);
+
+      zsLib::String full = zsLib::string(result);
+
+      TESTING_EQUAL(full, "10");
+    }
+
+    {
+      zsLib::String durStr = "123";
+      zsLib::Minutes result = zsLib::Numeric<zsLib::Minutes>(durStr);
+
+      zsLib::String full = zsLib::string(result);
+
+      TESTING_EQUAL(full, "123");
+    }
+
+    {
+      zsLib::String durStr = "99";
+      zsLib::Seconds result = zsLib::Numeric<zsLib::Seconds>(durStr);
+
+      zsLib::String full = zsLib::string(result);
+
+      TESTING_EQUAL(full, "99");
+    }
+
+    {
+      zsLib::String durStr = "45.67";
+      zsLib::Milliseconds result = zsLib::Numeric<zsLib::Milliseconds>(durStr);
+
+      zsLib::String full = zsLib::string(result);
+
+      TESTING_EQUAL(full, "45.670");
+    }
+    
+    {
+      zsLib::String durStr = "45.6789";
+      zsLib::Milliseconds result = zsLib::Numeric<zsLib::Milliseconds>(durStr);
+
+      zsLib::String full = zsLib::string(result);
+
+      TESTING_EQUAL(full, "45.678");
+    }
+
+    {
+      zsLib::String durStr = "45.6789";
+      zsLib::Microseconds result = zsLib::Numeric<zsLib::Microseconds>(durStr);
+
+      zsLib::String full = zsLib::string(result);
+
+      TESTING_EQUAL(full, "45.678900");
+    }
+
+    {
+      zsLib::String timeStr = "1970-01-01 00:00:05.000";
+      zsLib::Time result = zsLib::Numeric<zsLib::Time>(timeStr);
+
+      zsLib::Microseconds sinceEpoch = zsLib::timeSinceEpoch<zsLib::Microseconds>(result);
+
+      zsLib::String full = zsLib::string(result);
+
+      zsLib::Microseconds fromStr = zsLib::Numeric<zsLib::Microseconds>(full);
+
+      TESTING_EQUAL(zsLib::string(result), "5");
+      TESTING_EQUAL(full, "5");
+      TESTING_EQUAL(zsLib::string(sinceEpoch), "5.000000");
+      TESTING_EQUAL(zsLib::string(sinceEpoch), zsLib::string(fromStr));
+    }
 
     {
       zsLib::String timeStr = "1970-01-01 00:00:01.400";
       zsLib::Time result = zsLib::Numeric<zsLib::Time>(timeStr);
 
-      zsLib::Duration sinceEpoch = zsLib::timeSinceEpoch(result);
+      zsLib::Microseconds sinceEpoch = zsLib::timeSinceEpoch<zsLib::Microseconds>(result);
 
       zsLib::String full = zsLib::string(result);
 
-      zsLib::Duration fromStr = zsLib::Numeric<zsLib::Duration>(full);
+      zsLib::Microseconds fromStr = zsLib::Numeric<zsLib::Microseconds>(full);
 
       TESTING_EQUAL(full, "1.400000");
       TESTING_EQUAL(zsLib::string(sinceEpoch), "1.400000");
       TESTING_EQUAL(full, zsLib::string(fromStr));
     }
+
     {
       zsLib::String timeStr = "1970-01-01 05:32:59.455121";
       zsLib::ULONG seconds = (5*60*60)+(32*60)+59;
       zsLib::Time result = zsLib::Numeric<zsLib::Time>(timeStr);
 
-      zsLib::Duration sinceEpoch = zsLib::timeSinceEpoch(result);
+      zsLib::Microseconds sinceEpoch = zsLib::timeSinceEpoch<zsLib::Microseconds>(result);
       zsLib::Time convertedBack = zsLib::timeSinceEpoch(sinceEpoch);
 
       zsLib::String part1 = zsLib::string(seconds);
       zsLib::String full = part1 + ".455121";
 
-      zsLib::Duration fromStr = zsLib::Numeric<zsLib::Duration>(full);
+      zsLib::Microseconds fromStr = zsLib::Numeric<zsLib::Microseconds>(full);
 
       TESTING_EQUAL(zsLib::string(result), full);
       TESTING_EQUAL(zsLib::string(sinceEpoch), full);
@@ -180,12 +250,12 @@ TESTING_AUTO_TEST_SUITE(zsLibNumeric)
 
     {
       zsLib::Time result = zsLib::now();
-      zsLib::Duration sinceEpoch = zsLib::timeSinceEpoch(result);
-      zsLib::Time convertedBack = zsLib::timeSinceEpoch(sinceEpoch);
+      zsLib::Microseconds sinceEpoch = zsLib::timeSinceEpoch<zsLib::Microseconds>(result);
+      zsLib::Time convertedBack = zsLib::timeSinceEpoch<zsLib::Microseconds>(sinceEpoch);
 
       zsLib::String full = zsLib::string(result);
 
-      zsLib::Duration fromStr1 = zsLib::Numeric<zsLib::Duration>(full);
+      zsLib::Microseconds fromStr1 = zsLib::Numeric<zsLib::Microseconds>(full);
       zsLib::Time fromStr2 = zsLib::Numeric<zsLib::Time>(full);
 
       TESTING_EQUAL(zsLib::string(sinceEpoch), zsLib::string(convertedBack));

@@ -47,6 +47,8 @@ namespace zsLib
   public:
     ZS_DECLARE_CUSTOM_EXCEPTION(ValueOutOfRange)
 
+    typedef t_type NumericType;
+
   public:
     Numeric(bool ignoreWhitespace = true, size_t base = 10) : mIngoreWhitespace(ignoreWhitespace), mBase(base)                                          {}
     Numeric(CSTR value, bool ignoreWhitespace = true, size_t base = 10) : mData(value), mIngoreWhitespace(ignoreWhitespace), mBase(base)                {}

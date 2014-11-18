@@ -169,7 +169,7 @@ namespace zsLib
 
       do
       {
-        Duration duration;
+        Microseconds duration;
         // wait completed, do notifications from select
         {
           AutoRecursiveLock lock(mLock);
@@ -308,13 +308,13 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    Duration TimerMonitor::fireTimers()
+    Microseconds TimerMonitor::fireTimers()
     {
       AutoRecursiveLock lock(mLock);
 
       Time time = std::chrono::system_clock::now();
 
-      Duration duration = Seconds(1);
+      Microseconds duration = Seconds(1);
 
       for (TimerMap::iterator monIter = mMonitoredTimers.begin(); monIter != mMonitoredTimers.end(); )
       {

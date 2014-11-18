@@ -34,6 +34,7 @@
 
 #include <uuid/uuid.h>
 
+#include <zsLib/helpers.h>
 #include <zsLib/types.h>
 #include <zsLib/String.h>
 
@@ -44,7 +45,25 @@ namespace zsLib
     String convert(ULONGLONG value, size_t base);
 
     String timeToString(const Time &value);
-    String durationToString(const Duration &value);
+
+    String durationToString(
+                            const Seconds &secPart,
+                            std::intmax_t fractionalPart,
+                            std::intmax_t den
+                            );
+
+    template <typename duration_type>
+    String durationToString(const duration_type &value)
+    {
+      Seconds seconds = toSeconds(value);
+      duration_type remainder = value - std::chrono::duration_cast<duration_type>(seconds);
+
+      if (duration_type::period::den > duration_type::period::num) {
+        return durationToString(seconds, remainder.count(), duration_type::period::den);
+      }
+
+      return std::to_string(value.count());
+    }
 
     void trimTrailingZeros(std::string &value);
   }
@@ -188,9 +207,39 @@ namespace zsLib
   }
 
   template<>
-  inline Stringize<Duration>::operator String() const
+  inline Stringize<Hours>::operator String() const
   {
-    return internal::durationToString(mValue);
+    return internal::durationToString<Hours>(mValue);
+  }
+
+  template<>
+  inline Stringize<Minutes>::operator String() const
+  {
+    return internal::durationToString<Minutes>(mValue);
+  }
+
+  template<>
+  inline Stringize<Seconds>::operator String() const
+  {
+    return internal::durationToString<Seconds>(mValue);
+  }
+
+  template<>
+  inline Stringize<Milliseconds>::operator String() const
+  {
+    return internal::durationToString<Milliseconds>(mValue);
+  }
+
+  template<>
+  inline Stringize<Microseconds>::operator String() const
+  {
+    return internal::durationToString<Microseconds>(mValue);
+  }
+
+  template<>
+  inline Stringize<Nanoseconds>::operator String() const
+  {
+    return internal::durationToString<Nanoseconds>(mValue);
   }
 
 }

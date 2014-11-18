@@ -159,7 +159,12 @@ namespace zsLib
       Param(const char *name, FLOAT value);
       Param(const char *name, DOUBLE value);
       Param(const char *name, const Time &value);
-      Param(const char *name, const Duration &value);
+      Param(const char *name, const Hours &value);
+      Param(const char *name, const Minutes &value);
+      Param(const char *name, const Seconds &value);
+      Param(const char *name, const Milliseconds &value);
+      Param(const char *name, const Microseconds &value);
+      Param(const char *name, const Nanoseconds &value);
 
       const XML::ElementPtr &param() const;
 

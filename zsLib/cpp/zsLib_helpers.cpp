@@ -117,21 +117,8 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Duration timeSinceEpoch(Time time)
+  Time epoch()
   {
-    if (Time() == time) {
-      return Duration();
-    }
-
-    return (time - internal::EpochHelper::epoch());
-  }
-
-  //---------------------------------------------------------------------------
-  Time timeSinceEpoch(Duration duration)
-  {
-    if (0 == time) {
-      return Time();
-    }
-    return internal::EpochHelper::epoch() + duration;
+    return internal::EpochHelper::epoch();
   }
 }

@@ -84,7 +84,7 @@ namespace zsLib
 
       void cancel();
 
-      Duration fireTimers();
+      Microseconds fireTimers();
       void wakeUp();
 
     private:
