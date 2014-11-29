@@ -96,6 +96,9 @@ namespace zsLib
   typedef WSTR ZsDeclareWSTR;
   typedef CWSTR ZsDeclareCWSTR;
 
+  typedef LONGEST zsDeclareLONGEST;
+  typedef ULONGEST zsDeclareULONGEST;
+
   class PrivateGlobalLock;
 
   ZS_DECLARE_CLASS_PTR(Event)

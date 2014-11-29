@@ -100,6 +100,9 @@ namespace zsLib
   typedef long long LONGLONG;
   typedef unsigned long long ULONGLONG;
 
+  typedef std::intmax_t LONGEST;
+  typedef std::uintmax_t ULONGEST;
+
   typedef float FLOAT;
   typedef double DOUBLE;
 
