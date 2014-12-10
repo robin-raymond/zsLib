@@ -31,20 +31,19 @@ if [[ $1 == *ndk* ]]; then
 	Input=$1;
 else
 	echo "Please enter your android ndk path:"
-	echo "For example:/home/astro/android-ndk-r8e"
+	echo "For example:/home/astro/android-ndk-r10c"
 	read Input
 	echo "You entered:$Input"
 fi
 
 #Set path
 echo "----------------- Exporting the android-ndk path ----------------"
-export PATH=$PATH:$Input:$Input/toolchains/arm-linux-androideabi-4.7/prebuilt/$HOST_OS-$ARCHTYPE/bin
+#export PATH=$PATH:$Input:$Input/toolchains/llvm-3.5/prebuilt/$HOST_OS-$ARCHTYPE/bin
 
 #create install directories
 mkdir -p ./../../../build
 mkdir -p ./../../../build/android
 
-echo "----------- Building boost 1.53.0 for ANDROID platform -----------------"
 
 #zsLib module build
 echo "------------------- Building zsLib for ANDROID platform ---------------"
@@ -54,7 +53,8 @@ mkdir -p ./../../../build/android/zsLib
 #rm -rf ./obj/*
 export ANDROIDNDK_PATH=$Input
 export NDK_PROJECT_PATH=`pwd`
-ndk-build  NDK_DEBUG=1 APP_PLATFORM=android-9
+
+ndk-build  NDK_DEBUG=1 APP_PLATFORM=android-19
 popd
 
 echo "-------- Installing zsLib libs -----"
