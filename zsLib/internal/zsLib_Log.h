@@ -110,6 +110,14 @@ namespace zsLib
 #define ZS_INTERNAL_LOG_TRACE(xMsg)                                     ZS_INTERNAL_LOG_SUBSYSTEM_TRACE(ZS_GET_SUBSYSTEM(), xMsg)
 #define ZS_INTERNAL_LOG_INSANE(xMsg)                                    ZS_INTERNAL_LOG_SUBSYSTEM_INSANE(ZS_GET_SUBSYSTEM(), xMsg)
 
+#define ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, xLevel, xMsg)          if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log(ZS_GET_SUBSYSTEM(), xSeverity, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
+
+#define ZS_INTERNAL_LOG_BASIC_WITH_SEVERITY(xSeverity, xMsg)            ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Basic, xMsg)
+#define ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)           ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Detail, xMsg)
+#define ZS_INTERNAL_LOG_DEBUG_WITH_SEVERITY(xSeverity, xMsg)            ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Debug, xMsg)
+#define ZS_INTERNAL_LOG_TRACE_WITH_SEVERITY(xSeverity, xMsg)            ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Trace, xMsg)
+#define ZS_INTERNAL_LOG_INSANE_WITH_SEVERITY(xSeverity, xMsg)           ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Insane, xMsg)
+
 #define ZS_INTERNAL_LOG_SUBSYSTEM(xSubsystem, xLevel, xMsg)             if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Informational, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
 #define ZS_INTERNAL_LOG_SUBSYSTEM_WARNING(xSubsystem, xLevel, xMsg)     if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Warning, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
 #define ZS_INTERNAL_LOG_SUBSYSTEM_ERROR(xSubsystem, xLevel, xMsg)       if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Error, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
