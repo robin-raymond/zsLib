@@ -33,6 +33,7 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
+#include <zsLib/String.h>
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -78,6 +79,78 @@ namespace zsLib
   #pragma mark
   #pragma mark Log
   #pragma mark
+
+  namespace internal
+  {
+    String Log::paramize(const char *name)
+    {
+      if (!name) return String();
+
+      auto orignalLength = strlen(name);
+      auto maxLength = orignalLength * 2;
+
+      char buffer[256] {};
+      char *useBuffer = &(buffer[0]);
+
+      char *allocatedBuffer = NULL;
+
+      if (maxLength >= sizeof(buffer)) {
+        allocatedBuffer = new char[maxLength+1] {};
+        useBuffer = allocatedBuffer;
+      }
+
+      bool lastWasSpace = true;
+      bool lastWasUpper = true;
+
+      const char *source = name;
+      char *dest = useBuffer;
+
+      while (*source) {
+        char gliph = *source;
+
+        if (!isalnum(gliph)) {
+          if (lastWasSpace) continue;
+          *dest = ' ';
+          ++dest;
+          ++source;
+
+          lastWasSpace = true;
+          continue;
+        }
+
+        if (isupper(gliph)) {
+          if (!lastWasUpper) {
+            if (!lastWasSpace) {
+              *dest = ' ';
+              ++dest;
+            }
+          }
+
+          *dest = tolower(gliph);
+          ++dest;
+          ++source;
+
+          lastWasSpace = false;
+          lastWasUpper = true;
+          continue;
+        }
+
+        lastWasUpper = false;
+        lastWasSpace = false;
+
+        *dest = gliph;
+        ++dest;
+        ++source;
+      }
+
+      String result((const char *)useBuffer);
+
+      delete [] allocatedBuffer;
+      allocatedBuffer = NULL;
+
+      return result;
+    }
+  }
 
   //---------------------------------------------------------------------------
   const char *Log::toString(Severity severity)

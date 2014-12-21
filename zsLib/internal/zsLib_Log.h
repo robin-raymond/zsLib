@@ -49,6 +49,9 @@ namespace zsLib
   {
     class Log
     {
+    public:
+      static String paramize(const char *name);
+
     protected:
       RecursiveLock mLock;
       typedef std::list<ILogDelegatePtr> ListenerList;
@@ -88,6 +91,7 @@ namespace zsLib
 
 #define ZS_INTERNAL_LOG_PARAMS(xMsg)                                    (::zsLib::Log::Params(xMsg))
 #define ZS_INTERNAL_PARAM(xName, xValue)                                (::zsLib::Log::Param(xName, xValue))
+#define ZS_INTERNAL_PARAMIZE(xValueName)                                (::zsLib::Log::Param(::zsLib::internal::Log::paramize(#xValueName), xValueName))
 
 #define ZS_INTERNAL_FUNCTION_FILE_LINE                                  __FUNCTION__, __FILE__, __LINE__
 

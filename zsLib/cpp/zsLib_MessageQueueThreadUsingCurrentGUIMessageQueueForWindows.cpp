@@ -167,7 +167,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::process()
     {
-      mQueue->processOnlyOneMessage(); // process only one messsage at a time since this must be syncrhonized through the GUI message queue
+      mQueue->processOnlyOneMessage(); // process only one message at a time since this must be syncrhonized through the GUI message queue
     }
 
     //-------------------------------------------------------------------------
