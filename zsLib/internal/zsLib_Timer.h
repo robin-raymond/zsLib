@@ -57,7 +57,7 @@ namespace zsLib
 
       UINT mMaxFiringsAtOnce;
       Time mFireNextAt;
-      Microseconds mTimeout;
+      Microseconds mTimeout {};
       bool mOnceOnly;
       bool mMonitored;
     };

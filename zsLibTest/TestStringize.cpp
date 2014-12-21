@@ -89,7 +89,7 @@ TESTING_AUTO_TEST_SUITE(zsLibStringize)
     TESTING_EQUAL(IPAddress("192.168.1.10:5060").string(), string(IPAddress("192.168.1.10:5060")))
 
     {
-      zsLib::Hours duration;
+      zsLib::Hours duration {};
       duration = zsLib::Hours(5);
       zsLib::ULONG hours = 5;
       zsLib::String result = zsLib::string(hours);
@@ -99,7 +99,7 @@ TESTING_AUTO_TEST_SUITE(zsLibStringize)
     }
 
     {
-      zsLib::Seconds duration;
+      zsLib::Seconds duration {};
       duration = zsLib::Hours(5) + zsLib::Minutes(1) + zsLib::Seconds(44);
       zsLib::ULONG seconds = (5*60*60) + (1*60) + 44;
       zsLib::String result = zsLib::string(seconds);
@@ -109,7 +109,7 @@ TESTING_AUTO_TEST_SUITE(zsLibStringize)
     }
 
     {
-      zsLib::Microseconds duration;
+      zsLib::Microseconds duration {};
       duration = zsLib::Hours(75) + zsLib::Minutes(47) + zsLib::Seconds(3) + zsLib::Milliseconds(453) + zsLib::Microseconds(912);
       zsLib::ULONG seconds = (75*60*60) + (47*60) + 3;
       zsLib::ULONG micro = (453 * 1000) + 912;
@@ -123,7 +123,7 @@ TESTING_AUTO_TEST_SUITE(zsLibStringize)
     }
 
     {
-      zsLib::Microseconds duration;
+      zsLib::Microseconds duration {};
       duration = zsLib::Hours(75) + zsLib::Minutes(47) + zsLib::Seconds(3) + zsLib::Milliseconds(53) + zsLib::Microseconds(2);
       zsLib::ULONG seconds = (75*60*60) + (47*60) + 3;
       zsLib::ULONG micro = (53 * 1000) + 2;

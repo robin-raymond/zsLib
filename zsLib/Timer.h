@@ -34,6 +34,7 @@
 #ifndef ZSLIB_TIMER_H_625827a73b7747cea09db99f967d6a64
 #define ZSLIB_TIMER_H_625827a73b7747cea09db99f967d6a64
 
+#include <zsLib/helpers.h>
 #include <zsLib/internal/zsLib_Timer.h>
 #include <zsLib/MessageQueueThread.h>
 
@@ -67,6 +68,26 @@ namespace zsLib
                            Microseconds timeout,
                            bool repeat = true,
                            UINT maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
+                           );
+
+    //-------------------------------------------------------------------------
+    // PURPOSE: Helper creation routine for specifying an alternative time unit
+    //          other than microseconds
+    template <typename TimeUnit>
+    static TimerPtr create(
+                           ITimerDelegatePtr delegate,
+                           TimeUnit timeout,
+                           bool repeat = true,
+                           UINT maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
+                           ) {
+      return create(delegate, std::chrono::duration_cast<Microseconds>(timeout), repeat, maxFiringTimerAtOnce);
+    }
+
+    //-------------------------------------------------------------------------
+    // PURPOSE: Helper creation routine to timeout at a specific moment in time
+    static TimerPtr create(
+                           ITimerDelegatePtr delegate,
+                           Time timeout
                            );
 
     ~Timer();

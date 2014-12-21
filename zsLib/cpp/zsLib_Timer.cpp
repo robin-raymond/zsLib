@@ -147,6 +147,20 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
+  TimerPtr Timer::create(
+                         ITimerDelegatePtr delegate,
+                         Time timeout
+                         )
+  {
+    Time now = zsLib::now();
+    if (now > timeout) {
+      return create(delegate, Microseconds(0), false, 1);
+    }
+    Microseconds waitTime = timeout - now;
+    return create(delegate, waitTime, false, 1);
+  }
+
+  //---------------------------------------------------------------------------
   void Timer::cancel()
   {
     {

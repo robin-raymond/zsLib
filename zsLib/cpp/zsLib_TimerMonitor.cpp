@@ -169,7 +169,7 @@ namespace zsLib
 
       do
       {
-        Microseconds duration;
+        Microseconds duration {};
         // wait completed, do notifications from select
         {
           AutoRecursiveLock lock(mLock);
