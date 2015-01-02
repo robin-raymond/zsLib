@@ -69,7 +69,7 @@
 #define ZS_LOG_INSANE(xMsg)                                             ZS_INTERNAL_LOG_INSANE(xMsg)
 
 #define ZS_LOG_BASIC_WITH_SEVERITY(xSeverity, xMsg)                     ZS_INTERNAL_LOG_BASIC_WITH_SEVERITY(xSeverity, xMsg)
-#define ZS_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)                    ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverit, yxMsg)
+#define ZS_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)                    ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)
 #define ZS_LOG_DEBUG_WITH_SEVERITY(xSeverity, xMsg)                     ZS_INTERNAL_LOG_DEBUG_WITH_SEVERITY(xSeverity, xMsg)
 #define ZS_LOG_TRACE_WITH_SEVERITY(xSeverity, xMsg)                     ZS_INTERNAL_LOG_TRACE_WITH_SEVERITY(xSeverity, xMsg)
 #define ZS_LOG_INSANE_WITH_SEVERITY(xSeverity, xMsg)                    ZS_INTERNAL_LOG_INSANE_WITH_SEVERITY(xSeverity, xMsg)
