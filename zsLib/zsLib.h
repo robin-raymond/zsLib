@@ -48,6 +48,7 @@
 #include <zsLib/Socket.h>
 #include <zsLib/String.h>
 #include <zsLib/Stringize.h>
+#include <zsLib/TearAway.h>
 #include <zsLib/Timer.h>
 #include <zsLib/XML.h>
 //#include <zsLib/zsLib.h>

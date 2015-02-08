@@ -22,6 +22,7 @@
 		0066857916C9DD6E00259F81 /* TestTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0066856C16C9DD6E00259F81 /* TestTimer.cpp */; };
 		0066857A16C9DD6E00259F81 /* TestXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0066856D16C9DD6E00259F81 /* TestXML.cpp */; };
 		0066858D16C9E16200259F81 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066858C16C9E16200259F81 /* CoreFoundation.framework */; };
+		00FA3FB71A87EDDC00C7C32B /* TestTearAway.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FA3FB61A87EDDC00C7C32B /* TestTearAway.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		0066856D16C9DD6E00259F81 /* TestXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestXML.cpp; sourceTree = "<group>"; };
 		0066858C16C9E16200259F81 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		00D66D8718CD4AC900E71E42 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		00FA3FB61A87EDDC00C7C32B /* TestTearAway.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTearAway.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				0066856916C9DD6E00259F81 /* TestSocketAsync.cpp */,
 				0066856A16C9DD6E00259F81 /* TestString.cpp */,
 				0066856B16C9DD6E00259F81 /* TestStringize.cpp */,
+				00FA3FB61A87EDDC00C7C32B /* TestTearAway.cpp */,
 				0066856C16C9DD6E00259F81 /* TestTimer.cpp */,
 				0066856D16C9DD6E00259F81 /* TestXML.cpp */,
 			);
@@ -237,6 +240,7 @@
 				0066857416C9DD6E00259F81 /* TestProxyUsingGUIThread.cpp in Sources */,
 				0066857516C9DD6E00259F81 /* TestSocket.cpp in Sources */,
 				0066857616C9DD6E00259F81 /* TestSocketAsync.cpp in Sources */,
+				00FA3FB71A87EDDC00C7C32B /* TestTearAway.cpp in Sources */,
 				0066857716C9DD6E00259F81 /* TestString.cpp in Sources */,
 				0066857816C9DD6E00259F81 /* TestStringize.cpp in Sources */,
 				0066857916C9DD6E00259F81 /* TestTimer.cpp in Sources */,

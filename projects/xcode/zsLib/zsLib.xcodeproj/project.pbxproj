@@ -118,6 +118,8 @@
 		00EB8E86177D32C800FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
 		00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
+		00FA3FB21A87E0CD00C7C32B /* TearAway.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TearAway.h; sourceTree = "<group>"; };
+		00FA3FB31A87E3D400C7C32B /* zsLib_TearAway.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_TearAway.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +171,7 @@
 				006680F816C9CE8700259F81 /* Socket.h */,
 				006680F916C9CE8700259F81 /* String.h */,
 				006680FA16C9CE8700259F81 /* Stringize.h */,
+				00FA3FB21A87E0CD00C7C32B /* TearAway.h */,
 				006680FB16C9CE8700259F81 /* Timer.h */,
 				006680FD16C9CE8700259F81 /* XML.h */,
 			);
@@ -237,6 +240,7 @@
 				006680E916C9CE8700259F81 /* zsLib_Socket.h */,
 				006680EA16C9CE8700259F81 /* zsLib_SocketMonitor.h */,
 				006680EB16C9CE8700259F81 /* zsLib_Stringize.h */,
+				00FA3FB31A87E3D400C7C32B /* zsLib_TearAway.h */,
 				006680EC16C9CE8700259F81 /* zsLib_Timer.h */,
 				006680ED16C9CE8700259F81 /* zsLib_TimerMonitor.h */,
 				006680EE16C9CE8700259F81 /* zsLib_XML.h */,
