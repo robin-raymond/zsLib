@@ -3,3 +3,6 @@ projects/xcode/zsLib/zsLib.xcodeproj/xcuserdata
 projects/xcode/zsLib_ios/zsLib_ios.xcodeproj/xcuserdata
 projects/xcode/zsLibTest/zsLibTest.xcodeproj/xcuserdata
 projects/xcode/zsLibTest_ios/zsLibTest_ios.xcodeproj/xcuserdata
+projects/android/libs
+projects/android/obj
+
