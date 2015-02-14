@@ -43,6 +43,7 @@
 #include <zsLib/MessageQueueAssociator.h>
 #include <zsLib/MessageQueueThread.h>
 #include <zsLib/Numeric.h>
+#include <zsLib/Promise.h>
 #include <zsLib/Proxy.h>
 #include <zsLib/ProxySubscriptions.h>
 #include <zsLib/Socket.h>

@@ -116,6 +116,11 @@ namespace zsLib
   ZS_DECLARE_CLASS_PTR(MessageQueue)
   ZS_DECLARE_CLASS_PTR(MessageQueueThread)
 
+  ZS_DECLARE_CLASS_PTR(Promise)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseDelegate)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseSettledDelegate)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseResolutionDelegate)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseCatchDelegate)
 
   ZS_DECLARE_INTERACTION_PTR(ISocketDelegate)
 
@@ -126,6 +131,13 @@ namespace zsLib
   ZS_DECLARE_INTERACTION_PTR(ITimerDelegate)
 
   ZS_DECLARE_CLASS_PTR(Timer)
+
+  ZS_DECLARE_STRUCT_PTR(Any)
+
+  struct Any
+  {
+    virtual ~Any() {}
+  };
 
   struct Noop
   {

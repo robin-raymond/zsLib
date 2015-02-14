@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2015, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,16 +26,64 @@
  The views and conclusions contained in the software and documentation are those
  of the authors and should not be interpreted as representing official policies,
  either expressed or implied, of the FreeBSD Project.
-
+ 
  */
 
-#import <UIKit/UIKit.h>
+#pragma once
 
+#ifndef ZSLIB_INTERNAL_PROMISE_H_01c12a0f71cf48877359c5f3853b75f0da59f66a
+#define ZSLIB_INTERNAL_PROMISE_H_01c12a0f71cf48877359c5f3853b75f0da59f66a
 
-int main(int argc, char *argv[])
+#include <zsLib/types.h>
+#include <zsLib/Proxy.h>
+#include <zsLib/MessageQueueAssociator.h>
+
+namespace zsLib
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  int retVal = UIApplicationMain(argc, argv, nil, nil);
-  [pool release];
-  return retVal;
+  namespace internal
+  {
+    class Promise : public zsLib::MessageQueueAssociator,
+                    public zsLib::IPromiseDelegate
+    {
+    public:
+      friend class zsLib::Promise;
+
+      enum PromiseStates
+      {
+        PromiseState_Pending,
+        PromiseState_Resolved,
+        PromiseState_Rejected,
+      };
+      static const char *toString(PromiseStates state);
+
+    public:
+      Promise(IMessageQueuePtr queue) : MessageQueueAssociator(queue) {}
+      Promise(
+              const std::list<PromisePtr> &promises,
+              IMessageQueuePtr queue
+              ) : MessageQueueAssociator(queue), mPromises(promises) {}
+
+    protected:
+      PromiseWeakPtr mThisWeak;
+      AutoPUID mID;
+
+      mutable RecursiveLock mLock;
+
+      PromisePtr mThisBackground;
+
+      PromiseStates mState {PromiseState_Pending};
+
+      IPromiseDelegatePtr mThen;
+      IPromiseDelegateWeakPtr mThenWeak;
+
+      AnyPtr mValue;
+      AnyPtr mReason;
+      AnyPtr mUserData;
+
+      bool mFired {false};
+      std::list<PromisePtr> mPromises;
+    };
+  }
 }
+
+#endif //ZSLIB_INTERNAL_PROMISE_H_01c12a0f71cf48877359c5f3853b75f0da59f66a

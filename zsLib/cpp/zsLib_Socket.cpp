@@ -573,11 +573,6 @@ namespace zsLib
       internal::prepareRawIPAddress(inBindIP, addressv4, addressv6, address, size);
 
       int result = ::bind(mSocket, address, size);
-#ifdef __APPLE__
-#define TODO_INVESTIGATE_WHY_THIS_FAILED_WITH_IPV6_ON_MAC 1
-#define TODO_INVESTIGATE_WHY_THIS_FAILED_WITH_IPV6_ON_MAC 2
-#endif //__APPLE__
-
       if (SOCKET_ERROR == result)
       {
         int error = handleError(0, outNoThrowErrorResult);

@@ -29,10 +29,10 @@
 
  */
 
-
 #define ZSLIB_TEST_HELPER           (true)
 #define ZSLIB_TEST_IP_ADDRESS       (true)
 #define ZSLIB_TEST_NUMERIC          (true)
+#define ZSLIB_TEST_PROMISE          (true)
 #define ZSLIB_TEST_PROXY            (true)
 #define ZSLIB_TEST_PROXY_USING_GUI  (true)
 #define ZSLIB_TEST_SOCKET           (true)

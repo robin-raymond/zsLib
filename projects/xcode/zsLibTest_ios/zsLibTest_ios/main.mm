@@ -29,47 +29,17 @@
 
  */
 
-#include <iostream>
+#import <UIKit/UIKit.h>
 
-#include <zsLib/helpers.h>
 #include "testing.h"
 
-void testPromise();
-
-namespace Testing
+int main(int argc, char *argv[])
 {
-  std::atomic_uint &getGlobalPassedVar()
-  {
-    static std::atomic_uint value {};
-    return value;
-  }
+  Testing::runAllTests();
+  Testing::output();
 
-  std::atomic_uint &getGlobalFailedVar()
-  {
-    static std::atomic_uint value {};
-    return value;
-  }
-
-  void passed()
-  {
-    ++(getGlobalPassedVar());
-  }
-  void failed()
-  {
-    ++(getGlobalFailedVar());
-  }
-
-  void output()
-  {
-    TESTING_STDOUT() << "PASSED:       [" << Testing::getGlobalPassedVar() << "]\n";
-    if (0 != Testing::getGlobalFailedVar()) {
-      TESTING_STDOUT() << "***FAILED***: [" << Testing::getGlobalFailedVar() << "]\n";
-    }
-  }
-
-  void runAllTests()
-  {
-    testPromise();
-  }
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  int retVal = UIApplicationMain(argc, argv, nil, nil);
+  [pool release];
+  return retVal;
 }
-

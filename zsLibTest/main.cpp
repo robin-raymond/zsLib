@@ -4,7 +4,7 @@
 #include <zsLib/helpers.h>
 
 int main (int argc, char * const argv[]) {
-  // insert code here...
+  Testing::runAllTests();
   Testing::output();
 
   if (0 != Testing::getGlobalFailedVar()) {

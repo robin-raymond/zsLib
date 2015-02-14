@@ -47,6 +47,8 @@ namespace Testing
   void passed();
   void failed();
   void output();
+
+  void runAllTests();
 }
 
 #ifdef __QNX__

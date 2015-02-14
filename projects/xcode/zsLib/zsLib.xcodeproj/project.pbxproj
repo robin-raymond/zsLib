@@ -40,6 +40,7 @@
 		0066811C16C9CE8700259F81 /* zsLib_XMLText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680D416C9CE8700259F81 /* zsLib_XMLText.cpp */; };
 		0066811D16C9CE8700259F81 /* zsLib_XMLUnknown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680D516C9CE8700259F81 /* zsLib_XMLUnknown.cpp */; };
 		00EB8E8C177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */; };
+		00EC6C921A8E3857004BDA4E /* zsLib_Promise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EC6C911A8E3857004BDA4E /* zsLib_Promise.cpp */; };
 		00EF0B10184A543D00101BEE /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */; };
 /* End PBXBuildFile section */
 
@@ -117,6 +118,9 @@
 		00CF4E301A1671D400573A34 /* license.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		00EB8E86177D32C800FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
 		00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
+		00EC6C8F1A8E383C004BDA4E /* Promise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Promise.h; sourceTree = "<group>"; };
+		00EC6C901A8E384C004BDA4E /* zsLib_Promise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_Promise.h; sourceTree = "<group>"; };
+		00EC6C911A8E3857004BDA4E /* zsLib_Promise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Promise.cpp; sourceTree = "<group>"; };
 		00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
 		00FA3FB21A87E0CD00C7C32B /* TearAway.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TearAway.h; sourceTree = "<group>"; };
 		00FA3FB31A87E3D400C7C32B /* zsLib_TearAway.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_TearAway.h; sourceTree = "<group>"; };
@@ -166,6 +170,7 @@
 				006680F416C9CE8700259F81 /* MessageQueueAssociator.h */,
 				006680F516C9CE8700259F81 /* MessageQueueThread.h */,
 				006680F616C9CE8700259F81 /* Numeric.h */,
+				00EC6C8F1A8E383C004BDA4E /* Promise.h */,
 				006680F716C9CE8700259F81 /* Proxy.h */,
 				000CBF6017A3E5090075E86C /* ProxySubscriptions.h */,
 				006680F816C9CE8700259F81 /* Socket.h */,
@@ -195,6 +200,7 @@
 				006680C016C9CE8700259F81 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp */,
 				00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */,
 				006680C116C9CE8700259F81 /* zsLib_Numeric.cpp */,
+				00EC6C911A8E3857004BDA4E /* zsLib_Promise.cpp */,
 				006680C216C9CE8700259F81 /* zsLib_Proxy.cpp */,
 				006680C316C9CE8700259F81 /* zsLib_Socket.cpp */,
 				006680C416C9CE8700259F81 /* zsLib_SocketMonitor.cpp */,
@@ -234,6 +240,7 @@
 				006680E516C9CE8700259F81 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h */,
 				00EB8E86177D32C800FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */,
 				006680E616C9CE8700259F81 /* zsLib_Numeric.h */,
+				00EC6C901A8E384C004BDA4E /* zsLib_Promise.h */,
 				006680E716C9CE8700259F81 /* zsLib_Proxy.h */,
 				000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */,
 				006680E816C9CE8700259F81 /* zsLib_ProxyPack.h */,
@@ -322,6 +329,7 @@
 				0066810716C9CE8700259F81 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp in Sources */,
 				0066810816C9CE8700259F81 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp in Sources */,
 				0066810916C9CE8700259F81 /* zsLib_Numeric.cpp in Sources */,
+				00EC6C921A8E3857004BDA4E /* zsLib_Promise.cpp in Sources */,
 				0066810A16C9CE8700259F81 /* zsLib_Proxy.cpp in Sources */,
 				0066810B16C9CE8700259F81 /* zsLib_Socket.cpp in Sources */,
 				0066810C16C9CE8700259F81 /* zsLib_SocketMonitor.cpp in Sources */,
