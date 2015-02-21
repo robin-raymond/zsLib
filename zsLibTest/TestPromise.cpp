@@ -541,6 +541,74 @@ namespace testing
         PromisePtr broadcastPromise = Promise::broadcast(promises);
         broadcastPromise->reject();
       }
+
+      {
+        std::list<PromisePtr> promises;
+
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->reject();
+        }
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->resolve();
+        }
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->resolve();
+        }
+
+        PromisePtr all = Promise::allSettled(promises);
+        all->then(callback);
+      }
+
+      {
+        std::list<PromisePtr> promises;
+
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->resolve();
+        }
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->resolve();
+        }
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->reject();
+        }
+
+        PromisePtr all = Promise::allSettled(promises);
+        all->then(callback);
+      }
+
+      {
+        std::list<PromisePtr> promises;
+
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->reject();
+        }
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+          promise->resolve();
+        }
+        {
+          PromisePtr promise = Promise::create();
+          promises.push_back(promise);
+        }
+
+        PromisePtr all = Promise::allSettled(promises);
+        all->then(callbackIgnored);
+      }
     }
 
     ~TestPromise()
@@ -559,9 +627,9 @@ namespace testing
       TESTING_EQUAL(zsLib::proxyGetTotalConstructed(), 0);
 
       TESTING_EQUAL(3, getCheck().mDestroyedCallback)
-      TESTING_EQUAL(25, getCheck().mSettledCalled)
-      TESTING_EQUAL(14, getCheck().mResolvedCalled)
-      TESTING_EQUAL(11, getCheck().mRejectedCalled)
+      TESTING_EQUAL(27, getCheck().mSettledCalled)
+      TESTING_EQUAL(15, getCheck().mResolvedCalled)
+      TESTING_EQUAL(12, getCheck().mRejectedCalled)
 
       TESTING_EQUAL("any1resolve", getCheck().mValueAny1)
       TESTING_EQUAL("any2resolve", getCheck().mValueAny2)

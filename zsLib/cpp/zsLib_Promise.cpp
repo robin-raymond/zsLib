@@ -85,11 +85,13 @@ namespace zsLib
       static PromiseMultiDelegatePtr create(
                                             IMessageQueuePtr queue,
                                             const std::list<PromisePtr> &promises,
-                                            bool allMode
+                                            bool allMode,
+                                            bool ignoreRejections
                                             )
       {
         PromiseMultiDelegatePtr pThis(new PromiseMultiDelegate(promises, queue));
         pThis->mAllMode = allMode;
+        pThis->mIgnoredRejections = ignoreRejections;
         pThis->mThisWeak = pThis;
 
         // capture all promise information
@@ -97,7 +99,7 @@ namespace zsLib
           for (auto iter = promises.begin(); iter != promises.end(); ++iter)
           {
             auto promise = (*iter);
-            pThis->mPromises[promise->getID()] = promise;
+            pThis->mPendingPromises[promise->getID()] = promise;
           }
         }
 
@@ -140,13 +142,13 @@ namespace zsLib
           if (mFired) return;
 
           if (mAllMode) {
-            auto found = mPromises.find(promise->getID());
-            if (found == mPromises.end()) return;
+            auto found = mPendingPromises.find(promise->getID());
+            if (found == mPendingPromises.end()) return;
 
-            mPromises.erase(found);
-            if (mPromises.size() > 0) return;
+            mPendingPromises.erase(found);
+            if (mPendingPromises.size() > 0) return;
           } else {
-            mPromises.clear();
+            mPendingPromises.clear();
           }
 
           mFired = true;
@@ -168,8 +170,18 @@ namespace zsLib
 
           if (mFired) return;
 
+          if (mAllMode) {
+            if (mIgnoredRejections) {
+              auto found = mPendingPromises.find(promise->getID());
+              if (found == mPendingPromises.end()) return;
+
+              mPendingPromises.erase(found);
+              if (mPendingPromises.size() > 0) return;
+            }
+          }
+
           mFired = true;
-          mPromises.clear();
+          mPendingPromises.clear();
         }
 
         pThis->reject(promise->reason<Any>());
@@ -185,8 +197,9 @@ namespace zsLib
       typedef std::map<PromiseID, PromisePtr> PromiseMap;
 
       bool mAllMode {false};
+      bool mIgnoredRejections {false};
 
-      PromiseMap mPromises;
+      PromiseMap mPendingPromises;
     };
 
 
@@ -317,7 +330,16 @@ namespace zsLib
                           IMessageQueuePtr queue
                           )
   {
-    return internal::PromiseMultiDelegate::create(queue, promises, true);
+    return internal::PromiseMultiDelegate::create(queue, promises, true, false);
+  }
+
+  //---------------------------------------------------------------------------
+  PromisePtr Promise::allSettled(
+                                 const PromiseList &promises,
+                                 IMessageQueuePtr queue
+                                 )
+  {
+    return internal::PromiseMultiDelegate::create(queue, promises, true, true);
   }
 
   //---------------------------------------------------------------------------
@@ -326,7 +348,7 @@ namespace zsLib
                            IMessageQueuePtr queue
                            )
   {
-    return internal::PromiseMultiDelegate::create(queue, promises, false);
+    return internal::PromiseMultiDelegate::create(queue, promises, false, false);
   }
 
   //---------------------------------------------------------------------------
@@ -336,6 +358,20 @@ namespace zsLib
                                 )
   {
     return internal::PromiseBroadcastDelegate::create(queue, promises);
+  }
+
+  //---------------------------------------------------------------------------
+  PromisePtr Promise::broadcast(
+                                const PromiseWeakList &promises,
+                                IMessageQueuePtr queue
+                                )
+  {
+    PromiseList tempPromises;
+    for (auto iter = promises.begin(); iter != promises.end(); ++iter) {
+      auto promise = (*iter).lock();
+      tempPromises.push_back(promise);
+    }
+    return internal::PromiseBroadcastDelegate::create(queue, tempPromises);
   }
 
   //---------------------------------------------------------------------------

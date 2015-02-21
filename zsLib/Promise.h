@@ -73,12 +73,20 @@ namespace zsLib
                           const PromiseList &promises,
                           IMessageQueuePtr queue = IMessageQueuePtr()
                           );
+    static PromisePtr allSettled(
+                                 const PromiseList &promises,
+                                 IMessageQueuePtr queue = IMessageQueuePtr()
+                                 );
     static PromisePtr race(
                            const PromiseList &promises,
                            IMessageQueuePtr queue = IMessageQueuePtr()
                            );
     static PromisePtr broadcast(
                                 const PromiseList &promises,
+                                IMessageQueuePtr queue = IMessageQueuePtr()
+                                );
+    static PromisePtr broadcast(
+                                const PromiseWeakList &promises,
                                 IMessageQueuePtr queue = IMessageQueuePtr()
                                 );
 
