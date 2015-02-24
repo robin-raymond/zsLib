@@ -109,7 +109,10 @@ namespace zsLib
         char gliph = *source;
 
         if (!isalnum(gliph)) {
-          if (lastWasSpace) continue;
+          if (lastWasSpace) {
+            ++source;
+            continue;
+          }
           *dest = ' ';
           ++dest;
           ++source;
