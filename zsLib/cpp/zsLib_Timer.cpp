@@ -77,7 +77,7 @@ namespace zsLib
       }
 
       if (!mOnceOnly) {
-        Microseconds diff = mFireNextAt - time;
+		  Microseconds diff = std::chrono::duration_cast<Microseconds>(mFireNextAt - time);
         if (diff < sleepTime)
           sleepTime = diff;
       }
@@ -156,7 +156,7 @@ namespace zsLib
     if (now > timeout) {
       return create(delegate, Microseconds(0), false, 1);
     }
-    Microseconds waitTime = timeout - now;
+	Microseconds waitTime = std::chrono::duration_cast<Microseconds>(timeout - now);
     return create(delegate, waitTime, false, 1);
   }
 

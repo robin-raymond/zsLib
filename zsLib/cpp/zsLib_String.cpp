@@ -36,6 +36,8 @@
 #include <zsLib/Log.h>
 #include <zsLib/Exception.h>
 
+#include <algorithm>
+
 #define ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE (sizeof(BYTE)*6)
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }

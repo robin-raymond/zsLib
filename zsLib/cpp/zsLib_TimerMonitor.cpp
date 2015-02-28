@@ -35,8 +35,6 @@
 #include <zsLib/XML.h>
 #include <zsLib/helpers.h>
 
-#include <pthread.h>
-
 #ifdef __QNX__
 #include <sys/time.h>
 #endif //

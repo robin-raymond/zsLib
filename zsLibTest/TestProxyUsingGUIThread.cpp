@@ -38,6 +38,13 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+#ifdef _WIN32
+#include <Windows.h>
+
+using namespace Windows::UI::Core;
+
+#endif //_WIN32
+
 #include "testing.h"
 #include "main.h"
 
@@ -164,24 +171,35 @@ namespace testingUsingGUIThread
       IMessageQueue::size_type count = 0;
 
 #ifdef _WIN32
-      BOOL result = 0;
+      CoreDispatcher ^dispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
 
-      MSG msg;
-      memset(&msg, 0, sizeof(msg));
-      while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
-      {
-        TESTING_CHECK(-1 != result)
-
-        ::TranslateMessage(&msg);
-        ::DispatchMessage(&msg);
+      while (true) {
+        dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
 
         count = mThread->getTotalUnprocessedMessages();
         count += mThread->getTotalUnprocessedMessages();
         if (0 == count)
           break;
-
-        memset(&msg, 0, sizeof(msg));
       }
+
+      //BOOL result = 0;
+
+      //MSG msg;
+      //memset(&msg, 0, sizeof(msg));
+      //while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
+      //{
+      //  TESTING_CHECK(-1 != result)
+
+      //  ::TranslateMessage(&msg);
+      //  ::DispatchMessage(&msg);
+
+      //  count = mThread->getTotalUnprocessedMessages();
+      //  count += mThread->getTotalUnprocessedMessages();
+      //  if (0 == count)
+      //    break;
+
+      //  memset(&msg, 0, sizeof(msg));
+      //}
 #elif __APPLE__
         count = mThread->getTotalUnprocessedMessages();
         do
@@ -219,13 +237,10 @@ namespace testingUsingGUIThread
 
 }
 
-TESTING_AUTO_TEST_SUITE(zsLibProxyUsingGUIThread)
 
-  TESTING_AUTO_TEST_CASE(TestProxyUsingGUIThread)
-  {
-    if (ZSLIB_TEST_PROXY_USING_GUI) {
-      testingUsingGUIThread::TestProxy test;
-    }
-  }
+void testProxyUsingGUIThread()
+{
+    if (!ZSLIB_TEST_PROXY_USING_GUI) return;
 
-TESTING_AUTO_TEST_SUITE_END()
+    testingUsingGUIThread::TestProxy test;
+}

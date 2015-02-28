@@ -32,6 +32,13 @@
 #include <zsLib/XML.h>
 #include <zsLib/Exception.h>
 
+
+#ifdef _WIN32
+namespace std {
+	inline int tolower(int c) { return _tolower(c); }
+}
+#endif //_WIN32
+
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 namespace zsLib

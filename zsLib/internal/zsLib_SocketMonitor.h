@@ -45,6 +45,8 @@
 
 #ifndef _WIN32
 #include <sys/poll.h>
+#else
+typedef size_t nfds_t;
 #endif //ndef _WIN32
 
 namespace zsLib
@@ -69,6 +71,21 @@ namespace zsLib
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
 
+#ifndef _WIN32
+      struct tagWSAEVENT {};
+      typedef tagWSAEVENT * WSAEVENT;
+#endif //ndef _WIN32
+
+      typedef WSAEVENT EventHandle;
+
+      ZS_DECLARE_STRUCT_PTR(EventHandleHolder)
+      struct EventHandleHolder {
+        EventHandleHolder(EventHandle event);
+        ~EventHandleHolder();
+
+        EventHandle mEventHandle;
+      };
+
       typedef ::pollfd poll_fd;
       typedef ::nfds_t poll_size;
       typedef decltype(poll_fd::events) event_type;
@@ -81,7 +98,7 @@ namespace zsLib
       SocketSet();
       ~SocketSet();
 
-      poll_fd *preparePollingFDs(poll_size &outSize);
+      poll_fd *preparePollingFDs(poll_size &outSize, EventHandle * &outEvents);
 
       void firedEvent(
                       SocketPtr socket,
@@ -121,27 +138,35 @@ namespace zsLib
                   event_type events
                   );
 
+#ifdef _WIN32
+      static long toNetworkEvents(event_type events);
+#endif //_WIN32
+
       zsLib::Log::Params log(const char *message) const;
 
     private:
       AutoPUID mID;
-      poll_size mOfficialAllocationSize;
-      poll_size mOfficialCount;
-      poll_fd *mOfficialSet;
+      poll_size mOfficialAllocationSize {0};
+      poll_size mOfficialCount {0};
+      poll_fd *mOfficialSet {NULL};
+      EventHandle *mOfficialHandleSet {NULL};
+      EventHandleHolderPtr *mOfficialHandleHolderSet {NULL};
 
-      poll_size mPollingAllocationSize;
-      poll_size mPollingCount;
-      poll_fd *mPollingSet;
+      poll_size mPollingAllocationSize {0};
+      poll_size mPollingCount {0};
+      poll_fd *mPollingSet {NULL};
+      EventHandle *mPollingHandleSet {NULL};
+      EventHandleHolderPtr *mPollingHandleHolderSet {NULL};
 
-      poll_size mPollingFiredEventCount;
-      FiredEventPair *mPollingFiredEvents;
+      poll_size mPollingFiredEventCount {0};
+      FiredEventPair *mPollingFiredEvents {NULL};
 
-      poll_size mPollingSocketsWithDelegateGoneCount;
-      SocketPtr *mPollingSocketsWithDelegateGone;
+      poll_size mPollingSocketsWithDelegateGoneCount {0};
+      SocketPtr *mPollingSocketsWithDelegateGone {NULL};
 
       SocketIndexMap mSocketIndexes;
 
-      bool mDirty;
+      bool mDirty {true};
     };
 
     //-------------------------------------------------------------------------
@@ -162,6 +187,7 @@ namespace zsLib
       typedef SocketSet::poll_size poll_size;
       typedef SocketSet::poll_fd poll_fd;
       typedef SocketSet::FiredEventPair FiredEventPair;
+      typedef SocketSet::EventHandle EventHandle;
 
     protected:
       SocketMonitor();

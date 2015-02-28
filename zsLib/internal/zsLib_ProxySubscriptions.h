@@ -186,7 +186,7 @@ namespace zsLib
       class DelegateImpl : public XINTERFACE
       {
       public:
-        typedef ProxySubscriptions::SubscriptionDelegateMap SubscriptionDelegateMap;
+        typedef typename ProxySubscriptions::SubscriptionDelegateMap SubscriptionDelegateMap;
 
         DelegateImpl() : mSubscriptions(new SubscriptionDelegateMap) {}
         ~DelegateImpl() {}

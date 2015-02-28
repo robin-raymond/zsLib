@@ -33,6 +33,7 @@
 #define ZSLIB_INTERNAL_EVENT_H_2070e4cfb8f24209647d3c9ec55098ee
 
 #include <zsLib/types.h>
+#include <condition_variable>
 
 namespace zsLib
 {
@@ -47,7 +48,7 @@ namespace zsLib
     protected:
       static int NextEventId;
       int mEventId;
-      std::atomic_bool mNotified;
+	  std::atomic_bool mNotified {};
 #ifdef __QNX__
       pthread_mutex_t mMutex;
       pthread_cond_t mCondition;

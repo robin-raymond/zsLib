@@ -4,6 +4,7 @@
 #include <zsLib/helpers.h>
 
 int main (int argc, char * const argv[]) {
+
   Testing::runAllTests();
   Testing::output();
 

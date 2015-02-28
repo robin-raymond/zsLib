@@ -68,60 +68,55 @@ public:
 };
 
 
+void testTimer()
+{
+  if (!ZSLIB_TEST_TIMER) return;
 
-TESTING_AUTO_TEST_SUITE(zsLibTimer)
+  zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
 
-  TESTING_AUTO_TEST_CASE(TestTimer)
+  TestTimerCallbackPtr testObject = TestTimerCallback::create(thread);
+  TestTimerCallbackPtr testObject2 = TestTimerCallback::create(thread);
+  TestTimerCallbackPtr testObject3 = TestTimerCallback::create(thread);
+  TestTimerCallbackPtr testObject4 = TestTimerCallback::create(thread);
+
+  zsLib::TimerPtr timer1(zsLib::Timer::create(testObject, zsLib::Seconds(3)));
+  zsLib::TimerPtr timer2(zsLib::Timer::create(testObject2, zsLib::Seconds(1), false));
+  zsLib::TimerPtr timer3(zsLib::Timer::create(testObject3, zsLib::Seconds(4), false));
+  zsLib::TimerPtr timer4(zsLib::Timer::create(testObject4, zsLib::Seconds(4), false));
+
+  timer3.reset();         // this should cause the timer to be cancelled as if it fell out of scope before it has a chance to fire
+  timer4->background();   // this should cause the timer to not be cancelled (but it will cancel itself after being fired)
+  timer4.reset();
+
+  TESTING_SLEEP(10000)
+  timer1->cancel();
+
+  TESTING_EQUAL(testObject->mCount, 3);
+  TESTING_EQUAL(testObject2->mCount, 1);
+  TESTING_EQUAL(testObject3->mCount, 0);
+  TESTING_EQUAL(testObject4->mCount, 1);
+
+  TESTING_STDOUT() << "WAITING:      To ensure the timers have truly stopped firing events.\n";
+  TESTING_SLEEP(10000)
+
+  timer1.reset();
+  timer2.reset();
+  timer3.reset();
+  timer4.reset();
+
+  TESTING_EQUAL(testObject->mCount, 3);
+  TESTING_EQUAL(testObject2->mCount, 1);
+  TESTING_EQUAL(testObject3->mCount, 0);
+  TESTING_EQUAL(testObject4->mCount, 1);
+
+  IMessageQueue::size_type count = 0;
+  do
   {
-    if (!ZSLIB_TEST_TIMER) return;
+    count = thread->getTotalUnprocessedMessages();
+    if (0 != count)
+      std::this_thread::yield();
+  } while (count > 0);
+  thread->waitForShutdown();
 
-    zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
-
-    TestTimerCallbackPtr testObject = TestTimerCallback::create(thread);
-    TestTimerCallbackPtr testObject2 = TestTimerCallback::create(thread);
-    TestTimerCallbackPtr testObject3 = TestTimerCallback::create(thread);
-    TestTimerCallbackPtr testObject4 = TestTimerCallback::create(thread);
-
-    zsLib::TimerPtr timer1(zsLib::Timer::create(testObject, zsLib::Seconds(3)));
-    zsLib::TimerPtr timer2(zsLib::Timer::create(testObject2, zsLib::Seconds(1), false));
-    zsLib::TimerPtr timer3(zsLib::Timer::create(testObject3, zsLib::Seconds(4), false));
-    zsLib::TimerPtr timer4(zsLib::Timer::create(testObject4, zsLib::Seconds(4), false));
-
-    timer3.reset();         // this should cause the timer to be cancelled as if it fell out of scope before it has a chance to fire
-    timer4->background();   // this should cause the timer to not be cancelled (but it will cancel itself after being fired)
-    timer4.reset();
-
-    std::this_thread::sleep_for(zsLib::Seconds(10));
-    timer1->cancel();
-
-    TESTING_EQUAL(testObject->mCount, 3);
-    TESTING_EQUAL(testObject2->mCount, 1);
-    TESTING_EQUAL(testObject3->mCount, 0);
-    TESTING_EQUAL(testObject4->mCount, 1);
-
-    TESTING_STDOUT() << "WAITING:      To ensure the timers have truly stopped firing events.\n";
-    std::this_thread::sleep_for(zsLib::Seconds(10));
-
-    timer1.reset();
-    timer2.reset();
-    timer3.reset();
-    timer4.reset();
-
-    TESTING_EQUAL(testObject->mCount, 3);
-    TESTING_EQUAL(testObject2->mCount, 1);
-    TESTING_EQUAL(testObject3->mCount, 0);
-    TESTING_EQUAL(testObject4->mCount, 1);
-
-    IMessageQueue::size_type count = 0;
-    do
-    {
-      count = thread->getTotalUnprocessedMessages();
-      if (0 != count)
-        std::this_thread::yield();
-    } while (count > 0);
-    thread->waitForShutdown();
-
-    TESTING_EQUAL(zsLib::proxyGetTotalConstructed(), 0);
-  }
-
-TESTING_AUTO_TEST_SUITE_END()
+  TESTING_EQUAL(zsLib::proxyGetTotalConstructed(), 0);
+}

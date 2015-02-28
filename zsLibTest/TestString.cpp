@@ -50,223 +50,220 @@ using zsLib::WORD;
 #define TEST_UNICODE_3_DIGIT 0x2260
 
 
-TESTING_AUTO_TEST_SUITE(zsLibStringTest)
+void testString1()
 
-  TESTING_AUTO_TEST_CASE(TestString)
+{
+  if (!ZSLIB_TEST_STRING) return;
+
+  class NullTestString
   {
-    if (!ZSLIB_TEST_STRING) return;
-
-    class NullTestString
+  public:
+    NullTestString(const char *value = NULL) :
+      mValue(value)
     {
-    public:
-      NullTestString(const char *value = NULL) :
-        mValue(value)
-      {
-      }
+    }
 
-      zsLib::String getValue() const {return mValue;}
-    private:
-      zsLib::String mValue;
-    };
+    zsLib::String getValue() const {return mValue;}
+  private:
+    zsLib::String mValue;
+  };
 
-    std::string stdstr_empty;
+  std::string stdstr_empty;
 
-    std::string stdstr1("this is a std::test1");
-    std::wstring wstdstr1(L"this is a wide std::test1");
+  std::string stdstr1("this is a std::test1");
+  std::wstring wstdstr1(L"this is a wide std::test1");
 
-    zsLib::String str1;
+  zsLib::String str1;
 
-    const char *forceNullCSTR = NULL;
-    zsLib::String forceNull(forceNullCSTR);
-    std::string forceNullCopied(forceNull);
-    NullTestString nullStrObj;
-    zsLib::String str2("this is a test2");
-    zsLib::String wstr2(L"this is a wide test2");
-    zsLib::String str4(stdstr1);
-    zsLib::String str5(wstdstr1);
+  const char *forceNullCSTR = NULL;
+  zsLib::String forceNull(forceNullCSTR);
+  std::string forceNullCopied(forceNull);
+  NullTestString nullStrObj;
+  zsLib::String str2("this is a test2");
+  zsLib::String wstr2(L"this is a wide test2");
+  zsLib::String str4(stdstr1);
+  zsLib::String str5(wstdstr1);
 
-    const char *buffer = "0123456789012345678901234567890!!!!!!!!!!";
-    const char *buffer7 = TEST_UTF8_1_DIGIT TEST_UTF8_2_DIGIT TEST_UTF8_3_DIGIT;
+  const char *buffer = "0123456789012345678901234567890!!!!!!!!!!";
+  const char *buffer7 = TEST_UTF8_1_DIGIT TEST_UTF8_2_DIGIT TEST_UTF8_3_DIGIT;
 
-    // test all the edge values for UTF-8 encoding
-    // 0x01 0x7F 0x80 0x7FF 0x800  0xFFFF 0x10000  0x1FFFFF 0x200000   0x3FFFFFF  0x4000000     0x7FFFFFFF
-    // 01   7F   C280 DFBF  E0A080 EFBFBF F0908080 F7BFBFBF F888808080 FBBFBFBFBF FC8480808080  FDBFBFBFBFBF
-    const char *buffer8 = "\x01\x7F\xC2\x80\xDF\xBF\xE0\xA0\x80\xEF\xBF\xBF\xF0\x90\x80\x80\xF7\xBF\xBF\xBF\xF8\x88\x80\x80\x80\xFB\xBF\xBF\xBF\xBF\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
-    wchar_t wbuffer8[13] = {
-      0x01,
-      0x7F,
-      0x80,
-      0x7FF,
-      0x800,
-      0xFFFF,
-      (wchar_t)(zsLib::DWORD)0x10000,
-      (wchar_t)(zsLib::DWORD)0x1FFFFF,
-      (wchar_t)(zsLib::DWORD)0x200000,
-      (wchar_t)(zsLib::DWORD)0x3FFFFFF,
-      (wchar_t)(zsLib::DWORD)0x4000000,
-      (wchar_t)(zsLib::DWORD)0x7FFFFFFF,
-      0x0
-    };
+  // test all the edge values for UTF-8 encoding
+  // 0x01 0x7F 0x80 0x7FF 0x800  0xFFFF 0x10000  0x1FFFFF 0x200000   0x3FFFFFF  0x4000000     0x7FFFFFFF
+  // 01   7F   C280 DFBF  E0A080 EFBFBF F0908080 F7BFBFBF F888808080 FBBFBFBFBF FC8480808080  FDBFBFBFBFBF
+  const char *buffer8 = "\x01\x7F\xC2\x80\xDF\xBF\xE0\xA0\x80\xEF\xBF\xBF\xF0\x90\x80\x80\xF7\xBF\xBF\xBF\xF8\x88\x80\x80\x80\xFB\xBF\xBF\xBF\xBF\xFC\x84\x80\x80\x80\x80\xFD\xBF\xBF\xBF\xBF\xBF";
+  wchar_t wbuffer8[13] = {
+    0x01,
+    0x7F,
+    0x80,
+    0x7FF,
+    0x800,
+    0xFFFF,
+    (wchar_t)(zsLib::DWORD)0x10000,
+    (wchar_t)(zsLib::DWORD)0x1FFFFF,
+    (wchar_t)(zsLib::DWORD)0x200000,
+    (wchar_t)(zsLib::DWORD)0x3FFFFFF,
+    (wchar_t)(zsLib::DWORD)0x4000000,
+    (wchar_t)(zsLib::DWORD)0x7FFFFFFF,
+    0x0
+  };
 
-    // test all the edge values for UTF-8 encoding
-    // 0x01 0x7F 0x80 0x7FF 0x800  0xFFFF 0x10000  0x10FFFF
-    // 01   7F   C280 DFBF  E0A080 EFBFBF F0908080 F48FBFBF
-    const char *buffer8_utf16 = "\x01\x7F\xC2\x80\xDF\xBF\xE0\xA0\x80\xEF\xBF\xBF\xF0\x90\x80\x80\xF4\x8F\xBF\xBF";
-    wchar_t wbuffer8_utf16[11] = {
-      0x01,
-      0x7F,
-      0x80,
-      0x7FF,
-      0x800,
-      0xFFFF,
+  // test all the edge values for UTF-8 encoding
+  // 0x01 0x7F 0x80 0x7FF 0x800  0xFFFF 0x10000  0x10FFFF
+  // 01   7F   C280 DFBF  E0A080 EFBFBF F0908080 F48FBFBF
+  const char *buffer8_utf16 = "\x01\x7F\xC2\x80\xDF\xBF\xE0\xA0\x80\xEF\xBF\xBF\xF0\x90\x80\x80\xF4\x8F\xBF\xBF";
+  wchar_t wbuffer8_utf16[11] = {
+    0x01,
+    0x7F,
+    0x80,
+    0x7FF,
+    0x800,
+    0xFFFF,
 
 #ifdef _WIN32
-      // represents 0x10000
-      0xDC00, // low
-      0xD800, // high
+    // represents 0x10000
+    0xDC00, // low
+    0xD800, // high
 
-      // represents 0x10FFFF; 0x10FFFF - 0x10000 = 0xFFFFF or 1111 11111111 11111111 (20 bits)
-      0xDFFF, // low
-      0xDBFF, // high
+    // represents 0x10FFFF; 0x10FFFF - 0x10000 = 0xFFFFF or 1111 11111111 11111111 (20 bits)
+    0xDFFF, // low
+    0xDBFF, // high
 #else
-      // represents 0x10000
-      0xD800, // high
-      0xDC00, // low
+    // represents 0x10000
+    0xD800, // high
+    0xDC00, // low
 
-      // represents 0x10FFFF; 0x10FFFF - 0x10000 = 0xFFFFF or 1111 11111111 11111111 (20 bits)
-      0xDBFF, // high
-      0xDFFF, // low
+    // represents 0x10FFFF; 0x10FFFF - 0x10000 = 0xFFFFF or 1111 11111111 11111111 (20 bits)
+    0xDBFF, // high
+    0xDFFF, // low
 #endif //_WIN32
-      0x0
-    };
+    0x0
+  };
 
-    zsLib::String str6("Τη γλώσσα μου έδωσαν ελληνική");
-    zsLib::String str7(buffer7);
-    zsLib::String str8(sizeof(wchar_t) == sizeof(WORD) ? buffer8_utf16 : buffer8);
+  zsLib::String str6("Τη γλώσσα μου έδωσαν ελληνική");
+  zsLib::String str7(buffer7);
+  zsLib::String str8(sizeof(wchar_t) == sizeof(WORD) ? buffer8_utf16 : buffer8);
 
-    std::wstring wstr7(str7.wstring());
-    std::wstring wstr8(str8.wstring());
+  std::wstring wstr7(str7.wstring());
+  std::wstring wstr8(str8.wstring());
 
-    zsLib::String str9(wstr8);
+  zsLib::String str9(wstr8);
 
-    zsLib::String str10("hello");
-    str10 = stdstr1;
-    zsLib::String str11("goodbye");
-    str11 = wstdstr1;
+  zsLib::String str10("hello");
+  str10 = stdstr1;
+  zsLib::String str11("goodbye");
+  str11 = wstdstr1;
 
-    zsLib::String str12("whatever");
-    str12 = str6;
+  zsLib::String str12("whatever");
+  str12 = str6;
 
-    zsLib::String str13("foobar 13");
-    str13 = "this is the proper value";
+  zsLib::String str13("foobar 13");
+  str13 = "this is the proper value";
 
-    zsLib::String str14("foobar 14");
-    str14 = L"this is the proper wide value";
+  zsLib::String str14("foobar 14");
+  str14 = L"this is the proper wide value";
 
-    zsLib::String strLower("ThIs Is A tEsT");
-    strLower.toLower();
+  zsLib::String strLower("ThIs Is A tEsT");
+  strLower.toLower();
 
-    zsLib::String strUpper("ThIs Is A tEsT");
-    strUpper.toUpper();
+  zsLib::String strUpper("ThIs Is A tEsT");
+  strUpper.toUpper();
 
-    zsLib::String strTrim(" \t\r\n\t\v  This string is:\t fantastic\t \r\v\n \t");
+  zsLib::String strTrim(" \t\r\n\t\v  This string is:\t fantastic\t \r\v\n \t");
 
-    zsLib::String strTrim1(strTrim);
-    strTrim1.trim();
+  zsLib::String strTrim1(strTrim);
+  strTrim1.trim();
 
-    zsLib::String strTrimLeft(strTrim);
-    strTrimLeft.trimLeft();
+  zsLib::String strTrimLeft(strTrim);
+  strTrimLeft.trimLeft();
 
-    zsLib::String strTrimRight(strTrim);
-    strTrimRight.trimRight();
+  zsLib::String strTrimRight(strTrim);
+  strTrimRight.trimRight();
 
-    zsLib::String replaceAll("chili, hotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
+  zsLib::String replaceAll("chili, hotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
 
-    zsLib::String replace1(replaceAll);
-    replace1.replaceAll("chili", "chilli");
+  zsLib::String replace1(replaceAll);
+  replace1.replaceAll("chili", "chilli");
 
-    zsLib::String replace2(replaceAll);
-    replace2.replaceAll(", ", "\n");
+  zsLib::String replace2(replaceAll);
+  replace2.replaceAll(", ", "\n");
 
-    zsLib::String replace3(replaceAll);
-    replace3.replaceAll(", ", "\n", 1);
+  zsLib::String replace3(replaceAll);
+  replace3.replaceAll(", ", "\n", 1);
 
-    zsLib::String replace4(replaceAll);
-    replace4.replaceAll(", ", "\n", 0);
+  zsLib::String replace4(replaceAll);
+  replace4.replaceAll(", ", "\n", 0);
 
-    zsLib::String replace5(replaceAll);
-    replace5.replaceAll(", ", ", x1, ");
+  zsLib::String replace5(replaceAll);
+  replace5.replaceAll(", ", ", x1, ");
 
-    zsLib::String replace6(replaceAll);
-    replace6.replaceAll("cream", "");
-    replace6.replaceAll(" ,", ",");
+  zsLib::String replace6(replaceAll);
+  replace6.replaceAll("cream", "");
+  replace6.replaceAll(" ,", ",");
 
-    TESTING_CHECK(forceNull.isEmpty());
-    TESTING_EQUAL(zsLib::String(), forceNull);
-    TESTING_EQUAL(forceNullCopied, forceNull);
-    TESTING_EQUAL(zsLib::String(), nullStrObj.getValue())
-    TESTING_CHECK(stdstr_empty.empty());
-    TESTING_CHECK(str1.empty());
-    TESTING_CHECK(str1.isEmpty());
-    TESTING_EQUAL(str2, "this is a test2");
-    TESTING_EQUAL(wstr2, "this is a wide test2");
-    TESTING_EQUAL(str4, "this is a std::test1");
-    TESTING_EQUAL(str5, "this is a wide std::test1");
-    TESTING_EQUAL(zsLib::String::copyFrom(buffer, 15), "012345678901234");
-    bool equal6 = (0 == strcmp(str6, "Τη γλώσσα μου έδωσαν ελληνική"));  // I have no idea what this says so if it is bad or insulting, my apologies!
-    TESTING_CHECK(equal6);
-    TESTING_EQUAL(str7, buffer7);
-    if (sizeof(wchar_t) == sizeof(zsLib::WORD)) {
-      TESTING_EQUAL(wstr7[0], TEST_UNICODE_1_DIGIT);
-      TESTING_EQUAL(wstr7[1], TEST_UNICODE_2_DIGIT);
-      TESTING_EQUAL(wstr7[2], TEST_UNICODE_3_DIGIT);
+  TESTING_CHECK(forceNull.isEmpty());
+  TESTING_EQUAL(zsLib::String(), forceNull);
+  TESTING_EQUAL(forceNullCopied, forceNull);
+  TESTING_EQUAL(zsLib::String(), nullStrObj.getValue())
+  TESTING_CHECK(stdstr_empty.empty());
+  TESTING_CHECK(str1.empty());
+  TESTING_CHECK(str1.isEmpty());
+  TESTING_EQUAL(str2, "this is a test2");
+  TESTING_EQUAL(wstr2, "this is a wide test2");
+  TESTING_EQUAL(str4, "this is a std::test1");
+  TESTING_EQUAL(str5, "this is a wide std::test1");
+  TESTING_EQUAL(zsLib::String::copyFrom(buffer, 15), "012345678901234");
+  bool equal6 = (0 == strcmp(str6, "Τη γλώσσα μου έδωσαν ελληνική"));  // I have no idea what this says so if it is bad or insulting, my apologies!
+  TESTING_CHECK(equal6);
+  TESTING_EQUAL(str7, buffer7);
+  if (sizeof(wchar_t) == sizeof(zsLib::WORD)) {
+    TESTING_EQUAL(wstr7[0], TEST_UNICODE_1_DIGIT);
+    TESTING_EQUAL(wstr7[1], TEST_UNICODE_2_DIGIT);
+    TESTING_EQUAL(wstr7[2], TEST_UNICODE_3_DIGIT);
 
-      TESTING_EQUAL(wstr8[0], wbuffer8_utf16[0]);
-      TESTING_EQUAL(wstr8[1], wbuffer8_utf16[1]);
-      TESTING_EQUAL(wstr8[2], wbuffer8_utf16[2]);
-      TESTING_EQUAL(wstr8[3], wbuffer8_utf16[3]);
-      TESTING_EQUAL(wstr8[4], wbuffer8_utf16[4]);
-      TESTING_EQUAL(wstr8[5], wbuffer8_utf16[5]);
-      TESTING_EQUAL(wstr8[6], wbuffer8_utf16[6]);
-      TESTING_EQUAL(wstr8[7], wbuffer8_utf16[7]);
-      TESTING_EQUAL(wstr8[8], wbuffer8_utf16[8]);
-      TESTING_EQUAL(wstr8[9], wbuffer8_utf16[9]);
-      TESTING_EQUAL(wstr8[10], wbuffer8_utf16[10]);
-    }
-    if (sizeof(wchar_t) == sizeof(zsLib::DWORD)) {
-      for (size_t loop = 0; loop < 13; ++loop) {
-        bool equal = (wstr8[loop] == wbuffer8[loop]);
-        TESTING_CHECK(equal)
-      }
-    }
-    bool equal9 = (str9 == (sizeof(WORD) == sizeof(wchar_t) ? buffer8_utf16 : buffer8));
-    TESTING_CHECK(equal9);
-    bool equal10 = (0 == strcmp(((CSTR)str9), (sizeof(WORD) == sizeof(wchar_t) ? buffer8_utf16 : buffer8)));
-    TESTING_CHECK(equal10);
-    bool equal11 = (str9 == str8);
-    TESTING_CHECK(equal11);
-    TESTING_EQUAL(str10, stdstr1);
-    TESTING_EQUAL(str11, zsLib::String(wstdstr1));
-    bool equal12 = (str12 == str6);
-    TESTING_CHECK(equal12);
-    TESTING_EQUAL(str13, "this is the proper value");
-    TESTING_EQUAL(str14, "this is the proper wide value");
-    TESTING_EQUAL(strLower, "this is a test");
-    TESTING_EQUAL(strUpper, "THIS IS A TEST");
-    TESTING_EQUAL(0, strLower.compareNoCase(strUpper));
-    TESTING_EQUAL(0, strLower.compareNoCase(strUpper.c_str()));
-    TESTING_EQUAL(strTrim1, "This string is:\t fantastic");
-    TESTING_CHECK(strTrimLeft == "This string is:\t fantastic\t \r\v\n \t");
-    TESTING_CHECK(strTrimRight == " \t\r\n\t\v  This string is:\t fantastic");
-    TESTING_EQUAL(replace1, "chilli, hotdogs, popcorn, chicken, chilli, sour cream, vinegar, cream");
-    TESTING_CHECK(replace2 == "chili\nhotdogs\npopcorn\nchicken\nchili\nsour cream\nvinegar\ncream");
-    TESTING_CHECK(replace3 == "chili\nhotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
-    TESTING_EQUAL(replace4, "chili, hotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
-    TESTING_EQUAL(replace5, "chili, x1, hotdogs, x1, popcorn, x1, chicken, x1, chili, x1, sour cream, x1, vinegar, x1, cream");
-    TESTING_EQUAL(replace6, "chili, hotdogs, popcorn, chicken, chili, sour, vinegar, ");
+    TESTING_EQUAL(wstr8[0], wbuffer8_utf16[0]);
+    TESTING_EQUAL(wstr8[1], wbuffer8_utf16[1]);
+    TESTING_EQUAL(wstr8[2], wbuffer8_utf16[2]);
+    TESTING_EQUAL(wstr8[3], wbuffer8_utf16[3]);
+    TESTING_EQUAL(wstr8[4], wbuffer8_utf16[4]);
+    TESTING_EQUAL(wstr8[5], wbuffer8_utf16[5]);
+    TESTING_EQUAL(wstr8[6], wbuffer8_utf16[6]);
+    TESTING_EQUAL(wstr8[7], wbuffer8_utf16[7]);
+    TESTING_EQUAL(wstr8[8], wbuffer8_utf16[8]);
+    TESTING_EQUAL(wstr8[9], wbuffer8_utf16[9]);
+    TESTING_EQUAL(wstr8[10], wbuffer8_utf16[10]);
   }
-
-TESTING_AUTO_TEST_SUITE_END()
+  if (sizeof(wchar_t) == sizeof(zsLib::DWORD)) {
+    for (size_t loop = 0; loop < 13; ++loop) {
+      bool equal = (wstr8[loop] == wbuffer8[loop]);
+      TESTING_CHECK(equal)
+    }
+  }
+  bool equal9 = (str9 == (sizeof(WORD) == sizeof(wchar_t) ? buffer8_utf16 : buffer8));
+  TESTING_CHECK(equal9);
+  bool equal10 = (0 == strcmp(((CSTR)str9), (sizeof(WORD) == sizeof(wchar_t) ? buffer8_utf16 : buffer8)));
+  TESTING_CHECK(equal10);
+  bool equal11 = (str9 == str8);
+  TESTING_CHECK(equal11);
+  TESTING_EQUAL(str10, stdstr1);
+  TESTING_EQUAL(str11, zsLib::String(wstdstr1));
+  bool equal12 = (str12 == str6);
+  TESTING_CHECK(equal12);
+  TESTING_EQUAL(str13, "this is the proper value");
+  TESTING_EQUAL(str14, "this is the proper wide value");
+  TESTING_EQUAL(strLower, "this is a test");
+  TESTING_EQUAL(strUpper, "THIS IS A TEST");
+  TESTING_EQUAL(0, strLower.compareNoCase(strUpper));
+  TESTING_EQUAL(0, strLower.compareNoCase(strUpper.c_str()));
+  TESTING_EQUAL(strTrim1, "This string is:\t fantastic");
+  TESTING_CHECK(strTrimLeft == "This string is:\t fantastic\t \r\v\n \t");
+  TESTING_CHECK(strTrimRight == " \t\r\n\t\v  This string is:\t fantastic");
+  TESTING_EQUAL(replace1, "chilli, hotdogs, popcorn, chicken, chilli, sour cream, vinegar, cream");
+  TESTING_CHECK(replace2 == "chili\nhotdogs\npopcorn\nchicken\nchili\nsour cream\nvinegar\ncream");
+  TESTING_CHECK(replace3 == "chili\nhotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
+  TESTING_EQUAL(replace4, "chili, hotdogs, popcorn, chicken, chili, sour cream, vinegar, cream");
+  TESTING_EQUAL(replace5, "chili, x1, hotdogs, x1, popcorn, x1, chicken, x1, chili, x1, sour cream, x1, vinegar, x1, cream");
+  TESTING_EQUAL(replace6, "chili, hotdogs, popcorn, chicken, chili, sour, vinegar, ");
+}
 
 
 #ifdef ZS_TARGET_WCHAR_IS_UTF16
@@ -726,97 +723,99 @@ static BYTE gUTFByteArray5[] =
   0x00
 };
 
-
-TESTING_AUTO_TEST_SUITE(zsLibStringTestMore)
-
-  TESTING_AUTO_TEST_CASE(TestStringMore)
+void testString2()
+{
   {
-    if (!ZSLIB_TEST_STRING) return;
+    // test convert to unicode then back
+    CWSTR wStr = &(gWArray1[0]);
+    zsLib::String string(wStr);
 
+    CSTR utf8Str = string;
+    TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray1[0]), sizeof(gByteArray1)))
+
+    zsLib::String string2(utf8Str);
+    std::wstring wstring2(string2.wstring());
+    CWSTR utf16Str = wstring2.c_str();
+
+    TESTING_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray1)))
+
+    TESTING_EQUAL(string.getLength(), strlen(utf8Str))
+    TESTING_EQUAL(string.lengthUnicodeSafe(), gTEST_ARRAY_1_LINE_LENGTH)
+
+    size_t length = (sizeof(gWGetAtArray1)/sizeof(WCHAR));
+    for (size_t loop = 0; loop < length-1; ++loop)
     {
-      // test convert to unicode then back
-      CWSTR wStr = &(gWArray1[0]);
-      zsLib::String string(wStr);
-
-      CSTR utf8Str = string;
-      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray1[0]), sizeof(gByteArray1)))
-
-      zsLib::String string2(utf8Str);
-      std::wstring wstring2(string2.wstring());
-      CWSTR utf16Str = wstring2.c_str();
-
-      TESTING_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray1)))
-
-      TESTING_EQUAL(string.getLength(), strlen(utf8Str))
-      TESTING_EQUAL(string.lengthUnicodeSafe(), gTEST_ARRAY_1_LINE_LENGTH)
-
-      size_t length = (sizeof(gWGetAtArray1)/sizeof(WCHAR));
-      for (size_t loop = 0; loop < length-1; ++loop)
-      {
-        TESTING_EQUAL(gWGetAtArray1[loop], string.atUnicodeSafe(loop))
-      }
-
-      for (size_t loop = 0; true; ++loop)
-      {
-        int pos = gMidTests[loop].mPos;
-        int count = gMidTests[loop].mCount;
-        if (NULL == gMidTests[loop].mContents)
-          break;
-
-        zsLib::String result = string.substrUnicodeSafe(pos, count);
-        TESTING_CHECK(0 == memcmp((CSTR)result, gMidTests[loop].mContents, gMidTests[loop].mLength))
-      }
+      TESTING_EQUAL(gWGetAtArray1[loop], string.atUnicodeSafe(loop))
     }
-    if (sizeof(WORD) == sizeof(WCHAR))  // this test if for UTF-16 systems only, new test requried for UTF-32 systems
+
+    for (size_t loop = 0; true; ++loop)
     {
-      // test convert to unicode with wrong endian and back
-      CWSTR wStr = &(gWArray2[0]);
-      zsLib::String string(wStr);
+      int pos = gMidTests[loop].mPos;
+      int count = gMidTests[loop].mCount;
+      if (NULL == gMidTests[loop].mContents)
+        break;
 
-      CSTR utf8Str = string;
-      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray3[0]), sizeof(gByteArray3)))
-
-      zsLib::String string2(utf8Str);
-      std::wstring wstring2(string2.wstring());
-      CWSTR utf16Str = wstring2.c_str();
-
-      TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray3[0]), sizeof(gWArray3)))
-      TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_3_LINE_LENGTH)
-    }
-    {
-      // test illegal UTF-16 encoding
-      CWSTR wStr = &(gWArray4[0]);
-      zsLib::String string(wStr);
-
-      CSTR utf8Str = string;
-      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray4[0]), sizeof(gByteArray4)))
-
-      zsLib::String string2(utf8Str);
-      std::wstring wstring2(string2.wstring());
-      CWSTR utf16Str = wstring2.c_str();
-
-      TESTING_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray3)))
-      TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_4_LINE_LENGTH)
-    }
-    {
-      // test illegal UTF-8 encoding
-      zsLib::String string((CSTR)(&(gByteArray5[0])));
-
-      CSTR utf8Str = string;
-      TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray5[0]), sizeof(gByteArray5)))
-
-      zsLib::String string2(utf8Str);
-      std::wstring wstring2(string2.wstring());
-      CWSTR utf16Str = wstring2.c_str();
-
-      TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray5[0]), sizeof(gWArray5)))
-      TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_5_LINE_LENGTH)
-
-      zsLib::String string3(utf16Str);
-      CSTR utf8Str3 = string3;
-
-      TESTING_CHECK(0 == memcmp(utf8Str3, &(gUTFByteArray5[0]), sizeof(gUTFByteArray5)))
+      zsLib::String result = string.substrUnicodeSafe(pos, count);
+      TESTING_CHECK(0 == memcmp((CSTR)result, gMidTests[loop].mContents, gMidTests[loop].mLength))
     }
   }
+  if (sizeof(WORD) == sizeof(WCHAR))  // this test if for UTF-16 systems only, new test requried for UTF-32 systems
+  {
+    // test convert to unicode with wrong endian and back
+    CWSTR wStr = &(gWArray2[0]);
+    zsLib::String string(wStr);
 
-TESTING_AUTO_TEST_SUITE_END()
+    CSTR utf8Str = string;
+    TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray3[0]), sizeof(gByteArray3)))
+
+    zsLib::String string2(utf8Str);
+    std::wstring wstring2(string2.wstring());
+    CWSTR utf16Str = wstring2.c_str();
+
+    TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray3[0]), sizeof(gWArray3)))
+    TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_3_LINE_LENGTH)
+  }
+  {
+    // test illegal UTF-16 encoding
+    CWSTR wStr = &(gWArray4[0]);
+    zsLib::String string(wStr);
+
+    CSTR utf8Str = string;
+    TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray4[0]), sizeof(gByteArray4)))
+
+    zsLib::String string2(utf8Str);
+    std::wstring wstring2(string2.wstring());
+    CWSTR utf16Str = wstring2.c_str();
+
+    TESTING_CHECK(0 == memcmp((void *)utf16Str, wStr, sizeof(gWArray3)))
+    TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_4_LINE_LENGTH)
+  }
+  {
+    // test illegal UTF-8 encoding
+    zsLib::String string((CSTR)(&(gByteArray5[0])));
+
+    CSTR utf8Str = string;
+    TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray5[0]), sizeof(gByteArray5)))
+
+    zsLib::String string2(utf8Str);
+    std::wstring wstring2(string2.wstring());
+    CWSTR utf16Str = wstring2.c_str();
+
+    TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray5[0]), sizeof(gWArray5)))
+    TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_5_LINE_LENGTH)
+
+    zsLib::String string3(utf16Str);
+    CSTR utf8Str3 = string3;
+
+    TESTING_CHECK(0 == memcmp(utf8Str3, &(gUTFByteArray5[0]), sizeof(gUTFByteArray5)))
+  }
+}
+
+
+void testString()
+{
+    if (!ZSLIB_TEST_STRING) return;
+
+    testString1();
+    testString2();
+}

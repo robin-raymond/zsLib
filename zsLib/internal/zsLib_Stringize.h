@@ -32,11 +32,13 @@
 #ifndef ZSLIB_INTERNAL_STRINGIZE_H_0c235f6defcccb275d602da44da60e58
 #define ZSLIB_INTERNAL_STRINGIZE_H_0c235f6defcccb275d602da44da60e58
 
-#include <uuid/uuid.h>
-
 #include <zsLib/helpers.h>
 #include <zsLib/types.h>
 #include <zsLib/String.h>
+
+#ifdef _WIN32
+#include <objbase.h>
+#endif //_WIN32
 
 namespace zsLib
 {
@@ -195,9 +197,20 @@ namespace zsLib
   template<>
   inline Stringize<UUID>::operator String() const
   {
-    char buffer[(sizeof(mValue)*3)+3];  // allow for 00-FF and '{', '}', '-' and nul at end
-    uuid_unparse_lower(mValue.mUUID, buffer);
-    return String((CSTR)buffer);
+#ifndef _WIN32
+	char buffer[(sizeof(mValue)*3)+3];  // allow for 00-FF and '{', '}', '-' and nul at end
+	uuid_unparse_lower(mValue.mUUID, buffer);
+	return String((CSTR)buffer);
+#else
+	wchar_t buffer[(sizeof(mValue)*3)+3];
+	int result = StringFromGUID2(mValue.mUUID, &(buffer[0]), sizeof(buffer));
+	assert(0 != result);
+  String output(buffer);
+  output.trimLeft("{");
+  output.trimRight("}");
+  output.toLower();
+	return output;
+#endif //_WIN32
   }
 
   template<>

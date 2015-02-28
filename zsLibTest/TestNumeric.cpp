@@ -43,12 +43,10 @@ using zsLib::ULONGLONG;
 
 //using namespace zsLib;
 
-TESTING_AUTO_TEST_SUITE(zsLibNumeric)
-
-  TESTING_AUTO_TEST_CASE(TestNumeric)
+namespace testing_numeric
+{
+  void testNumeric()
   {
-    if (!ZSLIB_TEST_NUMERIC) return;
-
     TESTING_EQUAL(0, (char)zsLib::Numeric<char>("0"));
     TESTING_EQUAL(127, (char)zsLib::Numeric<char>("127"));
     TESTING_EQUAL(127, (char)zsLib::Numeric<char>("+127"));
@@ -263,5 +261,11 @@ TESTING_AUTO_TEST_SUITE(zsLibNumeric)
       TESTING_EQUAL(full, zsLib::string(fromStr2));
     }
   }
+}
 
-TESTING_AUTO_TEST_SUITE_END()
+void testNumeric()
+{
+  if (!ZSLIB_TEST_NUMERIC) return;
+
+  testing_numeric::testNumeric();
+}

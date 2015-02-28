@@ -40,12 +40,10 @@ static int get99()
   return 99;
 }
 
-TESTING_AUTO_TEST_SUITE(zsLibHelperTest)
-
-  TESTING_AUTO_TEST_CASE(Test_AUTO)
+namespace testing_helper
+{
+  void testAuto()
   {
-    if (!ZSLIB_TEST_HELPER) return;
-
     bool testBool {};
     TESTING_CHECK(!testBool)
 
@@ -76,10 +74,8 @@ TESTING_AUTO_TEST_SUITE(zsLibHelperTest)
     TESTING_EQUAL("99", zsLib::Stringize<int>(get99()).string());
   }
 
-  TESTING_AUTO_TEST_CASE(Test_PUID_GUID)
+  void testPuidGuid()
   {
-    if (!ZSLIB_TEST_HELPER) return;
-
     zsLib::PUID puid1 = zsLib::createPUID();
     zsLib::PUID puid2 = zsLib::createPUID();
 
@@ -93,10 +89,8 @@ TESTING_AUTO_TEST_SUITE(zsLibHelperTest)
     TESTING_CHECK(uuid1 != uuid2)
   }
 
-  TESTING_AUTO_TEST_CASE(Test_atomic_inc_dec)
+  void testAtomicIncDec()
   {
-    if (!ZSLIB_TEST_HELPER) return;
-
     std::atomic_ulong value {};
     zsLib::ULONG value1 = (++value);
     TESTING_EQUAL(1, value);
@@ -112,10 +106,8 @@ TESTING_AUTO_TEST_SUITE(zsLibHelperTest)
     TESTING_EQUAL(0, value4);
   }
 
-  TESTING_AUTO_TEST_CASE(TestHelper_atomic_get_set)
+  void testAtomicGetSet()
   {
-    if (!ZSLIB_TEST_HELPER) return;
-
     std::atomic_ulong value {};
     TESTING_EQUAL(0, value)
     value = 1;
@@ -123,5 +115,14 @@ TESTING_AUTO_TEST_SUITE(zsLibHelperTest)
     value = 0xFFFFFFFF;
     TESTING_EQUAL(0xFFFFFFFF, value)
   }
+}
 
-TESTING_AUTO_TEST_SUITE_END()
+void testHelper()
+{
+  if (!ZSLIB_TEST_HELPER) return;
+
+  testing_helper::testAuto();
+  testing_helper::testPuidGuid();
+  testing_helper::testAtomicIncDec();
+  testing_helper::testAtomicGetSet();
+}

@@ -1771,7 +1771,7 @@ public:
                                                          results.mCaseSensativeAttributes
                                                          );
 
-    ULONG reLengthJSON = 0;
+    size_t reLengthJSON = 0;
     std::unique_ptr<char[]> reOutputJSON = reGeneratorJSON->write(reDocument, &reLengthJSON);
     TESTING_CHECK(lengthJSON == reLengthJSON)
     TESTING_CHECK(reLengthJSON == strlen(reOutputJSON.get()))
@@ -2631,13 +2631,9 @@ public:
   }
 };
 
-TESTING_AUTO_TEST_SUITE(zsLibXMLTest)
+void testXML()
+{
+  if (!ZSLIB_TEST_XML) return;
 
-  TESTING_AUTO_TEST_CASE(TestXML)
-  {
-    if (ZSLIB_TEST_XML) {
-      TestXML test;
-    }
-  }
-
-TESTING_AUTO_TEST_SUITE_END()
+  TestXML test;
+}

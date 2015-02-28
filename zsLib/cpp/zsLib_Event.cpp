@@ -39,8 +39,7 @@ namespace zsLib
 {
   namespace internal
   {
-    Event::Event() :
-      mNotified(0)
+    Event::Event()
     {
 #ifdef __QNX__
       static pthread_cond_t gConditionInit = PTHREAD_COND_INITIALIZER;

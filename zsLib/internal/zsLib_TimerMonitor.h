@@ -34,6 +34,8 @@
 #ifndef ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
 #define ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
 
+#include <condition_variable>
+
 #include <zsLib/types.h>
 #include <zsLib/Log.h>
 #include <zsLib/MessageQueueThread.h>

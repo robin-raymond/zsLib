@@ -37,7 +37,10 @@
 
 #include <fcntl.h>
 #include <signal.h>
+
+#ifndef _WIN32
 #include <unistd.h>
+#endif //ndef _WIN32
 
 #pragma warning(push)
 #pragma warning(disable:4290)
@@ -94,6 +97,8 @@ namespace zsLib
     //-------------------------------------------------------------------------
     static void ignoreSigTermOnThread()
     {
+#ifndef _WIN32
+
 #if defined(__QNX__) || defined(__APPLE__)
       pthread_once(& (getIgnoreSigTermKeyOnce()), makeIgnoreSigTermKeyOnce);
 
@@ -115,7 +120,7 @@ namespace zsLib
         act.sa_flags=0;
         sigaction(SIGPIPE, &act, NULL);
       }
-
+#endif //ndef _WIN32
     }
 
 #ifdef _WIN32
@@ -129,7 +134,7 @@ namespace zsLib
         memset(&data, 0, sizeof(data));
         int result = WSAStartup(MAKEWORD(2, 2), &data);
         if (0 != result) {
-          ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
+          ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
         }
       }
 
@@ -138,7 +143,7 @@ namespace zsLib
       {
         int result = WSACleanup();
         if (0 != result) {
-          ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
+          ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
         }
       }
     };

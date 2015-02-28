@@ -171,6 +171,7 @@ namespace zsLib
         KeepAlive            = SO_KEEPALIVE,
         OOBInLine            = SO_OOBINLINE,
         ReuseAddress         = SO_REUSEADDR,
+        BSDState             = SO_WINDOWS_BSD_STATE,
         ConditionalAccept    = SO_WINDOWS_CONDITIONAL_ACCEPT,
         ExclusiveAddressUse  = SO_WINDOWS_EXCLUSIVEADDRUSE,
         TCPNoDelay           = TCP_NODELAY,

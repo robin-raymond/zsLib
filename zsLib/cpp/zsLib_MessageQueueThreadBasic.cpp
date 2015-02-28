@@ -33,8 +33,6 @@
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 
-#include <pthread.h>
-
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib

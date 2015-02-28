@@ -174,7 +174,17 @@ public:
     {
       sockaddr_in address;
       address.sin_family = AF_INET;
-      address.sin_addr.s_addr = inet_addr("192.168.1.17");
+#if !(WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+      inet_pton(AF_INET, "192.168.1.17", &(address.sin_addr));
+#else
+      // argh - windows phone is missing this method for testing so putting in
+      // values manually since this method is not the point of the test
+      //address.sin_addr.s_addr = inet_addr("192.168.1.17");
+      address.sin_addr.S_un.S_un_b.s_b1 = 192;
+      address.sin_addr.S_un.S_un_b.s_b2 = 168;
+      address.sin_addr.S_un.S_un_b.s_b3 = 1;
+      address.sin_addr.S_un.S_un_b.s_b4 = 17;
+#endif //!(WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
       address.sin_port = htons(5060);
 
       zsLib::IPAddress ipOriginal(address);
@@ -1146,13 +1156,9 @@ public:
 };
 
 
-TESTING_AUTO_TEST_SUITE(zsLibIPAddress)
+void testIPAddress()
+{
+  if (!ZSLIB_TEST_IP_ADDRESS) return;
 
-  TESTING_AUTO_TEST_CASE(TestIPAddress)
-  {
-    if (ZSLIB_TEST_IP_ADDRESS) {
-      TestIPAddress test;
-    }
-  }
-
-TESTING_AUTO_TEST_SUITE_END()
+  TestIPAddress test;
+}

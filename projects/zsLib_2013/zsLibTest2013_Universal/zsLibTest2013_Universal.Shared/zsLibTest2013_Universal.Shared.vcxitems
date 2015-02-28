@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{0eafd8c1-deb3-47b7-8a2f-8878b1c9c00e}</ItemsProjectGuid>
+    <ItemsRootNamespace>zsLibTest2013_Universal</ItemsRootNamespace>
+    <ItemsProjectName>zsLibTest2013_Universal.Shared</ItemsProjectName>
+    <SharedGUID>75c1f735-8c5c-47b6-8446-b0214452859c</SharedGUID>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\main.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\testing.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestIPAddress.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestNumeric.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestPromise.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestProxy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestProxyUsingGUIThread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestSocket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestSocketAsync.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestString.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestStringize.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestTearAway.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestTimer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestXML.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\main.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\testing.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)app.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)app.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+</Project>

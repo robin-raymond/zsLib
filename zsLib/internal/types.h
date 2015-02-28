@@ -32,15 +32,23 @@
 #ifndef ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 #define ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 
+#include <atomic>
 #include <limits.h>
 #include <chrono>
 #include <thread>
 #include <mutex>
+#ifndef _WIN32
 #include <uuid/uuid.h>
-
+#endif //_WIN32
 
 #ifdef _WIN32
+#include <rpc.h>
+#include <stdint.h>
 #include <winsock2.h>
+
+#ifdef __cplusplus_winrt
+#define WINRT
+#endif //__cplusplus_winrt
 #endif //_WIN32
 
 //#ifndef interface
@@ -82,6 +90,14 @@
 #define ZS_INTERNAL_DYNAMIC_PTR_CAST(xType, xObject)                                                \
   ZS_INTERNAL_SMART_POINTER_NAMESPACE::dynamic_pointer_cast<xType>(xObject)
 
+#ifdef _WIN32
+namespace std
+{
+	typedef intmax_t intmax_t;
+	typedef uintmax_t uintmax_t;
+}
+#define alignof(xValue) __alignof(xValue)
+#endif //_WIN32
 
 namespace zsLib
 {
@@ -150,16 +166,41 @@ namespace zsLib
   typedef PTRNUMBER USERPARAM;
   namespace internal {
     struct uuid_wrapper {
+		typedef UCHAR * iterator;
+		typedef UCHAR const* const_iterator;
+
+#ifndef _WIN32
       typedef uuid_t raw_uuid_type;
-      raw_uuid_type mUUID {};
+	  raw_uuid_type mUUID{};
 
-      typedef UCHAR * iterator;
-      typedef UCHAR const* const_iterator;
+	  iterator begin() { return mUUID; }
+	  const_iterator begin() const { return mUUID; }
+	  iterator end() { return mUUID + sizeof(raw_uuid_type); }
+	  const_iterator end() const { return mUUID + sizeof(raw_uuid_type); }
+#else
+	  typedef GUID raw_uuid_type;
+	  raw_uuid_type mUUID {};
 
-      iterator begin() { return mUUID; }
-      const_iterator begin() const { return mUUID; }
-      iterator end() { return mUUID + sizeof(raw_uuid_type); }
-      const_iterator end() const { return mUUID + sizeof(raw_uuid_type); }
+	  iterator begin() { return (iterator) (&mUUID); }
+	  const_iterator begin() const { return (iterator)(&mUUID); }
+	  iterator end() { return begin() + sizeof(raw_uuid_type); }
+	  const_iterator end() const { return begin() + sizeof(raw_uuid_type); }
+
+	  static void uuid_clear(raw_uuid_type &uuid) {
+		  memset(&uuid, 0, sizeof(uuid));
+	  }
+	  static void uuid_copy(raw_uuid_type &dest, const raw_uuid_type &source) {
+		  memcpy(&dest, &source, sizeof(dest));
+	  }
+	  static int uuid_compare(const raw_uuid_type &op1, const raw_uuid_type &op2) {
+		  return memcmp(&op1, &op2, sizeof(op1));
+	  }
+	  static int uuid_is_null(const raw_uuid_type &op) {
+		  raw_uuid_type op2;
+		  uuid_clear(op2);
+		  return 0 == memcmp(&op, &op2, sizeof(op));
+	  }
+#endif //ndef _WIN32
 
       uuid_wrapper() {
         uuid_clear(mUUID);

@@ -128,17 +128,17 @@ namespace async_socket
 
       SocketServerPtr server(SocketServer::create(thread));
 
-      std::this_thread::sleep_for(zsLib::Seconds(1));
+      TESTING_SLEEP(1000)
       zsLib::IPAddress address = zsLib::IPAddress(zsLib::IPAddress::loopbackV4(), port1);
       zsLib::SocketPtr socket = zsLib::Socket::createUDP();
       socket->bind(address);
 
       socket->sendTo(server->getAddress(), (BYTE *)"HELLO1", sizeof("HELLO1") + sizeof(char));
-      std::this_thread::sleep_for(zsLib::Seconds(5));
+      TESTING_SLEEP(5000)
 
       socket->sendTo(server->getAddress(), (BYTE *)"HELLO2", sizeof("HELLO2") + sizeof(char));
 
-      std::this_thread::sleep_for(zsLib::Seconds(10));
+      TESTING_SLEEP(10000)
 
       TESTING_EQUAL(2, server->mReadReadyCalled);
       TESTING_EQUAL(1, server->mWriteReadyCalled);
@@ -168,13 +168,9 @@ namespace async_socket
   };
 }
 
-TESTING_AUTO_TEST_SUITE(zsLibSocketAsync)
-
-TESTING_AUTO_TEST_CASE(TestSocketAsync)
+void testSocketAsync()
 {
-  if (ZSLIB_TEST_SOCKET_ASYNC) {
-    async_socket::SocketTest test;
-  }
-}
+  if (!ZSLIB_TEST_SOCKET_ASYNC) return;
 
-TESTING_AUTO_TEST_SUITE_END()
+    async_socket::SocketTest test;
+}

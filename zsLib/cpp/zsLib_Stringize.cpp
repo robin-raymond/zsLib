@@ -36,6 +36,10 @@
 
 #include <cmath>
 
+#ifdef _WIN32
+#define snprintf sprintf_s
+#endif //_WIN32
+
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib

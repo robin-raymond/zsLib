@@ -302,7 +302,7 @@ namespace zsLib
           return;
 
         size_t length = strlen(inString);
-        strcpy(ioPos, inString);
+        strcpy_s(ioPos, length+1, inString);
         ioPos += length;
       }
 
@@ -330,7 +330,7 @@ namespace zsLib
         size_t length = strlen(inString);
         if (NULL == ioPos) return length;
 
-        strcpy(ioPos, inString);
+        strcpy_s(ioPos, length+1, inString);
         ioPos += length;
         return length;
       }

@@ -248,13 +248,9 @@ namespace testing
 
 }
 
-TESTING_AUTO_TEST_SUITE(zsLibProxy)
+void testProxy()
+{
+  if (!ZSLIB_TEST_PROXY) return;
 
-  TESTING_AUTO_TEST_CASE(TestProxy)
-  {
-    if (ZSLIB_TEST_PROXY) {
-      testing::TestProxy test;
-    }
-  }
-
-TESTING_AUTO_TEST_SUITE_END()
+  testing::TestProxy test;
+}

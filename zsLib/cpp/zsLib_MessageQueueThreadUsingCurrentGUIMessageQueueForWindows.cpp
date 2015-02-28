@@ -29,14 +29,18 @@
  
  */
 
-#ifdef _WIN32
+#include <zsLib/types.h>
 
-#include <zsLib/internal/MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h>
+#if defined(_WIN32) && !defined(WINRT)
+
+#include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h>
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
 
+#include <Windows.h>
 #include <tchar.h>
+
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -44,6 +48,7 @@ namespace zsLib
 {
   namespace internal
   {
+
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -121,6 +126,7 @@ namespace zsLib
     {
       MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr thread(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindows);
       thread->mQueue = zsLib::MessageQueue::create(thread);
+      thread->setup();
       return thread;
     }
 
@@ -229,4 +235,4 @@ namespace zsLib
   }
 }
 
-#endif //_WIN32
+#endif //defined(_WIN32) && !defined(WINRT)

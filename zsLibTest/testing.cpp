@@ -34,7 +34,26 @@
 #include <zsLib/helpers.h>
 #include "testing.h"
 
+void testIPAddress();
+void testNumeric();
 void testPromise();
+void testProxy();
+void testProxyUsingGUIThread();
+void testSocket();
+void testSocketAsync();
+void testString();
+void testStringize();
+void testTearAway();
+void testTimer();
+void testXML();
+
+#ifdef _WIN32
+debugostream &getDebugCout()
+{
+  static debugostream gdebug;
+  return gdebug;
+}
+#endif //_WIN32
 
 namespace Testing
 {
@@ -69,7 +88,17 @@ namespace Testing
 
   void runAllTests()
   {
-    testPromise();
+    TESTING_RUN_TEST_CASE(testIPAddress)
+    TESTING_RUN_TEST_CASE(testNumeric)
+    TESTING_RUN_TEST_CASE(testPromise)
+    TESTING_RUN_TEST_CASE(testProxy)
+    TESTING_RUN_TEST_CASE(testSocket)
+    TESTING_RUN_TEST_CASE(testSocketAsync)
+    TESTING_RUN_TEST_CASE(testString)
+    TESTING_RUN_TEST_CASE(testStringize)
+    TESTING_RUN_TEST_CASE(testTearAway)
+    TESTING_RUN_TEST_CASE(testTimer)
+    TESTING_RUN_TEST_CASE(testXML)
+    TESTING_RUN_TEST_CASE(testProxyUsingGUIThread)
   }
 }
-

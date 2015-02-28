@@ -32,7 +32,57 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Log.h>
 
+#ifndef _WIN32
 #include <pthread.h>
+#else
+
+#include <windows.h>
+
+namespace std {
+	inline time_t mktime(struct tm *timeptr) { return ::mktime(timeptr); }
+}
+
+namespace zsLib {
+	namespace compatibility {
+		const DWORD MS_VC_EXCEPTION = 0x406D1388;
+
+#pragma pack(push,8)
+		typedef struct tagTHREADNAME_INFO
+		{
+			DWORD dwType; // Must be 0x1000.
+			LPCSTR szName; // Pointer to name (in user addr space).
+			DWORD dwThreadID; // Thread ID (-1=caller thread).
+			DWORD dwFlags; // Reserved for future use, must be zero.
+		} THREADNAME_INFO;
+#pragma pack(pop)
+
+		void SetThreadName(DWORD dwThreadID, const char* threadName)
+		{
+			THREADNAME_INFO info;
+			info.dwType = 0x1000;
+			info.szName = threadName;
+			info.dwThreadID = dwThreadID;
+			info.dwFlags = 0;
+
+			__try
+			{
+				RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+			}
+		}
+
+		void uuid_generate_random(zsLib::internal::uuid_wrapper::raw_uuid_type &uuid) {
+			auto result = CoCreateGuid(&uuid);
+			assert(S_OK == result);
+		}
+	}
+
+  using namespace zsLib::compatibility;
+}
+
+#endif //_WIN32
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -45,7 +95,9 @@ namespace zsLib
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
-    #pragma (helpers)
+    #pragma mark
+    #pragma mark (helpers)
+	#pragma mark
 
     //-------------------------------------------------------------------------
     std::atomic_ulong &globalPUID()
@@ -105,6 +157,8 @@ namespace zsLib
 
 #ifdef __APPLE__
     pthread_setname_np(name);
+#elif defined(_WIN32)
+	SetThreadName(GetCurrentThreadId(), name);
 #else
     pthread_setname_np(pthread_self(), name);
 #endif //__APPLE__

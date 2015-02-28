@@ -51,30 +51,113 @@ namespace Testing
   void runAllTests();
 }
 
+#ifdef _WIN32
+// attribution to http://forum.valhallalegends.com/index.php?topic=5649.0
+
+#include <vector>
+
+template < typename T, class CharTraits = std::char_traits< T > >
+class basic_debugstreambuf : private std::basic_streambuf< T, CharTraits >
+{
+public:
+  typedef typename CharTraits::off_type off_type;
+  typedef typename CharTraits::char_type char_type;
+  typedef typename CharTraits::int_type int_type;
+  typedef std::vector< typename T > BufferType;
+
+public:
+  basic_debugstreambuf() {
+    _Init(NULL, NULL, NULL, &pBegin, &pCurrent, &pLength);
+    m_outputBuffer.reserve(32);
+  }
+
+protected:
+  virtual int_type overflow(int_type c = CharTraits::eof())
+  {
+    zsLib::AutoRecursiveLock lock(mLock);
+
+    if (c == CharTraits::eof())
+      return CharTraits::not_eof(c);
+
+    m_outputBuffer.push_back(c);
+    if (c == TEXT('\n'))
+      sync();
+
+    return c;
+  }
+
+  int sync()
+  {
+    zsLib::AutoRecursiveLock lock(mLock);
+
+    m_outputBuffer.push_back(TEXT('\0'));
+    OutputDebugStringA(reinterpret_cast< const T* >(&m_outputBuffer[0]));
+    m_outputBuffer.clear();
+    m_outputBuffer.reserve(32);
+    return 0;
+  }
+
+protected:
+  zsLib::RecursiveLock mLock;
+
+  // put begin, put current and put length
+  char_type* pBegin;
+  char_type *pCurrent;
+  int_type pLength;
+  BufferType m_outputBuffer;
+};
+
+template < typename T, class CharTraits = std::char_traits< T > >
+class basic_debugostream : public std::basic_ostream< T, CharTraits >
+{
+public:
+  typedef basic_debugstreambuf< T, CharTraits > DebugStreamBuf;
+  typedef std::basic_streambuf< T, CharTraits > StreamBuf;
+  typedef std::basic_ostream< T, CharTraits > OStream;
+
+public:
+  basic_debugostream() : OStream((StreamBuf*)&m_streamBuffer)
+  {
+    clear();
+  }
+
+protected:
+  DebugStreamBuf m_streamBuffer;
+};
+
+typedef basic_debugostream< char > debugostream;
+//typedef basic_debugostream< wchar_t > wdebugostream;
+//typedef basic_debugostream< TCHAR > tdebugostream; 
+
+debugostream &getDebugCout();
+
+#endif //_WIN32
+
 #ifdef __QNX__
 #define TESTING_STDOUT() (qDebug())
+#elif defined(_WIN32)
+#define TESTING_STDOUT() (getDebugCout())
 #else
 #define TESTING_STDOUT() (std::cout)
 #endif //__QNX___
 
-#define TESTING_AUTO_TEST_SUITE(xParam) namespace xParam {
+#ifdef _WIN32
+#define TESTING_SLEEP(xMilliseconds) {::Sleep(xMilliseconds);}
+#else
+#define TESTING_SLEEP(xMilliseconds) {std::this_thread::sleep_for(zsLib::Milliseconds(xMilliseconds));}
+#endif //_WIN32
 
-#define TESTING_AUTO_TEST_SUITE_END() }
-
-#define TESTING_AUTO_TEST_CASE(xTestCase) static struct Test_##xTestCase {   \
+#define TESTING_RUN_TEST_CASE(xTestCase) static struct Test_##xTestCase {   \
     Test_##xTestCase()                                              \
     {                                                               \
       TESTING_STDOUT() << "STARTING:     " #xTestCase "\n";         \
       try                                                           \
-      { test_func(); }                                              \
+      { xTestCase(); }                                              \
       catch(...)                                                    \
       { TESTING_STDOUT() << "***UNCAUGHT EXCEPTION IN***: " #xTestCase "\n"; Testing::failed(); }   \
-      std::cout << "ENDING:       " #xTestCase "\n\n";              \
+      TESTING_STDOUT() << "ENDING:       " #xTestCase "\n\n";              \
     }                                                               \
-    void test_func();                                               \
-  } g_Test_##xTestCase;                                             \
-\
-  void Test_##xTestCase::test_func()
+  } g_Test_##xTestCase;
 
 #define TESTING_CHECK(xValue)                                         \
   {                                                                   \

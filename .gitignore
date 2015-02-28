@@ -5,3 +5,7 @@ projects/xcode/zsLibTest/zsLibTest.xcodeproj/xcuserdata
 projects/xcode/zsLibTest_ios/zsLibTest_ios.xcodeproj/xcuserdata
 projects/android/libs
 projects/android/obj
+[Dd]ebug/
+*.sdf
+*.pfx
+ipch/

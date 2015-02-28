@@ -207,13 +207,9 @@ namespace testing
 
 }
 
-TESTING_AUTO_TEST_SUITE(zsLibTearAway)
+void testTearAway()
+{
+    if (!ZSLIB_TEST_TEAR_AWAY) return;
 
-  TESTING_AUTO_TEST_CASE(TestTearAway)
-  {
-    if (ZSLIB_TEST_TEAR_AWAY) {
-      testing::TestTearAway test;
-    }
-  }
-
-TESTING_AUTO_TEST_SUITE_END()
+    testing::TestTearAway test;
+}

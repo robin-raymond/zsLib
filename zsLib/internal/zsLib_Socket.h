@@ -41,6 +41,15 @@
 #include <winsock2.h>
 #include <ws2def.h>
 #include <ws2tcpip.h>
+
+namespace zsLib
+{
+  enum MissingSocketOptions
+  {
+    SO_NOSIGPIPE = 1,
+  };
+}
+
 #else //!_WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -59,10 +68,12 @@ namespace zsLib
     SD_RECEIVE = SHUT_RD,
     SD_BOTH = SHUT_RDWR,
 
+    SO_BSP_STATE = -1,
     SO_CONDITIONAL_ACCEPT = -1,
     SO_EXCLUSIVEADDRUSE = -1,
     SO_DONTLINGER = -1,
     SO_MAX_MSG_SIZE = -1,
+    SO_PORT_SCALABILITY = -1,
 #if (defined _ANDROID || defined __QNX__ || defined _LINUX)
     SO_NOSIGPIPE = -1,
 #endif //(defined _ANDROID || defined __QNX__ || defined _LINUX)
@@ -91,10 +102,12 @@ namespace zsLib
 {
   enum WindowsSocketOptions
   {
+    SO_WINDOWS_BSD_STATE = SO_BSP_STATE,
     SO_WINDOWS_CONDITIONAL_ACCEPT = SO_CONDITIONAL_ACCEPT,
     SO_WINDOWS_EXCLUSIVEADDRUSE = SO_EXCLUSIVEADDRUSE,
     SO_WINDOWS_DONTLINGER = SO_DONTLINGER,
-    SO_WINDOWS_MAX_MSG_SIZE = SO_MAX_MSG_SIZE
+    SO_WINDOWS_MAX_MSG_SIZE = SO_MAX_MSG_SIZE,
+    SO_WINDOWS_PORT_SCALABILITY = SO_PORT_SCALABILITY,
   };
 }
 

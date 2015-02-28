@@ -647,7 +647,7 @@ namespace testing
 
 void testPromise()
 {
-  {
+  if (ZSLIB_TEST_PROMISE) {
     testing::TestPromise test;
   }
 }

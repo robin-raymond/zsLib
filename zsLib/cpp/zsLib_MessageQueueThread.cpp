@@ -72,7 +72,19 @@ namespace zsLib
       }
       pthread_setschedparam(handle, policy, &param);
 #else
-#error MUST IMPLEMENT THIS
+		  int priority = THREAD_PRIORITY_NORMAL;
+		  switch (threadPriority) {
+        case ThreadPriority_LowPriority:      priority = THREAD_PRIORITY_LOWEST; break;
+        case ThreadPriority_NormalPriority:   priority = THREAD_PRIORITY_NORMAL; break;
+        case ThreadPriority_HighPriority:     priority = THREAD_PRIORITY_ABOVE_NORMAL; break;
+        case ThreadPriority_HighestPriority:  priority = THREAD_PRIORITY_HIGHEST; break;
+        case ThreadPriority_RealtimePriority: priority = THREAD_PRIORITY_TIME_CRITICAL; break;
+      }
+#ifndef WINRT
+		  auto result = SetThreadPriority(handle, priority);
+      assert(0 != result);
+#endif //ndef WINRT
+
 #endif //_WIN32
     }
   }

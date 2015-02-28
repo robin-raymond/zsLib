@@ -49,8 +49,6 @@ class TestSocket
 public:
   TestSocket()
   {
-    if (!ZSLIB_TEST_SOCKET) return;
-    
     srand(static_cast<signed int>(time(NULL)));
     zsLib::WORD port1 = (rand()%(65550-5000))+5000;
     zsLib::WORD port2 = (rand()%(65550-5000))+5000;
@@ -178,12 +176,9 @@ public:
 };
 
 
-
-TESTING_AUTO_TEST_SUITE(zsLibSocket)
-
-  TESTING_AUTO_TEST_CASE(TestSocket)
-  {
+void testSocket()
+{
+    if (!ZSLIB_TEST_SOCKET) return;
+    
     TestSocket test;
-  }
-
-TESTING_AUTO_TEST_SUITE_END()
+}

@@ -36,8 +36,14 @@
 
 #include <math.h>
 
+#ifdef _WIN32
+#include <objbase.h>
+#endif //_WIN32
+
 #pragma warning(push)
 #pragma warning(disable:4290)
+
+char *strptime(const char *buf, const char *fmt, struct tm *tm);
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
@@ -45,6 +51,30 @@ using namespace std;
 
 namespace zsLib
 {
+  namespace compatibility {
+#ifdef _WIN32
+    using zsLib::internal::uuid_wrapper;
+
+    int uuid_parse(const char *input, uuid_wrapper::raw_uuid_type &output) {
+
+      String str(input);
+      if (str.isEmpty()) return -1;
+      if ('{' != *(str.c_str())) str = "{" + str + "}";
+
+      std::wstring convertedStr = str.wstring();
+      CLSID clsID {};
+      auto result = CLSIDFromString(convertedStr.c_str(), &clsID);
+
+      memcpy(&output, &clsID, sizeof(output));
+
+      if (NOERROR == result) return 0;
+      return -1;
+    }
+#endif //_WIN32
+  }
+
+  using namespace compatibility;
+
   template<typename t_type>
   void Numeric<t_type>::get(t_type &outValue) const throw (ValueOutOfRange)
   {
@@ -487,8 +517,10 @@ namespace zsLib
       if (ignoreWhiteSpace)
         temp.trim();
 
+#ifndef _WIN32
       temp.trimLeft("{");
       temp.trimRight("}");
+#endif //ndef _WIN32
 
       if (0 == uuid_parse(temp.c_str(), outResult.mUUID)) return true;
       return false;
