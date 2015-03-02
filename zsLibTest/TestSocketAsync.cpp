@@ -74,7 +74,7 @@ namespace async_socket
 
     virtual void onReadReady(zsLib::SocketPtr socket)
     {
-      std::cout << "ON READ READY\n";
+      TESTING_STDOUT() << "ON READ READY\n";
       ++mReadReadyCalled;
 
       zsLib::IPAddress address;
@@ -86,18 +86,18 @@ namespace async_socket
                                          );
       mReadData.push_back((const char *)buffer);
       mReadAddresses.push_back(address);
-      std::cout << "READ " << total << " BYTES.\n";
+      TESTING_STDOUT() << "READ " << total << " BYTES.\n";
     }
 
     virtual void onWriteReady(zsLib::SocketPtr socket)
     {
-      std::cout << "ON WRITE READY\n";
+      TESTING_STDOUT() << "ON WRITE READY\n";
       ++mWriteReadyCalled;
     }
 
     virtual void onException(zsLib::SocketPtr socket)
     {
-      std::cout << "ONEXCEPTION\n";
+      TESTING_STDOUT() << "ONEXCEPTION\n";
       ++mExceptionCalled;
     }
 

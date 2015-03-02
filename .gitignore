@@ -9,3 +9,4 @@ projects/android/obj
 *.sdf
 *.pfx
 ipch/
+*.opensdf

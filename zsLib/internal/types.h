@@ -32,6 +32,16 @@
 #ifndef ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 #define ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 
+#ifdef _WIN32
+#include <winsock2.h>
+#include <rpc.h>
+#include <stdint.h>
+
+#ifdef __cplusplus_winrt
+#define WINRT
+#endif //__cplusplus_winrt
+#endif //_WIN32
+
 #include <atomic>
 #include <limits.h>
 #include <chrono>
@@ -39,16 +49,6 @@
 #include <mutex>
 #ifndef _WIN32
 #include <uuid/uuid.h>
-#endif //_WIN32
-
-#ifdef _WIN32
-#include <rpc.h>
-#include <stdint.h>
-#include <winsock2.h>
-
-#ifdef __cplusplus_winrt
-#define WINRT
-#endif //__cplusplus_winrt
 #endif //_WIN32
 
 //#ifndef interface

@@ -1754,13 +1754,13 @@ public:
     TESTING_CHECK(0 == strcmp(results.mOutputXML, outputXML.get()))
     TESTING_CHECK(0 == strcmp(results.mOutputJSON, outputJSON.get()))
 
-    std::cout << "--- SOR:(input) ---\n" << results.mInput << "\n--- EOR ---\n";
-    std::cout << "--- SOR:XML(final) ---\n" << outputXML.get() << "\n" << lengthXML << " (calculated) -vs- " << strlen(outputXML.get()) << " (actual)\n--- EOR:XML ---\n";
+    TESTING_STDOUT() << "--- SOR:(input) ---\n" << results.mInput << "\n--- EOR ---\n";
+    TESTING_STDOUT() << "--- SOR:XML(final) ---\n" << outputXML.get() << "\n" << lengthXML << " (calculated) -vs- " << strlen(outputXML.get()) << " (actual)\n--- EOR:XML ---\n";
     if (results.mOutputJSON) {
-      std::cout << "--- SOR:JSON(compare) ---\n" << results.mOutputJSON << "\n--- EOR:JSON(compare) ---\n";
+      TESTING_STDOUT() << "--- SOR:JSON(compare) ---\n" << results.mOutputJSON << "\n--- EOR:JSON(compare) ---\n";
     }
-    std::cout << "--- SOR:JSON(result) ---\n" << outputJSON.get() << "\n" << lengthJSON << " (calculated) -vs- " << strlen(outputJSON.get()) << " (actual)\n--- EOR:JSON(result) ---\n";
-    std::cout << "--- SOR:JSON(pretty) ---\n" << outputJSONPretty.get() << "\n" << lengthJSONPretty << " (calculated) -vs- " << strlen(outputJSONPretty.get()) << " (actual)\n--- EOR:JSON(pretty) ---\n";
+    TESTING_STDOUT() << "--- SOR:JSON(result) ---\n" << outputJSON.get() << "\n" << lengthJSON << " (calculated) -vs- " << strlen(outputJSON.get()) << " (actual)\n--- EOR:JSON(result) ---\n";
+    TESTING_STDOUT() << "--- SOR:JSON(pretty) ---\n" << outputJSONPretty.get() << "\n" << lengthJSONPretty << " (calculated) -vs- " << strlen(outputJSONPretty.get()) << " (actual)\n--- EOR:JSON(pretty) ---\n";
 
     // parse document from the JSON and then regenerate output again - results must match
     zsLib::XML::ParserPtr reParser = ::zsLib::XML::Parser::createAutoDetectParser("#text",'$');
@@ -1785,12 +1785,12 @@ public:
         {
           const zsLib::XML::ParserWarning &actualWarning = (*iter);
           zsLib::String warningText = actualWarning.getAsString();
-          std::cout << "--- SOR:WARNING(unexpected) -- \n" << warningText << "\n--- EOR:WARNING(unexpected) ---\n";
+          TESTING_STDOUT() << "--- SOR:WARNING(unexpected) -- \n" << warningText << "\n--- EOR:WARNING(unexpected) ---\n";
         }
       }
     }
 
-    std::cout << "--- SOR:re-JSON(result) ---\n" << reOutputJSON.get() << "\n" << reLengthJSON << " (calculated) -vs- " << strlen(reOutputJSON.get()) << " (actual)\n--- EOR:re-JSON(result) ---\n";
+    TESTING_STDOUT() << "--- SOR:re-JSON(result) ---\n" << reOutputJSON.get() << "\n" << reLengthJSON << " (calculated) -vs- " << strlen(reOutputJSON.get()) << " (actual)\n--- EOR:re-JSON(result) ---\n";
 
 
     // original document, cloned and re-document must both validate
@@ -1817,7 +1817,7 @@ public:
         {
           const zsLib::XML::ParserWarning &actualWarning = (*iter);
           zsLib::String warningText = actualWarning.getAsString();
-          std::cout << "--- SOR:WARNING(found but not expected) -- \n" << warningText << "\n--- EOR:WARNING(found but not expected) ---\n";
+          TESTING_STDOUT() << "--- SOR:WARNING(found but not expected) -- \n" << warningText << "\n--- EOR:WARNING(found but not expected) ---\n";
         }
         break;
       }
@@ -1825,7 +1825,7 @@ public:
       const zsLib::XML::ParserWarning &actualWarning = (*iter);
       zsLib::String warningText = actualWarning.getAsString();
 
-      std::cout << "--- SOR:WARNING(actual) -- \n" << warningText << "\n--- EOR:WARNING(actual) ---\n";
+      TESTING_STDOUT() << "--- SOR:WARNING(actual) -- \n" << warningText << "\n--- EOR:WARNING(actual) ---\n";
 
       ULONG loop2 = 0;
       for (zsLib::XML::ParserWarning::ParserStack::const_reverse_iterator iter2 = actualWarning.mStack.rbegin(); iter2 != actualWarning.mStack.rend(); ++iter2, ++loop2)
@@ -1855,7 +1855,7 @@ public:
       TESTING_CHECK(actualWarning.mWarningType == resultWarning[loop2].mWarningType)
 
       TESTING_CHECK(0 == strcmp(warningText, resultWarning[loop2].mSearchStr))
-      std::cout << "--- SOR:WARNING(compare) -- \n" << resultWarning[loop2].mSearchStr << "\n--- EOR:WARNING(compare) ---\n";
+      TESTING_STDOUT() << "--- SOR:WARNING(compare) -- \n" << resultWarning[loop2].mSearchStr << "\n--- EOR:WARNING(compare) ---\n";
     }
 
     // make sure there aren't more warnings expected than found
@@ -2496,7 +2496,7 @@ public:
 
     TESTING_CHECK(length == strlen(output.get()))
 
-    // std::cout << "--- SOR ---\n" << output << "--- EOR ---\n";
+    // TESTING_STDOUT() << "--- SOR ---\n" << output << "--- EOR ---\n";
 
     TESTING_CHECK(0 == strcmp(gOutput, output.get()))
 

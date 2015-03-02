@@ -80,6 +80,7 @@ namespace zsLib
 
     public:
       virtual void process();
+      virtual void processMessagesFromThread();
 
     protected:
       mutable Lock mLock;

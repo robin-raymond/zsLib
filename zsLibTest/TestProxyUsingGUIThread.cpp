@@ -41,7 +41,9 @@
 #ifdef _WIN32
 #include <Windows.h>
 
+#ifdef WINRT
 using namespace Windows::UI::Core;
+#endif //WINRT
 
 #endif //_WIN32
 
@@ -171,6 +173,7 @@ namespace testingUsingGUIThread
       IMessageQueue::size_type count = 0;
 
 #ifdef _WIN32
+#ifdef WINRT
       CoreDispatcher ^dispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
 
       while (true) {
@@ -181,25 +184,26 @@ namespace testingUsingGUIThread
         if (0 == count)
           break;
       }
+#else //WINRT
+      BOOL result = 0;
 
-      //BOOL result = 0;
+      MSG msg;
+      memset(&msg, 0, sizeof(msg));
+      while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
+      {
+        TESTING_CHECK(-1 != result)
 
-      //MSG msg;
-      //memset(&msg, 0, sizeof(msg));
-      //while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
-      //{
-      //  TESTING_CHECK(-1 != result)
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
 
-      //  ::TranslateMessage(&msg);
-      //  ::DispatchMessage(&msg);
+        count = mThread->getTotalUnprocessedMessages();
+        count += mThread->getTotalUnprocessedMessages();
+        if (0 == count)
+          break;
 
-      //  count = mThread->getTotalUnprocessedMessages();
-      //  count += mThread->getTotalUnprocessedMessages();
-      //  if (0 == count)
-      //    break;
-
-      //  memset(&msg, 0, sizeof(msg));
-      //}
+        memset(&msg, 0, sizeof(msg));
+      }
+#endif //WINRT
 #elif __APPLE__
         count = mThread->getTotalUnprocessedMessages();
         do

@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Assets">
-      <UniqueIdentifier>03019913-1b5f-4e61-9e8b-c87c0ee0574a</UniqueIdentifier>
+      <UniqueIdentifier>6aa32800-2bb3-479c-8c1d-3961436ff1ec</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
     <Image Include="Assets\Logo.png">
@@ -22,6 +22,6 @@
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="zsLibTest2013_Universal.Windows_TemporaryKey.pfx" />
+    <None Include="zsLibTest_Universal.Windows_TemporaryKey.pfx" />
   </ItemGroup>
 </Project>

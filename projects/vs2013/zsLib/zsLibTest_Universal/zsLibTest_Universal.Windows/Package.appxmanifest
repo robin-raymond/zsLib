@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
 
-  <Identity Name="d2bb8afd-ebc2-4921-aee3-77d61d42e8b8"
+  <Identity Name="8b62a106-af87-4ebd-ac48-a859dcd754ce"
             Publisher="CN=Robin"
             Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>zsLibTest2013_Universal.Windows</DisplayName>
+    <DisplayName>zsLibTest_Universal.Windows</DisplayName>
     <PublisherDisplayName>Robin</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -23,12 +23,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="zsLibTest2013_Universal_Windows.App">
+        EntryPoint="zsLibTest_Universal_Windows.App">
         <VisualElements
-            DisplayName="zsLibTest2013_Universal.Windows"
+            DisplayName="zsLibTest_Universal.Windows"
             Logo="Assets\Logo.png"
             SmallLogo="Assets\SmallLogo.png"
-            Description="zsLibTest2013_Universal.Windows"
+            Description="zsLibTest_Universal.Windows"
             ForegroundText="light"
             BackgroundColor="#464646">
             <DefaultTile ShowName="allLogos" />

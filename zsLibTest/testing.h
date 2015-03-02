@@ -92,6 +92,7 @@ protected:
 
     m_outputBuffer.push_back(TEXT('\0'));
     OutputDebugStringA(reinterpret_cast< const T* >(&m_outputBuffer[0]));
+    std::cout << (reinterpret_cast< const T* >(&m_outputBuffer[0]));
     m_outputBuffer.clear();
     m_outputBuffer.reserve(32);
     return 0;

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
 
-  <Identity Name="f76b2820-a5e8-44ee-89d4-2e045bd8a93e"
+  <Identity Name="8280c117-c8d3-433a-80f5-68a60fbca012"
             Publisher="CN=Robin"
             Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="f76b2820-a5e8-44ee-89d4-2e045bd8a93e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="8280c117-c8d3-433a-80f5-68a60fbca012" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>zsLibTest2013_Universal.WindowsPhone</DisplayName>
+    <DisplayName>zsLibTest_Universal.WindowsPhone</DisplayName>
     <PublisherDisplayName>Robin</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -25,12 +25,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="zsLibTest2013_Universal_WindowsPhone.App">
+        EntryPoint="zsLibTest_Universal_WindowsPhone.App">
         <m3:VisualElements
-            DisplayName="zsLibTest2013_Universal.WindowsPhone"
+            DisplayName="zsLibTest_Universal.WindowsPhone"
             Square150x150Logo="Assets\Logo.png"
             Square44x44Logo="Assets\SmallLogo.png"
-            Description="zsLibTest2013_Universal.WindowsPhone"
+            Description="zsLibTest_Universal.WindowsPhone"
             ForegroundText="light"
             BackgroundColor="transparent">
             <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png"/>

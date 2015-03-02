@@ -177,6 +177,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
+    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::processMessagesFromThread()
+    {
+      mQueue->process();
+    }
+
+    //-------------------------------------------------------------------------
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::post(IMessageQueueMessagePtr message)
     {
       if (mIsShutdown) {

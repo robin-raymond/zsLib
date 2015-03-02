@@ -142,11 +142,6 @@ namespace zsLib
         info.mXMLSnip.trimRight();
         mStack.push_back(info);
       }
-      //#ifdef _DEBUG
-      //   std::cout << "---------\n";
-      //   std::cout << getAsString() << "\n";
-      //   std::cout << "---------\n";
-      //#endif //_DEBUG
     }
 
     //-------------------------------------------------------------------------

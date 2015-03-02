@@ -1,11 +1,11 @@
 ﻿#include "pch.h"
 #include "App.h"
 
-#include <zsLibTest/testing.h>
+#include <zsLibTest\testing.h>
 
 #include <ppltasks.h>
 
-using namespace zsLibTest2013_Universal;
+using namespace zsLibTest_Universal;
 
 using namespace concurrency;
 using namespace Windows::ApplicationModel;
@@ -21,13 +21,14 @@ using namespace Windows::Graphics::Display;
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
 {
-	auto applicationSource = ref new TestApplicationSource();
-	CoreApplication::Run(applicationSource);
+	auto testApplicationSource = ref new TestApplicationSource();
+	CoreApplication::Run(testApplicationSource);
+
   if (0 != Testing::getGlobalFailedVar()) {
     return -1;
   }
   return 0;
-}
+} 
 
 IFrameworkView^ TestApplicationSource::CreateView()
 {
@@ -97,7 +98,7 @@ void App::Run()
 {
   Testing::runAllTests();
   Testing::output();
-  
+
   while (!m_windowClosed)
 	{
     CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);

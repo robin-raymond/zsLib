@@ -56,7 +56,7 @@ public:
   virtual void onTimer(zsLib::TimerPtr timer)
   {
     ++mCount;
-    std::cout << "ONTIMER:      " << ((zsLib::PTRNUMBER)timer.get()) << "\n";
+    TESTING_STDOUT() << "ONTIMER:      " << ((zsLib::PTRNUMBER)timer.get()) << "\n";
   }
 
   ~TestTimerCallback()
