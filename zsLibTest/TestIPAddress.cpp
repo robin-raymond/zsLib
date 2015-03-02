@@ -174,6 +174,7 @@ public:
     {
       sockaddr_in address;
       address.sin_family = AF_INET;
+#ifdef _WIN32
 #if !(WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
       inet_pton(AF_INET, "192.168.1.17", &(address.sin_addr));
 #else
@@ -185,6 +186,9 @@ public:
       address.sin_addr.S_un.S_un_b.s_b3 = 1;
       address.sin_addr.S_un.S_un_b.s_b4 = 17;
 #endif //!(WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+#else
+      inet_pton(AF_INET, "192.168.1.17", &(address.sin_addr));
+#endif //_WIN32
       address.sin_port = htons(5060);
 
       zsLib::IPAddress ipOriginal(address);

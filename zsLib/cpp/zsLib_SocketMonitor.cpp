@@ -513,6 +513,7 @@ namespace zsLib
       ++mOfficialCount;
     }
 
+#ifdef _WIN32
     //-----------------------------------------------------------------------
     long SocketSet::toNetworkEvents(event_type events)
     {
@@ -528,6 +529,7 @@ namespace zsLib
       }
       return result;
     }
+#endif //_WIN32
 
     //-----------------------------------------------------------------------
     zsLib::Log::Params SocketSet::log(const char *message) const

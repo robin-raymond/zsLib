@@ -37,6 +37,10 @@ namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 #define ZS_INTERNAL_STACK_BUFFER_PADDING_SPACE 1024
 
+#ifndef _WIN32
+#define strcpy_s(x, y, z) strcpy(x, z)
+#endif //ndef _WIN32
+
 namespace zsLib
 {
 
