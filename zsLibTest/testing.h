@@ -91,7 +91,9 @@ protected:
     zsLib::AutoRecursiveLock lock(mLock);
 
     m_outputBuffer.push_back(TEXT('\0'));
+#ifdef _DEBUG
     OutputDebugStringA(reinterpret_cast< const T* >(&m_outputBuffer[0]));
+#endif //_DEBUG
     std::cout << (reinterpret_cast< const T* >(&m_outputBuffer[0]));
     m_outputBuffer.clear();
     m_outputBuffer.reserve(32);

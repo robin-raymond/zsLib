@@ -10,3 +10,4 @@ projects/android/obj
 *.pfx
 ipch/
 *.opensdf
+[Rr]elease/
