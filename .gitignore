@@ -6,8 +6,8 @@ projects/xcode/zsLibTest_ios/zsLibTest_ios.xcodeproj/xcuserdata
 projects/android/libs
 projects/android/obj
 [Dd]ebug/
+[Rr]elease/
 *.sdf
 *.pfx
 ipch/
 *.opensdf
-[Rr]elease/
