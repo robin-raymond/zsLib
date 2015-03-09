@@ -293,7 +293,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0460;
-				ORGANIZATIONNAME = "SMB Phone Inc.";
+				ORGANIZATIONNAME = "";
 			};
 			buildConfigurationList = 0066817D16C9D64000259F81 /* Build configuration list for PBXProject "zsLib_ios" */;
 			compatibilityVersion = "Xcode 3.2";
