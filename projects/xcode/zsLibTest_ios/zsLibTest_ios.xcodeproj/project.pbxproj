@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0056E8AE1AAE158000C3318B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0056E8AD1AAE158000C3318B /* Default-568h@2x.png */; };
 		0063D2C116CB094D00E6DB4D /* libzsLib_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0063D2BE16CB093100E6DB4D /* libzsLib_ios.a */; };
 		0066859C16C9E42000259F81 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859B16C9E42000259F81 /* UIKit.framework */; };
 		0066859E16C9E42000259F81 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0066859D16C9E42000259F81 /* Foundation.framework */; };
@@ -53,6 +54,7 @@
 
 /* Begin PBXFileReference section */
 		0024410718CD528E003357CF /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		0056E8AD1AAE158000C3318B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0063D2B916CB093000E6DB4D /* zsLib_ios.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zsLib_ios.xcodeproj; path = ../zsLib_ios/zsLib_ios.xcodeproj; sourceTree = "<group>"; };
 		0066859816C9E42000259F81 /* zsLibTest_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = zsLibTest_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0066859B16C9E42000259F81 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -114,6 +116,7 @@
 		0066858F16C9E42000259F81 = {
 			isa = PBXGroup;
 			children = (
+				0056E8AD1AAE158000C3318B /* Default-568h@2x.png */,
 				0066860016C9E6CC00259F81 /* zsLibTest_ios */,
 				006685CA16C9E63500259F81 /* zsLibTest */,
 				0066861A16C9E74F00259F81 /* Projects */,
@@ -285,6 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0066861216C9E6CC00259F81 /* InfoPlist.strings in Resources */,
+				0056E8AE1AAE158000C3318B /* Default-568h@2x.png in Resources */,
 				0066861316C9E6CC00259F81 /* MainWindow_iPad.xib in Resources */,
 				0066861516C9E6CC00259F81 /* MainWindow_iPhone.xib in Resources */,
 			);
