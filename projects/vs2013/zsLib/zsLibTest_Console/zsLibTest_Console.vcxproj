@@ -55,6 +55,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\..</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4068</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,7 +113,7 @@
     <ClCompile Include="zsLibTest_Console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\zsLib\zsLib.Win32\zsLib.Win32.vcxproj">
+    <ProjectReference Include="..\zsLib.Win32\zsLib.Win32.vcxproj">
       <Project>{d4990072-586d-43e3-9973-51092bd9226f}</Project>
     </ProjectReference>
   </ItemGroup>

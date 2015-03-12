@@ -3,38 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zsLib", "zsLib", "{E5F7F95D-0895-44F2-83A8-371F4D351444}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{00975739-F9B8-4F70-B52F-CB11AF082E44}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLib.Shared", "zsLib\zsLib.Shared\zsLib.Shared.vcxitems", "{AA3E6A72-1080-4430-9921-8EBA6652BA3A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Universal.Shared", "zsLib\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems", "{45DAA8AC-7DBD-4182-B99A-CD929C80D60D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLib.Win32", "zsLib\zsLib.Win32\zsLib.Win32.vcxproj", "{D4990072-586D-43E3-9973-51092BD9226F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLib.Windows", "zsLib\zsLib.Windows\zsLib.Windows.vcxproj", "{5DF1D5B9-5A44-46EF-A4F9-10C718F31F41}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLib.WindowsPhone", "zsLib\zsLib.WindowsPhone\zsLib.WindowsPhone.vcxproj", "{869C57F3-67AF-4B32-ABCB-E42A072E9271}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zsLibTest_Universal", "zsLibTest_Universal", "{AF273B0F-B9F6-4674-B4EA-F138550859A8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Console", "zsLib\zsLibTest_Console\zsLibTest_Console.vcxproj", "{B2838D1B-A3E1-4FCF-99C7-152398F54030}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Universal.Shared", "zsLibTest_Universal\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems", "{45DAA8AC-7DBD-4182-B99A-CD929C80D60D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Universal.Windows", "zsLib\zsLibTest_Universal.Windows\zsLibTest_Universal.Windows.vcxproj", "{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Universal.Windows", "zsLibTest_Universal\zsLibTest_Universal.Windows\zsLibTest_Universal.Windows.vcxproj", "{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5DF1D5B9-5A44-46EF-A4F9-10C718F31F41} = {5DF1D5B9-5A44-46EF-A4F9-10C718F31F41}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Universal.WindowsPhone", "zsLibTest_Universal\zsLibTest_Universal.WindowsPhone\zsLibTest_Universal.WindowsPhone.vcxproj", "{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{869C57F3-67AF-4B32-ABCB-E42A072E9271} = {869C57F3-67AF-4B32-ABCB-E42A072E9271}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Console", "zsLibTest_Console\zsLibTest_Console.vcxproj", "{B2838D1B-A3E1-4FCF-99C7-152398F54030}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLib.Win32", "zsLib\zsLib.Win32\zsLib.Win32.vcxproj", "{D4990072-586D-43E3-9973-51092BD9226F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsLibTest_Universal.WindowsPhone", "zsLib\zsLibTest_Universal.WindowsPhone\zsLibTest_Universal.WindowsPhone.vcxproj", "{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		zsLibTest_Universal\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems*{907b1c51-64cc-41a3-a6a4-77a9ea8b18f2}*SharedItemsImports = 4
-		zsLibTest_Universal\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems*{0dd0e22d-1d72-44aa-8ef3-c93c2d9bd395}*SharedItemsImports = 4
+		zsLib\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems*{907b1c51-64cc-41a3-a6a4-77a9ea8b18f2}*SharedItemsImports = 4
+		zsLib\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems*{0dd0e22d-1d72-44aa-8ef3-c93c2d9bd395}*SharedItemsImports = 4
 		zsLib\zsLib.Shared\zsLib.Shared.vcxitems*{d4990072-586d-43e3-9973-51092bd9226f}*SharedItemsImports = 4
-		zsLibTest_Universal\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems*{45daa8ac-7dbd-4182-b99a-cd929c80d60d}*SharedItemsImports = 9
+		zsLib\zsLibTest_Universal.Shared\zsLibTest_Universal.Shared.vcxitems*{45daa8ac-7dbd-4182-b99a-cd929c80d60d}*SharedItemsImports = 9
 		zsLib\zsLib.Shared\zsLib.Shared.vcxitems*{869c57f3-67af-4b32-abcb-e42a072e9271}*SharedItemsImports = 4
 		zsLib\zsLib.Shared\zsLib.Shared.vcxitems*{5df1d5b9-5a44-46ef-a4f9-10c718f31f41}*SharedItemsImports = 4
 		zsLib\zsLib.Shared\zsLib.Shared.vcxitems*{aa3e6a72-1080-4430-9921-8eba6652ba3a}*SharedItemsImports = 9
@@ -48,6 +40,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|ARM.ActiveCfg = Debug|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|Win32.Build.0 = Debug|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|x64.ActiveCfg = Debug|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Release|ARM.ActiveCfg = Release|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Release|Win32.ActiveCfg = Release|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Release|Win32.Build.0 = Release|Win32
+		{D4990072-586D-43E3-9973-51092BD9226F}.Release|x64.ActiveCfg = Release|Win32
 		{5DF1D5B9-5A44-46EF-A4F9-10C718F31F41}.Debug|ARM.ActiveCfg = Debug|ARM
 		{5DF1D5B9-5A44-46EF-A4F9-10C718F31F41}.Debug|ARM.Build.0 = Debug|ARM
 		{5DF1D5B9-5A44-46EF-A4F9-10C718F31F41}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -70,6 +70,14 @@ Global
 		{869C57F3-67AF-4B32-ABCB-E42A072E9271}.Release|Win32.ActiveCfg = Release|Win32
 		{869C57F3-67AF-4B32-ABCB-E42A072E9271}.Release|Win32.Build.0 = Release|Win32
 		{869C57F3-67AF-4B32-ABCB-E42A072E9271}.Release|x64.ActiveCfg = Release|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|ARM.ActiveCfg = Debug|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|Win32.Build.0 = Debug|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|x64.ActiveCfg = Debug|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|ARM.ActiveCfg = Release|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|Win32.ActiveCfg = Release|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|Win32.Build.0 = Release|Win32
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|x64.ActiveCfg = Release|Win32
 		{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395}.Debug|ARM.ActiveCfg = Debug|ARM
 		{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395}.Debug|ARM.Build.0 = Debug|ARM
 		{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -102,33 +110,14 @@ Global
 		{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2}.Release|Win32.Build.0 = Release|Win32
 		{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2}.Release|Win32.Deploy.0 = Release|Win32
 		{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2}.Release|x64.ActiveCfg = Release|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|ARM.ActiveCfg = Debug|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|Win32.Build.0 = Debug|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Debug|x64.ActiveCfg = Debug|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|ARM.ActiveCfg = Release|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|Win32.ActiveCfg = Release|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|Win32.Build.0 = Release|Win32
-		{B2838D1B-A3E1-4FCF-99C7-152398F54030}.Release|x64.ActiveCfg = Release|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|ARM.ActiveCfg = Debug|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|Win32.Build.0 = Debug|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Debug|x64.ActiveCfg = Debug|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Release|ARM.ActiveCfg = Release|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Release|Win32.ActiveCfg = Release|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Release|Win32.Build.0 = Release|Win32
-		{D4990072-586D-43E3-9973-51092BD9226F}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AA3E6A72-1080-4430-9921-8EBA6652BA3A} = {E5F7F95D-0895-44F2-83A8-371F4D351444}
-		{5DF1D5B9-5A44-46EF-A4F9-10C718F31F41} = {E5F7F95D-0895-44F2-83A8-371F4D351444}
-		{869C57F3-67AF-4B32-ABCB-E42A072E9271} = {E5F7F95D-0895-44F2-83A8-371F4D351444}
-		{45DAA8AC-7DBD-4182-B99A-CD929C80D60D} = {AF273B0F-B9F6-4674-B4EA-F138550859A8}
-		{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395} = {AF273B0F-B9F6-4674-B4EA-F138550859A8}
-		{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2} = {AF273B0F-B9F6-4674-B4EA-F138550859A8}
-		{D4990072-586D-43E3-9973-51092BD9226F} = {E5F7F95D-0895-44F2-83A8-371F4D351444}
+		{45DAA8AC-7DBD-4182-B99A-CD929C80D60D} = {00975739-F9B8-4F70-B52F-CB11AF082E44}
+		{B2838D1B-A3E1-4FCF-99C7-152398F54030} = {00975739-F9B8-4F70-B52F-CB11AF082E44}
+		{0DD0E22D-1D72-44AA-8EF3-C93C2D9BD395} = {00975739-F9B8-4F70-B52F-CB11AF082E44}
+		{907B1C51-64CC-41A3-A6A4-77A9EA8B18F2} = {00975739-F9B8-4F70-B52F-CB11AF082E44}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)app.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\main.h">
+      <Filter>zsLibTest</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\testing.h">
+      <Filter>zsLibTest</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)app.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\main.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestHelper.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\testing.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestIPAddress.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestNumeric.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestPromise.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestProxy.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestProxyUsingGUIThread.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestSocket.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestSocketAsync.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestString.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestStringize.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestTearAway.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestTimer.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLibTest\TestXML.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="zsLibTest">
+      <UniqueIdentifier>{8769ae93-1f6f-4021-931f-a0a754dc0139}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
