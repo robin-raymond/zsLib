@@ -614,6 +614,18 @@ namespace zsLib
       if (!result) {
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
       }
+      SocketMonitorHolder::singleton(result);
+      return result;
+    }
+
+    //-------------------------------------------------------------------------
+    SocketMonitor::SocketMonitorHolderPtr SocketMonitor::SocketMonitorHolder::singleton(SocketMonitorPtr monitor)
+    {
+      static SingletonLazySharedPtr<SocketMonitorHolder> singleton(SocketMonitorHolder::create(monitor));
+      SocketMonitorHolderPtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
       return result;
     }
 
@@ -1053,9 +1065,11 @@ namespace zsLib
       ZS_LOG_DETAIL(log("cancel called"))
 
       ThreadPtr thread;
+      SocketMonitorPtr gracefulReference;
+
       {
         AutoRecursiveLock lock(mLock);
-        mGracefulReference = mThisWeak.lock();
+        gracefulReference = mGracefulReference = mThisWeak.lock();
         thread = mThread;
 
         mShouldShutdown = true;
@@ -1065,7 +1079,9 @@ namespace zsLib
       if (!thread)
         return;
 
-      thread->join();
+      if (thread->joinable()) {
+        thread->join();
+      }
 
       {
         AutoRecursiveLock lock(mLock);

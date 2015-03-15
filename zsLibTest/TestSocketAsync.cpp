@@ -116,10 +116,98 @@ namespace async_socket
     zsLib::IPAddress mAddress;
   };
 
+  ZS_DECLARE_CLASS_PTR(ListenServer)
+
+  class ListenServer : public zsLib::MessageQueueAssociator,
+                       public zsLib::ISocketDelegate
+  {
+  private:
+    ListenServer(zsLib::IMessageQueuePtr queue) : zsLib::MessageQueueAssociator(queue) { }
+
+    void setup()
+    {
+      mReadReadyCalled = 0;
+      mWriteReadyCalled = 0;
+      mExceptionCalled = 0;
+      mAddress = zsLib::IPAddress(zsLib::IPAddress(zsLib::IPAddress::loopbackV4(), 43218));
+      mSocket = zsLib::Socket::createTCP();
+      mSocket->setOptionFlag(zsLib::Socket::SetOptionFlag::NonBlocking, true);
+      mSocket->setDelegate(mThis.lock());
+      mSocket->bind(mAddress);
+      mSocket->listen();
+    }
+
+  public:
+    static ListenServerPtr create(zsLib::IMessageQueuePtr queue)
+    {
+      ListenServerPtr object(new ListenServer(queue));
+      object->mThis = object;
+      object->setup();
+      return object;
+    }
+
+    virtual void onReadReady(zsLib::SocketPtr socket)
+    {
+      TESTING_STDOUT() << "ON READ READY\n";
+      ++mReadReadyCalled;
+
+      if (socket == mSocket) {
+        zsLib::IPAddress address;
+        mSocketIncoming = mSocket->accept(address);
+        mSocketIncoming->setDelegate(mThis.lock());
+        mReadAddresses.push_back(address);
+        return;
+      }
+
+      BYTE buffer[1024];
+      size_t total = socket->receive(
+        buffer,
+        sizeof(buffer)
+        );
+      mReadData.push_back((const char *)buffer);
+      TESTING_STDOUT() << "READ " << total << " BYTES.\n";
+    }
+
+    virtual void onWriteReady(zsLib::SocketPtr socket)
+    {
+      TESTING_STDOUT() << "ON WRITE READY\n";
+      ++mWriteReadyCalled;
+    }
+
+    virtual void onException(zsLib::SocketPtr socket)
+    {
+      TESTING_STDOUT() << "ONEXCEPTION\n";
+      ++mExceptionCalled;
+    }
+
+    const zsLib::IPAddress &getAddress() { return mAddress; }
+
+  public:
+    ULONG mReadReadyCalled;
+    ULONG mWriteReadyCalled;
+    ULONG mExceptionCalled;
+    std::vector<zsLib::IPAddress> mReadAddresses;
+    std::vector<std::string> mReadData;
+
+  private:
+    ListenServerWeakPtr mThis;
+    zsLib::SocketPtr mSocket;
+    zsLib::SocketPtr mSocketIncoming;
+    zsLib::IPAddress mAddress;
+    zsLib::IPAddress mAddressIncoming;
+  };
+
   class SocketTest
   {
   public:
     SocketTest()
+    {
+      srand(static_cast<signed int>(time(NULL)));
+      testUDP();
+      testTCP();
+    }
+
+    void testUDP()
     {
       srand(static_cast<signed int>(time(NULL)));
       zsLib::WORD port1 = (rand()%(65550-5000))+5000;
@@ -151,6 +239,52 @@ namespace async_socket
 
       TESTING_CHECK(address == server->mReadAddresses[0]);
       TESTING_CHECK(address == server->mReadAddresses[1]);
+
+      server.reset();
+
+      IMessageQueue::size_type count = 0;
+      do
+      {
+        count = thread->getTotalUnprocessedMessages();
+        if (0 != count)
+          std::this_thread::yield();
+      } while (count > 0);
+      thread->waitForShutdown();
+
+      TESTING_EQUAL(zsLib::proxyGetTotalConstructed(), 0);
+    }
+
+    void testTCP()
+    {
+      zsLib::WORD port1 = (rand() % (65550 - 5000)) + 5000;
+
+      zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
+
+      ListenServerPtr server(ListenServer::create(thread));
+
+      TESTING_SLEEP(1000)
+      zsLib::IPAddress address = zsLib::IPAddress(zsLib::IPAddress::loopbackV4(), port1);
+      zsLib::SocketPtr socket = zsLib::Socket::createTCP();
+      socket->bind(address);
+      socket->connect(server->getAddress());
+
+      socket->send((BYTE *)"HELLO1", sizeof("HELLO1") + sizeof(char));
+      TESTING_SLEEP(5000)
+
+      socket->send((BYTE *)"HELLO2", sizeof("HELLO2") + sizeof(char));
+
+      TESTING_SLEEP(10000)
+
+      TESTING_EQUAL(3, server->mReadReadyCalled);
+      TESTING_EQUAL(1, server->mWriteReadyCalled);
+      TESTING_EQUAL(0, server->mExceptionCalled);
+      TESTING_EQUAL(2, server->mReadData.size());
+      TESTING_EQUAL(1, server->mReadAddresses.size());
+
+      TESTING_EQUAL("HELLO1", server->mReadData[0]);
+      TESTING_EQUAL("HELLO2", server->mReadData[1]);
+
+      TESTING_CHECK(address == server->mReadAddresses[0]);
 
       server.reset();
 
