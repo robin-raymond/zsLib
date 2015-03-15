@@ -88,15 +88,18 @@ namespace zsLib
     TimerMonitorPtr TimerMonitor::singleton()
     {
       static SingletonLazySharedPtr<TimerMonitor> singleton(TimerMonitor::create());
+      TimerMonitorPtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
+
+      static zsLib::SingletonManager::Register registerSingleton("zsLib::TimerMonitor", result);
+
       class Once {
       public: Once() {getTimerMonitorPrioritySingleton().notify();}
       };
       static Once once;
 
-      TimerMonitorPtr result = singleton.singleton();
-      if (!result) {
-        ZS_LOG_WARNING(Detail, slog("singleton gone"))
-      }
       return result;
     }
 
@@ -239,24 +242,9 @@ namespace zsLib
     }
 
     //-----------------------------------------------------------------------
-    static void debugAppend(zsLib::XML::ElementPtr &parentEl, const char *name, const char *value)
+    void TimerMonitor::notifySingletonCleanup()
     {
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
-
-      ZS_THROW_INVALID_ARGUMENT_IF(!parentEl)
-      ZS_THROW_INVALID_ARGUMENT_IF(!name)
-
-      if (!value) return;
-      if ('\0' == *value) return;
-
-      ElementPtr element = Element::create(name);
-
-      TextPtr tmpTxt = Text::create();
-      tmpTxt->setValueAndJSONEncode(value);
-      element->adoptAsFirstChild(tmpTxt);
-
-      parentEl->adoptAsLastChild(element);
+      cancel();
     }
 
     //-----------------------------------------------------------------------
@@ -289,6 +277,7 @@ namespace zsLib
         AutoRecursiveLock lock(mLock);
         mGracefulShutdownReference = mThisWeak.lock();
         thread = mThread;
+        mThread.reset();
 
         mShouldShutdown = true;
         wakeUp();
@@ -297,11 +286,8 @@ namespace zsLib
       if (!thread)
         return;
 
-      thread->join();
-
-      {
-        AutoRecursiveLock lock(mLock);
-        mThread.reset();
+      if (thread->joinable()) {
+        thread->join();
       }
     }
 

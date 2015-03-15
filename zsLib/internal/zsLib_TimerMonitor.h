@@ -39,6 +39,7 @@
 #include <zsLib/types.h>
 #include <zsLib/Log.h>
 #include <zsLib/MessageQueueThread.h>
+#include <zsLib/Singleton.h>
 
 #include <map>
 #include <list>
@@ -56,7 +57,8 @@ namespace zsLib
   {
     ZS_DECLARE_CLASS_PTR(TimerMonitor)
 
-    class TimerMonitor : public noncopyable
+    class TimerMonitor : public noncopyable,
+                         public ISingletonManagerDelegate
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
@@ -79,6 +81,13 @@ namespace zsLib
       void monitorEnd(zsLib::Timer &timer);
 
       void operator()();
+
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark TimerMonitor => ISingletonManagerDelegate
+      #pragma mark
+
+      virtual void notifySingletonCleanup();
 
     private:
       zsLib::Log::Params log(const char *message) const;

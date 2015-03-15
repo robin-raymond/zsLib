@@ -35,6 +35,7 @@
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
+#include <zsLib/Singleton.h>
 
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }

@@ -31,6 +31,7 @@
 
 #include <iostream>
 
+#include <zsLib/Singleton.h>
 #include <zsLib/helpers.h>
 #include "testing.h"
 
@@ -88,6 +89,8 @@ namespace Testing
 
   void runAllTests()
   {
+    zsLib::SingletonManager::Initializer init;
+
     TESTING_RUN_TEST_CASE(testIPAddress)
     TESTING_RUN_TEST_CASE(testNumeric)
     TESTING_RUN_TEST_CASE(testPromise)

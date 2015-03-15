@@ -35,6 +35,7 @@
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
+#include <zsLib/Singleton.h>
 
 #ifdef DEBUG
 #include <iostream>

@@ -39,6 +39,7 @@
 #include <zsLib/IPAddress.h>
 #include <zsLib/Event.h>
 #include <zsLib/Log.h>
+#include <zsLib/Singleton.h>
 
 #include <map>
 #include <set>
@@ -177,7 +178,8 @@ namespace zsLib
     #pragma mark SocketMonitor
     #pragma mark
 
-    class SocketMonitor : public noncopyable
+    class SocketMonitor : public noncopyable,
+                          public ISingletonManagerDelegate
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
@@ -217,6 +219,13 @@ namespace zsLib
       void monitorException(const zsLib::Socket &socket);
 
       void operator()();
+
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark SocketMonitor => ISingletonManagerDelegate
+      #pragma mark
+
+      virtual void notifySingletonCleanup();
 
     private:
       void cancel();

@@ -34,6 +34,7 @@
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
 #include <zsLib/String.h>
+#include <zsLib/Singleton.h>
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 

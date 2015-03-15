@@ -605,15 +605,18 @@ namespace zsLib
     {
       static SingletonLazySharedPtr<SocketMonitor> singleton(SocketMonitor::create());
 
+      SocketMonitorPtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
+
+      static zsLib::SingletonManager::Register registerSingleton("zsLib::SocketMonitor", result);
+
       class Once {
       public: Once() {getSocketMonitorPrioritySingleton().notify();}
       };
       static Once once;
 
-      SocketMonitorPtr result = singleton.singleton();
-      if (!result) {
-        ZS_LOG_WARNING(Detail, slog("singleton gone"))
-      }
       SocketMonitorHolder::singleton(result);
       return result;
     }
@@ -1071,6 +1074,7 @@ namespace zsLib
         AutoRecursiveLock lock(mLock);
         gracefulReference = mGracefulReference = mThisWeak.lock();
         thread = mThread;
+        mThread.reset();
 
         mShouldShutdown = true;
         wakeUp();
@@ -1082,11 +1086,12 @@ namespace zsLib
       if (thread->joinable()) {
         thread->join();
       }
+    }
 
-      {
-        AutoRecursiveLock lock(mLock);
-        mThread.reset();
-      }
+    //-------------------------------------------------------------------------
+    void SocketMonitor::notifySingletonCleanup()
+    {
+      cancel();
     }
 
     //-------------------------------------------------------------------------

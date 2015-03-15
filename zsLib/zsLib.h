@@ -46,6 +46,7 @@
 #include <zsLib/Promise.h>
 #include <zsLib/Proxy.h>
 #include <zsLib/ProxySubscriptions.h>
+#include <zsLib/Singleton.h>
 #include <zsLib/Socket.h>
 #include <zsLib/String.h>
 #include <zsLib/Stringize.h>

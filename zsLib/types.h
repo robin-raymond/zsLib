@@ -108,6 +108,9 @@ namespace zsLib
   ZS_DECLARE_CLASS_PTR(Log)
   ZS_DECLARE_INTERACTION_PTR(ILogDelegate)
 
+  ZS_DECLARE_CLASS_PTR(SingletonManager)
+  ZS_DECLARE_INTERACTION_PTR(ISingletonManagerDelegate)
+
   ZS_DECLARE_INTERACTION_PTR(IMessageQueueMessage)
   ZS_DECLARE_INTERACTION_PTR(IMessageQueueNotify)
   ZS_DECLARE_INTERACTION_PTR(IMessageQueue)
