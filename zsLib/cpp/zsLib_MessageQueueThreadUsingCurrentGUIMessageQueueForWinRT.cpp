@@ -37,6 +37,7 @@
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
+#include <zsLib/Singleton.h>
 
 #include <Windows.h>
 #include <tchar.h>

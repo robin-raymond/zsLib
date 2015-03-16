@@ -52,6 +52,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Proxy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ProxyPack.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ProxySubscriptions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Singleton.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Socket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_SocketMonitor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Stringize.h" />
@@ -68,6 +69,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Promise.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Proxy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\ProxySubscriptions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Socket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\String.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Stringize.h" />
@@ -94,6 +96,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Numeric.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Promise.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Proxy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Singleton.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Socket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_SocketMonitor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_String.cpp" />

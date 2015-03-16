@@ -109,13 +109,13 @@ namespace zsLib
         AutoRecursiveLock lock(pThis->mLock);
         if (pThis->mCleaned) {
           cleanDelegate = singleton;
-          return;
+          goto clean;
         }
         pThis->mDelegates[String(uniqueNamespacedID)] = singleton;
         return;
       }
 
-    clean:
+      clean:
       {
         if (cleanDelegate) {
           cleanDelegate->notifySingletonCleanup();

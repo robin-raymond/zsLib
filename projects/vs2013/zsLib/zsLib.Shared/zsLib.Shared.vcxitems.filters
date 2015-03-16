@@ -168,6 +168,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuidP.h">
       <Filter>zsLib\extras\uuid</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Singleton.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\win32\strptime.cpp">
@@ -312,6 +316,9 @@
       <Filter>zsLib\cpp</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLUnknown.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Singleton.cpp">
       <Filter>zsLib\cpp</Filter>
     </ClCompile>
   </ItemGroup>
