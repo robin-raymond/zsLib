@@ -192,10 +192,14 @@ namespace zsLib
     String string(bool inIncludePort = true) const;                               // if the IP is an IPv4 address then output as IPv4 otherwise output as IPv6
     String stringAsIPv6(bool inIncludePort = true) const;                         // force the output to be in IPv6 format, even if the IP is IPv4 encoded
 
-    String getZone() const {return mZonePostfix;}
-    void setZone(const String &zone) {mZonePostfix = zone;}
+    String getZone() const;
+    void setZone(const String &zone);
+
+    DWORD getScope() const {return mScope;}
+    void setScope(DWORD scope) {mScope = scope; mZonePostfix.clear(); }
 
   private:
+    DWORD mScope {};
     String mZonePostfix;
   };
 

@@ -574,9 +574,9 @@ namespace zsLib
       int size = 0;
       internal::prepareRawIPAddress(inBindIP, addressv4, addressv6, address, size);
 #ifdef _WIN32
-      if (0 != addressv6.sin6_scope_id) {
-        addressv6.sin6_scope_struct.Level = ScopeLevelLink;
-      }
+//      if (0 != addressv6.sin6_scope_id) {
+//        addressv6.sin6_scope_struct.Level = ScopeLevelLink;
+//      }
 #endif //_WIN32
 
       int result = ::bind(mSocket, address, size);

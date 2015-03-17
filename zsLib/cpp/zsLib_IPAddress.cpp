@@ -31,10 +31,15 @@
 
 #include <zsLib/IPAddress.h>
 #include <zsLib/Numeric.h>
+#include <zsLib/internal/platform.h>
 
 #if (defined _LINUX || defined __QNX__)
 #include <stdio.h>
 #endif //_LINUX
+
+#ifdef HAVE_IPHLPAPI_H
+#include <Iphlpapi.h>
+#endif //HAVE_IPHLPAPI_H
 
 #pragma warning(push)
 #pragma warning(disable:4290)
@@ -85,6 +90,7 @@ namespace zsLib
     if (0 != inPort)
       mPort = htons(inPort);
     mZonePostfix = inIPAddress.mZonePostfix;
+    mScope = inIPAddress.mScope;
   }
 
   //RFC2553 - 3.7 Compatibility with IPv4 Nodes
@@ -188,6 +194,9 @@ namespace zsLib
     mPort = inIPAddress.sin6_port;
     if (0 != inPort)
       mPort = htons(inPort);
+    if (0 != inIPAddress.sin6_scope_id) {
+      mScope = inIPAddress.sin6_scope_id;
+    }
   }
 
   IPAddress::IPAddress(
@@ -300,7 +309,9 @@ namespace zsLib
       if (0 != inPort)
         mPort = htons(inPort);
 
-      mZonePostfix = zone;
+      if (zone.hasData()) {
+        setZone(zone);
+      }
     }
     finally:
     {
@@ -414,6 +425,7 @@ namespace zsLib
   {
     mIPAddress = inIPAddress.mIPAddress;
     mPort = inIPAddress.mPort;
+    mScope = inIPAddress.mScope;
     mZonePostfix = inIPAddress.mZonePostfix;
     return *this;
   }
@@ -422,6 +434,7 @@ namespace zsLib
   {
     mIPAddress = inPortPair.mIPAddress;
     mPort = inPortPair.mPort;
+    mScope = 0;
     mZonePostfix.clear();
     return *this;
   }
@@ -429,19 +442,16 @@ namespace zsLib
   bool IPAddress::operator==(const IPAddress &inIPAddress) const
   {
     size_t size = sizeof(mIPAddress.by);
-    if (0 != memcmp(&(inIPAddress.mIPAddress), &mIPAddress, size))
-      return false;
-    if (0 != mZonePostfix.compare(inIPAddress.mZonePostfix)) {
-      return false;
-    }
+    if (0 != memcmp(&(inIPAddress.mIPAddress), &mIPAddress, size)) return false;
+    if (mScope != inIPAddress.mScope) return false;
+    if (0 != mZonePostfix.compare(inIPAddress.mZonePostfix)) return false;
     return inIPAddress.mPort == mPort;
   }
 
   bool IPAddress::operator==(const IPv6PortPair &inPortPair) const
   {
     size_t size = sizeof(mIPAddress.by);
-    if (0 != memcmp(&(inPortPair.mIPAddress), &mIPAddress, size))
-      return false;
+    if (0 != memcmp(&(inPortPair.mIPAddress), &mIPAddress, size)) return false;
     return inPortPair.mPort == mPort;
   }
 
@@ -460,6 +470,7 @@ namespace zsLib
     size_t size = sizeof(mIPAddress.by);
     int compare = memcmp(&mIPAddress, &(inIPAddress.mIPAddress), size);
     if (0 != compare) return compare < 0;
+    if (mScope != inIPAddress.mScope) return mScope < inIPAddress.mScope;
 
     compare = mZonePostfix.compare(inIPAddress.mZonePostfix);
     if (0 != compare) return compare < 0;
@@ -480,6 +491,7 @@ namespace zsLib
     size_t size = sizeof(mIPAddress.by);
     int compare = memcmp(&mIPAddress, &(inIPAddress.mIPAddress), size);
     if (0 != compare) return compare > 0;
+    if (mScope != inIPAddress.mScope) return mScope > inIPAddress.mScope;
     return ntohs(mPort) > ntohs(inIPAddress.mPort);
   }
 
@@ -495,6 +507,7 @@ namespace zsLib
   {
     if (!isAddressEqualIgnoringIPv4Format(inIPAddress))
       return false;
+    if (mScope != inIPAddress.mScope) return false;
     if (0 != mZonePostfix.compare(inIPAddress.mZonePostfix)) return false;
     return mPort == inIPAddress.mPort;
   }
@@ -544,6 +557,8 @@ namespace zsLib
   {
     memset(&mIPAddress, 0, sizeof(mIPAddress));
     mPort = 0;
+    mScope = 0;
+    mZonePostfix.clear();
   }
 
   bool IPAddress::isEmpty() const
@@ -563,7 +578,8 @@ namespace zsLib
 
   bool IPAddress::isZoneEmpty() const
   {
-    return !mZonePostfix.hasData();
+    return ((0 == mScope) &&
+            (mZonePostfix.isEmpty()));
   }
 
   // conversion routines between all the IPv4 structures
@@ -576,6 +592,7 @@ namespace zsLib
   {
     // convert to mapped
     IPAddress temp(getIPv4AddressAsDWORD(), ntohs(mPort));
+    temp.mScope = mScope;
     temp.mZonePostfix = mZonePostfix;
     return temp;
   }
@@ -590,6 +607,7 @@ namespace zsLib
     IPAddress temp;
     temp.mIPAddress.dw[3] = htonl(getIPv4AddressAsDWORD());
     temp.mPort = mPort;
+    temp.mScope = mScope;
     temp.mZonePostfix = mZonePostfix;
     return temp;
   }
@@ -613,6 +631,7 @@ namespace zsLib
     temp.mIPAddress.by[4] = mapped.mIPAddress.by[14];
     temp.mIPAddress.by[5] = mapped.mIPAddress.by[15];
     temp.mPort = mPort;
+    temp.mScope = mScope;
     temp.mZonePostfix = mZonePostfix;
     return temp;
   }
@@ -757,13 +776,9 @@ namespace zsLib
   void IPAddress::getIPv4(sockaddr_in &outAddress) const throw(IPAddress::Exceptions::NotIPv4)
   {
     memset(&(outAddress), 0, sizeof(outAddress));
-#ifndef _LINUX
-#ifndef _WIN32
-#ifndef _ANDROID
+#ifdef HAVE_SOCKADDR_IN_LEN
     outAddress.sin_len = sizeof(outAddress);
-#endif //_ANDROID
-#endif //_WIN32
-#endif //_LINUX
+#endif // HAVE_SOCKADDR_IN_LEN
     outAddress.sin_family = AF_INET;
 #ifdef _WIN32
     if (isLoopback())
@@ -783,24 +798,15 @@ namespace zsLib
   void IPAddress::getIPv6(sockaddr_in6 &outAddress) const
   {
     memset(&(outAddress), 0, sizeof(outAddress));
-#ifndef _LINUX
-#ifndef _WIN32
-#ifndef _ANDROID
+#ifdef HAVE_SOCKADDR_IN_LEN
     outAddress.sin6_len = sizeof(outAddress);
-#endif //_ANDROID
-#endif //_WIN32
-#endif //_LINUX
+#endif //HAVE_SOCKADDR_IN_LEN
     outAddress.sin6_family = AF_INET6;
     memcpy(&(outAddress.sin6_addr), &mIPAddress, sizeof(outAddress.sin6_addr));
     outAddress.sin6_port = mPort;
 
-    if (mZonePostfix.hasData()) {
-      try {
-        outAddress.sin6_scope_id = Numeric<decltype(outAddress.sin6_scope_id)>(mZonePostfix);
-      } catch(Numeric<decltype(outAddress.sin6_scope_id)>::ValueOutOfRange &) {
-        ZS_LOG_WARNING(Debug, zsLib::Log::Params("Failed to convert zone to scope", "zsLib::IPAddress") + ZS_PARAM("zone", mZonePostfix))
-      }
-    }
+    outAddress.sin6_scope_id = mScope;
+    outAddress.sin6_flowinfo = 0;
   }
 
   String IPAddress::string(bool inIncludePort) const
@@ -812,7 +818,8 @@ namespace zsLib
       char buffer[sizeof("255.255.255.255:65535")+1];
       const char *format = "%u.%u.%u.%u";
       if ((0 != port) &&
-          (mZonePostfix.isEmpty())) {
+          (mZonePostfix.isEmpty()) &&
+          (0 == mScope)) {
         format = "%u.%u.%u.%u:%u";
       }
 
@@ -831,8 +838,9 @@ namespace zsLib
               );
 
       String temp(buffer);
-      if (mZonePostfix.hasData()) {
-        temp += ("%" + mZonePostfix);
+      if ((mZonePostfix.hasData()) ||
+          (0 != mScope)) {
+        temp += ("%" + (mZonePostfix.hasData() ? mZonePostfix : zsLib::string(mScope)));
         if (0 != port) {
           temp += (":" + zsLib::string(port));
         }
@@ -843,6 +851,7 @@ namespace zsLib
     return stringAsIPv6(inIncludePort);
   }
 
+  //--------------------------------------------------------------------------
   String IPAddress::stringAsIPv6(bool inIncludePort) const
   {
     WORD port = getPort();
@@ -853,8 +862,9 @@ namespace zsLib
     const char *result = internal::inet_ntop6((BYTE *)&(mIPAddress), &(buffer[0]), sizeof(buffer));
     if (result) {
       String temp((CSTR)(&(buffer[0])));
-      if (mZonePostfix.hasData()) {
-        temp += ("%" + mZonePostfix);
+      if ((mZonePostfix.hasData()) ||
+          (0 != mScope)) {
+        temp += ("%" + (mZonePostfix.hasData() ? mZonePostfix : zsLib::string(mScope)));
       }
 
       if (0 != port) {
@@ -863,6 +873,38 @@ namespace zsLib
       return temp;
     }
     return String();
+  }
+
+  //--------------------------------------------------------------------------
+  String IPAddress::getZone() const
+  {
+    if (mZonePostfix.hasData()) return mZonePostfix;
+    if (0 == mScope) return String();
+    return zsLib::string(mScope);
+  }
+
+  //--------------------------------------------------------------------------
+  void IPAddress::setZone(const String &zone)
+  {
+    if (zone.isEmpty()) {
+      mScope = 0;
+      mZonePostfix.clear();
+      return;
+    }
+
+    mScope = 0;
+    try {
+      mScope = Numeric<decltype(mScope)>(zone);
+      mZonePostfix.clear();
+    } catch(Numeric<decltype(mScope)>::ValueOutOfRange &) {
+      mZonePostfix = zone;
+#ifdef HAVE_IF_NAMETOINDEX
+      auto result = if_nametoindex(mZonePostfix);
+      if (0 != result) {
+        mScope = result;
+      }
+#endif //HAVE_IF_NAMETOINDEX
+    }
   }
 
   namespace internal

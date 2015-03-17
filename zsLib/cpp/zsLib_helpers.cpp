@@ -31,19 +31,25 @@
 
 #include <zsLib/helpers.h>
 #include <zsLib/Log.h>
+#include <zsLib/internal/platform.h>
 
-#ifndef _WIN32
+#ifdef HAVE_PTHREAD_H
 #include <pthread.h>
-#else
+#endif //HAVE_PTHREAD_H
 
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
+#endif //HAVE_WINDOWS_H
 
+#ifdef _WIN32
 namespace std {
 	inline time_t mktime(struct tm *timeptr) { return ::mktime(timeptr); }
 }
 
 namespace zsLib {
 	namespace compatibility {
+
+#ifdef HAVE_RAISEEXCEPTION
 		const DWORD MS_VC_EXCEPTION = 0x406D1388;
 
 #pragma pack(push,8)
@@ -72,6 +78,7 @@ namespace zsLib {
 			{
 			}
 		}
+#endif //HAVE_RAISEEXCEPTION
 
 		void uuid_generate_random(zsLib::internal::uuid_wrapper::raw_uuid_type &uuid) {
 			auto result = CoCreateGuid(&uuid);
@@ -83,6 +90,7 @@ namespace zsLib {
 }
 
 #endif //_WIN32
+
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -155,13 +163,21 @@ namespace zsLib
   {
     if (!name) name = "";
 
-#ifdef __APPLE__
-    pthread_setname_np(name);
-#elif defined(_WIN32)
-	SetThreadName(GetCurrentThreadId(), name);
-#else
+#ifdef HAVE_RAISEEXCEPTION
+    SetThreadName(GetCurrentThreadId(), name);
+#endif //HAVE_RAISEEXCEPTION
+
+#ifdef HAVE_PTHREAD_SETNAME_WITH_2
+
     pthread_setname_np(pthread_self(), name);
-#endif //__APPLE__
+
+#else //HAVE_PTHREAD_SETNAME_WITH_2
+
+#ifdef HAVE_PTHREAD_SETNAME_WITH_1
+    pthread_setname_np(name);
+#endif //HAVE_PTHREAD_SETNAME_WITH_1
+
+#endif //HAVE_PTHREAD_SETNAME_WITH_2
   }
 
   //---------------------------------------------------------------------------

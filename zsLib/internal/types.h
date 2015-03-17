@@ -38,6 +38,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus_winrt
+#undef WINRT
 #define WINRT
 #endif //__cplusplus_winrt
 #endif //_WIN32
