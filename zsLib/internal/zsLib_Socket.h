@@ -46,7 +46,7 @@ namespace zsLib
 {
   enum MissingSocketOptions
   {
-    SO_NOSIGPIPE = 1,
+    SO_NOSIGPIPE = -1,
   };
 }
 

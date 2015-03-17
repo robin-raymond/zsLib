@@ -580,8 +580,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    SocketMonitor::SocketMonitor() :
-      mShouldShutdown(false)
+    SocketMonitor::SocketMonitor()
     {
     }
 
@@ -806,8 +805,6 @@ namespace zsLib
 
       srand(static_cast<unsigned int>(time(NULL)));
 
-      bool shouldShutdown = false;
-
       ZS_LOG_DETAIL(log("socket monitor thread started"))
 
       createWakeUpSocket();
@@ -847,7 +844,6 @@ namespace zsLib
         // select completed, do notifications from select
         {
           AutoRecursiveLock lock(mLock);
-          shouldShutdown = mShouldShutdown;
 
 #ifndef _WIN32
           if (result <= 0) goto completed;
@@ -855,16 +851,21 @@ namespace zsLib
           for (poll_size index = 0; (result > 0) && (index < size); ++index)
           {
 #else
+          if (WSA_WAIT_TIMEOUT == result) goto completed;
+          decltype(result) index = result - WSA_WAIT_EVENT_0;
+          decltype(result) nextIndex = index;
+
           while (true)
           {
-            if (WSA_WAIT_TIMEOUT == result) goto completed;
-
-            decltype(result) index = result - WSA_WAIT_EVENT_0;
+            index = nextIndex;
+            if (nextIndex >= size) goto completed;
+            ++nextIndex;
 
             result = WSAWaitForMultipleEvents(size - index, &(pollEvents[index]), FALSE, 0, FALSE);
             if (WSA_WAIT_TIMEOUT == result) goto completed;
 
-            index = result - WSA_WAIT_EVENT_0;
+            index = (result - WSA_WAIT_EVENT_0) + index;
+            if (index >= nextIndex) nextIndex = index+1;
 
 #endif //_WIN32
 
@@ -878,6 +879,8 @@ namespace zsLib
               ZS_LOG_WARNING(Detail, log("failed to enum network events") + ZS_PARAM("error", WSAGetLastError()))
               goto completed;
             }
+
+            record.revents = 0;
 
             if (0 != (networkEvents.lNetworkEvents & FD_CONNECT)) {
               if (NOERROR != networkEvents.iErrorCode[FD_CONNECT_BIT]) {
@@ -909,7 +912,10 @@ namespace zsLib
             }
 #endif //_WIN32
 
-            if (0 == record.revents) continue;
+            if (0 == record.revents) {
+              ZS_LOG_INSANE(log("no event found set"))
+              continue;
+            }
 
 #ifndef _WIN32
             --result; // stop once we have found every triggered socket
@@ -923,13 +929,16 @@ namespace zsLib
                 ZS_LOG_INSANE(log("read wake-up socket"))
 
                 bool wouldBlock = false;
-                static DWORD gBogus = 0;
+                static char gBogus[65536] {};
                 static BYTE *bogus = (BYTE *)&gBogus;
                 int noThrowError = 0;
-                mWakeUpSocket->receive(bogus, sizeof(gBogus), &wouldBlock, 0, &noThrowError);
+                auto totalRead = mWakeUpSocket->receive(bogus, sizeof(gBogus), &wouldBlock, 0, &noThrowError);
                 if (0 != noThrowError) {
                   ZS_LOG_WARNING(Insane, log("wake up socket had a failure") + ZS_PARAM("error", noThrowError))
                   redoWakeupSocket = true;
+                }
+                if (wouldBlock) {
+                  ZS_LOG_WARNING(Insane, log("wake up socket would block") + ZS_PARAM("total read", totalRead))
                 }
               }
 
@@ -1007,7 +1016,7 @@ namespace zsLib
               mSocketSet.delegateGone(record.first);
             } catch (IMessageQueue::Exceptions::MessageQueueGone &) {
               ZS_LOG_FATAL(Basic, log("message queue gone"))
-              shouldShutdown = true;
+              mShouldShutdown = true;
             }
           }
         }
@@ -1041,7 +1050,7 @@ namespace zsLib
           createWakeUpSocket();
         }
 
-      } while (!shouldShutdown);
+      } while (!mShouldShutdown);
 
       ZS_LOG_DETAIL(log("socket thread is shutting down"))
 

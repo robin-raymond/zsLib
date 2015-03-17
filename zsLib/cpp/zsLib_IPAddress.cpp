@@ -84,6 +84,7 @@ namespace zsLib
     mPort = inIPAddress.mPort;
     if (0 != inPort)
       mPort = htons(inPort);
+    mZonePostfix = inIPAddress.mZonePostfix;
   }
 
   //RFC2553 - 3.7 Compatibility with IPv4 Nodes
@@ -196,14 +197,15 @@ namespace zsLib
   {
     clear();
 
+    String zone;
+
     {
       if (inString.isEmpty()) goto finally;
 
       // scope: try to parse as an IPv6 address first
-      try
-      {
-        String::size_type openBracketPos = inString.find("[");
-        String::size_type closeBracketPos = (openBracketPos != String::npos ? inString.find("]", openBracketPos+1) : String::npos);
+      try {
+        String::size_type openBracketPos = inString.find('[');
+        String::size_type closeBracketPos = (openBracketPos != String::npos ? inString.find(']', openBracketPos+1) : String::npos);
 
         // this is illegal
         ZS_THROW_CUSTOM_MSG_IF(
@@ -214,8 +216,7 @@ namespace zsLib
                                )
 
         String ipv6;
-        if (String::npos != openBracketPos)
-        {
+        if (String::npos != openBracketPos) {
           String::size_type colonPos = inString.find(":", closeBracketPos+1);
           if (String::npos != colonPos)
           {
@@ -229,11 +230,19 @@ namespace zsLib
             inPort = (WORD)(Numeric<WORD>(port));
           }
           ipv6 = inString.substr(openBracketPos+1, (closeBracketPos-(openBracketPos+1)));
-        }
-        else
+        } else {
           ipv6 = inString;
+        }
 
         ipv6.trim();
+
+        String::size_type posPercent = ipv6.rfind('%');
+        if (String::npos != posPercent) {
+          zone = ipv6.substr(posPercent+1);
+          ipv6 = ipv6.substr(0, posPercent);
+          zone.trim();
+          ipv6.trim();
+        }
 
         // do a trial convert, done if succeeds
         if (internal::inet_pton6(ipv6, (unsigned char *)&mIPAddress)) goto next;
@@ -243,28 +252,35 @@ namespace zsLib
                                ((String::npos != openBracketPos) || (String::npos != closeBracketPos)),  // could not be an IPv4 if contained brackets
                                "Found illegal [] brackets around a non-IPv6 address <" + inString + ">: "
                                )
-      }
-      catch (Numeric<WORD>::ValueOutOfRange &) {
+      } catch (Numeric<WORD>::ValueOutOfRange &) {
         ZS_THROW_CUSTOM(Exceptions::ParseError, ("Failed to parse IP address: " + inString).c_str())
       }
 
       // scope: try to parse as IPv4
-      try
-      {
+      try {
         // this has to be an IPv4 address
         String ipv4;
-        String::size_type colonPos = inString.find(":");
-        if (String::npos != colonPos)
-        {
+        String::size_type colonPos = inString.find(':');
+        if (String::npos != colonPos) {
           String port(inString.substr(colonPos+1));
           port.trim();
           inPort = (WORD)(Numeric<WORD>(port));
           ipv4 = inString.substr(0, colonPos);
-        }
-        else
+          ipv4.trim();
+        } else {
           ipv4 = inString;
+        }
 
         ipv4.trim();
+
+        String::size_type posPercent = ipv4.rfind('%');
+        if (String::npos != posPercent) {
+          zone = ipv4.substr(posPercent + 1);
+          ipv4 = ipv4.substr(0, posPercent);
+          zone.trim();
+          ipv4.trim();
+        }
+
         DWORD address = 0;
         if (internal::inet_pton4(ipv4, (BYTE *)&address))
         {
@@ -272,8 +288,7 @@ namespace zsLib
           (*this) = temp;
           goto next;
         }
-      }
-      catch (Numeric<WORD>::ValueOutOfRange &) {
+      } catch (Numeric<WORD>::ValueOutOfRange &) {
         ZS_THROW_CUSTOM(Exceptions::ParseError, ("Failed to parse IP address: " + inString).c_str())
       }
 
@@ -284,6 +299,8 @@ namespace zsLib
     {
       if (0 != inPort)
         mPort = htons(inPort);
+
+      mZonePostfix = zone;
     }
     finally:
     {
@@ -297,64 +314,70 @@ namespace zsLib
     if (inString.isEmpty()) return true;
 
     // scope: try to parse as an IPv6 address first
-    try
-    {
-      String::size_type openBracketPos = inString.find("[");
-      String::size_type closeBracketPos = (openBracketPos != String::npos ? inString.find("]", openBracketPos+1) : String::npos);
+    try {
+      String::size_type openBracketPos = inString.find('[');
+      String::size_type closeBracketPos = (openBracketPos != String::npos ? inString.find(']', openBracketPos+1) : String::npos);
 
       // this is illegal
       if (((String::npos != openBracketPos) || (String::npos != closeBracketPos)) &&
           ((String::npos == openBracketPos) || (String::npos == closeBracketPos))) return false;
 
       String ipv6;
-      if (String::npos != openBracketPos)
-      {
-        String::size_type colonPos = inString.find(":", closeBracketPos+1);
-        if (String::npos != colonPos)
-        {
+      if (String::npos != openBracketPos) {
+        String::size_type colonPos = inString.find(':', closeBracketPos+1);
+        if (String::npos != colonPos) {
           if (colonPos != closeBracketPos+1) return false;
           String port(inString.substr(colonPos+1));
           port.trim();
           bogusPort = (WORD)(Numeric<WORD>(port));
         }
         ipv6 = inString.substr(openBracketPos+1, (closeBracketPos-(openBracketPos+1)));
-      }
-      else
+      } else {
         ipv6 = inString;
+      }
 
       ipv6.trim();
+
+      String::size_type posPercent = ipv6.rfind('%');
+      if (String::npos != posPercent) {
+        ipv6 = ipv6.substr(0, posPercent);
+        ipv6.trim();
+      }
 
       // do a trial convert, done if succeeds
       IPAddress bogus;
       if (internal::inet_pton6(ipv6, (unsigned char *)&bogus)) return true;
 
       if ((String::npos != openBracketPos) || (String::npos != closeBracketPos)) return false;
-    }
-    catch (Numeric<WORD>::ValueOutOfRange &) {
+    } catch (Numeric<WORD>::ValueOutOfRange &) {
       return false;
     }
 
     // scope: try to parse as IPv4
-    try
-    {
+    try {
       // this has to be an IPv4 address
       String ipv4;
-      String::size_type colonPos = inString.find(":");
-      if (String::npos != colonPos)
-      {
+      String::size_type colonPos = inString.find(':');
+      if (String::npos != colonPos) {
         String port(inString.substr(colonPos+1));
         port.trim();
         bogusPort = (WORD)(Numeric<WORD>(port));
         ipv4 = inString.substr(0, colonPos);
-      }
-      else
+      } else {
         ipv4 = inString;
+      }
 
       ipv4.trim();
+
+      String::size_type posPercent = ipv4.rfind('%');
+      if (String::npos != posPercent) {
+        ipv4 = ipv4.substr(0, posPercent);
+        ipv4.trim();
+      }
+
       DWORD address = 0;
       if (internal::inet_pton4(ipv4, (BYTE *)&address)) return true;
-    }
-    catch (Numeric<WORD>::ValueOutOfRange &) {
+    } catch (Numeric<WORD>::ValueOutOfRange &) {
       return false;
     }
 
@@ -391,6 +414,7 @@ namespace zsLib
   {
     mIPAddress = inIPAddress.mIPAddress;
     mPort = inIPAddress.mPort;
+    mZonePostfix = inIPAddress.mZonePostfix;
     return *this;
   }
 
@@ -398,6 +422,7 @@ namespace zsLib
   {
     mIPAddress = inPortPair.mIPAddress;
     mPort = inPortPair.mPort;
+    mZonePostfix.clear();
     return *this;
   }
 
@@ -406,6 +431,9 @@ namespace zsLib
     size_t size = sizeof(mIPAddress.by);
     if (0 != memcmp(&(inIPAddress.mIPAddress), &mIPAddress, size))
       return false;
+    if (0 != mZonePostfix.compare(inIPAddress.mZonePostfix)) {
+      return false;
+    }
     return inIPAddress.mPort == mPort;
   }
 
@@ -431,10 +459,11 @@ namespace zsLib
   {
     size_t size = sizeof(mIPAddress.by);
     int compare = memcmp(&mIPAddress, &(inIPAddress.mIPAddress), size);
-    if (compare < 0)
-      return true;
-    if (compare > 0)
-      return false;
+    if (0 != compare) return compare < 0;
+
+    compare = mZonePostfix.compare(inIPAddress.mZonePostfix);
+    if (0 != compare) return compare < 0;
+
     return ntohs(mPort) < ntohs(inIPAddress.mPort);
   }
 
@@ -442,10 +471,7 @@ namespace zsLib
   {
     size_t size = sizeof(mIPAddress.by);
     int compare = memcmp(&mIPAddress, &(inPortPair.mIPAddress), size);
-    if (compare < 0)
-      return true;
-    if (compare > 0)
-      return false;
+    if (0 != compare) return compare < 0;
     return ntohs(mPort) < ntohs(inPortPair.mPort);
   }
 
@@ -453,10 +479,7 @@ namespace zsLib
   {
     size_t size = sizeof(mIPAddress.by);
     int compare = memcmp(&mIPAddress, &(inIPAddress.mIPAddress), size);
-    if (compare > 0)
-      return true;
-    if (compare < 0)
-      return false;
+    if (0 != compare) return compare > 0;
     return ntohs(mPort) > ntohs(inIPAddress.mPort);
   }
 
@@ -464,10 +487,7 @@ namespace zsLib
   {
     size_t size = sizeof(mIPAddress.by);
     int compare = memcmp(&mIPAddress, &(inPortPair.mIPAddress), size);
-    if (compare > 0)
-      return true;
-    if (compare < 0)
-      return false;
+    if (0 != compare) return compare > 0;
     return ntohs(mPort) > ntohs(inPortPair.mPort);
   }
 
@@ -475,13 +495,13 @@ namespace zsLib
   {
     if (!isAddressEqualIgnoringIPv4Format(inIPAddress))
       return false;
+    if (0 != mZonePostfix.compare(inIPAddress.mZonePostfix)) return false;
     return mPort == inIPAddress.mPort;
   }
 
   bool IPAddress::isEqualIgnoringIPv4Format(const IPv6PortPair &inPortPair) const
   {
-    if (!isAddressEqualIgnoringIPv4Format(inPortPair))
-      return false;
+    if (!isAddressEqualIgnoringIPv4Format(inPortPair)) return false;
     return mPort == inPortPair.mPort;
   }
 
@@ -501,8 +521,7 @@ namespace zsLib
   {
     if (isIPv4())
     {
-      if (!inIPAddress.isIPv4())
-        return false;
+      if (!inIPAddress.isIPv4()) return false;
 
       return getIPv4AddressAsDWORD() == inIPAddress.getIPv4AddressAsDWORD();
     }
@@ -514,8 +533,7 @@ namespace zsLib
     if (isIPv4())
     {
       IPAddress temp(inPortPair);
-      if (!temp.isIPv4())
-        return false;
+      if (!temp.isIPv4()) return false;
 
       return getIPv4AddressAsDWORD() == temp.getIPv4AddressAsDWORD();
     }
@@ -530,7 +548,7 @@ namespace zsLib
 
   bool IPAddress::isEmpty() const
   {
-    return isAddressEmpty() && isPortEmpty();
+    return isAddressEmpty() && isPortEmpty() && (isZoneEmpty());
   }
 
   bool IPAddress::isAddressEmpty() const
@@ -543,6 +561,11 @@ namespace zsLib
     return (0 == mPort);
   }
 
+  bool IPAddress::isZoneEmpty() const
+  {
+    return !mZonePostfix.hasData();
+  }
+
   // conversion routines between all the IPv4 structures
   void IPAddress::convertIPv4Mapped() throw(IPAddress::Exceptions::NotIPv4)
   {
@@ -553,6 +576,7 @@ namespace zsLib
   {
     // convert to mapped
     IPAddress temp(getIPv4AddressAsDWORD(), ntohs(mPort));
+    temp.mZonePostfix = mZonePostfix;
     return temp;
   }
 
@@ -566,6 +590,7 @@ namespace zsLib
     IPAddress temp;
     temp.mIPAddress.dw[3] = htonl(getIPv4AddressAsDWORD());
     temp.mPort = mPort;
+    temp.mZonePostfix = mZonePostfix;
     return temp;
   }
 
@@ -576,8 +601,7 @@ namespace zsLib
 
   IPAddress IPAddress::convertIPv46to4() const throw(IPAddress::Exceptions::NotIPv4)
   {
-    if (htons(0x2002) == mIPAddress.w[0])
-      return *this;  // no need to convert, already an 6to4 address (this preserve all since its a 2002::/16 address)
+    if (htons(0x2002) == mIPAddress.w[0]) return *this;  // no need to convert, already an 6to4 address (this preserve all since its a 2002::/16 address)
 
     DWORD address = getIPv4AddressAsDWORD();
     IPAddress mapped(address, 0);
@@ -589,6 +613,7 @@ namespace zsLib
     temp.mIPAddress.by[4] = mapped.mIPAddress.by[14];
     temp.mIPAddress.by[5] = mapped.mIPAddress.by[15];
     temp.mPort = mPort;
+    temp.mZonePostfix = mZonePostfix;
     return temp;
   }
 
@@ -596,30 +621,24 @@ namespace zsLib
   // IP V4 clear is 0000 0000 0000 0000 00000 FFFF 0000 0000 ( '::FFFF:0:0' )
   bool IPAddress::isAddrAny() const
   {
-    if (isIPv6())
-      return isAddressEqual(anyV6());
+    if (isIPv6()) return isAddressEqual(anyV6());
     return isAddressEqualIgnoringIPv4Format(anyV4());
   }
 
   bool IPAddress::isLoopback() const
   {
-    if (isAddressEqual(loopbackV6()))
-      return true;
+    if (isAddressEqual(loopbackV6())) return true;
     return isAddressEqualIgnoringIPv4Format(loopbackV4());
   }
 
   bool IPAddress::isIPv4() const
   {
-    if (0 == mIPAddress.ull[0])
-    {
-      if (htonl(0xFFFF) == mIPAddress.dw[2])
-        return true;
+    if (0 == mIPAddress.ull[0]) {
+      if (htonl(0xFFFF) == mIPAddress.dw[2]) return true;
 
       // could be mapped or compatible address
-      if (0 == mIPAddress.dw[2])
-      {
-        if (1 == ntohl(mIPAddress.dw[3]))   // this is an exception - loopback in compatible mode is not really an IPv4, use a mapped address instead
-          return false;
+      if (0 == mIPAddress.dw[2]) {
+        if (1 == ntohl(mIPAddress.dw[3])) return false;   // this is an exception - loopback in compatible mode is not really an IPv4, use a mapped address instead
 
         return true;
       }
@@ -627,9 +646,9 @@ namespace zsLib
       // this is not IPv4
       return false;
     }
+
     // 2002::/16
-    if (htons(0x2002) == mIPAddress.w[0])
-      return true;
+    if (htons(0x2002) == mIPAddress.w[0]) return true;
 
     // not IPv4
     return false;
@@ -684,13 +703,11 @@ namespace zsLib
     if (isLinkLocal())
       return true;
 
-    if (isIPv4())
-    {
+    if (isIPv4()) {
       IPAddress temp;
       temp.mIPAddress.dw[3] = htonl(getIPv4AddressAsDWORD());
 
-      switch (temp.mIPAddress.by[12])
-      {
+      switch (temp.mIPAddress.by[12]) {
         case 10: return true;
         case 172: return (16 == (temp.mIPAddress.by[13] & (0xF0)));
         case 192: return (168 == temp.mIPAddress.by[13]);
@@ -702,9 +719,7 @@ namespace zsLib
 
   bool IPAddress::isIPv4Mapped() const
   {
-    if (htonl(0xFFFF) != mIPAddress.dw[2])
-      return false;
-
+    if (htonl(0xFFFF) != mIPAddress.dw[2]) return false;
     return (0 == mIPAddress.ull[0]);
   }
 
@@ -720,11 +735,9 @@ namespace zsLib
 
   DWORD IPAddress::getIPv4AddressAsDWORD() const throw(IPAddress::Exceptions::NotIPv4)
   {
-    if ((isIPv4Mapped()) || (isIPv4Compatible()))
-      return ntohl(mIPAddress.dw[3]);
+    if ((isIPv4Mapped()) || (isIPv4Compatible())) return ntohl(mIPAddress.dw[3]);
 
-    if (isIPv46to4())
-      return (((DWORD)ntohs(mIPAddress.w[1])) << (sizeof(u_short)*8)) | ((DWORD)ntohs(mIPAddress.w[2]));
+    if (isIPv46to4()) return (((DWORD)ntohs(mIPAddress.w[1])) << (sizeof(u_short)*8)) | ((DWORD)ntohs(mIPAddress.w[2]));
 
     ZS_THROW_CUSTOM(Exceptions::NotIPv4, ("Attempting to convert IP address to IPv4 when address is an IPv6 address: " + (*this).string()).c_str())
     return 0;
@@ -780,20 +793,28 @@ namespace zsLib
     outAddress.sin6_family = AF_INET6;
     memcpy(&(outAddress.sin6_addr), &mIPAddress, sizeof(outAddress.sin6_addr));
     outAddress.sin6_port = mPort;
+
+    if (mZonePostfix.hasData()) {
+      try {
+        outAddress.sin6_scope_id = Numeric<decltype(outAddress.sin6_scope_id)>(mZonePostfix);
+      } catch(Numeric<decltype(outAddress.sin6_scope_id)>::ValueOutOfRange &) {
+        ZS_LOG_WARNING(Debug, zsLib::Log::Params("Failed to convert zone to scope", "zsLib::IPAddress") + ZS_PARAM("zone", mZonePostfix))
+      }
+    }
   }
 
   String IPAddress::string(bool inIncludePort) const
   {
     WORD port = getPort();
-    if (!inIncludePort)
-      port = 0;
+    if (!inIncludePort) port = 0;
 
-    if (isIPv4())
-    {
+    if (isIPv4()) {
       char buffer[sizeof("255.255.255.255:65535")+1];
       const char *format = "%u.%u.%u.%u";
-      if (0 != port)
+      if ((0 != port) &&
+          (mZonePostfix.isEmpty())) {
         format = "%u.%u.%u.%u:%u";
+      }
 
       int bytePos = 12;
       if (isIPv46to4())
@@ -810,6 +831,12 @@ namespace zsLib
               );
 
       String temp(buffer);
+      if (mZonePostfix.hasData()) {
+        temp += ("%" + mZonePostfix);
+        if (0 != port) {
+          temp += (":" + zsLib::string(port));
+        }
+      }
       return temp;
     }
 
@@ -819,26 +846,20 @@ namespace zsLib
   String IPAddress::stringAsIPv6(bool inIncludePort) const
   {
     WORD port = getPort();
-    if (!inIncludePort)
-      port = 0;
+    if (!inIncludePort) port = 0;
 
     char buffer[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")+1];
     memset(&(buffer[0]), 0, sizeof(buffer));
     const char *result = internal::inet_ntop6((BYTE *)&(mIPAddress), &(buffer[0]), sizeof(buffer));
-    if (result)
-    {
-      String temp;
+    if (result) {
+      String temp((CSTR)(&(buffer[0])));
+      if (mZonePostfix.hasData()) {
+        temp += ("%" + mZonePostfix);
+      }
+
       if (0 != port) {
-        char bufferWithPort[sizeof("[ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255]:65535")+1];
-        sprintf(
-                bufferWithPort,
-                "[%s]:%u",
-                &(buffer[0]),
-                (UINT)port
-                );
-        temp = &(bufferWithPort[0]);
-      } else
-        temp = &(buffer[0]);
+        temp = "[" + temp + "]:" + zsLib::string(port);
+      }
       return temp;
     }
     return String();

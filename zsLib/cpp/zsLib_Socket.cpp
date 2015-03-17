@@ -168,15 +168,12 @@ namespace zsLib
       outAddress = NULL;
       outSize = 0;
 
-      if (inAddress.isIPv6())
-      {
+      if (inAddress.isIPv6()) {
         memset(&inIPv6, 0, sizeof(inIPv6));
         inAddress.getIPv6(inIPv6);
         outAddress = (sockaddr *)&inIPv6;
         outSize = sizeof(inIPv6);
-      }
-      else
-      {
+      } else {
         memset(&inIPv4, 0, sizeof(inIPv4));
         inAddress.getIPv4(inIPv4);
         outAddress = (sockaddr *)&inIPv4;
@@ -571,11 +568,16 @@ namespace zsLib
       AutoRecursiveLock lock(mLock);
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
 
-      sockaddr_in addressv4;
-      sockaddr_in6 addressv6;
+      sockaddr_in addressv4 {};
+      sockaddr_in6 addressv6 {};
       sockaddr *address = NULL;
       int size = 0;
       internal::prepareRawIPAddress(inBindIP, addressv4, addressv6, address, size);
+#ifdef _WIN32
+      if (0 != addressv6.sin6_scope_id) {
+        addressv6.sin6_scope_struct.Level = ScopeLevelLink;
+      }
+#endif //_WIN32
 
       int result = ::bind(mSocket, address, size);
       if (SOCKET_ERROR == result)
