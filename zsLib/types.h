@@ -165,6 +165,27 @@ namespace zsLib
 
   typedef AutoInitializedPUID AutoPUID;
 
+  template <typename type>
+  class Optional
+  {
+  public:
+    typedef type UseType;
+  public:
+    Optional() : mHasValue(false) {}
+
+    Optional(UseType value) :
+      mHasValue(true),
+      mType(value)
+    {}
+
+    bool hasValue() const {return mHasValue;}
+    operator UseType() const {return mType;}
+
+  public:
+    bool mHasValue;
+    UseType mType;
+  };
+
   namespace XML
   {
     ZS_DECLARE_CLASS_PTR(Node)
@@ -183,10 +204,7 @@ namespace zsLib
     class WalkSink;
   }
 
-  namespace JSON
-  {
-    using namespace XML;
-  };
+  namespace JSON = zsLib::XML;
 
 } // namespace zsLib
 

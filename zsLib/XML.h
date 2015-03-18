@@ -47,7 +47,6 @@ namespace zsLib
 {
   namespace XML
   {
-
     enum ParserWarningTypes
     {
       ParserWarningType_None,

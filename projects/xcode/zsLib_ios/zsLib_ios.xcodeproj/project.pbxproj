@@ -60,6 +60,7 @@
 /* Begin PBXFileReference section */
 		000CBF8017A40C510075E86C /* zsLib_ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxySubscriptions.h; sourceTree = "<group>"; };
 		000CBF8117A40C690075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
+		0020ED5A1AB86DDE00B66C74 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		0066818216C9D64000259F81 /* libzsLib_ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libzsLib_ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0066819516C9D65E00259F81 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
 		0066819616C9D65E00259F81 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
@@ -250,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				006681B916C9D65E00259F81 /* types.h */,
+				0020ED5A1AB86DDE00B66C74 /* platform.h */,
 				006681BA16C9D65E00259F81 /* zsLib_Event.h */,
 				006681BB16C9D65E00259F81 /* zsLib_Exception.h */,
 				006681BC16C9D65E00259F81 /* zsLib_IPAddress.h */,

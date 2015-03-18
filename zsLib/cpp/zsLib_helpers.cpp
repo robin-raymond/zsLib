@@ -137,8 +137,6 @@ namespace zsLib
       }
 
     private:
-
-    private:
       Time mEpoch;
     };
   }

@@ -151,6 +151,43 @@ namespace zsLib
     virtual void onPromiseRejected(PromisePtr promise);
   };
 
+  template <typename DataType, typename ReasonType = zsLib::Any, typename UserType = zsLib::Any>
+  class PromiseWith : public Promise
+  {
+  public:
+    typedef DataType UseDataType;
+    typedef std::shared_ptr<UseDataType> UseDataTypePtr;
+    typedef std::weak_ptr<UseDataType> UseDataTypeWeakPtr;
+
+    typedef ReasonType UseReasonType;
+    typedef std::shared_ptr<UseReasonType> UseReasonTypePtr;
+    typedef std::weak_ptr<UseReasonType> UseReasonTypeWeakPtr;
+
+    typedef UserType UseUserType;
+    typedef std::shared_ptr<UseUserType> UseUserTypePtr;
+    typedef std::weak_ptr<UseUserType> UseUserTypeWeakPtr;
+
+    typedef PromiseWith<DataType, ReasonType, UserType> PromiseWithType;
+    typedef std::shared_ptr<PromiseWithType> PromiseWithTypePtr;
+    typedef std::weak_ptr<PromiseWithType> PromiseWithTypeWeakPtr;
+
+    static PromiseWithTypePtr createFrom(PromisePtr genericPromise) {
+      if (!genericPromise) return PromiseWithTypePtr();
+
+      PromiseList promises;
+      promises.push_back(genericPromise);
+      IMessageQueuePtr queue = genericPromise->getAssociatedMessageQueue();
+      PromiseWithTypePtr pThis(new PromiseWithType(promises, queue));
+      pThis->mThisWeak = pThis;
+      genericPromise->thenWeak(pThis);
+      return pThis;
+    }
+
+    UseDataTypePtr value() const {return Promise::value<DataType>();}
+    UseReasonTypePtr reason() const {return Promise::reason<UseReasonType>();}
+    UseUserTypePtr userData() const {return Promise::userData<UseUserType>();}
+  };
+
   interaction IPromiseSettledDelegate : public IPromiseDelegate
   {
     virtual void onPromiseSettled(PromisePtr promise) = 0;

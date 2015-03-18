@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		000CBF6217A3EB640075E86C /* zsLib_ProxySubscriptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */; };
 		006680FF16C9CE8700259F81 /* zsLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B716C9CE8700259F81 /* zsLib.cpp */; };
 		0066810016C9CE8700259F81 /* zsLib_Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B816C9CE8700259F81 /* zsLib_Event.cpp */; };
 		0066810116C9CE8700259F81 /* zsLib_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680B916C9CE8700259F81 /* zsLib_helpers.cpp */; };
@@ -41,7 +40,6 @@
 		0066811D16C9CE8700259F81 /* zsLib_XMLUnknown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006680D516C9CE8700259F81 /* zsLib_XMLUnknown.cpp */; };
 		00D667671AB51105001D8E34 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D667651AB51105001D8E34 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */; };
 		00D667681AB51105001D8E34 /* zsLib_Singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D667661AB51105001D8E34 /* zsLib_Singleton.cpp */; };
-		00D6676A1AB5111D001D8E34 /* Singleton.h in Headers */ = {isa = PBXBuildFile; fileRef = 00D667691AB5111D001D8E34 /* Singleton.h */; };
 		00EB8E8C177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */; };
 		00EC6C921A8E3857004BDA4E /* zsLib_Promise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EC6C911A8E3857004BDA4E /* zsLib_Promise.cpp */; };
 		00EF0B10184A543D00101BEE /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF0B0F184A543D00101BEE /* zsLib_Exception.cpp */; };
@@ -50,6 +48,7 @@
 /* Begin PBXFileReference section */
 		000CBF6017A3E5090075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
 		000CBF6117A3EB640075E86C /* zsLib_ProxySubscriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxySubscriptions.h; sourceTree = "<group>"; };
+		0020ED581AB86DC400B66C74 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		006680AE16C9CE4300259F81 /* libzsLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libzsLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		006680B716C9CE8700259F81 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
 		006680B816C9CE8700259F81 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
@@ -240,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				006680DB16C9CE8700259F81 /* types.h */,
+				0020ED581AB86DC400B66C74 /* platform.h */,
 				006680DC16C9CE8700259F81 /* zsLib_Event.h */,
 				006680DD16C9CE8700259F81 /* zsLib_Exception.h */,
 				006680DE16C9CE8700259F81 /* zsLib_IPAddress.h */,
@@ -275,8 +275,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00D6676A1AB5111D001D8E34 /* Singleton.h in Headers */,
-				000CBF6217A3EB640075E86C /* zsLib_ProxySubscriptions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
