@@ -43,11 +43,12 @@
 
 #ifdef HAVE_IPHLPAPI_H
 #include <Iphlpapi.h>
+
+#pragma comment(lib, "Iphlpapi.lib")
 #endif //HAVE_IPHLPAPI_H
 
 #pragma warning(push)
 #pragma warning(disable:4290)
-#pragma warning(disable:4996)
 
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
@@ -901,8 +902,14 @@ namespace zsLib
       if (isIPv46to4())
         bytePos = 2;
 
+#ifdef HAVE_SPRINTF_S
+      sprintf_s(
+                buffer,
+                sizeof(buffer),
+#else
       sprintf(
               buffer,
+#endif //HAVE_SPRINTF_S
               format,
               (UINT)mIPAddress.by[bytePos],
               (UINT)mIPAddress.by[bytePos+1],
@@ -1167,10 +1174,20 @@ namespace zsLib
     {
       char tmp[sizeof("255.255.255.255")+1];
 
-      if ((size_t)sprintf(tmp,"%u.%u.%u.%u",src[0],src[1],src[2],src[3]) > size)
+#ifdef HAVE_SPRINTF_S
+      if ((size_t)sprintf_s(tmp, size, "%u.%u.%u.%u",src[0],src[1],src[2],src[3]) > size)
+#else
+      if ((size_t)sprintf(tmp, "%u.%u.%u.%u", src[0], src[1], src[2], src[3]) > size)
+#endif //HAVE_SPRINTF_S
         return (NULL);
 
+#ifdef HAVE_STRCPY_S
+      if (0 != strcpy_s(dst, size, tmp))
+        return (NULL);
+      return dst;
+#else
       return strcpy(dst, tmp);
+#endif //HAVE_STRCPY_S
     }
 
     //-------------------------------------------------------------------------
@@ -1255,7 +1272,10 @@ namespace zsLib
           tp += strlen (tp);
           break;
         }
+#pragma warning(push)
+#pragma warning(disable: 4996)
         tp += sprintf (tp, "%lX", words[i]);
+#pragma warning(pop)
       }
 
       /* Was it a trailing run of 0x00's?
@@ -1269,7 +1289,13 @@ namespace zsLib
       if ((size_t)(tp - tmp) > size)
         return (NULL);
 
+#ifdef HAVE_STRCPY_S
+      if (0 != strcpy_s(dst, size, tmp)) 
+        return (NULL);
+      return dst;
+#else
       return strcpy (dst, tmp);
+#endif //HAVE_STRCPY_S
     }
 
   } // namespace internal

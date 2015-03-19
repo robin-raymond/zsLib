@@ -29,9 +29,6 @@
  
  */
 
-#pragma warning(push)
-#pragma warning(disable: 4996)
-
 #include <zsLib/String.h>
 #include <zsLib/Log.h>
 #include <zsLib/Exception.h>
@@ -732,5 +729,3 @@ namespace zsLib
   } // namespace internal
 
 }
-
-#pragma warning(pop)
