@@ -37,9 +37,9 @@
 #include <zsLib/Stringize.h>
 #include <zsLib/Singleton.h>
 
-#ifdef DEBUG
+#ifdef _DEBUG
 #include <iostream>
-#endif //DEBUG
+#endif //_DEBUG
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -47,7 +47,7 @@ namespace zsLib
 {
   namespace internal
   {
-#ifdef DEBUG
+#ifdef _DEBUG
     class ProxyTracking
     {
     public:
@@ -143,7 +143,7 @@ namespace zsLib
       LocationCountMap mLocations;
     };
 
-#endif //DEBUG
+#endif //_DEBUG
 
     static std::atomic_ulong &getProxyCountGlobal()
     {
@@ -154,17 +154,17 @@ namespace zsLib
     void proxyCountIncrement(int line, const char *fileName)
     {
       ++getProxyCountGlobal();
-#ifdef DEBUG
+#ifdef _DEBUG
       (ProxyTracking::singleton()).follow(line, fileName);
-#endif //DEBUG
+#endif //_DEBUG
     }
 
     void proxyCountDecrement(int line, const char *fileName)
     {
       --getProxyCountGlobal();
-#ifdef DEBUG
+#ifdef _DEBUG
       (ProxyTracking::singleton()).unfollow(line, fileName);
-#endif //DEBUG
+#endif //_DEBUG
     }
   }
 
@@ -175,7 +175,7 @@ namespace zsLib
 
   void proxyDump()
   {
-#ifdef DEBUG
+#ifdef _DEBUG
     (internal::ProxyTracking::singleton()).output();
 #endif //DEBUG
   }
