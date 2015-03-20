@@ -91,6 +91,12 @@ namespace zsLib
       return singleton.singleton();
     }
 
+    //-----------------------------------------------------------------------
+    static zsLib::Log::Params slog(const char *message, const char *object)
+    {
+      return zsLib::Log::Params(message, object);
+    }
+
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -498,6 +504,7 @@ namespace zsLib
       mOfficialSet[mOfficialCount].revents = 0;
 #ifdef _WIN32
       auto eventHandle = WSACreateEvent();
+      ZS_LOG_TRACE(log("created event handle") + ZS_PARAM("event", (PTRNUMBER)eventHandle))
       if (WSA_INVALID_EVENT == eventHandle) {
         eventHandle = NULL;
         ZS_LOG_WARNING(Detail, log("create event handle failed") + ZS_PARAM("error", WSAGetLastError()))
@@ -558,12 +565,17 @@ namespace zsLib
     //-------------------------------------------------------------------------
     SocketSet::EventHandleHolder::EventHandleHolder(EventHandle handle) :
       mEventHandle(handle)
-    {}
+    {
+#ifdef _WIN32
+      ZS_LOG_TRACE(slog("holding event handle", "SocketSet::EventHandleHolder") + ZS_PARAM("event", (PTRNUMBER)mEventHandle))
+#endif //_WIN32
+    }
 
     //-------------------------------------------------------------------------
     SocketSet::EventHandleHolder::~EventHandleHolder()
     {
 #ifdef _WIN32
+      ZS_LOG_TRACE(slog("closing event handle", "SocketSet::EventHandleHolder") + ZS_PARAM("event", (PTRNUMBER)mEventHandle))
       if (NULL != mEventHandle) {
         WSACloseEvent(mEventHandle);
         mEventHandle = NULL;

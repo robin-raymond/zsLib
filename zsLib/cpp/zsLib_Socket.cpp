@@ -67,6 +67,12 @@ namespace zsLib
 
   namespace internal
   {
+    //-----------------------------------------------------------------------
+    static zsLib::Log::Params slog(const char *message)
+    {
+      return zsLib::Log::Params(message, "Socket");
+    }
+
 #if defined(__QNX__) || defined(__APPLE__)
     //-------------------------------------------------------------------------
     static pthread_once_t &getIgnoreSigTermKeyOnce()
@@ -289,6 +295,9 @@ namespace zsLib
       int error = WSAGetLastError();
       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Could not create socket due to an unexpected error, where error=" + (string(error)))
     }
+
+    ZS_LOG_TRACE(internal::slog("creating socket") + ZS_PARAM("socket", (PTRNUMBER)socket))
+
     SocketPtr object = create();
     object->mThis = object;
     object->adopt(socket);
@@ -346,6 +355,7 @@ namespace zsLib
     close();
 
     AutoRecursiveLock lock(mLock);
+    ZS_LOG_TRACE(internal::slog("adopting socket") + ZS_PARAM("socket", (PTRNUMBER)inSocket))
     mSocket = inSocket;
   }
 
@@ -437,6 +447,8 @@ namespace zsLib
     AutoRecursiveLock lock(mLock);
     if (INVALID_SOCKET == mSocket)
       return;
+
+    ZS_LOG_TRACE(internal::slog("closing socket") + ZS_PARAM("socket", (PTRNUMBER)mSocket))
 
     int result = closesocket(mSocket);
     mSocket = INVALID_SOCKET;
