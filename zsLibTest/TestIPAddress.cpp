@@ -172,7 +172,7 @@ public:
       TESTING_CHECK(ip == ipOriginal)
     }
     {
-      sockaddr_in address;
+	  sockaddr_in address{};
       address.sin_family = AF_INET;
 #ifdef _WIN32
 #if !(WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
@@ -205,7 +205,7 @@ public:
       TESTING_CHECK(ip == ipOriginal)
     }
     {
-      sockaddr_in6 address;
+	  sockaddr_in6 address{};
       address.sin6_family = AF_INET6;
 #ifdef _WIN32
       address.sin6_addr.u.Word[0] = htons(0x1020);
