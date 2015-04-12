@@ -181,6 +181,7 @@ namespace zsLib
     bool isIPv4Mapped() const;                                                    // is an IPv4 mapped address
     bool isIPv4Compatible() const;                                                // is an IPv4 compatible address
     bool isIPv46to4() const;                                                      // is a 6to4 IPv4 address
+    bool isTeredoTunnel() const;                                                  // is teredo tunneling address
 
     DWORD getIPv4AddressAsDWORD() const throw(Exceptions::NotIPv4);               // returns in host byte order
     WORD getPort() const;                                                         // returns in host byte order

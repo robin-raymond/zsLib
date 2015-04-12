@@ -824,6 +824,12 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
+  bool IPAddress::isTeredoTunnel() const
+  {
+    return (htons(0x2001) == mIPAddress.w[0]);
+  }
+
+  //---------------------------------------------------------------------------
   DWORD IPAddress::getIPv4AddressAsDWORD() const throw(IPAddress::Exceptions::NotIPv4)
   {
     if ((isIPv4Mapped()) || (isIPv4Compatible())) return ntohl(mIPAddress.dw[3]);
