@@ -62,7 +62,7 @@ namespace zsLib
   template <typename duration_type>
   inline Time timeSinceEpoch(duration_type duration)
   {
-    if (0 == time) return Time();
+    if (decltype(duration)() == duration) return Time();
     return zsLib::epoch() + duration;
   }
 
