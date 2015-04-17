@@ -171,6 +171,14 @@ namespace zsLib
     typedef std::shared_ptr<PromiseWithType> PromiseWithTypePtr;
     typedef std::weak_ptr<PromiseWithType> PromiseWithTypeWeakPtr;
 
+    PromiseWith(IMessageQueuePtr queue = IMessageQueuePtr()) : Promise(queue) {}
+
+    static PromiseWithTypePtr create(IMessageQueuePtr queue = IMessageQueuePtr()) {
+      PromiseWithTypePtr pThis(new PromiseWith(queue));
+      pThis->mThisWeak = pThis;
+      return pThis;
+    }
+
     static PromiseWithTypePtr createFrom(PromisePtr genericPromise) {
       if (!genericPromise) return PromiseWithTypePtr();
 
