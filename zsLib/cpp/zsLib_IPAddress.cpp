@@ -890,6 +890,7 @@ namespace zsLib
     outAddress.sin6_flowinfo = 0;
   }
 
+  //---------------------------------------------------------------------------
   String IPAddress::string(bool inIncludePort) const
   {
     WORD port = getPort();
