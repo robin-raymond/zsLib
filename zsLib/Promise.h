@@ -191,6 +191,27 @@ namespace zsLib
       return pThis;
     }
 
+    static PromiseWithTypePtr createResolved(IMessageQueuePtr queue) {return PromiseWithType::createResolved(UseDataTypePtr(), queue);}
+    static PromiseWithTypePtr createResolved(
+                                     UseDataTypePtr value = UseDataTypePtr(),
+                                     IMessageQueuePtr queue = IMessageQueuePtr()
+                                     ) {
+      PromiseWithTypePtr pThis(new PromiseWith(queue));
+      pThis->mThisWeak = pThis;
+      pThis->resolve(value);
+      return pThis;
+    }
+    static PromiseWithTypePtr createRejected(IMessageQueuePtr queue) {return PromiseWithType::createRejected(UseReasonTypePtr(), queue);}
+    static PromiseWithTypePtr createRejected(
+                                     UseReasonTypePtr reason = UseReasonTypePtr(),
+                                     IMessageQueuePtr queue = IMessageQueuePtr()
+                                     ) {
+      PromiseWithTypePtr pThis(new PromiseWith(queue));
+      pThis->mThisWeak = pThis;
+      pThis->reject(reason);
+      return pThis;
+    }
+
     UseDataTypePtr value() const {return Promise::value<DataType>();}
     UseReasonTypePtr reason() const {return Promise::reason<UseReasonType>();}
     UseUserTypePtr userData() const {return Promise::userData<UseUserType>();}
