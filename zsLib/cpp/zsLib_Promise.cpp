@@ -71,13 +71,14 @@ namespace zsLib
 
     class PromiseMultiDelegate : public zsLib::Promise
     {
-    private:
+    public:
       //-----------------------------------------------------------------------
       PromiseMultiDelegate(
+                           const make_private &,
                            const std::list<PromisePtr> &promises,
                            IMessageQueuePtr queue
                            ) :
-        Promise(promises, queue)
+        Promise(make_private{}, promises, queue)
       {}
 
     public:
@@ -89,7 +90,7 @@ namespace zsLib
                                             bool ignoreRejections
                                             )
       {
-        PromiseMultiDelegatePtr pThis(new PromiseMultiDelegate(promises, queue));
+        PromiseMultiDelegatePtr pThis(make_shared<PromiseMultiDelegate>(make_private{}, promises, queue));
         pThis->mAllMode = allMode;
         pThis->mIgnoredRejections = ignoreRejections;
         pThis->mThisWeak = pThis;
@@ -213,13 +214,14 @@ namespace zsLib
 
     class PromiseBroadcastDelegate : public zsLib::Promise
     {
-    private:
+    public:
       //-----------------------------------------------------------------------
       PromiseBroadcastDelegate(
-                              const std::list<PromisePtr> &promises,
-                              IMessageQueuePtr queue
-                              ) :
-        Promise(promises, queue)
+                               const make_private &,
+                               const std::list<PromisePtr> &promises,
+                               IMessageQueuePtr queue
+                               ) :
+        Promise(make_private{}, promises, queue)
       {}
 
     public:
@@ -229,7 +231,7 @@ namespace zsLib
                                                const std::list<PromisePtr> &promises
                                                )
       {
-        PromiseBroadcastDelegatePtr pThis(new PromiseBroadcastDelegate(promises, queue));
+        PromiseBroadcastDelegatePtr pThis(make_shared<PromiseBroadcastDelegate>(make_private{}, promises, queue));
         pThis->mThisWeak = pThis;
         pThis->thenWeak(pThis);
         return pThis;
@@ -296,13 +298,17 @@ namespace zsLib
   #pragma mark
 
   //---------------------------------------------------------------------------
-  Promise::Promise(IMessageQueuePtr queue) :
+  Promise::Promise(
+                   const make_private &,
+                   IMessageQueuePtr queue
+                   ) :
     internal::Promise(queue)
   {
   }
 
   //---------------------------------------------------------------------------
   Promise::Promise(
+                   const make_private &,
                    const std::list<PromisePtr> &promises,
                    IMessageQueuePtr queue
                    ) :
@@ -319,7 +325,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   PromisePtr Promise::create(IMessageQueuePtr queue)
   {
-    PromisePtr pThis(new Promise(queue));
+    PromisePtr pThis(make_shared<Promise>(make_private{}, queue));
     pThis->mThisWeak = pThis;
     return pThis;
   }

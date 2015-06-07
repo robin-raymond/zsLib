@@ -201,7 +201,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    Declaration::Declaration() :
+    Declaration::Declaration(const make_private &) :
       internal::Declaration()
     {
     }
@@ -209,7 +209,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     DeclarationPtr Declaration::create()
     {
-      DeclarationPtr newObject(new Declaration());
+      DeclarationPtr newObject(make_shared<Declaration>(make_private {}));
       newObject->mThis = newObject;
       return newObject;
     }

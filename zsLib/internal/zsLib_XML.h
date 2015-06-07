@@ -70,6 +70,8 @@ namespace zsLib
       class Node : public noncopyable
       {
       protected:
+        struct make_private {};
+
         friend class XML::Document;
         friend class XML::Element;
         friend class XML::Attribute;
@@ -347,6 +349,9 @@ namespace zsLib
       //-----------------------------------------------------------------------
       class Parser
       {
+      protected:
+        struct make_private {};
+
       public:
         friend class XML::Node;
         friend class XML::Document;
@@ -513,6 +518,9 @@ namespace zsLib
       //-----------------------------------------------------------------------
       class Generator : public noncopyable
       {
+      protected:
+        struct make_private {};
+
       public:
         friend class XML::Node;
         friend class XML::Document;

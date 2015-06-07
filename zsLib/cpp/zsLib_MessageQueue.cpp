@@ -36,13 +36,16 @@ namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
-  MessageQueue::MessageQueue(IMessageQueueNotifyPtr notify) : internal::MessageQueue(notify)
+  MessageQueue::MessageQueue(
+                             const make_private &,
+                             IMessageQueueNotifyPtr notify
+                             ) : internal::MessageQueue(notify)
   {
   }
 
   MessageQueuePtr MessageQueue::create(IMessageQueueNotifyPtr notify)
   {
-    return MessageQueuePtr(new MessageQueue(notify));
+    return MessageQueuePtr(make_shared<MessageQueue>(make_private{}, notify));
   }
 
   void MessageQueue::post(IMessageQueueMessagePtr message)

@@ -61,7 +61,7 @@ namespace zsLib
   }
 
   EventPtr Event::create() {
-    return EventPtr(new Event);
+    return EventPtr(make_shared<Event>());
   }
 
   void Event::reset()

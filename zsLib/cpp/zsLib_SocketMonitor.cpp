@@ -513,7 +513,7 @@ namespace zsLib
         assert(0 == selectResult);
       }
       mOfficialHandleSet[mOfficialCount] = eventHandle;
-      mOfficialHandleHolderSet[mOfficialCount] = EventHandleHolderPtr(new EventHandleHolder(eventHandle));
+      mOfficialHandleHolderSet[mOfficialCount] = EventHandleHolderPtr(make_shared<EventHandleHolder>(eventHandle));
 #endif //_WIN32
 
       mSocketIndexes[socket] = mOfficialCount;

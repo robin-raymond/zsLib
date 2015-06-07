@@ -47,6 +47,8 @@
 
 namespace zsLib
 {
+  using std::make_shared;
+  
   ZS_DECLARE_TYPEDEF_PTR(std::thread, Thread)
   ZS_DECLARE_TYPEDEF_PTR(std::mutex, Lock)
   ZS_DECLARE_TYPEDEF_PTR(std::recursive_mutex, RecursiveLock)

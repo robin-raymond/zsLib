@@ -131,7 +131,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    Comment::Comment() :
+    Comment::Comment(const make_private &) :
       internal::Comment()
     {
     }
@@ -139,7 +139,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     CommentPtr Comment::create()
     {
-      CommentPtr object(new Comment);
+      CommentPtr object(make_shared<Comment>(make_private{}));
       object->mThis = object;
       return object;
     }

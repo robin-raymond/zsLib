@@ -229,7 +229,7 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Log::Log()
+  Log::Log(const make_private &)
   {
   }
 
@@ -248,7 +248,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   LogPtr Log::create()
   {
-    return LogPtr(new Log);
+    return LogPtr(make_shared<Log>(make_private{}));
   }
 
   //---------------------------------------------------------------------------
@@ -264,7 +264,7 @@ namespace zsLib
     {
       AutoRecursiveLock lock(refThis.mLock);
 
-      ListenerListPtr replaceList(new ListenerList);
+      ListenerListPtr replaceList(make_shared<ListenerList>());
 
       if (refThis.mListeners) {
         (*replaceList) = (*refThis.mListeners);
@@ -295,7 +295,7 @@ namespace zsLib
 
     AutoRecursiveLock lock(refThis.mLock);
 
-    ListenerListPtr replaceList(new ListenerList);
+    ListenerListPtr replaceList(make_shared<ListenerList>());
 
     if (refThis.mListeners) {
       (*replaceList) = (*refThis.mListeners);

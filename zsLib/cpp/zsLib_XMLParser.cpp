@@ -926,7 +926,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     ParserPtr Parser::createXMLParser()
     {
-      ParserPtr pThis(new Parser);
+      ParserPtr pThis(make_shared<Parser>(make_private {}));
       pThis->mThis = pThis;
       pThis->mParserMode = ParserMode_XML;
       return pThis;
@@ -938,7 +938,7 @@ namespace zsLib
                                        char attributePrefix
                                        )
     {
-      ParserPtr pThis(new Parser);
+      ParserPtr pThis(make_shared<Parser>(make_private{}));
       pThis->mThis = pThis;
       pThis->mParserMode = ParserMode_JSON;
       pThis->mJSONForcedText = (forcedText ? forcedText : "");
@@ -951,7 +951,7 @@ namespace zsLib
                                              char jsonAttributePrefix
                                              )
     {
-      ParserPtr pThis(new Parser);
+      ParserPtr pThis(make_shared<Parser>(make_private{}));
       pThis->mThis = pThis;
       pThis->mParserMode = ParserMode_AutoDetect;
       pThis->mJSONForcedText = (jsonForcedText ? jsonForcedText : "");
@@ -960,7 +960,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    Parser::Parser() :
+    Parser::Parser(const make_private &) :
       internal::Parser()
     {
     }

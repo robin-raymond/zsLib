@@ -270,13 +270,13 @@ namespace zsLib
     //-------------------------------------------------------------------------
     TextPtr Text::create()
     {
-      TextPtr object(new Text);
+      TextPtr object(make_shared<Text>(make_private{}));
       object->mThis = object;
       return object;
     }
 
     //-------------------------------------------------------------------------
-    Text::Text() :
+    Text::Text(const make_private &) :
       internal::Text()
     {
     }

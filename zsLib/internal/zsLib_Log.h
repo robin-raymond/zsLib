@@ -49,6 +49,9 @@ namespace zsLib
   {
     class Log
     {
+    protected:
+      struct make_private {};
+
     public:
       static String paramize(const char *name);
 

@@ -46,8 +46,12 @@ namespace zsLib
 
   class Timer : public internal::Timer
   {
-  private:
-    Timer(ITimerDelegatePtr delegate, Microseconds timeout, bool repeat, UINT maxFiringTimerAtOnce);
+  protected:
+    struct make_private {};
+
+  public:
+    Timer(const make_private &, ITimerDelegatePtr delegate, Microseconds timeout, bool repeat, UINT maxFiringTimerAtOnce);
+
   public:
 
     static void setMonitorPriority(ThreadPriorities priority);  // must be called before any timer is used

@@ -58,9 +58,13 @@ namespace zsLib
     typedef std::list<PromisePtr> PromiseList;
     typedef std::list<PromiseWeakPtr> PromiseWeakList;
 
-  protected:
-    Promise(IMessageQueuePtr queue);
+  public:
     Promise(
+            const make_private &,
+            IMessageQueuePtr queue
+            );
+    Promise(
+            const make_private &,
             const std::list<PromisePtr> &promises,
             IMessageQueuePtr queue
             );
@@ -171,10 +175,15 @@ namespace zsLib
     typedef std::shared_ptr<PromiseWithType> PromiseWithTypePtr;
     typedef std::weak_ptr<PromiseWithType> PromiseWithTypeWeakPtr;
 
-    PromiseWith(IMessageQueuePtr queue = IMessageQueuePtr()) : Promise(queue) {}
+  public:
+    PromiseWith(
+                const make_private &,
+                IMessageQueuePtr queue = IMessageQueuePtr()
+                ) : Promise(make_private {}, queue) {}
 
+  public:
     static PromiseWithTypePtr create(IMessageQueuePtr queue = IMessageQueuePtr()) {
-      PromiseWithTypePtr pThis(new PromiseWith(queue));
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       return pThis;
     }
@@ -185,7 +194,7 @@ namespace zsLib
       PromiseList promises;
       promises.push_back(genericPromise);
       IMessageQueuePtr queue = genericPromise->getAssociatedMessageQueue();
-      PromiseWithTypePtr pThis(new PromiseWithType(promises, queue));
+      PromiseWithTypePtr pThis(make_shared<PromiseWithType>(make_private{}, promises, queue));
       pThis->mThisWeak = pThis;
       genericPromise->thenWeak(pThis);
       return pThis;
@@ -193,10 +202,10 @@ namespace zsLib
 
     static PromiseWithTypePtr createResolved(IMessageQueuePtr queue) {return PromiseWithType::createResolved(UseDataTypePtr(), queue);}
     static PromiseWithTypePtr createResolved(
-                                     UseDataTypePtr value = UseDataTypePtr(),
-                                     IMessageQueuePtr queue = IMessageQueuePtr()
-                                     ) {
-      PromiseWithTypePtr pThis(new PromiseWith(queue));
+                                             UseDataTypePtr value = UseDataTypePtr(),
+                                             IMessageQueuePtr queue = IMessageQueuePtr()
+                                             ) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->resolve(value);
       return pThis;
@@ -206,7 +215,7 @@ namespace zsLib
                                      UseReasonTypePtr reason = UseReasonTypePtr(),
                                      IMessageQueuePtr queue = IMessageQueuePtr()
                                      ) {
-      PromiseWithTypePtr pThis(new PromiseWith(queue));
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->reject(reason);
       return pThis;

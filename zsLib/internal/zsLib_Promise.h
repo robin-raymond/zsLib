@@ -45,6 +45,9 @@ namespace zsLib
     class Promise : public zsLib::MessageQueueAssociator,
                     public zsLib::IPromiseDelegate
     {
+    protected:
+      struct make_private {};
+
     public:
       friend class zsLib::Promise;
 

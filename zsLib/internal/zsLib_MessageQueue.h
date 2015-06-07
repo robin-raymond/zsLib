@@ -45,6 +45,9 @@ namespace zsLib
     class MessageQueue : public IMessageQueue
     {
     protected:
+      struct make_private {};
+
+    protected:
       MessageQueue(IMessageQueueNotifyPtr notify) : mNotify(notify) {}
 
     protected:

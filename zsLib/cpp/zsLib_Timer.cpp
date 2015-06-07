@@ -96,6 +96,7 @@ namespace zsLib
 
   //---------------------------------------------------------------------------
   Timer::Timer(
+               const make_private &,
                ITimerDelegatePtr delegate,
                Microseconds timeout,
                bool repeat,
@@ -135,7 +136,7 @@ namespace zsLib
                          UINT maxFiringTimerAtOnce
                          )
   {
-    TimerPtr timer = TimerPtr(new Timer(delegate, timeout, repeat, maxFiringTimerAtOnce));
+    TimerPtr timer = TimerPtr(make_shared<Timer>(make_private {}, delegate, timeout, repeat, maxFiringTimerAtOnce));
     timer->mThisWeak = timer;
 
     internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();

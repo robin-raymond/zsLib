@@ -158,7 +158,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    Unknown::Unknown() :
+    Unknown::Unknown(const make_private &) :
       internal::Unknown()
     {
     }
@@ -166,7 +166,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     UnknownPtr Unknown::create()
     {
-      UnknownPtr object(new Unknown);
+      UnknownPtr object(make_shared<Unknown>(make_private{}));
       object->mThis = object;
       return object;
     }

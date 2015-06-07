@@ -85,7 +85,7 @@ namespace zsLib
                                 bool strongReferenceToDelgate = false
                                 )
       {
-        SubscriptionPtr subscription(new Subscription);
+        SubscriptionPtr subscription(make_shared<Subscription>());
         subscription->mThisWeak = subscription;
         subscription->mDelegateImpl = mDelegateImpl;
 
@@ -188,7 +188,7 @@ namespace zsLib
       public:
         typedef typename ProxySubscriptions::SubscriptionDelegateMap SubscriptionDelegateMap;
 
-        DelegateImpl() : mSubscriptions(new SubscriptionDelegateMap) {}
+        DelegateImpl() : mSubscriptions(make_shared<SubscriptionDelegateMap>()) {}
         ~DelegateImpl() {}
 
         template<typename PARAM>
@@ -215,7 +215,7 @@ namespace zsLib
         void cancel(Subscription *gone)
         {
           AutoRecursiveLock lock(mLock);
-          SubscriptionDelegateMapPtr temp(new SubscriptionDelegateMap(*mSubscriptions));
+          SubscriptionDelegateMapPtr temp(make_shared<SubscriptionDelegateMap>(*mSubscriptions));
           typename SubscriptionDelegateMap::iterator found = temp->find(gone);
           if (found == temp->end()) return;
           temp->erase(found);
@@ -231,7 +231,7 @@ namespace zsLib
         void clear(Subscription *ignore)
         {
           AutoRecursiveLock lock(mLock);
-          SubscriptionDelegateMapPtr temp(new SubscriptionDelegateMap);
+          SubscriptionDelegateMapPtr temp(make_shared<SubscriptionDelegateMap>());
           mSubscriptions = temp;
           mBackgroundSubscriptions.clear();
         }
@@ -288,7 +288,7 @@ namespace zsLib                                                                 
                                                                                                                                   \
     ProxySubscriptions()                                                                                                          \
     {                                                                                                                             \
-      mDelegateImpl = DelegateImplPtr(new DerivedDelegateImpl);                                                                   \
+      mDelegateImpl = DelegateImplPtr(make_shared<DerivedDelegateImpl>());                                                        \
     }                                                                                                                             \
                                                                                                                                   \
     class DerivedDelegateImpl : public DelegateImpl                                                                               \

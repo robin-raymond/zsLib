@@ -190,6 +190,7 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     Document::Document(
+                       const make_private &,
                        bool inElementNameIsCaseSensative,
                        bool inAttributeNameIsCaseSensative
                        ) :
@@ -203,7 +204,7 @@ namespace zsLib
                                  bool inAttributeNameIsCaseSensative
                                  )
     {
-      DocumentPtr pThis(new Document(inElementNameIsCaseSensative, inAttributeNameIsCaseSensative));
+      DocumentPtr pThis(make_shared<Document>(make_private{}, inElementNameIsCaseSensative, inAttributeNameIsCaseSensative));
       pThis->mThis = pThis;
       return pThis;
     }

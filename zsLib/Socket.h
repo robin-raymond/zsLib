@@ -377,9 +377,10 @@ namespace zsLib
     virtual void onWriteReadyReset() const throw(Exceptions::DelegateNotSet, Exceptions::InvalidSocket, Exceptions::Unspecified);
     virtual void onExceptionReset() const throw(Exceptions::DelegateNotSet, Exceptions::InvalidSocket, Exceptions::Unspecified);
 
-  private:
+  protected:
     Socket() throw(Exceptions::Unspecified);
 
+  protected:
     SOCKET mSocket;
   };
 

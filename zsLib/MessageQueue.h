@@ -73,8 +73,11 @@ namespace zsLib
 {
   class MessageQueue : public internal::MessageQueue
   {
-  private:
-    MessageQueue(IMessageQueueNotifyPtr notify);
+  public:
+    MessageQueue(
+                 const make_private &,
+                 IMessageQueueNotifyPtr notify
+                 );
 
   public:
     static MessageQueuePtr create(IMessageQueueNotifyPtr notify);

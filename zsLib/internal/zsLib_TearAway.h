@@ -104,7 +104,7 @@ namespace zsLib                                                                 
     ZS_DECLARE_PTR(TearAwayType)                                                                              \
     ZS_DECLARE_TYPEDEF_PTR(xDataType, TearAwayData)                                                           \
                                                                                                               \
-  private:                                                                                                    \
+  public:                                                                                                    \
     TearAway(TearAwayInterfacePtr original, TearAwayDataPtr data = TearAwayDataPtr()) : internal::TearAway<xInterface, xDataType>(original, data) {} \
                                                                                                               \
   public:                                                                                                     \
@@ -116,7 +116,7 @@ namespace zsLib                                                                 
       if (!original)                                                                                          \
         return original;                                                                                      \
                                                                                                               \
-      return TearAwayTypePtr(new TearAwayType(original, data));                                               \
+      return TearAwayTypePtr(make_shared<TearAwayType>(original, data));                                      \
     }                                                                                                         \
                                                                                                               \
     static bool isTearAway(TearAwayInterfacePtr tearAway)                                                     \

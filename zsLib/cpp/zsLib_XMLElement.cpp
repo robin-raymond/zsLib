@@ -898,7 +898,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    Element::Element() :
+    Element::Element(const make_private &) :
       internal::Element()
     {
     }
@@ -906,7 +906,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     ElementPtr Element::create(const char *name)
     {
-      ElementPtr newObject(new Element());
+      ElementPtr newObject(make_shared<Element>(make_private{}));
       newObject->mThis = newObject;
       if (name) newObject->setValue(name);
       return newObject;

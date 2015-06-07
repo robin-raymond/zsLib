@@ -300,7 +300,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    Attribute::Attribute() :
+    Attribute::Attribute(const make_private &) :
       internal::Attribute()
     {
     }
@@ -308,7 +308,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     AttributePtr Attribute::create()
     {
-      AttributePtr object(new Attribute);
+      AttributePtr object(make_shared<Attribute>(make_private{}));
       object->mThis = object;
       return object;
     }

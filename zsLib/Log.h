@@ -244,8 +244,10 @@ namespace zsLib
                     ULONG lineNumber
                     );
 
+  public:
+    Log(const make_private &);
+
   protected:
-    Log();
 
     static LogPtr singleton();
     static LogPtr create();

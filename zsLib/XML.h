@@ -338,8 +338,9 @@ namespace zsLib
       virtual NodePtr         toNode() const       {return mThis.lock();}
       virtual DocumentPtr     toDocument() const   {return mThis.lock();}
 
-    protected:
+    public:
       Document(
+               const make_private &,
                bool inElementNameIsCaseSensative = true,
                bool inAttributeNameIsCaseSensative = true
                );
@@ -402,8 +403,8 @@ namespace zsLib
       virtual NodePtr         toNode() const    {return mThis.lock();}
       virtual ElementPtr      toElement() const {return mThis.lock();}
 
-    protected:
-      Element();
+    public:
+      Element(const make_private &);
     };
 
     //-------------------------------------------------------------------------
@@ -453,9 +454,10 @@ namespace zsLib
       virtual NodePtr         toNode() const       {return mThis.lock();}
       virtual AttributePtr    toAttribute() const  {return mThis.lock();}
 
-    protected:
-      Attribute();
+    public:
+      Attribute(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -512,9 +514,10 @@ namespace zsLib
       virtual NodePtr         toNode() const {return mThis.lock();}
       virtual TextPtr         toText() const {return mThis.lock();}
 
-    protected:
-      Text();
+    public:
+      Text(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -549,9 +552,10 @@ namespace zsLib
       virtual NodePtr         toNode() const    {return mThis.lock();}
       virtual CommentPtr      toComment() const {return mThis.lock();}
 
-    protected:
-      Comment();
+    public:
+      Comment(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -598,8 +602,8 @@ namespace zsLib
       virtual NodePtr         toNode() const          {return mThis.lock();}
       virtual DeclarationPtr  toDeclaration() const   {return mThis.lock();}
 
-    protected:
-      Declaration();
+    public:
+      Declaration(const make_private &);
     };
 
     //-------------------------------------------------------------------------
@@ -632,9 +636,10 @@ namespace zsLib
       virtual NodePtr         toNode() const    {return mThis.lock();}
       virtual UnknownPtr      toUnknown() const {return mThis.lock();}
 
-    protected:
-      Unknown();
+    public:
+      Unknown(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -791,8 +796,8 @@ namespace zsLib
       static String convertFromJSONEncoding(const String &inString);
       static String convertToJSONEncoding(const String &inString);
 
-    protected:
-      Parser();
+    public:
+      Parser(const make_private &);
     };
 
     //-------------------------------------------------------------------------
@@ -841,8 +846,11 @@ namespace zsLib
       virtual XMLWriteFlags getXMLWriteFlags() const;
       virtual JSONWriteFlags getJSONWriteFlags() const;
 
-    protected:
-      Generator(UINT writeFlags);
+    public:
+      Generator(
+                const make_private &,
+                UINT writeFlags
+                );
     };
 
   } // namespace XML

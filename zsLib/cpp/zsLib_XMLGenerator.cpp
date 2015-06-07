@@ -491,7 +491,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     GeneratorPtr Generator::createXMLGenerator(XMLWriteFlags writeFlags)
     {
-      GeneratorPtr pThis(new Generator(writeFlags));
+      GeneratorPtr pThis(make_shared<Generator>(make_private{}, writeFlags));
       pThis->mThis = pThis;
       pThis->mGeneratorMode = GeneratorMode_XML;
       return pThis;
@@ -513,7 +513,7 @@ namespace zsLib
                                                 char attributePrefix
                                                 )
     {
-      GeneratorPtr pThis(new Generator(writeFlags));
+      GeneratorPtr pThis(make_shared<Generator>(make_private{}, writeFlags));
       pThis->mThis = pThis;
       pThis->mGeneratorMode = GeneratorMode_JSON;
       pThis->mJSONForcedText = (forcedText ? forcedText : "");
@@ -522,7 +522,10 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    Generator::Generator(UINT writeFlags) :
+    Generator::Generator(
+                         const make_private &,
+                         UINT writeFlags
+                         ) :
       internal::Generator(writeFlags)
     {
     }
