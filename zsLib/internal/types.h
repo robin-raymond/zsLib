@@ -32,6 +32,18 @@
 #ifndef ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 #define ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
 
+#ifdef DEBUG
+#ifndef _DEBUG
+#define _DEBUG 1
+#endif //_DEBUG
+#endif //DEBUG
+
+#ifdef _DEBUG
+#ifndef DEBUG
+#define DEBUG 1
+#endif //DEBUG
+#endif //_DEBUG
+
 #ifdef _WIN32
 #include <winsock2.h>
 #include <rpc.h>
