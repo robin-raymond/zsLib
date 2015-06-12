@@ -34,6 +34,8 @@
 #include <zsLib/IPAddress.h>
 #include <zsLib/helpers.h>
 
+#include <zsLib/Socket.h>
+
 #include <cmath>
 
 #ifdef _WIN32
@@ -141,6 +143,23 @@ namespace zsLib
   String string(const IPAddress & x, bool includePort)
   {
     return x.string(includePort);
+  }
+
+  //-----------------------------------------------------------------------
+  String string(const Socket & x)
+  {
+    auto socket = x.getSocket();
+    if (INVALID_SOCKET == socket) return "INVALID_SOCKET";
+    return string(((PTRNUMBER)(socket)));
+  }
+
+  //-----------------------------------------------------------------------
+  String string(const SocketPtr & x)
+  {
+    if (!x) return String();
+    auto socket = x->getSocket();
+    if (INVALID_SOCKET == socket) return "INVALID_SOCKET";
+    return string(((PTRNUMBER)(socket)));
   }
 
 }

@@ -36,6 +36,7 @@ namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
+  //---------------------------------------------------------------------------
   MessageQueue::MessageQueue(
                              const make_private &,
                              IMessageQueueNotifyPtr notify
@@ -43,11 +44,13 @@ namespace zsLib
   {
   }
 
+  //---------------------------------------------------------------------------
   MessageQueuePtr MessageQueue::create(IMessageQueueNotifyPtr notify)
   {
     return MessageQueuePtr(make_shared<MessageQueue>(make_private{}, notify));
   }
 
+  //---------------------------------------------------------------------------
   void MessageQueue::post(IMessageQueueMessagePtr message)
   {
     {
@@ -57,6 +60,7 @@ namespace zsLib
     mNotify->notifyMessagePosted();
   }
 
+  //---------------------------------------------------------------------------
   void MessageQueue::process()
   {
     do
@@ -76,6 +80,7 @@ namespace zsLib
     } while (true);
   }
 
+  //---------------------------------------------------------------------------
   void MessageQueue::processOnlyOneMessage()
   {
     IMessageQueueMessagePtr message;
@@ -92,6 +97,7 @@ namespace zsLib
     message->processMessage();
   }
 
+  //---------------------------------------------------------------------------
   IMessageQueue::size_type MessageQueue::getTotalUnprocessedMessages() const
   {
     AutoLock lock(mLock);

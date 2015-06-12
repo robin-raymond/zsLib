@@ -31,43 +31,33 @@
 
 #pragma once
 
-#ifndef ZSLIB_STRINGIZE_H_aa15b3dce8688ace2fc3f0d12deaefb8
-#define ZSLIB_STRINGIZE_H_aa15b3dce8688ace2fc3f0d12deaefb8
+#ifndef ZSLIB_MESSAGEQUEUETHREADPOOL_H_e140ea49aaff413fed9a0487ce58baa64fba5a51
+#define ZSLIB_MESSAGEQUEUETHREADPOOL_H_e140ea49aaff413fed9a0487ce58baa64fba5a51
 
-#include <zsLib/internal/zsLib_Stringize.h>
+#include <zsLib/types.h>
+#include <zsLib/internal/zsLib_MessageQueueThreadPool.h>
 
 namespace zsLib
 {
-  ZS_DECLARE_CLASS_PTR(Socket)
-  class IPAddress;
-
-  template<typename t_type>
-  class Stringize
+  class MessageQueueThreadPool : public internal::MessageQueueThreadPool
   {
   public:
-    Stringize(const t_type &value, size_t base = 10) : mValue(value), mBase(base)        {}
-    Stringize(const Stringize &value) : mValue(value.mValue), mBase(value.mBase)  {}
+    static MessageQueueThreadPoolPtr create();
 
-    operator String() const;
-    String string() {return (String)(*this);}
+    virtual void createThread(
+                              const char *threadName = NULL,
+                              ThreadPriorities threadPriority = ThreadPriority_NormalPriority
+                              );
 
-  private:
-    const t_type &mValue;
-    size_t mBase;
+    virtual void waitForShutdown();
+
+    virtual bool hasPendingMessages();
+
+    virtual IMessageQueuePtr createQueue();
+
+    virtual void setThreadPriority(ThreadPriorities threadPriority);
   };
 
-  template<class T>
-  String string( const T & x, size_t base = 10  )
-  {
-    return Stringize<T>(x, base).string();
-  }
+}
 
-  String string(const IPAddress & x, bool includePort = true);
-  String string(const Socket &x);
-  String string(const SocketPtr &x);
-
-} // namespace zsLib
-
-#include <zsLib/internal/zsLib_Stringize.h>
-
-#endif //ZSLIB_STRINGIZE_H_aa15b3dce8688ace2fc3f0d12deaefb8
+#endif //ZSLIB_MESSAGEQUEUETHREADPOOL_H_e140ea49aaff413fed9a0487ce58baa64fba5a51

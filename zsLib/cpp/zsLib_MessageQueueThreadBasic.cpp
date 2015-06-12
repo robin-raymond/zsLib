@@ -44,8 +44,8 @@ namespace zsLib
     {
       MessageQueueThreadBasicPtr thread(new MessageQueueThreadBasic(threadName));
       thread->mQueue = zsLib::MessageQueue::create(thread);
-      thread->mThread = ThreadPtr(new std::thread(std::ref(*thread.get())));
       thread->mThreadPriority = threadPriority;
+      thread->mThread = ThreadPtr(new std::thread(std::ref(*thread.get())));
 
       zsLib::setThreadPriority(*(thread->mThread), threadPriority);
       return thread;
@@ -57,6 +57,7 @@ namespace zsLib
     {
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::operator()()
     {
       bool shouldShutdown = false;

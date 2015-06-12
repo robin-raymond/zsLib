@@ -120,6 +120,7 @@ namespace zsLib
 
   ZS_DECLARE_CLASS_PTR(MessageQueue)
   ZS_DECLARE_CLASS_PTR(MessageQueueThread)
+  ZS_DECLARE_CLASS_PTR(MessageQueueThreadPool)
 
   ZS_DECLARE_CLASS_PTR(Promise)
   ZS_DECLARE_INTERACTION_PTR(IPromiseDelegate)
