@@ -44,6 +44,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadBasic.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadPool.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingBlackberryChannels.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h" />
@@ -66,6 +67,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueueAssociator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueueThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueueThreadPool.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Numeric.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Promise.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Proxy.h" />
@@ -90,6 +92,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueue.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThread.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadBasic.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadPool.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingBlackberryChannels.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp" />
