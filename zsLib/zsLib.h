@@ -56,4 +56,6 @@
 //#include <zsLib/zsLib.h>
 #include <zsLib/types.h>
 
+#include <zsLib/SafeInt.h>
+
 #endif // ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a
