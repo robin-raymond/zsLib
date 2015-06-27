@@ -72,6 +72,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Promise.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Proxy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\ProxySubscriptions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\SafeInt.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Socket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\String.h" />

@@ -181,6 +181,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadPool.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\SafeInt.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\win32\strptime.cpp">
