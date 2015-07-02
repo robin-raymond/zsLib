@@ -181,7 +181,28 @@ namespace zsLib
       mType(value)
     {}
 
+    Optional(const Optional &op2) :
+      mHasValue(op2.mHasValue),
+      mType(op2.mType)
+    {}
+
+    Optional &operator=(const Optional &op2)
+    {
+      mHasValue = op2.mHasValue;
+      mType = op2.mType;
+      return *this;
+    }
+
+    Optional &operator=(const UseType &op2)
+    {
+      mHasValue = true;
+      mType = op2;
+      return *this;
+    }
+
     bool hasValue() const {return mHasValue;}
+    UseType &value() {return mType;}
+    const UseType &value() const {return mType;}
     operator UseType() const {return mType;}
 
   public:
