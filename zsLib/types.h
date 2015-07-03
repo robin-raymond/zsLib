@@ -174,9 +174,9 @@ namespace zsLib
   public:
     typedef type UseType;
   public:
-    Optional() : mHasValue(false) {}
+    Optional() {}
 
-    Optional(UseType value) :
+    Optional(const UseType &value) :
       mHasValue(true),
       mType(value)
     {}
@@ -206,8 +206,8 @@ namespace zsLib
     operator UseType() const {return mType;}
 
   public:
-    bool mHasValue;
-    UseType mType;
+    bool mHasValue {false};
+    UseType mType {};
   };
 
   namespace XML
