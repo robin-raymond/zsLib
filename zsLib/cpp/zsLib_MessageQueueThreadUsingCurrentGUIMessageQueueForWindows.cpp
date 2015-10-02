@@ -184,12 +184,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::post(IMessageQueueMessagePtr message)
+    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::post(IMessageQueueMessageUniPtr message)
     {
       if (mIsShutdown) {
         ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
       }
-      mQueue->post(message);
+      mQueue->post(sdt::move(message));
     }
 
     //-------------------------------------------------------------------------

@@ -39,6 +39,7 @@ namespace zsLib
 {
   namespace internal
   {
+    //-------------------------------------------------------------------------
     Event::Event()
     {
 #ifdef __QNX__
@@ -50,6 +51,7 @@ namespace zsLib
 #endif //__QNX__
     }
 
+    //-------------------------------------------------------------------------
     Event::~Event()
     {
 #ifdef __QNX__
@@ -60,15 +62,18 @@ namespace zsLib
 
   }
 
+  //---------------------------------------------------------------------------
   EventPtr Event::create() {
-    return EventPtr(make_shared<Event>());
+    return make_shared<Event>();
   }
 
+  //---------------------------------------------------------------------------
   void Event::reset()
   {
     mNotified = false;
   }
 
+  //---------------------------------------------------------------------------
   void Event::wait()
   {
     bool notified = mNotified;
@@ -100,6 +105,7 @@ namespace zsLib
 #endif //__QNX__
   }
 
+  //---------------------------------------------------------------------------
   void Event::notify()
   {
 #ifdef __QNX__

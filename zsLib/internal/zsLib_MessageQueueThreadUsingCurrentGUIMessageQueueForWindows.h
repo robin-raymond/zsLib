@@ -66,7 +66,7 @@ namespace zsLib
       static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr singleton();
 
       // IMessageQueue
-      virtual void post(IMessageQueueMessagePtr message);
+      virtual void post(IMessageQueueMessageUniPtr message);
 
       virtual size_type getTotalUnprocessedMessages() const;
 

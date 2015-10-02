@@ -57,7 +57,7 @@ namespace zsLib
       void operator () ();
 
       // IMessageQueue
-      virtual void post(IMessageQueueMessagePtr message);
+      virtual void post(IMessageQueueMessageUniPtr message);
 
       virtual size_type getTotalUnprocessedMessages() const;
 

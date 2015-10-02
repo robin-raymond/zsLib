@@ -116,7 +116,7 @@ namespace zsLib                                                                 
       if (!original)                                                                                          \
         return original;                                                                                      \
                                                                                                               \
-      return TearAwayTypePtr(make_shared<TearAwayType>(original, data));                                      \
+      return make_shared<TearAwayType>(original, data);                                                       \
     }                                                                                                         \
                                                                                                               \
     static bool isTearAway(TearAwayInterfacePtr tearAway)                                                     \

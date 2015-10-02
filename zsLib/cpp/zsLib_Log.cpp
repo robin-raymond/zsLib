@@ -248,7 +248,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   LogPtr Log::create()
   {
-    return LogPtr(make_shared<Log>(make_private{}));
+    return make_shared<Log>(make_private{});
   }
 
   //---------------------------------------------------------------------------

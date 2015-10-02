@@ -288,7 +288,7 @@ namespace zsLib                                                                 
                                                                                                                                   \
     ProxySubscriptions()                                                                                                          \
     {                                                                                                                             \
-      mDelegateImpl = DelegateImplPtr(make_shared<DerivedDelegateImpl>());                                                        \
+      mDelegateImpl = make_shared<DerivedDelegateImpl>();                                                                         \
     }                                                                                                                             \
                                                                                                                                   \
     class DerivedDelegateImpl : public DelegateImpl                                                                               \

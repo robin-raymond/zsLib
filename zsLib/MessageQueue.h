@@ -45,6 +45,8 @@ namespace zsLib
     virtual const char *getMethodName() const = 0;
 
     virtual void processMessage() = 0;
+
+    virtual ~IMessageQueueMessage() {}
   };
 
   interaction IMessageQueueNotify
@@ -61,7 +63,7 @@ namespace zsLib
 
     typedef size_t size_type;
 
-    virtual void post(IMessageQueueMessagePtr message) = 0;
+    virtual void post(IMessageQueueMessageUniPtr message) = 0;
 
     virtual size_type getTotalUnprocessedMessages() const = 0;
   };
@@ -82,7 +84,7 @@ namespace zsLib
   public:
     static MessageQueuePtr create(IMessageQueueNotifyPtr notify);
 
-    virtual void post(IMessageQueueMessagePtr message);
+    virtual void post(IMessageQueueMessageUniPtr message);
 
     virtual size_type getTotalUnprocessedMessages() const;
 

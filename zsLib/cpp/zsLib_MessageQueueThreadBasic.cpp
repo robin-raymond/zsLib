@@ -86,12 +86,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void MessageQueueThreadBasic::post(IMessageQueueMessagePtr message)
+    void MessageQueueThreadBasic::post(IMessageQueueMessageUniPtr message)
     {
       if (mIsShutdown) {
         ZS_THROW_CUSTOM(IMessageQueue::Exceptions::MessageQueueGone, "message posted to message queue after message queue was deleted.")
       }
-      mQueue->post(message);
+      mQueue->post(std::move(message));
     }
 
     //-------------------------------------------------------------------------

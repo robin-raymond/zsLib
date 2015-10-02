@@ -160,7 +160,7 @@ namespace zsLib
     }
 
     //-----------------------------------------------------------------------
-    void MessageQueueThreadUsingBlackberryChannels::post(IMessageQueueMessagePtr message)
+    void MessageQueueThreadUsingBlackberryChannels::post(IMessageQueueMessageUniPtr message)
     {
       MessageQueuePtr queue;
       {
@@ -170,7 +170,7 @@ namespace zsLib
           ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
         }
       }
-      queue->post(message);
+      queue->post(std::move(message));
     }
 
     //-----------------------------------------------------------------------

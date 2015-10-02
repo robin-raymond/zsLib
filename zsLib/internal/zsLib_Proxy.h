@@ -176,7 +176,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyTypePtr(make_shared<ProxyType>(queue, delegate, line, fileName));                           \
+      return make_shared<ProxyType>(queue, delegate, line, fileName);                                         \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr create(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)   \
@@ -204,7 +204,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyTypePtr(make_shared<ProxyType>(queue, delegate, line, fileName));                           \
+      return make_shared<ProxyType>(queue, delegate, line, fileName);                                         \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr createWeak(DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)                       \
@@ -233,7 +233,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyTypePtr(make_shared<ProxyType>(queue, DelegateWeakPtr(delegate), line, fileName));          \
+      return make_shared<ProxyType>(queue, DelegateWeakPtr(delegate), line, fileName);                        \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr createWeak(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
@@ -261,7 +261,7 @@ namespace zsLib                                                                 
         return delegate;                                                                                      \
       }                                                                                                       \
                                                                                                               \
-      return ProxyTypePtr(make_shared<ProxyType>(queue, DelegateWeakPtr(delegate), line, fileName));          \
+      return make_shared<ProxyType>(queue, DelegateWeakPtr(delegate), line, fileName);                        \
     }                                                                                                         \
                                                                                                               \
     static DelegatePtr createNoop(IMessageQueuePtr queue, bool throwsDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
@@ -271,7 +271,7 @@ namespace zsLib                                                                 
         return DelegatePtr();                                                                                 \
       }                                                                                                       \
                                                                                                               \
-      return ProxyTypePtr(make_shared<ProxyType>(queue, throwsDelegateGone, line, fileName));                 \
+      return make_shared<ProxyType>(queue, throwsDelegateGone, line, fileName);                               \
     }                                                                                                         \
                                                                                                               \
     static bool isProxy(DelegatePtr delegate)                                                                 \
@@ -627,7 +627,7 @@ namespace zsLib                                                                 
       DelegatePtr mDelegate;                                                                                                                        \
     public:                                                                                                                                         \
       Stub_0_##xMethod(DelegatePtr delegate) : mDelegate(delegate) { }                                                                              \
-      ~Stub_0_##xMethod() { }                                                                                                                       \
+      virtual ~Stub_0_##xMethod() { }                                                                                                               \
                                                                                                                                                     \
       virtual const char *getDelegateName() const {return typeid(Delegate).name();}                                                                 \
       virtual const char *getMethodName() const {return #xMethod;}                                                                                  \
@@ -639,8 +639,8 @@ namespace zsLib                                                                 
     virtual void xMethod() {                                                                                                                        \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_0_##xMethod)                                                                                                              \
-      Stub_0_##xMethod##Ptr stub(make_shared<Stub_0_##xMethod>(getDelegate()));                                                                     \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_0_##xMethod##UniPtr stub(new Stub_0_##xMethod(getDelegate()));                                                                           \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_1(xMethod,t1)                                                                                              \
@@ -653,7 +653,7 @@ namespace zsLib                                                                 
       Stub_1_##xMethod(DelegatePtr delegate,t1 v1) : mDelegate(delegate) {                                                                          \
         internal::ProxyPack<t1>(m1, v1);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_1_##xMethod() {                                                                                                                         \
+      virtual ~Stub_1_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
       }                                                                                                                                             \
                                                                                                                                                     \
@@ -667,8 +667,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1) {                                                                                                                   \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_1_##xMethod)                                                                                                              \
-      Stub_1_##xMethod##Ptr stub(make_shared<Stub_1_##xMethod>(getDelegate(),v1));                                                                  \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_1_##xMethod##UniPtr stub(new Stub_1_##xMethod(getDelegate(),v1));                                                                        \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_2(xMethod,t1,t2)                                                                                           \
@@ -682,7 +682,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t1>(m1, v1);                                                                                                            \
         internal::ProxyPack<t2>(m2, v2);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_2_##xMethod() {                                                                                                                         \
+      virtual ~Stub_2_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
       }                                                                                                                                             \
@@ -697,8 +697,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2) {                                                                                                             \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_2_##xMethod)                                                                                                              \
-      Stub_2_##xMethod##Ptr stub(make_shared<Stub_2_##xMethod>(getDelegate(),v1,v2));                                                               \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_2_##xMethod##UniPtr stub(new Stub_2_##xMethod(getDelegate(),v1,v2));                                                                     \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_3(xMethod,t1,t2,t3)                                                                                        \
@@ -713,7 +713,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t2>(m2, v2);                                                                                                            \
         internal::ProxyPack<t3>(m3, v3);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_3_##xMethod() {                                                                                                                         \
+      virtual ~Stub_3_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -729,8 +729,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3) {                                                                                                       \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_3_##xMethod)                                                                                                              \
-      Stub_3_##xMethod##Ptr stub(make_shared<Stub_3_##xMethod>(getDelegate(),v1,v2,v3));                                                            \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_3_##xMethod##UniPtr stub(new Stub_3_##xMethod(getDelegate(),v1,v2,v3));                                                                  \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_4(xMethod,t1,t2,t3,t4)                                                                                     \
@@ -746,7 +746,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t3>(m3, v3);                                                                                                            \
         internal::ProxyPack<t4>(m4, v4);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_4_##xMethod() {                                                                                                                         \
+      virtual ~Stub_4_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -763,8 +763,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4) {                                                                                                 \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_4_##xMethod)                                                                                                              \
-      Stub_4_##xMethod##Ptr stub(make_shared<Stub_4_##xMethod>(getDelegate(),v1,v2,v3,v4));                                                         \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_4_##xMethod##UniPtr stub(new Stub_4_##xMethod(getDelegate(),v1,v2,v3,v4));                                                               \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_5(xMethod,t1,t2,t3,t4,t5)                                                                                  \
@@ -781,7 +781,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t4>(m4, v4);                                                                                                            \
         internal::ProxyPack<t5>(m5, v5);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_5_##xMethod() {                                                                                                                         \
+      virtual ~Stub_5_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -799,8 +799,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5) {                                                                                           \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_5_##xMethod)                                                                                                              \
-      Stub_5_##xMethod##Ptr stub(make_shared<Stub_5_##xMethod>(getDelegate(),v1,v2,v3,v4,v5));                                                      \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_5_##xMethod##UniPtr stub(new Stub_5_##xMethod(getDelegate(),v1,v2,v3,v4,v5));                                                            \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_6(xMethod,t1,t2,t3,t4,t5,t6)                                                                               \
@@ -818,7 +818,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t5>(m5, v5);                                                                                                            \
         internal::ProxyPack<t6>(m6, v6);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_6_##xMethod() {                                                                                                                         \
+      virtual ~Stub_6_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -837,8 +837,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6) {                                                                                     \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_6_##xMethod)                                                                                                              \
-      Stub_6_##xMethod##Ptr stub(make_shared<Stub_6_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6));                                                   \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_6_##xMethod##UniPtr stub(new Stub_6_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6));                                                         \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_7(xMethod,t1,t2,t3,t4,t5,t6,t7)                                                                            \
@@ -857,7 +857,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t6>(m6, v6);                                                                                                            \
         internal::ProxyPack<t7>(m7, v7);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_7_##xMethod() {                                                                                                                         \
+      virtual ~Stub_7_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -877,8 +877,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7) {                                                                               \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_7_##xMethod)                                                                                                              \
-      Stub_7_##xMethod##Ptr stub(make_shared<Stub_7_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7));                                                \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_7_##xMethod##UniPtr stub(new Stub_7_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7));                                                      \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_8(xMethod,t1,t2,t3,t4,t5,t6,t7,t8)                                                                         \
@@ -898,7 +898,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t7>(m7, v7);                                                                                                            \
         internal::ProxyPack<t8>(m8, v8);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_8_##xMethod() {                                                                                                                         \
+      virtual ~Stub_8_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -919,8 +919,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8) {                                                                         \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_8_##xMethod)                                                                                                              \
-      Stub_8_##xMethod##Ptr stub(make_shared<Stub_8_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8));                                             \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_8_##xMethod##UniPtr stub(new Stub_8_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8));                                                   \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_9(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9)                                                                      \
@@ -941,7 +941,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t8>(m8, v8);                                                                                                            \
         internal::ProxyPack<t9>(m9, v9);                                                                                                            \
       }                                                                                                                                             \
-      ~Stub_9_##xMethod() {                                                                                                                         \
+      virtual ~Stub_9_##xMethod() {                                                                                                                 \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -963,8 +963,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9) {                                                                   \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_9_##xMethod)                                                                                                              \
-      Stub_9_##xMethod##Ptr stub(make_shared<Stub_9_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9));                                          \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_9_##xMethod##UniPtr stub(new Stub_9_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9));                                                \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_10(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10)                                                                 \
@@ -986,7 +986,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t9>(m9, v9);                                                                                                            \
         internal::ProxyPack<t10>(m10, v10);                                                                                                         \
       }                                                                                                                                             \
-      ~Stub_10_##xMethod() {                                                                                                                        \
+      virtual ~Stub_10_##xMethod() {                                                                                                                \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -1009,8 +1009,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10) {                                                           \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_10_##xMethod)                                                                                                             \
-      Stub_10_##xMethod##Ptr stub(make_shared<Stub_10_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10));                                    \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_10_##xMethod##UniPtr stub(new Stub_10_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10));                                          \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_11(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11)                                                             \
@@ -1033,7 +1033,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t10>(m10, v10);                                                                                                         \
         internal::ProxyPack<t11>(m11, v11);                                                                                                         \
       }                                                                                                                                             \
-      ~Stub_11_##xMethod() {                                                                                                                        \
+      virtual ~Stub_11_##xMethod() {                                                                                                                \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -1057,8 +1057,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11) {                                                   \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_11_##xMethod)                                                                                                             \
-      Stub_11_##xMethod##Ptr stub(make_shared<Stub_11_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11));                                \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_11_##xMethod##UniPtr stub(new Stub_11_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11));                                      \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_12(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12)                                                         \
@@ -1082,7 +1082,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t11>(m11, v11);                                                                                                         \
         internal::ProxyPack<t12>(m12, v12);                                                                                                         \
       }                                                                                                                                             \
-      ~Stub_12_##xMethod() {                                                                                                                        \
+      virtual ~Stub_12_##xMethod() {                                                                                                                \
         internal::ProxyClean<t1>(m1);                                                                                                               \
         internal::ProxyClean<t2>(m2);                                                                                                               \
         internal::ProxyClean<t3>(m3);                                                                                                               \
@@ -1107,8 +1107,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12) {                                           \
       if (ignoreMethodCall()) return;                                                                                                               \
       ZS_DECLARE_PTR(Stub_12_##xMethod)                                                                                                             \
-      Stub_12_##xMethod##Ptr stub(make_shared<Stub_12_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12));                            \
-      mQueue->post(stub);                                                                                                                           \
+      Stub_12_##xMethod##UniPtr stub(new Stub_12_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12));                                  \
+      mQueue->post(std::move(stub));                                                                                                                \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_13(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13)                                                                                                                 \
@@ -1133,7 +1133,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t12>(m12, v12);                                                                                                                                                                     \
         internal::ProxyPack<t13>(m13, v13);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_13_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_13_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1159,8 +1159,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13) {                                                                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_13_##xMethod)                                                                                                                                                                         \
-      Stub_13_##xMethod##Ptr stub(make_shared<Stub_13_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13));                                                                                    \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_13_##xMethod##UniPtr stub(new Stub_13_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13));                                                                                          \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_14(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14)                                                                                                             \
@@ -1186,7 +1186,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t13>(m13, v13);                                                                                                                                                                     \
         internal::ProxyPack<t14>(m14, v14);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_14_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_14_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1213,8 +1213,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14) {                                                                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_14_##xMethod)                                                                                                                                                                         \
-      Stub_14_##xMethod##Ptr stub(make_shared<Stub_14_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14));                                                                                \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_14_##xMethod##UniPtr stub(new Stub_14_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14));                                                                                      \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_15(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15)                                                                                                         \
@@ -1241,7 +1241,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t14>(m14, v14);                                                                                                                                                                     \
         internal::ProxyPack<t15>(m15, v15);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_15_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_15_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1269,8 +1269,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15) {                                                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_15_##xMethod)                                                                                                                                                                         \
-      Stub_15_##xMethod##Ptr stub(make_shared<Stub_15_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15));                                                                            \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_15_##xMethod##UniPtr stub(new Stub_15_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15));                                                                                  \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_16(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16)                                                                                                     \
@@ -1298,7 +1298,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t15>(m15, v15);                                                                                                                                                                     \
         internal::ProxyPack<t16>(m16, v16);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_16_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_16_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1327,8 +1327,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16) {                                                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_16_##xMethod)                                                                                                                                                                         \
-      Stub_16_##xMethod##Ptr stub(make_shared<Stub_16_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16));                                                                        \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_16_##xMethod##UniPtr stub(new Stub_16_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16));                                                                              \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_17(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17)                                                                                                 \
@@ -1357,7 +1357,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t16>(m16, v16);                                                                                                                                                                     \
         internal::ProxyPack<t17>(m17, v17);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_17_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_17_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1387,8 +1387,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17) {                                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_17_##xMethod)                                                                                                                                                                         \
-      Stub_17_##xMethod##Ptr stub(make_shared<Stub_17_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17));                                                                    \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_17_##xMethod##UniPtr stub(new Stub_17_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17));                                                                          \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_18(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18)                                                                                             \
@@ -1418,7 +1418,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t17>(m17, v17);                                                                                                                                                                     \
         internal::ProxyPack<t18>(m18, v18);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_18_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_18_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1449,8 +1449,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18) {                                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_18_##xMethod)                                                                                                                                                                         \
-      Stub_18_##xMethod##Ptr stub(make_shared<Stub_18_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18));                                                                \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_18_##xMethod##UniPtr stub(new Stub_18_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18));                                                                      \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_19(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19)                                                                                         \
@@ -1481,7 +1481,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t18>(m18, v18);                                                                                                                                                                     \
         internal::ProxyPack<t19>(m19, v19);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_19_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_19_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1513,8 +1513,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19) {                                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_19_##xMethod)                                                                                                                                                                         \
-      Stub_19_##xMethod##Ptr stub(make_shared<Stub_19_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19));                                                            \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_19_##xMethod##UniPtr stub(new Stub_19_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19));                                                                  \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_20(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20)                                                                                     \
@@ -1546,7 +1546,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t19>(m19, v19);                                                                                                                                                                     \
         internal::ProxyPack<t20>(m20, v20);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_20_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_20_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1579,8 +1579,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20) {                                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_20_##xMethod)                                                                                                                                                                         \
-      Stub_20_##xMethod##Ptr stub(make_shared<Stub_20_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20));                                                        \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_20_##xMethod##UniPtr stub(new Stub_20_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20));                                                              \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_21(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21)                                                                                 \
@@ -1613,7 +1613,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t20>(m20, v20);                                                                                                                                                                     \
         internal::ProxyPack<t21>(m21, v21);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_21_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_21_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1647,8 +1647,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21) {                               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_21_##xMethod)                                                                                                                                                                         \
-      Stub_21_##xMethod##Ptr stub(make_shared<Stub_21_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21));                                                    \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_21_##xMethod##UniPtr stub(new Stub_21_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21));                                                          \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_22(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22)                                                                             \
@@ -1682,7 +1682,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t21>(m21, v21);                                                                                                                                                                     \
         internal::ProxyPack<t22>(m22, v22);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_22_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_22_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1717,8 +1717,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22) {                       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_22_##xMethod)                                                                                                                                                                         \
-      Stub_22_##xMethod##Ptr stub(make_shared<Stub_22_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22));                                                \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_22_##xMethod##UniPtr stub(new Stub_22_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22));                                                      \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_23(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23)                                                                         \
@@ -1753,7 +1753,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t22>(m22, v22);                                                                                                                                                                     \
         internal::ProxyPack<t23>(m23, v23);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_23_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_23_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1789,8 +1789,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22,t23 v23) {               \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_23_##xMethod)                                                                                                                                                                         \
-      Stub_23_##xMethod##Ptr stub(make_shared<Stub_23_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23));                                            \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_23_##xMethod##UniPtr stub(new Stub_23_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23));                                                  \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_24(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24)                                                                     \
@@ -1826,7 +1826,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t23>(m23, v23);                                                                                                                                                                     \
         internal::ProxyPack<t24>(m24, v24);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_24_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_24_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1863,8 +1863,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22,t23 v23,t24 v24) {       \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_24_##xMethod)                                                                                                                                                                         \
-      Stub_24_##xMethod##Ptr stub(make_shared<Stub_24_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24));                                        \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_24_##xMethod##UniPtr stub(new Stub_24_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24));                                              \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_PROXY_METHOD_25(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25)                                                                 \
@@ -1901,7 +1901,7 @@ namespace zsLib                                                                 
         internal::ProxyPack<t24>(m24, v24);                                                                                                                                                                     \
         internal::ProxyPack<t25>(m25, v25);                                                                                                                                                                     \
       }                                                                                                                                                                                                         \
-      ~Stub_25_##xMethod() {                                                                                                                                                                                    \
+      virtual ~Stub_25_##xMethod() {                                                                                                                                                                            \
         internal::ProxyClean<t1>(m1);                                                                                                                                                                           \
         internal::ProxyClean<t2>(m2);                                                                                                                                                                           \
         internal::ProxyClean<t3>(m3);                                                                                                                                                                           \
@@ -1939,8 +1939,8 @@ namespace zsLib                                                                 
     virtual void xMethod(t1 v1,t2 v2,t3 v3,t4 v4,t5 v5,t6 v6,t7 v7,t8 v8,t9 v9,t10 v10,t11 v11,t12 v12,t13 v13,t14 v14,t15 v15,t16 v16,t17 v17,t18 v18,t19 v19,t20 v20,t21 v21,t22 v22,t23 v23,t24 v24,t25 v25) { \
       if (ignoreMethodCall()) return;                                                                                                                                                                           \
       ZS_DECLARE_PTR(Stub_25_##xMethod)                                                                                                                                                                         \
-      Stub_25_##xMethod##Ptr stub(make_shared<Stub_25_##xMethod>(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25));                                    \
-      mQueue->post(stub);                                                                                                                                                                                       \
+      Stub_25_##xMethod##UniPtr stub(new Stub_25_##xMethod(getDelegate(),v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25));                                          \
+      mQueue->post(std::move(stub));                                                                                                                                                                            \
     }
 
 

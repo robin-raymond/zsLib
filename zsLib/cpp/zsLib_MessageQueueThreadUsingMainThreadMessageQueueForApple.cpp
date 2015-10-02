@@ -160,12 +160,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void MessageQueueThreadUsingMainThreadMessageQueueForApple::post(IMessageQueueMessagePtr message)
+    void MessageQueueThreadUsingMainThreadMessageQueueForApple::post(IMessageQueueMessageUniPtr message)
     {
       if (mIsShutdown) {
         ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
       }
-      mQueue->post(message);
+      mQueue->post(std::move(message));
     }
 
     //-------------------------------------------------------------------------

@@ -47,15 +47,15 @@ namespace zsLib
   //---------------------------------------------------------------------------
   MessageQueuePtr MessageQueue::create(IMessageQueueNotifyPtr notify)
   {
-    return MessageQueuePtr(make_shared<MessageQueue>(make_private{}, notify));
+    return make_shared<MessageQueue>(make_private{}, notify);
   }
 
   //---------------------------------------------------------------------------
-  void MessageQueue::post(IMessageQueueMessagePtr message)
+  void MessageQueue::post(IMessageQueueMessageUniPtr message)
   {
     {
       AutoLock lock(mLock);
-      mMessages.push(message);
+      mMessages.push(std::move(message));
     }
     mNotify->notifyMessagePosted();
   }
@@ -71,7 +71,7 @@ namespace zsLib
         AutoLock lock(mLock);
         if (0 == mMessages.size())
           return;
-        message = mMessages.front();
+        message = std::move(mMessages.front());
         mMessages.pop();
       }
 
@@ -89,7 +89,7 @@ namespace zsLib
       AutoLock lock(mLock);
       if (0 == mMessages.size())
         return;
-      message = mMessages.front();
+      message = std::move(mMessages.front());
       mMessages.pop();
     }
 

@@ -52,7 +52,7 @@ namespace zsLib
 
     protected:
       mutable Lock mLock;
-      std::queue<IMessageQueueMessagePtr> mMessages;
+      std::queue<IMessageQueueMessageUniPtr> mMessages;
       IMessageQueueNotifyPtr mNotify;
     };
   }
