@@ -189,7 +189,7 @@ namespace zsLib
       if (mIsShutdown) {
         ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
       }
-      mQueue->post(sdt::move(message));
+      mQueue->post(std::move(message));
     }
 
     //-------------------------------------------------------------------------
