@@ -162,6 +162,8 @@ namespace zsLib
 
     operator PUID() const {return mValue;}
 
+    void reset(PUID value) {mValue = value;}
+
   private:
     PUID mValue;
   };
