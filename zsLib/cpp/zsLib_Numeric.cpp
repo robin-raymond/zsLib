@@ -543,21 +543,12 @@ namespace zsLib
         temp.erase(posMore);
       }
 
-      if (std::string::npos != temp.find(':')) {
-        std::tm ttm {};
-        const char *parsed = strptime(temp.c_str(), "%Y-%m-%d %H:%M:%S", &ttm);
-        if (NULL == parsed) return false;
-
-        time_t ttime_t = mktime(&ttm);
-
-        outResult = std::chrono::system_clock::from_time_t(ttime_t);
-      } else {
-        try {
+      try 
+	  {
           zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
           outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
-        } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
-          return false;
-        }
+      } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+        return false;
       }
 
       if (more.hasData()) {
