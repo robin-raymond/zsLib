@@ -43,6 +43,8 @@ namespace zsLib
   PUID createPUID();
   UUID createUUID();
 
+  void setup();
+
   //---------------------------------------------------------------------------
   void debugSetCurrentThreadName(const char *name);
 

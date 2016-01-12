@@ -105,7 +105,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     #pragma mark
     #pragma mark (helpers)
-	#pragma mark
+    #pragma mark
 
     //-------------------------------------------------------------------------
     std::atomic_ulong &globalPUID()
@@ -139,6 +139,8 @@ namespace zsLib
     private:
       Time mEpoch;
     };
+
+    void initSubsystems();
   }
 
   //---------------------------------------------------------------------------
@@ -154,6 +156,12 @@ namespace zsLib
     UUID gen;
     uuid_generate_random(gen.mUUID);
     return gen;
+  }
+
+  //---------------------------------------------------------------------------
+  void setup()
+  {
+    internal::initSubsystems();
   }
 
   //---------------------------------------------------------------------------

@@ -40,6 +40,15 @@ namespace zsLib {ZS_IMPLEMENT_SUBSYSTEM(zsLib_socket)}
 
 namespace zsLib
 {
+  namespace internal
+  {
+    void initSubsystems()
+    {
+      ZS_GET_SUBSYSTEM_LOG_LEVEL(ZS_GET_OTHER_SUBSYSTEM(zsLib, zsLib));
+      ZS_GET_SUBSYSTEM_LOG_LEVEL(ZS_GET_OTHER_SUBSYSTEM(zsLib, zsLib_socket));
+    }
+  }
+
   AutoInitializedPUID::AutoInitializedPUID()
   {
     mValue = createPUID();
