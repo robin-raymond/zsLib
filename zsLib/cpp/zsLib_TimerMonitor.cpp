@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/internal/zsLib_TimerMonitor.h>
@@ -25,10 +34,6 @@
 #include <zsLib/Timer.h>
 #include <zsLib/XML.h>
 #include <zsLib/helpers.h>
-
-#include <boost/thread.hpp>
-
-#include <pthread.h>
 
 #ifdef __QNX__
 #include <sys/time.h>
@@ -83,15 +88,18 @@ namespace zsLib
     TimerMonitorPtr TimerMonitor::singleton()
     {
       static SingletonLazySharedPtr<TimerMonitor> singleton(TimerMonitor::create());
+      TimerMonitorPtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
+
+      static zsLib::SingletonManager::Register registerSingleton("zsLib::TimerMonitor", result);
+
       class Once {
       public: Once() {getTimerMonitorPrioritySingleton().notify();}
       };
       static Once once;
 
-      TimerMonitorPtr result = singleton.singleton();
-      if (!result) {
-        ZS_LOG_WARNING(Detail, slog("singleton gone"))
-      }
       return result;
     }
 
@@ -129,7 +137,7 @@ namespace zsLib
       AutoRecursiveLock lock(mLock);
 
       if (!mThread) {
-        mThread = ThreadPtr(new boost::thread(boost::ref(*this)));
+        mThread = ThreadPtr(new std::thread(std::ref(*this)));
         setThreadPriority(mThread->native_handle(), getTimerMonitorPrioritySingleton().getPriority());
       }
 
@@ -158,20 +166,11 @@ namespace zsLib
     {
       bool shouldShutdown = false;
 
-#ifdef __QNX__
-      pthread_setname_np(pthread_self(), "com.zslib.timer");
-#else
-#ifndef _LINUX
-#ifndef _ANDROID
-      pthread_setname_np("com.zslib.timer");
-#endif // _ANDROID
-#endif // _LINUX
-#endif // __QNX__
-
+      debugSetCurrentThreadName("com.zslib.timer");
 
       do
       {
-        Duration duration;
+        Microseconds duration {};
         // wait completed, do notifications from select
         {
           AutoRecursiveLock lock(mLock);
@@ -213,8 +212,8 @@ namespace zsLib
         rc = pthread_mutex_unlock(&mMutex);
         ZS_THROW_BAD_STATE_IF(0 != rc)
 #else
-        boost::unique_lock<boost::mutex> flagLock(mFlagLock);
-        mFlagNotify.timed_wait<Duration>(flagLock, duration);
+        std::unique_lock<std::mutex> flagLock(mFlagLock);
+        mFlagNotify.wait_for(flagLock, duration);
 #endif //__QNX__
 
         // notify all those timers needing to be notified
@@ -243,24 +242,9 @@ namespace zsLib
     }
 
     //-----------------------------------------------------------------------
-    static void debugAppend(zsLib::XML::ElementPtr &parentEl, const char *name, const char *value)
+    void TimerMonitor::notifySingletonCleanup()
     {
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
-
-      ZS_THROW_INVALID_ARGUMENT_IF(!parentEl)
-      ZS_THROW_INVALID_ARGUMENT_IF(!name)
-
-      if (!value) return;
-      if ('\0' == *value) return;
-
-      ElementPtr element = Element::create(name);
-
-      TextPtr tmpTxt = Text::create();
-      tmpTxt->setValueAndJSONEncode(value);
-      element->adoptAsFirstChild(tmpTxt);
-
-      parentEl->adoptAsLastChild(element);
+      cancel();
     }
 
     //-----------------------------------------------------------------------
@@ -293,6 +277,7 @@ namespace zsLib
         AutoRecursiveLock lock(mLock);
         mGracefulShutdownReference = mThisWeak.lock();
         thread = mThread;
+        mThread.reset();
 
         mShouldShutdown = true;
         wakeUp();
@@ -301,22 +286,19 @@ namespace zsLib
       if (!thread)
         return;
 
-      thread->join();
-
-      {
-        AutoRecursiveLock lock(mLock);
-        mThread.reset();
+      if (thread->joinable()) {
+        thread->join();
       }
     }
 
     //-------------------------------------------------------------------------
-    Duration TimerMonitor::fireTimers()
+    Microseconds TimerMonitor::fireTimers()
     {
       AutoRecursiveLock lock(mLock);
 
-      Time time = boost::posix_time::microsec_clock::universal_time();
+      Time time = std::chrono::system_clock::now();
 
-      Duration duration = boost::posix_time::seconds(1);
+      Microseconds duration = Seconds(1);
 
       for (TimerMap::iterator monIter = mMonitoredTimers.begin(); monIter != mMonitoredTimers.end(); )
       {

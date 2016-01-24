@@ -1,34 +1,49 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/Numeric.h>
 #include <zsLib/types.h>
 #include <zsLib/Exception.h>
+#include <zsLib/helpers.h>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/uuid/string_generator.hpp>
+#include <math.h>
+
+#ifdef _WIN32
+#include <objbase.h>
+#endif //_WIN32
 
 #pragma warning(push)
 #pragma warning(disable:4290)
+
+char *strptime(const char *buf, const char *fmt, struct tm *tm);
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
@@ -36,6 +51,30 @@ using namespace std;
 
 namespace zsLib
 {
+  namespace compatibility {
+#ifdef _WIN32
+    using zsLib::internal::uuid_wrapper;
+
+    int uuid_parse(const char *input, uuid_wrapper::raw_uuid_type &output) {
+
+      String str(input);
+      if (str.isEmpty()) return -1;
+      if ('{' != *(str.c_str())) str = "{" + str + "}";
+
+      std::wstring convertedStr = str.wstring();
+      CLSID clsID {};
+      auto result = CLSIDFromString(convertedStr.c_str(), &clsID);
+
+      memcpy(&output, &clsID, sizeof(output));
+
+      if (NOERROR == result) return 0;
+      return -1;
+    }
+#endif //_WIN32
+  }
+
+  using namespace compatibility;
+
   template<typename t_type>
   void Numeric<t_type>::get(t_type &outValue) const throw (ValueOutOfRange)
   {
@@ -102,6 +141,105 @@ namespace zsLib
     if (!converted)
       ZS_THROW_CUSTOM(ValueOutOfRange, "Cannot convert value (Time): " + mData)
     outValue = result;
+  }
+
+  template<class Converter>
+  void simpleDurationConvert(
+                             typename Converter::NumericType &outValue,
+                             const String &data,
+                             bool ignoreWhiteSpace,
+                             CSTR failureMessage
+                             ) throw (typename Converter::ValueOutOfRange)
+  {
+    typedef typename Converter::ValueOutOfRange CustomValueOutOfRange;
+    typename Converter::NumericType::rep value = 0;
+
+    try {
+      value = Numeric<typename Converter::NumericType::rep>(data, ignoreWhiteSpace);
+    } catch(typename Numeric<typename Converter::NumericType::rep>::ValueOutOfRange &) {
+      ZS_THROW_CUSTOM(CustomValueOutOfRange, failureMessage + data)
+    }
+    outValue = typename Converter::NumericType(value);
+  }
+
+  template<>
+  void Numeric<Hours>::get(Hours &outValue) const throw (ValueOutOfRange)
+  {
+    simpleDurationConvert< Numeric<Hours> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Hours): ");
+  }
+
+  template<>
+  void Numeric<Minutes>::get(Minutes &outValue) const throw (ValueOutOfRange)
+  {
+    simpleDurationConvert< Numeric<Minutes> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Minutes): ");
+  }
+
+  template<>
+  void Numeric<Seconds>::get(Seconds &outValue) const throw (ValueOutOfRange)
+  {
+    simpleDurationConvert< Numeric<Seconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Seconds): ");
+  }
+
+  template<class Converter>
+  void fractionalDurationConvert(
+                                 typename Converter::NumericType &outValue,
+                                 const String &data,
+                                 bool ignoreWhiteSpace,
+                                 CSTR failureMessage
+                                 ) throw (typename Converter::ValueOutOfRange)
+  {
+    typedef typename Converter::ValueOutOfRange CustomValueOutOfRange;
+
+    typename Converter::NumericType::rep value = 0;
+
+    String temp = data;
+    if (ignoreWhiteSpace) {
+      temp.trim();
+    }
+
+    size_t requiredDigits = static_cast<size_t>(log10(Converter::NumericType::period::den));
+
+    std::size_t found = data.find('.');
+
+    String fractional;
+
+    if (std::string::npos != found) {
+      fractional = temp.substr(found+1);
+      temp.erase(found);
+    }
+
+    if (fractional.length() < requiredDigits) {
+      fractional += std::string(requiredDigits - fractional.length(), '0');
+    } else if (fractional.length() > requiredDigits) {
+      fractional.erase(requiredDigits);
+    }
+
+    temp += fractional;
+
+    try {
+      value = Numeric<typename Converter::NumericType::rep>(temp, false);
+    } catch(typename Numeric<typename Converter::NumericType::rep>::ValueOutOfRange &) {
+      ZS_THROW_CUSTOM(CustomValueOutOfRange, failureMessage + data)
+    }
+    outValue = typename Converter::NumericType(value);
+  }
+
+  template<>
+  void Numeric<Milliseconds>::get(Milliseconds &outValue) const throw (ValueOutOfRange)
+  {
+    fractionalDurationConvert< Numeric<Milliseconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Milliseconds): ");
+  }
+
+  template<>
+  void Numeric<Microseconds>::get(Microseconds &outValue) const throw (ValueOutOfRange)
+  {
+    fractionalDurationConvert< Numeric<Microseconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Microseconds): ");
+  }
+
+  template<>
+  void Numeric<Nanoseconds>::get(Nanoseconds &outValue) const throw (ValueOutOfRange)
+  {
+    fractionalDurationConvert< Numeric<Nanoseconds> >(outValue, mData, mIngoreWhitespace, "Cannot convert value (Nanoseconds): ");
   }
 
   // force templates to be generated for these types
@@ -350,7 +488,7 @@ namespace zsLib
         temp.trim();
 
       try {
-        float result = boost::lexical_cast<float>(temp);
+        float result = std::stof(temp);
         outResult = result;
       } catch(...) {
         return false;
@@ -365,7 +503,7 @@ namespace zsLib
         temp.trim();
 
       try {
-        double result = boost::lexical_cast<double>(temp);
+        double result = std::stod(temp);
         outResult = result;
       } catch(...) {
         return false;
@@ -379,30 +517,62 @@ namespace zsLib
       if (ignoreWhiteSpace)
         temp.trim();
 
-      try {
-        boost::uuids::string_generator gen;
-        outResult = gen(temp);
-      } catch (...) {
-        return false;
-      }
-      return true;
+#ifndef _WIN32
+      temp.trimLeft("{");
+      temp.trimRight("}");
+#endif //ndef _WIN32
+
+      if (0 == uuid_parse(temp.c_str(), outResult.mUUID)) return true;
+      return false;
     }
 
     bool convert(const String &input, Time &outResult, bool ignoreWhiteSpace)
     {
+      outResult = Time();
+
       String temp = input;
       if (ignoreWhiteSpace)
         temp.trim();
 
-      try {
-        Time result = boost::posix_time::time_from_string(input);
-        if (result.is_not_a_date_time()) return false;
-        outResult = result;
-      } catch (boost::bad_lexical_cast &) {
-        return  false;
+      String more;
+
+      std::size_t posMore = temp.find('.');
+
+      if (std::string::npos != posMore) {
+        more = temp.substr(posMore+1);
+        temp.erase(posMore);
       }
+
+      try 
+	  {
+          zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
+          outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
+      } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+        return false;
+      }
+
+      if (more.hasData()) {
+        String fractionStr("0.");
+        fractionStr += more;
+
+        double x {};
+
+        try {
+          x = std::stod(fractionStr);
+        } catch(...) {
+          return false;
+        }
+
+        x = x * 1000000;
+
+        std::chrono::microseconds fraction(static_cast<unsigned long>(round(x)));
+
+        outResult += fraction;
+      }
+
       return true;
     }
+
   }
 }
 

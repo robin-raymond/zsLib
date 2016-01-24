@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #pragma once
@@ -31,34 +40,25 @@
 
 namespace zsLib
 {
-  namespace XML
-  {
-    class Element;
-    typedef boost::shared_ptr<Element> ElementPtr;
-  };
-
   class String;
   class Exception;
 
   class Subsystem;
-
-  interaction ILogDelegate;
-  typedef boost::shared_ptr<ILogDelegate> ILogDelegatePtr;
-
-  class Log;
-  typedef boost::shared_ptr<Log> LogPtr;
-  typedef boost::weak_ptr<Log> LogWeakPtr;
 
   namespace internal
   {
     class Log
     {
     protected:
+      struct make_private {};
+
+    public:
+      static String paramize(const char *name);
+
+    protected:
       RecursiveLock mLock;
       typedef std::list<ILogDelegatePtr> ListenerList;
-
-      typedef boost::shared_ptr<ListenerList> ListenerListPtr;
-      typedef boost::weak_ptr<ListenerList> ListenerListWeakPtr;
+      ZS_DECLARE_PTR(ListenerList)
 
       ListenerListPtr mListeners;
 
@@ -94,6 +94,7 @@ namespace zsLib
 
 #define ZS_INTERNAL_LOG_PARAMS(xMsg)                                    (::zsLib::Log::Params(xMsg))
 #define ZS_INTERNAL_PARAM(xName, xValue)                                (::zsLib::Log::Param(xName, xValue))
+#define ZS_INTERNAL_PARAMIZE(xValueName)                                (::zsLib::Log::Param(::zsLib::internal::Log::paramize(#xValueName), xValueName))
 
 #define ZS_INTERNAL_FUNCTION_FILE_LINE                                  __FUNCTION__, __FILE__, __LINE__
 
@@ -115,6 +116,14 @@ namespace zsLib
 #define ZS_INTERNAL_LOG_DEBUG(xMsg)                                     ZS_INTERNAL_LOG_SUBSYSTEM_DEBUG(ZS_GET_SUBSYSTEM(), xMsg)
 #define ZS_INTERNAL_LOG_TRACE(xMsg)                                     ZS_INTERNAL_LOG_SUBSYSTEM_TRACE(ZS_GET_SUBSYSTEM(), xMsg)
 #define ZS_INTERNAL_LOG_INSANE(xMsg)                                    ZS_INTERNAL_LOG_SUBSYSTEM_INSANE(ZS_GET_SUBSYSTEM(), xMsg)
+
+#define ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, xLevel, xMsg)          if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log(ZS_GET_SUBSYSTEM(), xSeverity, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
+
+#define ZS_INTERNAL_LOG_BASIC_WITH_SEVERITY(xSeverity, xMsg)            ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Basic, xMsg)
+#define ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)           ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Detail, xMsg)
+#define ZS_INTERNAL_LOG_DEBUG_WITH_SEVERITY(xSeverity, xMsg)            ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Debug, xMsg)
+#define ZS_INTERNAL_LOG_TRACE_WITH_SEVERITY(xSeverity, xMsg)            ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Trace, xMsg)
+#define ZS_INTERNAL_LOG_INSANE_WITH_SEVERITY(xSeverity, xMsg)           ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverity, Insane, xMsg)
 
 #define ZS_INTERNAL_LOG_SUBSYSTEM(xSubsystem, xLevel, xMsg)             if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Informational, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}
 #define ZS_INTERNAL_LOG_SUBSYSTEM_WARNING(xSubsystem, xLevel, xMsg)     if (ZS_INTERNAL_IS_LOGGING(xLevel)) {::zsLib::Log::log((xSubsystem), ::zsLib::Log::Warning, ::zsLib::Log::xLevel, ::zsLib::Log::Params(xMsg), ZS_INTERNAL_FUNCTION_FILE_LINE);}

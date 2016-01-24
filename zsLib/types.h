@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+
  */
 
 #pragma once
@@ -33,29 +42,27 @@
 #define ZS_DECLARE_STRUCT_PTR(xStructName)                                          ZS_INTERNAL_DECLARE_STRUCT_PTR(xStructName)
 #define ZS_DECLARE_INTERACTION_PTR(xInteractionName)                                ZS_INTERNAL_DECLARE_STRUCT_PTR(xInteractionName)
 #define ZS_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)                         ZS_INTERNAL_DECLARE_TYPEDEF_PTR(xOriginalType, xNewTypeName)
+#define ZS_DYNAMIC_PTR_CAST(xType, xObject)                                         ZS_INTERNAL_DYNAMIC_PTR_CAST(xType, xObject)
 
 
 namespace zsLib
 {
-  ZS_DECLARE_TYPEDEF_PTR(boost::thread, Thread)
-  ZS_DECLARE_TYPEDEF_PTR(boost::mutex, Lock)
-  ZS_DECLARE_TYPEDEF_PTR(boost::recursive_mutex, RecursiveLock)
+  using std::make_shared;
+  
+  ZS_DECLARE_TYPEDEF_PTR(std::thread, Thread)
+  ZS_DECLARE_TYPEDEF_PTR(std::mutex, Lock)
+  ZS_DECLARE_TYPEDEF_PTR(std::recursive_mutex, RecursiveLock)
 
-  typedef boost::lock_guard<Lock> AutoLock;
-  typedef boost::lock_guard<RecursiveLock> AutoRecursiveLock;
+  typedef std::lock_guard<Lock> AutoLock;
+  typedef std::lock_guard<RecursiveLock> AutoRecursiveLock;
 
-  typedef boost::posix_time::ptime Time;
-  typedef boost::posix_time::time_duration Duration;
-  typedef boost::posix_time::seconds Seconds;
-  typedef boost::posix_time::minutes Minutes;
-  typedef boost::posix_time::hours Hours;
-  typedef boost::posix_time::milliseconds Milliseconds;
-  typedef boost::posix_time::microseconds Microseconds;
-#if defined(BOOST_DATE_TIME_HAS_NANOSECONDS)
-  typedef boost::posix_time::nanoseconds Nanoseconds;
-#endif
-  typedef boost::posix_time::time_period TimePeriod;
-  typedef boost::posix_time::time_iterator TimeIterator;
+  typedef std::chrono::system_clock::time_point Time;
+  typedef std::chrono::hours Hours;
+  typedef std::chrono::minutes Minutes;
+  typedef std::chrono::seconds Seconds;
+  typedef std::chrono::milliseconds Milliseconds;
+  typedef std::chrono::microseconds Microseconds;
+  typedef std::chrono::nanoseconds Nanoseconds;
 
   typedef CHAR ZsDeclareCHAR;
   typedef UCHAR ZsDeclareUCHAR;
@@ -91,75 +98,52 @@ namespace zsLib
   typedef WSTR ZsDeclareWSTR;
   typedef CWSTR ZsDeclareCWSTR;
 
+  typedef LONGEST zsDeclareLONGEST;
+  typedef ULONGEST zsDeclareULONGEST;
+
   class PrivateGlobalLock;
 
-  class Event;
-  typedef boost::shared_ptr<Event> EventPtr;
-  typedef boost::weak_ptr<Event> EventWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Event)
+  ZS_DECLARE_CLASS_PTR(Exception)
+  ZS_DECLARE_CLASS_PTR(IPAddress)
 
-  class Exception;
-  typedef boost::shared_ptr<Exception> ExceptionPtr;
-  typedef boost::weak_ptr<Exception> ExceptionWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Log)
+  ZS_DECLARE_INTERACTION_PTR(ILogDelegate)
 
-  class IPAddress;
-  typedef boost::shared_ptr<IPAddress> IPAddressPtr;
-  typedef boost::weak_ptr<IPAddress> IPAddressWeakPtr;
+  ZS_DECLARE_CLASS_PTR(SingletonManager)
+  ZS_DECLARE_INTERACTION_PTR(ISingletonManagerDelegate)
 
-  class IPAddress;
-  typedef boost::shared_ptr<IPAddress> IPAddressPtr;
-  typedef boost::weak_ptr<IPAddress> IPAddressWeakPtr;
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueMessage)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueNotify)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueue)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueThread)
 
-  interaction ILogDelegate;
-  typedef boost::shared_ptr<ILogDelegate> ILogDelegatePtr;
-  typedef boost::weak_ptr<ILogDelegate> ILogDelegateWeakPtr;
+  ZS_DECLARE_CLASS_PTR(MessageQueue)
+  ZS_DECLARE_CLASS_PTR(MessageQueueThread)
+  ZS_DECLARE_CLASS_PTR(MessageQueueThreadPool)
 
-  class Log;
-  typedef boost::shared_ptr<Log> LogPtr;
-  typedef boost::weak_ptr<Log> LogWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Promise)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseDelegate)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseSettledDelegate)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseResolutionDelegate)
+  ZS_DECLARE_INTERACTION_PTR(IPromiseCatchDelegate)
 
-  interaction IMessageQueueMessage;
-  typedef boost::shared_ptr<IMessageQueueMessage> IMessageQueueMessagePtr;
-  typedef boost::weak_ptr<IMessageQueueMessage> IMessageQueueMessageWeakPtr;
+  ZS_DECLARE_INTERACTION_PTR(ISocketDelegate)
 
-  interaction IMessageQueueNotify;
-  typedef boost::shared_ptr<IMessageQueueNotify> IMessageQueueNotifyPtr;
-  typedef boost::weak_ptr<IMessageQueueNotify> IMessageQueueNotifyWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Socket)
+  ZS_DECLARE_CLASS_PTR(String)
 
-  interaction IMessageQueue;
-  typedef boost::shared_ptr<IMessageQueue> IMessageQueuePtr;
-  typedef boost::weak_ptr<IMessageQueue> IMessageQueueWeakPtr;
 
-  class MessageQueue;
-  typedef boost::shared_ptr<MessageQueue> MessageQueuePtr;
-  typedef boost::weak_ptr<MessageQueue> MessageQueueWeakPtr;
+  ZS_DECLARE_INTERACTION_PTR(ITimerDelegate)
 
-  interaction IMessageQueueThread;
-  typedef boost::shared_ptr<IMessageQueueThread> IMessageQueueThreadPtr;
-  typedef boost::weak_ptr<IMessageQueueThread> IMessageQueueThreadWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Timer)
 
-  class MessageQueueThread;
-  typedef boost::shared_ptr<MessageQueueThread> MessageQueueThreadPtr;
-  typedef boost::weak_ptr<MessageQueueThread> MessageQueueThreadWeakPtr;
+  ZS_DECLARE_STRUCT_PTR(Any)
 
-  interaction ISocketDelegate;
-  typedef boost::shared_ptr<ISocketDelegate> ISocketDelegatePtr;
-  typedef boost::weak_ptr<ISocketDelegate> ISocketDelegateWeakPtr;
-
-  class Socket;
-  typedef boost::shared_ptr<Socket> SocketPtr;
-  typedef boost::weak_ptr<Socket> SocketWeakPtr;
-
-  class String;
-  typedef boost::shared_ptr<String> StringPtr;
-  typedef boost::weak_ptr<String> StringWeakPtr;
-
-  interaction ITimerDelegate;
-  typedef boost::shared_ptr<ITimerDelegate> ITimerDelegatePtr;
-  typedef boost::weak_ptr<ITimerDelegate> ITimerDelegateWeakPtr;
-
-  class Timer;
-  typedef boost::shared_ptr<Timer> TimerPtr;
-  typedef boost::weak_ptr<Timer> TimerWeakPtr;
+  struct Any
+  {
+    virtual ~Any() {}
+  };
 
   struct Noop
   {
@@ -171,24 +155,62 @@ namespace zsLib
     bool mNoop;
   };
 
-  class AutoInitializedPUID : public boost::value_initialized<PUID>
+  class AutoInitializedPUID
   {
   public:
     AutoInitializedPUID();
+
+    operator PUID() const {return mValue;}
+
+    void reset(PUID value) {mValue = value;}
+
+  private:
+    PUID mValue;
   };
 
   typedef AutoInitializedPUID AutoPUID;
-  typedef boost::value_initialized<bool> AutoBool;
-  typedef boost::value_initialized<BYTE> AutoBYTE;
-  typedef boost::value_initialized<WORD> AutoWORD;
-  typedef boost::value_initialized<DWORD> AutoDWORD;
-  typedef boost::value_initialized<QWORD> AutoQWORD;
-  typedef boost::value_initialized<ULONG> AutoULONG;
-  typedef boost::value_initialized<LONGLONG> AutoLONGLONG;
-  typedef boost::value_initialized<ULONGLONG> AutoULONGLONG;
-  typedef boost::value_initialized<FLOAT> AutoFLOAT;
-  typedef boost::value_initialized<DOUBLE> AutoDOUBLE;
-  typedef boost::value_initialized<size_t> AutoSizeT;
+
+  template <typename type>
+  class Optional
+  {
+  public:
+    typedef type UseType;
+  public:
+    Optional() {}
+
+    Optional(const UseType &value) :
+      mHasValue(true),
+      mType(value)
+    {}
+
+    Optional(const Optional &op2) :
+      mHasValue(op2.mHasValue),
+      mType(op2.mType)
+    {}
+
+    Optional &operator=(const Optional &op2)
+    {
+      mHasValue = op2.mHasValue;
+      mType = op2.mType;
+      return *this;
+    }
+
+    Optional &operator=(const UseType &op2)
+    {
+      mHasValue = true;
+      mType = op2;
+      return *this;
+    }
+
+    bool hasValue() const {return mHasValue;}
+    UseType &value() {return mType;}
+    const UseType &value() const {return mType;}
+    operator UseType() const {return mType;}
+
+  public:
+    bool mHasValue {false};
+    UseType mType {};
+  };
 
   namespace XML
   {
@@ -207,6 +229,8 @@ namespace zsLib
     class ParserWarning;
     class WalkSink;
   }
+
+  namespace JSON = zsLib::XML;
 
 } // namespace zsLib
 

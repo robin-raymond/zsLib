@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #pragma once
@@ -48,36 +57,23 @@ namespace zsLib
     class ProxySubscriptions
     {
     public:
-      class Subscription;
-      class DelegateImpl;
+      ZS_DECLARE_CLASS_PTR(Subscription)
+      ZS_DECLARE_CLASS_PTR(DelegateImpl)
 
-      typedef SUBSCRIPTIONBASECLASS SubscriptionBaseClass;
-      typedef boost::shared_ptr<SubscriptionBaseClass> SubscriptionBaseClassPtr;
-      typedef boost::weak_ptr<SubscriptionBaseClass>   SubscriptionBaseClassWeakPtr;
+      ZS_DECLARE_TYPEDEF_PTR(SUBSCRIPTIONBASECLASS, SubscriptionBaseClass)
 
-      typedef boost::shared_ptr<Subscription> SubscriptionPtr;
-      typedef boost::weak_ptr<Subscription>   SubscriptionWeakPtr;
-
-      typedef boost::shared_ptr<XINTERFACE> DelegatePtr;
-      typedef boost::weak_ptr<XINTERFACE>   DelegateWeakPtr;
-      typedef zsLib::Proxy<XINTERFACE>      DelegateProxy;
+      ZS_DECLARE_TYPEDEF_PROXY(XINTERFACE, Delegate)
 
       typedef std::pair<SubscriptionWeakPtr, DelegatePtr> SubscriptionDelegatePair;
 
       typedef std::map<Subscription *, SubscriptionDelegatePair> SubscriptionDelegateMap;
-      typedef boost::shared_ptr<SubscriptionDelegateMap> SubscriptionDelegateMapPtr;
-      typedef boost::weak_ptr<SubscriptionDelegateMap> SubscriptionDelegateMapWeakPtr;
+      ZS_DECLARE_PTR(SubscriptionDelegateMap)
       typedef typename SubscriptionDelegateMap::size_type size_type;
 
       typedef bool Bogus;
       typedef std::map<SubscriptionPtr, Bogus> SubscriptionBackgroundMap;
 
-      typedef SUBSCRIPTIONBASECLASS BaseSubscription;
-      typedef boost::shared_ptr<SUBSCRIPTIONBASECLASS> BaseSubscriptionPtr;
-      typedef boost::weak_ptr<SUBSCRIPTIONBASECLASS> BaseSubscriptionWeakPtr;
-
-      typedef boost::shared_ptr<DelegateImpl> DelegateImplPtr;
-      typedef boost::weak_ptr<DelegateImpl>   DelegateImplWeakPtr;
+      ZS_DECLARE_TYPEDEF_PTR(SUBSCRIPTIONBASECLASS, BaseSubscription)
 
     public:
       ProxySubscriptions() {}
@@ -89,7 +85,7 @@ namespace zsLib
                                 bool strongReferenceToDelgate = false
                                 )
       {
-        SubscriptionPtr subscription(new Subscription);
+        SubscriptionPtr subscription(make_shared<Subscription>());
         subscription->mThisWeak = subscription;
         subscription->mDelegateImpl = mDelegateImpl;
 
@@ -190,9 +186,9 @@ namespace zsLib
       class DelegateImpl : public XINTERFACE
       {
       public:
-        typedef ProxySubscriptions::SubscriptionDelegateMap SubscriptionDelegateMap;
+        typedef typename ProxySubscriptions::SubscriptionDelegateMap SubscriptionDelegateMap;
 
-        DelegateImpl() : mSubscriptions(new SubscriptionDelegateMap) {}
+        DelegateImpl() : mSubscriptions(make_shared<SubscriptionDelegateMap>()) {}
         ~DelegateImpl() {}
 
         template<typename PARAM>
@@ -219,7 +215,7 @@ namespace zsLib
         void cancel(Subscription *gone)
         {
           AutoRecursiveLock lock(mLock);
-          SubscriptionDelegateMapPtr temp(new SubscriptionDelegateMap(*mSubscriptions));
+          SubscriptionDelegateMapPtr temp(make_shared<SubscriptionDelegateMap>(*mSubscriptions));
           typename SubscriptionDelegateMap::iterator found = temp->find(gone);
           if (found == temp->end()) return;
           temp->erase(found);
@@ -235,7 +231,7 @@ namespace zsLib
         void clear(Subscription *ignore)
         {
           AutoRecursiveLock lock(mLock);
-          SubscriptionDelegateMapPtr temp(new SubscriptionDelegateMap);
+          SubscriptionDelegateMapPtr temp(make_shared<SubscriptionDelegateMap>());
           mSubscriptions = temp;
           mBackgroundSubscriptions.clear();
         }
@@ -275,8 +271,8 @@ namespace zsLib
 
 #define ZS_INTERNAL_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(xInteractionName, xDelegateName)                                       \
   interaction xInteractionName;                                                                                                   \
-  typedef boost::shared_ptr<xInteractionName> xInteractionName##Ptr;                                                              \
-  typedef boost::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                                                            \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::shared_ptr<xInteractionName> xInteractionName##Ptr;                                \
+  typedef ZS_INTERNAL_SMART_POINTER_NAMESPACE::weak_ptr<xInteractionName> xInteractionName##WeakPtr;                              \
   typedef zsLib::ProxySubscriptions<xDelegateName, xInteractionName> xDelegateName##Subscriptions;
 
 
@@ -292,7 +288,7 @@ namespace zsLib                                                                 
                                                                                                                                   \
     ProxySubscriptions()                                                                                                          \
     {                                                                                                                             \
-      mDelegateImpl = DelegateImplPtr(new DerivedDelegateImpl);                                                                   \
+      mDelegateImpl = make_shared<DerivedDelegateImpl>();                                                                         \
     }                                                                                                                             \
                                                                                                                                   \
     class DerivedDelegateImpl : public DelegateImpl                                                                               \

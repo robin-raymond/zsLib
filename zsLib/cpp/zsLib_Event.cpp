@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/Event.h>
@@ -30,8 +39,8 @@ namespace zsLib
 {
   namespace internal
   {
-    Event::Event() :
-      mNotified(0)
+    //-------------------------------------------------------------------------
+    Event::Event()
     {
 #ifdef __QNX__
       static pthread_cond_t gConditionInit = PTHREAD_COND_INITIALIZER;
@@ -42,6 +51,7 @@ namespace zsLib
 #endif //__QNX__
     }
 
+    //-------------------------------------------------------------------------
     Event::~Event()
     {
 #ifdef __QNX__
@@ -52,18 +62,21 @@ namespace zsLib
 
   }
 
+  //---------------------------------------------------------------------------
   EventPtr Event::create() {
-    return EventPtr(new Event);
+    return make_shared<Event>();
   }
 
+  //---------------------------------------------------------------------------
   void Event::reset()
   {
-    zsLib::atomicSetValue32(mNotified, 0);
+    mNotified = false;
   }
 
+  //---------------------------------------------------------------------------
   void Event::wait()
   {
-    DWORD notified = zsLib::atomicGetValue32(mNotified);
+    bool notified = mNotified;
     if (0 != notified) {
       return;
     }
@@ -72,7 +85,7 @@ namespace zsLib
     int result = pthread_mutex_lock(&mMutex);
     ZS_THROW_BAD_STATE_IF(0 != result)
 
-    notified = zsLib::atomicGetValue32(mNotified);
+    notified = mNotified;
     if (0 != notified) {
       result = pthread_mutex_unlock(&mMutex);
       ZS_THROW_BAD_STATE_IF(0 != result)
@@ -85,13 +98,14 @@ namespace zsLib
     result = pthread_mutex_unlock(&mMutex);
     ZS_THROW_BAD_STATE_IF(0 != result)
 #else
-    boost::unique_lock<boost::mutex> lock(mMutex);
-    notified = zsLib::atomicGetValue32(mNotified);
+    std::unique_lock<std::mutex> lock(mMutex);
+    notified = mNotified;
     if (0 != notified) return;
     mCondition.wait(lock);
 #endif //__QNX__
   }
 
+  //---------------------------------------------------------------------------
   void Event::notify()
   {
 #ifdef __QNX__
@@ -101,13 +115,15 @@ namespace zsLib
     result = pthread_cond_signal(&mCondition);
     ZS_THROW_BAD_STATE_IF(0 != result)
 
-    zsLib::atomicSetValue32(mNotified, 1);
+    mNotified = true;
 
     result = pthread_mutex_unlock(&mMutex);
     ZS_THROW_BAD_STATE_IF(0 != result)
 #else
-    boost::lock_guard<boost::mutex> lock(mMutex);
-    zsLib::atomicSetValue32(mNotified, 1);
+    std::lock_guard<std::mutex> lock(mMutex);
+
+    mNotified = true;
+
     mCondition.notify_one();
 #endif //__QNX__
   }

@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/internal/zsLib_SocketMonitor.h>
@@ -25,7 +34,7 @@
 #include <zsLib/helpers.h>
 #include <zsLib/XML.h>
 
-#include <boost/thread.hpp>
+#include <stdlib.h>
 
 #define ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS (10*(1000))
 
@@ -35,10 +44,6 @@ namespace zsLib
 {
   namespace internal
   {
-#ifndef _WIN32
-    typedef timeval TIMEVAL;
-#endif //_WIN32
-
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -86,6 +91,12 @@ namespace zsLib
       return singleton.singleton();
     }
 
+    //-----------------------------------------------------------------------
+    static zsLib::Log::Params slog(const char *message, const char *object)
+    {
+      return zsLib::Log::Params(message, object);
+    }
+
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -95,18 +106,7 @@ namespace zsLib
     #pragma mark
 
     //-------------------------------------------------------------------------
-    SocketSet::SocketSet() :
-      mOfficialAllocationSize(0),
-      mOfficialCount(0),
-      mOfficialSet(NULL),
-      mPollingAllocationSize(0),
-      mPollingCount(0),
-      mPollingFiredEventCount(0),
-      mPollingSet(NULL),
-      mPollingFiredEvents(NULL),
-      mDirty(true),
-      mPollingSocketsWithDelegateGoneCount(0),
-      mPollingSocketsWithDelegateGone(NULL)
+    SocketSet::SocketSet()
     {
       ZS_LOG_BASIC(log("created"))
     }
@@ -117,7 +117,16 @@ namespace zsLib
       ZS_LOG_BASIC(log("destroyed"))
 
       delete [] mOfficialSet;
+#ifdef _WIN32
+      delete [] mOfficialHandleSet;
+      delete [] mOfficialHandleHolderSet;
+#endif //_WIN32
+
       delete [] mPollingSet;
+#ifdef _WIN32
+      delete [] mPollingHandleSet;
+      delete [] mPollingHandleHolderSet;
+#endif //_WIN32
       delete [] mPollingFiredEvents;
       delete [] mPollingSocketsWithDelegateGone;
 
@@ -133,9 +142,13 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    SocketSet::poll_fd *SocketSet::preparePollingFDs(poll_size &outSize)
+    SocketSet::poll_fd *SocketSet::preparePollingFDs(
+                                                     poll_size &outSize,
+                                                     EventHandle * &outEvents
+                                                     )
     {
       outSize = mOfficialCount;
+      outEvents = NULL;
 
       // scope: clean out previous sockets
       {
@@ -157,6 +170,7 @@ namespace zsLib
         for (poll_size index = 0; index < mPollingCount; ++index) {
           mPollingSet[index].revents = 0; // reset events
         }
+        outEvents = mPollingHandleSet;
         return mPollingSet;
       }
 
@@ -166,12 +180,22 @@ namespace zsLib
 
       if (mOfficialCount > 0) {
         memcpy(mPollingSet, mOfficialSet, sizeof(poll_fd) * mOfficialCount);
+#ifdef _WIN32
+        memcpy(mPollingHandleSet, mOfficialHandleSet, sizeof(EventHandle) * mOfficialCount);
+        for (decltype(mPollingCount) loop = 0; loop < mPollingCount; ++loop) {
+          mPollingHandleHolderSet[loop] = mOfficialHandleHolderSet[loop];
+        }
+        for (decltype(mPollingCount) loop = mPollingCount; loop < mPollingAllocationSize; ++loop) {
+          mPollingHandleHolderSet[loop] = EventHandleHolderPtr();
+        }
+#endif //_WIN32
       }
 
       mDirty = false;
 
       ZS_LOG_INSANE(log("preparing polling") + ZS_PARAM("count", mOfficialCount) + ZS_PARAM("allocated", mOfficialAllocationSize))
 
+      outEvents = mPollingHandleSet;
       return mPollingSet;
     }
 
@@ -248,7 +272,7 @@ namespace zsLib
 
       mDirty = true;
 
-      poll_size index = (*found).second;
+      decltype(mOfficialCount) index = (*found).second;
 
       ZS_LOG_TRACE(log("reset found and will remove") + ZS_PARAM("handle", socket) + ZS_PARAM("index", index))
 
@@ -269,7 +293,14 @@ namespace zsLib
         // [3] [4] [6-3-1 = 2] [YES]
 
         // prune the location
-        memmove(&(mOfficialSet[index]), &(mOfficialSet[index+1]), sizeof(poll_fd) * (mOfficialCount - index - 1));
+        decltype(index) total = mOfficialCount - index - 1;
+        memmove(&(mOfficialSet[index]), &(mOfficialSet[index+1]), sizeof(poll_fd) * total);
+#ifdef _WIN32
+        memmove(&(mOfficialHandleSet[index]), &(mOfficialHandleSet[index+1]), sizeof(EventHandle) * total);
+        for (decltype(index) moveIndex = index, count = 0; count < total; ++count, ++moveIndex) {
+          mOfficialHandleHolderSet[moveIndex] = mOfficialHandleHolderSet[moveIndex+1];
+        }
+#endif //_WIN32
       }
 
       mSocketIndexes.erase(found);
@@ -333,6 +364,10 @@ namespace zsLib
       poll_size index = (*found).second;
       event_type temp = mOfficialSet[index].events;
       mOfficialSet[index].events = mOfficialSet[index].events | events;
+#ifdef _WIN32
+      auto selectResult = WSAEventSelect(socket, mOfficialHandleSet[index], toNetworkEvents(mOfficialSet[index].events));
+      assert(0 == selectResult);
+#endif //_WIN32
 
       mDirty = mDirty || (temp != mOfficialSet[index].events);
 
@@ -362,6 +397,11 @@ namespace zsLib
         reset(socket);
       } else {
         ZS_LOG_INSANE(log("remove events found existing thus updating") + ZS_PARAM("handle", socket) + ZS_PARAM("index", index) + ZS_PARAM("events", friendly(events)) + ZS_PARAM("now", friendly(mOfficialSet[index].events)) + ZS_PARAM("previous", friendly(temp)) + ZS_PARAM("dirty", mDirty))
+
+#ifdef _WIN32
+      auto selectResult = WSAEventSelect(socket, mOfficialHandleSet[index], toNetworkEvents(mOfficialSet[index].events));
+      assert(0 == selectResult);
+#endif //_WIN32
       }
     }
 
@@ -371,17 +411,33 @@ namespace zsLib
       if (mOfficialAllocationSize < minSize) {
         ZS_LOG_TRACE(log("offical allocation resizing") + ZS_PARAM("min", minSize) + ZS_PARAM("allocated", mOfficialAllocationSize))
 
-        poll_fd *set = new poll_fd[minSize];
-
-        memset(set, 0, sizeof(poll_fd) * minSize);
+        poll_fd *set = new poll_fd[minSize] {};
+#ifdef _WIN32
+        EventHandle *setHandle = new EventHandle[minSize] {};
+        EventHandleHolderPtr *setHandleHolder = new EventHandleHolderPtr[minSize] {};
+#endif //_WIN32
 
         if (0 != mOfficialAllocationSize) {
           memcpy(set, mOfficialSet, sizeof(poll_fd) * mOfficialAllocationSize);
+#ifdef _WIN32
+          memcpy(setHandle, mOfficialHandleSet, sizeof(EventHandle) * mOfficialAllocationSize);
+          for (decltype(mOfficialAllocationSize) loop = 0; loop < mOfficialAllocationSize; ++loop) {
+            setHandleHolder[loop] = mOfficialHandleHolderSet[loop]; 
+          }
+#endif //_WIN32
         }
 
         delete [] mOfficialSet;
+#ifdef _WIN32
+        delete [] mOfficialHandleSet;
+        delete [] mOfficialHandleHolderSet;
+#endif //_WIN32
 
         mOfficialSet = set;
+#ifdef _WIN32
+        mOfficialHandleSet = setHandle;
+        mOfficialHandleHolderSet = setHandleHolder;
+#endif //_WIN32
         mOfficialAllocationSize = minSize;
       }
     }
@@ -392,23 +448,39 @@ namespace zsLib
       if (mPollingAllocationSize < minSize) {
         ZS_LOG_TRACE(log("polling allocation resizing") + ZS_PARAM("min", minSize) + ZS_PARAM("allocated", mPollingAllocationSize))
 
-        poll_fd *set = new poll_fd[minSize];
-        FiredEventPair *firedEvents = new FiredEventPair[minSize];
-        SocketPtr *gone = new SocketPtr[minSize];
-
-        memset(set, 0, sizeof(poll_fd) * minSize);
+        poll_fd *set = new poll_fd[minSize] {};
+#ifdef _WIN32
+        EventHandle *setHandle = new EventHandle[minSize] {};
+        EventHandleHolderPtr *setHandleHolder = new EventHandleHolderPtr[minSize] {};
+#endif //_WIN32
+        FiredEventPair *firedEvents = new FiredEventPair[minSize] {};
+        SocketPtr *gone = new SocketPtr[minSize] {};
 
         if (0 != mPollingAllocationSize) {
           memcpy(set, mPollingSet, sizeof(poll_fd) * mPollingAllocationSize);
+#ifdef _WIN32
+          memcpy(setHandle, mPollingHandleSet, sizeof(EventHandle) * mPollingAllocationSize);
+          for (decltype(mPollingAllocationSize) loop = 0; loop < mPollingAllocationSize; ++loop) {
+            setHandleHolder[loop] = mPollingHandleHolderSet[loop];
+          }
+#endif //_WIN32
         }
 
         delete [] mPollingSet;
+#ifdef _WIN32
+        delete [] mPollingHandleSet;
+        delete [] mPollingHandleHolderSet;
+#endif //_WIN32
         delete [] mPollingFiredEvents;
         delete [] mPollingSocketsWithDelegateGone;
 
         mPollingFiredEventCount = 0;
 
         mPollingSet = set;
+#ifdef _WIN32
+        mPollingHandleSet = setHandle;
+        mPollingHandleHolderSet = setHandleHolder;
+#endif //_WIN32
         mPollingFiredEvents = firedEvents;
         mPollingSocketsWithDelegateGone = gone;
         mPollingAllocationSize = minSize;
@@ -430,10 +502,41 @@ namespace zsLib
       mOfficialSet[mOfficialCount].fd = socket;
       mOfficialSet[mOfficialCount].events = events;
       mOfficialSet[mOfficialCount].revents = 0;
+#ifdef _WIN32
+      auto eventHandle = WSACreateEvent();
+      ZS_LOG_TRACE(log("created event handle") + ZS_PARAM("event", (PTRNUMBER)eventHandle))
+      if (WSA_INVALID_EVENT == eventHandle) {
+        eventHandle = NULL;
+        ZS_LOG_WARNING(Detail, log("create event handle failed") + ZS_PARAM("error", WSAGetLastError()))
+      } else {
+        auto selectResult = WSAEventSelect(socket, eventHandle, toNetworkEvents(events));
+        assert(0 == selectResult);
+      }
+      mOfficialHandleSet[mOfficialCount] = eventHandle;
+      mOfficialHandleHolderSet[mOfficialCount] = make_shared<EventHandleHolder>(eventHandle);
+#endif //_WIN32
 
       mSocketIndexes[socket] = mOfficialCount;
       ++mOfficialCount;
     }
+
+#ifdef _WIN32
+    //-----------------------------------------------------------------------
+    long SocketSet::toNetworkEvents(event_type events)
+    {
+      long result {};
+      if (0 != (POLLRDNORM & events)) {
+        result |= (FD_READ | FD_ACCEPT);
+      }
+      if (0 != (POLLWRNORM & events)) {
+        result |= (FD_WRITE | FD_CONNECT);
+      }
+      if (0 != ((POLLERR | POLLHUP | POLLNVAL) & events)) {
+        result |= (FD_CLOSE);
+      }
+      return result;
+    }
+#endif //_WIN32
 
     //-----------------------------------------------------------------------
     zsLib::Log::Params SocketSet::log(const char *message) const
@@ -456,12 +559,40 @@ namespace zsLib
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     #pragma mark
+    #pragma mark SocketSet::EventHandleHolder
+    #pragma mark
+
+    //-------------------------------------------------------------------------
+    SocketSet::EventHandleHolder::EventHandleHolder(EventHandle handle) :
+      mEventHandle(handle)
+    {
+#ifdef _WIN32
+      ZS_LOG_TRACE(slog("holding event handle", "SocketSet::EventHandleHolder") + ZS_PARAM("event", (PTRNUMBER)mEventHandle))
+#endif //_WIN32
+    }
+
+    //-------------------------------------------------------------------------
+    SocketSet::EventHandleHolder::~EventHandleHolder()
+    {
+#ifdef _WIN32
+      ZS_LOG_TRACE(slog("closing event handle", "SocketSet::EventHandleHolder") + ZS_PARAM("event", (PTRNUMBER)mEventHandle))
+      if (NULL != mEventHandle) {
+        WSACloseEvent(mEventHandle);
+        mEventHandle = NULL;
+      }
+#endif //_WIN32
+    }
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
     #pragma mark SocketMonitor
     #pragma mark
 
     //-------------------------------------------------------------------------
-    SocketMonitor::SocketMonitor() :
-      mShouldShutdown(false)
+    SocketMonitor::SocketMonitor()
     {
     }
 
@@ -485,12 +616,27 @@ namespace zsLib
     {
       static SingletonLazySharedPtr<SocketMonitor> singleton(SocketMonitor::create());
 
+      SocketMonitorPtr result = singleton.singleton();
+      if (!result) {
+        ZS_LOG_WARNING(Detail, slog("singleton gone"))
+      }
+
+      static zsLib::SingletonManager::Register registerSingleton("zsLib::SocketMonitor", result);
+
       class Once {
       public: Once() {getSocketMonitorPrioritySingleton().notify();}
       };
       static Once once;
 
-      SocketMonitorPtr result = singleton.singleton();
+      SocketMonitorHolder::singleton(result);
+      return result;
+    }
+
+    //-------------------------------------------------------------------------
+    SocketMonitor::SocketMonitorHolderPtr SocketMonitor::SocketMonitorHolder::singleton(SocketMonitorPtr monitor)
+    {
+      static SingletonLazySharedPtr<SocketMonitorHolder> singleton(SocketMonitorHolder::create(monitor));
+      SocketMonitorHolderPtr result = singleton.singleton();
       if (!result) {
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
       }
@@ -529,7 +675,7 @@ namespace zsLib
         AutoRecursiveLock lock(mLock);
 
         if (!mThread) {
-          mThread = ThreadPtr(new boost::thread(boost::ref(*(singleton().get()))));
+          mThread = ThreadPtr(new std::thread(std::ref(*(singleton().get()))));
           setThreadPriority(mThread->native_handle(), getSocketMonitorPrioritySingleton().getPriority());
         }
 
@@ -667,17 +813,9 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void SocketMonitor::operator()()
     {
-#ifdef __QNX__
-      pthread_setname_np(pthread_self(), "com.zslib.socketMonitor");
-#else
-#ifndef _LINUX
-#ifndef _ANDROID
-      pthread_setname_np("com.zslib.socketMonitor");
-#endif // _ANDROID
-#endif // _LINUX
-#endif // __QNX__
+      debugSetCurrentThreadName("com.zslib.socketMonitor");
 
-      bool shouldShutdown = false;
+      srand(static_cast<unsigned int>(time(NULL)));
 
       ZS_LOG_DETAIL(log("socket monitor thread started"))
 
@@ -685,6 +823,7 @@ namespace zsLib
 
       do
       {
+        EventHandle *pollEvents = NULL;
         poll_fd *pollFDs = NULL;
         poll_size size = 0;
 
@@ -692,38 +831,107 @@ namespace zsLib
           AutoRecursiveLock lock(mLock);
           processWaiting();
 
-          pollFDs = mSocketSet.preparePollingFDs(size);
+          pollFDs = mSocketSet.preparePollingFDs(size, pollEvents);
 
           ZS_LOG_INSANE(log("prepared FDs") + ZS_PARAM("total", size))
         }
 
-        int result =
+        int lastError {};
+
+        auto result =
 
 #ifdef _WIN32
-        WSAPoll(pollFDs, size, ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS);
+        WSAWaitForMultipleEvents(size, pollEvents, FALSE, ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS, FALSE);
 #else
         poll(pollFDs, size, ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS);
+        if (-1 == result) {
+          lastError = errno;
+        }
 #endif //_WIN32
 
-        ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result))
+        ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError))
 
         bool redoWakeupSocket = false;
 
         // select completed, do notifications from select
         {
           AutoRecursiveLock lock(mLock);
-          shouldShutdown = mShouldShutdown;
 
+#ifndef _WIN32
           if (result <= 0) goto completed;
 
-          // figure out which sockets need updating
           for (poll_size index = 0; (result > 0) && (index < size); ++index)
           {
+#else
+          if (WSA_WAIT_TIMEOUT == result) goto completed;
+          decltype(result) index = result - WSA_WAIT_EVENT_0;
+          decltype(result) nextIndex = index;
+
+          while (true)
+          {
+            index = nextIndex;
+            if (nextIndex >= size) goto completed;
+            ++nextIndex;
+
+            result = WSAWaitForMultipleEvents(size - index, &(pollEvents[index]), FALSE, 0, FALSE);
+            if (WSA_WAIT_TIMEOUT == result) goto completed;
+
+            index = (result - WSA_WAIT_EVENT_0) + index;
+            if (index >= nextIndex) nextIndex = index+1;
+
+#endif //_WIN32
+
+          // figure out which sockets need updating
             poll_fd &record = pollFDs[index];
 
-            if (0 == record.revents) continue;
+#ifdef _WIN32
+            WSANETWORKEVENTS networkEvents {};
+            auto enumResult = WSAEnumNetworkEvents(record.fd, pollEvents[index], &networkEvents);
+            if (0 != enumResult) {
+              ZS_LOG_WARNING(Detail, log("failed to enum network events") + ZS_PARAM("error", WSAGetLastError()))
+              goto completed;
+            }
 
+            record.revents = 0;
+
+            if (0 != (networkEvents.lNetworkEvents & FD_CONNECT)) {
+              if (NOERROR != networkEvents.iErrorCode[FD_CONNECT_BIT]) {
+                record.revents |= POLLERR;
+              } else {
+                record.revents |= POLLWRNORM;
+              }
+            }
+            if (0 != (networkEvents.lNetworkEvents & FD_CLOSE)) {
+              if (NOERROR != networkEvents.iErrorCode[FD_CLOSE_BIT]) {
+                record.revents |= POLLERR;
+              } else {
+                record.revents |= POLLHUP;
+              }
+            }
+            if (0 != (networkEvents.lNetworkEvents & FD_READ)) {
+              record.revents |= POLLRDNORM;
+            }
+            if (0 != (networkEvents.lNetworkEvents & FD_WRITE)) {
+              record.revents |= POLLWRNORM;
+            }
+            if (0 != (networkEvents.lNetworkEvents & FD_ACCEPT)) {
+              record.revents |= POLLRDNORM;
+            }
+            if (0 != (networkEvents.lNetworkEvents & FD_ROUTING_INTERFACE_CHANGE)) {
+              if (NOERROR != networkEvents.iErrorCode[FD_ROUTING_INTERFACE_CHANGE_BIT]) {
+                record.revents |= POLLERR;
+              }
+            }
+#endif //_WIN32
+
+            if (0 == record.revents) {
+              ZS_LOG_INSANE(log("no event found set"))
+              continue;
+            }
+
+#ifndef _WIN32
             --result; // stop once we have found every triggered socket
+#endif //ndef _WIN32
 
             ZS_LOG_INSANE(log("socket event found") + ZS_PARAM("handle", record.fd) + ZS_PARAM("events", friendly(record.revents)))
 
@@ -733,13 +941,16 @@ namespace zsLib
                 ZS_LOG_INSANE(log("read wake-up socket"))
 
                 bool wouldBlock = false;
-                static DWORD gBogus = 0;
+                static char gBogus[65536] {};
                 static BYTE *bogus = (BYTE *)&gBogus;
                 int noThrowError = 0;
-                mWakeUpSocket->receive(bogus, sizeof(gBogus), &wouldBlock, 0, &noThrowError);
+                auto totalRead = mWakeUpSocket->receive(bogus, sizeof(gBogus), &wouldBlock, 0, &noThrowError);
                 if (0 != noThrowError) {
                   ZS_LOG_WARNING(Insane, log("wake up socket had a failure") + ZS_PARAM("error", noThrowError))
                   redoWakeupSocket = true;
+                }
+                if (wouldBlock) {
+                  ZS_LOG_WARNING(Insane, log("wake up socket would block") + ZS_PARAM("total read", totalRead))
                 }
               }
 
@@ -817,7 +1028,7 @@ namespace zsLib
               mSocketSet.delegateGone(record.first);
             } catch (IMessageQueue::Exceptions::MessageQueueGone &) {
               ZS_LOG_FATAL(Basic, log("message queue gone"))
-              shouldShutdown = true;
+              mShouldShutdown = true;
             }
           }
         }
@@ -851,7 +1062,7 @@ namespace zsLib
           createWakeUpSocket();
         }
 
-      } while (!shouldShutdown);
+      } while (!mShouldShutdown);
 
       ZS_LOG_DETAIL(log("socket thread is shutting down"))
 
@@ -878,10 +1089,13 @@ namespace zsLib
       ZS_LOG_DETAIL(log("cancel called"))
 
       ThreadPtr thread;
+      SocketMonitorPtr gracefulReference;
+
       {
         AutoRecursiveLock lock(mLock);
-        mGracefulReference = mThisWeak.lock();
+        gracefulReference = mGracefulReference = mThisWeak.lock();
         thread = mThread;
+        mThread.reset();
 
         mShouldShutdown = true;
         wakeUp();
@@ -890,12 +1104,15 @@ namespace zsLib
       if (!thread)
         return;
 
-      thread->join();
-
-      {
-        AutoRecursiveLock lock(mLock);
-        mThread.reset();
+      if (thread->joinable()) {
+        thread->join();
       }
+    }
+
+    //-------------------------------------------------------------------------
+    void SocketMonitor::notifySingletonCleanup()
+    {
+      cancel();
     }
 
     //-------------------------------------------------------------------------
@@ -1004,7 +1221,7 @@ namespace zsLib
 
         ZS_LOG_WARNING(Detail, log("unable to create wake-up socket"))
 
-        boost::thread::yield();       // do not hammer CPU
+        std::this_thread::yield();       // do not hammer CPU
 
         if (tries > 10)
           useIPv6 = (tries%2 == 0);   // after 10 tries, start trying to bind using IPv4

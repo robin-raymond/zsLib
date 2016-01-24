@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #pragma once
@@ -25,11 +34,13 @@
 #ifndef ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
 #define ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
 
+#include <condition_variable>
+
 #include <zsLib/types.h>
 #include <zsLib/Log.h>
 #include <zsLib/MessageQueueThread.h>
+#include <zsLib/Singleton.h>
 
-#include <boost/noncopyable.hpp>
 #include <map>
 #include <list>
 
@@ -40,17 +51,14 @@
 
 namespace zsLib
 {
-  class Timer;
-  typedef boost::shared_ptr<Timer> TimerPtr;
-  typedef boost::weak_ptr<Timer> TimerWeakPtr;
+  ZS_DECLARE_CLASS_PTR(Timer)
 
   namespace internal
   {
-    class TimerMonitor;
-    typedef boost::shared_ptr<TimerMonitor> TimerMonitorPtr;
-    typedef boost::weak_ptr<TimerMonitor> TimerMonitorWeakPtr;
+    ZS_DECLARE_CLASS_PTR(TimerMonitor)
 
-    class TimerMonitor : public boost::noncopyable
+    class TimerMonitor : public noncopyable,
+                         public ISingletonManagerDelegate
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
@@ -74,13 +82,20 @@ namespace zsLib
 
       void operator()();
 
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark TimerMonitor => ISingletonManagerDelegate
+      #pragma mark
+
+      virtual void notifySingletonCleanup();
+
     private:
       zsLib::Log::Params log(const char *message) const;
       static zsLib::Log::Params slog(const char *message);
 
       void cancel();
 
-      Duration fireTimers();
+      Microseconds fireTimers();
       void wakeUp();
 
     private:
@@ -88,7 +103,7 @@ namespace zsLib
 
       RecursiveLock mLock;
       Lock mFlagLock;
-      boost::condition_variable mFlagNotify;
+      std::condition_variable mFlagNotify;
 
       TimerMonitorWeakPtr mThisWeak;
       TimerMonitorPtr mGracefulShutdownReference;

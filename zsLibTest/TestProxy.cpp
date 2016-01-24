@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/Proxy.h>
@@ -26,12 +35,8 @@
 #include <zsLib/Stringize.h>
 #include <iostream>
 
-//#include <boost/test/unit_test_suite.hpp>
-//#include <boost/test/unit_test.hpp>
-//#include <boost/test/test_tools.hpp>
 
-
-#include "boost_replacement.h"
+#include "testing.h"
 #include "main.h"
 
 using zsLib::ULONG;
@@ -64,9 +69,8 @@ namespace testing
     return gCheck;
   }
 
-  interaction ITestProxyDelegate;
-  typedef boost::shared_ptr<ITestProxyDelegate> ITestProxyDelegatePtr;
-  typedef zsLib::Proxy<ITestProxyDelegate> ITestProxyDelegateProxy;
+  ZS_DECLARE_INTERACTION_PTR(Subscription)
+  ZS_DECLARE_INTERACTION_PTR(ITestProxyDelegate)
 
   interaction ITestProxyDelegate
   {
@@ -88,13 +92,11 @@ namespace testing
     virtual void cancel() = 0;
   };
 
-  typedef boost::shared_ptr<ITestSubscriptionProxyDelegate> ITestSubscriptionProxyDelegatePtr;
-  typedef zsLib::Proxy<ITestSubscriptionProxyDelegate> ITestSubscriptionProxyDelegateWeakPtr;
-  typedef zsLib::Proxy<ITestSubscriptionProxyDelegate> ITestSubscriptionProxyDelegateProxy;
-  typedef zsLib::ProxySubscriptions<ITestSubscriptionProxyDelegate, Subscription> ITestSubscriptionProxyDelegateProxySubscriptions;
+  ZS_DECLARE_INTERACTION_PROXY(ITestProxyDelegate)
 
-  typedef boost::shared_ptr<Subscription> SubscriptionPtr;
-  typedef boost::weak_ptr<Subscription> SubscriptionWeakPtr;
+  ZS_DECLARE_INTERACTION_PROXY(ITestSubscriptionProxyDelegate)
+  ZS_DECLARE_INTERACTION_PROXY_SUBSCRIPTION(Subscription, ITestSubscriptionProxyDelegate)
+
 }
 
 
@@ -118,8 +120,7 @@ ZS_DECLARE_PROXY_SUBSCRIPTIONS_END()
 
 namespace testing
 {
-  class TestProxyCallback;
-  typedef boost::shared_ptr<TestProxyCallback> TestProxyCallbackPtr;
+  ZS_DECLARE_CLASS_PTR(TestProxyCallback)
 
   class TestProxyCallback : public ITestProxyDelegate,
                             public ITestSubscriptionProxyDelegate,
@@ -185,17 +186,16 @@ namespace testing
       ITestProxyDelegatePtr delegate = ITestProxyDelegateProxy::create(testObject);
       ITestSubscriptionProxyDelegatePtr subscriptionDelegate = ITestSubscriptionProxyDelegateProxy::create(testObject);
 
-
-      ITestSubscriptionProxyDelegateProxySubscriptions subscriptions;
+      ITestSubscriptionProxyDelegateSubscriptions subscriptions;
 
       SubscriptionPtr subscription = subscriptions.subscribe(subscriptionDelegate);
 
-      BOOST_CHECK(delegate.get() != (ITestProxyDelegatePtr(testObject)).get())
-      BOOST_CHECK(! zsLib::Proxy<ITestProxyDelegate>::isProxy(testObject))
-      BOOST_CHECK(zsLib::Proxy<ITestProxyDelegate>::isProxy(delegate))
+      TESTING_CHECK(delegate.get() != (ITestProxyDelegatePtr(testObject)).get())
+      TESTING_CHECK(! zsLib::Proxy<ITestProxyDelegate>::isProxy(testObject))
+      TESTING_CHECK(zsLib::Proxy<ITestProxyDelegate>::isProxy(delegate))
 
       ITestProxyDelegatePtr original = zsLib::Proxy<ITestProxyDelegate>::original(delegate);
-      BOOST_EQUAL(original.get(), (ITestProxyDelegatePtr(testObject)).get())
+      TESTING_EQUAL(original.get(), (ITestProxyDelegatePtr(testObject)).get())
 
       delegate->func1();
       for (int i = 0; i < 1000; ++i)
@@ -207,9 +207,9 @@ namespace testing
       str = "bogus3";
 
       delegate->func4(0xFFFF);
-      BOOST_EQUAL(getCheck().mCalledFunc4, 0xFFFF);
+      TESTING_EQUAL(getCheck().mCalledFunc4, 0xFFFF);
 
-      BOOST_EQUAL(delegate->func5(0xABC, 0xDEF), "abc def");
+      TESTING_EQUAL(delegate->func5(0xABC, 0xDEF), "abc def");
 
       subscriptions.delegate()->sub1();
 
@@ -227,19 +227,19 @@ namespace testing
         count = mThread->getTotalUnprocessedMessages();
         count += mThreadNeverCalled->getTotalUnprocessedMessages();
         if (0 != count)
-          boost::this_thread::yield();
+          std::this_thread::yield();
       } while (count > 0);
       mThread->waitForShutdown();
       mThreadNeverCalled->waitForShutdown();
 
-      BOOST_EQUAL(zsLib::proxyGetTotalConstructed(), 0);
+      TESTING_EQUAL(zsLib::proxyGetTotalConstructed(), 0);
 
-      BOOST_EQUAL(getCheck().mCalledFunc3, "func3");
-      BOOST_EQUAL(getCheck().mCalledFunc2, 1000);
-      BOOST_CHECK(getCheck().mCalledFunc1);
-      BOOST_CHECK(getCheck().mCalledSub1);
-      BOOST_EQUAL(getCheck().mCalledSub2, "sub2");
-      BOOST_CHECK(getCheck().mDestroyedTestProxyCallback);
+      TESTING_EQUAL(getCheck().mCalledFunc3, "func3");
+      TESTING_EQUAL(getCheck().mCalledFunc2, 1000);
+      TESTING_CHECK(getCheck().mCalledFunc1);
+      TESTING_CHECK(getCheck().mCalledSub1);
+      TESTING_EQUAL(getCheck().mCalledSub2, "sub2");
+      TESTING_CHECK(getCheck().mDestroyedTestProxyCallback);
     }
 
     zsLib::MessageQueueThreadPtr mThread;
@@ -248,13 +248,9 @@ namespace testing
 
 }
 
-BOOST_AUTO_TEST_SUITE(zsLibProxy)
+void testProxy()
+{
+  if (!ZSLIB_TEST_PROXY) return;
 
-  BOOST_AUTO_TEST_CASE(TestProxy)
-  {
-    if (ZSLIB_TEST_PROXY) {
-      testing::TestProxy test;
-    }
-  }
-
-BOOST_AUTO_TEST_SUITE_END()
+  testing::TestProxy test;
+}

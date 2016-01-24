@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #pragma once
@@ -27,7 +36,6 @@
 
 #include <zsLib/types.h>
 #include <zsLib/Exception.h>
-#include <boost/shared_array.hpp>
 
 #pragma warning(push)
 #pragma warning(disable: 4290)
@@ -39,7 +47,6 @@ namespace zsLib
 {
   namespace XML
   {
-
     enum ParserWarningTypes
     {
       ParserWarningType_None,
@@ -315,12 +322,12 @@ namespace zsLib
       void setAttributeNameIsCaseSensative(bool inCaseSensative = true);
       bool isAttributeNameIsCaseSensative() const;
 
-      boost::shared_array<char> writeAsXML(size_t *outLengthInChars = NULL) const;
-      boost::shared_array<char> writeAsJSON(size_t *outLengthInChars = NULL) const;
-      boost::shared_array<char> writeAsJSON(
-                                            bool prettyPrint,
-                                            size_t *outLengthInChars = NULL
-                                            ) const;
+      std::unique_ptr<char[]> writeAsXML(size_t *outLengthInChars = NULL) const;
+      std::unique_ptr<char[]> writeAsJSON(size_t *outLengthInChars = NULL) const;
+      std::unique_ptr<char[]> writeAsJSON(
+                                          bool prettyPrint,
+                                          size_t *outLengthInChars = NULL
+                                          ) const;
 
       // overrides
       virtual NodePtr clone() const;
@@ -331,8 +338,9 @@ namespace zsLib
       virtual NodePtr         toNode() const       {return mThis.lock();}
       virtual DocumentPtr     toDocument() const   {return mThis.lock();}
 
-    protected:
+    public:
       Document(
+               const make_private &,
                bool inElementNameIsCaseSensative = true,
                bool inAttributeNameIsCaseSensative = true
                );
@@ -367,6 +375,7 @@ namespace zsLib
       AttributePtr findAttribute(String inName) const;
       String getAttributeValue(String inName) const;
 
+      bool hasAttributes() const;
       AttributePtr findAttributeChecked(String inName) const throw(Exceptions::CheckFailed);
       String getAttributeValueChecked(String inName) const throw(Exceptions::CheckFailed);
 
@@ -394,8 +403,8 @@ namespace zsLib
       virtual NodePtr         toNode() const    {return mThis.lock();}
       virtual ElementPtr      toElement() const {return mThis.lock();}
 
-    protected:
-      Element();
+    public:
+      Element(const make_private &);
     };
 
     //-------------------------------------------------------------------------
@@ -445,9 +454,10 @@ namespace zsLib
       virtual NodePtr         toNode() const       {return mThis.lock();}
       virtual AttributePtr    toAttribute() const  {return mThis.lock();}
 
-    protected:
-      Attribute();
+    public:
+      Attribute(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -504,9 +514,10 @@ namespace zsLib
       virtual NodePtr         toNode() const {return mThis.lock();}
       virtual TextPtr         toText() const {return mThis.lock();}
 
-    protected:
-      Text();
+    public:
+      Text(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -541,9 +552,10 @@ namespace zsLib
       virtual NodePtr         toNode() const    {return mThis.lock();}
       virtual CommentPtr      toComment() const {return mThis.lock();}
 
-    protected:
-      Comment();
+    public:
+      Comment(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -590,8 +602,8 @@ namespace zsLib
       virtual NodePtr         toNode() const          {return mThis.lock();}
       virtual DeclarationPtr  toDeclaration() const   {return mThis.lock();}
 
-    protected:
-      Declaration();
+    public:
+      Declaration(const make_private &);
     };
 
     //-------------------------------------------------------------------------
@@ -624,9 +636,10 @@ namespace zsLib
       virtual NodePtr         toNode() const    {return mThis.lock();}
       virtual UnknownPtr      toUnknown() const {return mThis.lock();}
 
-    protected:
-      Unknown();
+    public:
+      Unknown(const make_private &);
 
+    protected:
       virtual void adoptAsFirstChild(NodePtr inNode);       // illegal
       virtual void adoptAsLastChild(NodePtr inNode);        // illegal
     };
@@ -783,8 +796,8 @@ namespace zsLib
       static String convertFromJSONEncoding(const String &inString);
       static String convertToJSONEncoding(const String &inString);
 
-    protected:
-      Parser();
+    public:
+      Parser(const make_private &);
     };
 
     //-------------------------------------------------------------------------
@@ -826,15 +839,18 @@ namespace zsLib
                                               );
 
       virtual size_t getOutputSize(const NodePtr &onlyThisNode) const;
-      virtual boost::shared_array<char> write(const NodePtr &onlyThisNode, size_t *outLengthInChars = NULL) const;
+      virtual std::unique_ptr<char[]> write(const NodePtr &onlyThisNode, size_t *outLengthInChars = NULL) const;
 
       virtual GeneratorPtr toGenerator() const   {return mThis.lock();}
 
       virtual XMLWriteFlags getXMLWriteFlags() const;
       virtual JSONWriteFlags getJSONWriteFlags() const;
 
-    protected:
-      Generator(UINT writeFlags);
+    public:
+      Generator(
+                const make_private &,
+                UINT writeFlags
+                );
     };
 
   } // namespace XML

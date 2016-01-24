@@ -1,35 +1,39 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
- */
 
-#pragma warning(push)
-#pragma warning(disable: 4996)
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
+ */
 
 #include <zsLib/String.h>
 #include <zsLib/Log.h>
 #include <zsLib/Exception.h>
 
-#include <boost/shared_array.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
+#include <algorithm>
 
 #define ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE (sizeof(BYTE)*6)
 
@@ -112,7 +116,7 @@ namespace zsLib
   {
     if (!source) return String();
 
-    boost::shared_array<char> copy(new char[maxCharacters+1]);
+    std::unique_ptr<char[]> copy(new char[maxCharacters+1]);
 
     STR dest = copy.get();
     for (; *source && (maxCharacters > 0); ++source, --maxCharacters, ++dest)
@@ -127,7 +131,7 @@ namespace zsLib
   {
     if (!source) return String();
 
-    boost::shared_array<char> copy(new char[(maxCharacters*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
+    std::unique_ptr<char[]> copy(new char[(maxCharacters*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
 
     STR dest = copy.get();
     for (; *source && (maxCharacters > 0); --maxCharacters)
@@ -229,7 +233,7 @@ namespace zsLib
     delete [] buffer;
     buffer = NULL;
 #else
-    boost::to_lower(*this);
+    for (auto & c: *this) c = tolower((UCHAR)c);
 #endif //__QNX__
   }
 
@@ -251,24 +255,41 @@ namespace zsLib
     delete [] buffer;
     buffer = NULL;
 #else
-    boost::to_upper(*this);
+    for (auto & c: *this) c = toupper((UCHAR)c);
 #endif //__QNX__
+  }
+
+  namespace internal {
+    struct one_of_check : public std::unary_function<char,bool>{
+      one_of_check(CSTR strip) : mStrip(strip) {}
+
+      bool operator()(const char &c)
+      {
+        return NULL != strchr(mStrip, (UCHAR)c);
+      }
+
+      CSTR mStrip;
+    };
   }
 
   void String::trim(CSTR chars)
   {
-    boost::trim_left_if(*this, boost::is_any_of(chars));
-    boost::trim_right_if(*this, boost::is_any_of(chars));
+    const std::string &s = (*this);
+
+    auto  wsfront=std::find_if_not(s.begin(),s.end(), internal::one_of_check(chars));
+    *this = std::string(wsfront,std::find_if_not(s.rbegin(),std::string::const_reverse_iterator(wsfront), internal::one_of_check(chars)).base());
   }
 
   void String::trimLeft(CSTR chars)
   {
-    boost::trim_left_if(*this, boost::is_any_of(chars));
+    const std::string &s = (*this);
+    *this = std::string(std::find_if_not(s.begin(), s.end(), internal::one_of_check(chars)), s.end());
   }
 
   void String::trimRight(CSTR chars)
   {
-    boost::trim_right_if(*this, boost::is_any_of(chars));
+    const std::string &s = (*this);
+    *this = std::string(s.begin(),std::find_if_not(s.rbegin(),std::string::const_reverse_iterator(s.begin()), internal::one_of_check(chars)).base());
   }
 
   size_t String::lengthUnicodeSafe() const
@@ -605,16 +626,16 @@ namespace zsLib
       return (WCHAR)(utf8ToUTF32(ioUTF8));
     }
 
-    static boost::shared_array<WCHAR> utf8ToUnicodeConvert(CSTR szInUTF8)
+    static std::unique_ptr<WCHAR[]> utf8ToUnicodeConvert(CSTR szInUTF8)
     {
       if (NULL == szInUTF8)
-        return boost::shared_array<WCHAR>();
+        return std::unique_ptr<WCHAR[]>();
 
       size_t actualLength = strlen(szInUTF8);
 
       // create a temporary buffer to convert into
       // heap allocated blocks do not require memset
-      boost::shared_array<WCHAR> result(new WCHAR[(actualLength*2)+1]);
+      std::unique_ptr<WCHAR[]> result(new WCHAR[(actualLength*2)+1]);
 
       CSTR szSource = szInUTF8;
       WCHAR *pDest = result.get();
@@ -638,10 +659,10 @@ namespace zsLib
       return result;
     }
 
-    static boost::shared_array<CHAR> unicodeToUTF8Convert(CWSTR szInUnicodeString)
+    static std::unique_ptr<CHAR[]> unicodeToUTF8Convert(CWSTR szInUnicodeString)
     {
       if (NULL == szInUnicodeString)
-        return boost::shared_array<CHAR>();
+        return std::unique_ptr<CHAR[]>();
 
       size_t actualLength = wcslen(szInUnicodeString);
 
@@ -649,7 +670,7 @@ namespace zsLib
       // wasteful, but at least it doesn't have to double process
       // the input string)
       // ULONG = 4 bytes, should be plenty
-      boost::shared_array<CHAR> result(new char[(actualLength*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
+      std::unique_ptr<CHAR[]> result(new char[(actualLength*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE)+1]);
 
       // convert to a unicode string for easier processing
       CWSTR szSource = szInUnicodeString;
@@ -684,14 +705,14 @@ namespace zsLib
     std::string convertToString(CWSTR value)
     {
       if (!value) return std::string();
-      boost::shared_array<CHAR> result(unicodeToUTF8Convert(value));
+      std::unique_ptr<CHAR[]> result(unicodeToUTF8Convert(value));
       return std::string(result.get());
     }
 
     std::wstring convertToWString(CSTR value)
     {
       if (!value) return std::wstring();
-      boost::shared_array<WCHAR> result(utf8ToUnicodeConvert(value));
+      std::unique_ptr<WCHAR[]> result(utf8ToUnicodeConvert(value));
       return std::wstring(result.get());
     }
 
@@ -708,5 +729,3 @@ namespace zsLib
   } // namespace internal
 
 }
-
-#pragma warning(pop)

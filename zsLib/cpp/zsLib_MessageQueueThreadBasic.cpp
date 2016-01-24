@@ -1,33 +1,37 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/internal/zsLib_MessageQueueThreadBasic.h>
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
-
-#include <boost/ref.hpp>
-#include <boost/thread.hpp>
-
-#include <pthread.h>
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -40,8 +44,8 @@ namespace zsLib
     {
       MessageQueueThreadBasicPtr thread(new MessageQueueThreadBasic(threadName));
       thread->mQueue = zsLib::MessageQueue::create(thread);
-      thread->mThread = ThreadPtr(new boost::thread(boost::ref(*thread.get())));
       thread->mThreadPriority = threadPriority;
+      thread->mThread = ThreadPtr(new std::thread(std::ref(*thread.get())));
 
       zsLib::setThreadPriority(*(thread->mThread), threadPriority);
       return thread;
@@ -49,31 +53,18 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     MessageQueueThreadBasic::MessageQueueThreadBasic(const char *threadName) :
-      mThreadName(threadName),
-      mMustShutdown(0),
-      mIsShutdown(false)
+      mThreadName(threadName)
     {
     }
 
+    //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::operator()()
     {
       bool shouldShutdown = false;
 
       MessageQueuePtr queue = mQueue;
 
-#ifdef __QNX__
-      if (!mThreadName.isEmpty()) {
-        pthread_setname_np(pthread_self(), mThreadName);
-      }
-#else
-#ifndef _LINUX
-#ifndef _ANDROID
-      if (!mThreadName.isEmpty()) {
-        pthread_setname_np(mThreadName);
-      }
-#endif // _ANDROID
-#endif // _LINUX
-#endif // __QNX__
+      debugSetCurrentThreadName(mThreadName);
 
       do
       {
@@ -81,26 +72,26 @@ namespace zsLib
         mEvent.reset();   // should be safe to reset the notification now that we are done processing
 
         queue->process(); // small window between the process and the reset where more events could have arrived so process those now
-        shouldShutdown = (0 != zsLib::atomicGetValue32(mMustShutdown));
+        shouldShutdown = mMustShutdown;
 
         if (!shouldShutdown) {
           mEvent.wait();    // wait for the next event to arrive
           queue->process(); // process data in case shutdown gets activated
         }
 
-        shouldShutdown = (0 != zsLib::atomicGetValue32(mMustShutdown));
+        shouldShutdown = mMustShutdown;
       } while(!shouldShutdown);
 
       mIsShutdown = true;
     }
 
     //-------------------------------------------------------------------------
-    void MessageQueueThreadBasic::post(IMessageQueueMessagePtr message)
+    void MessageQueueThreadBasic::post(IMessageQueueMessageUniPtr message)
     {
       if (mIsShutdown) {
         ZS_THROW_CUSTOM(IMessageQueue::Exceptions::MessageQueueGone, "message posted to message queue after message queue was deleted.")
       }
-      mQueue->post(message);
+      mQueue->post(std::move(message));
     }
 
     //-------------------------------------------------------------------------
@@ -124,7 +115,7 @@ namespace zsLib
         AutoLock lock(mLock);
         thread = mThread;
 
-        zsLib::atomicSetValue32(mMustShutdown, 1);
+        mMustShutdown = true;
         mEvent.notify();
       }
 

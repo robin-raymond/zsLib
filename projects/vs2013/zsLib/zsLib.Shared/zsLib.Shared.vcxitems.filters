@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="zsLib">
+      <UniqueIdentifier>{be6a55fc-fb2b-4040-b476-dd192db71cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zsLib\internal">
+      <UniqueIdentifier>{ba3e6c54-8dce-4eae-8e5b-962fbe0858d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zsLib\cpp">
+      <UniqueIdentifier>{eb2680c0-4e67-4101-981e-4161e0d4afdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zsLib\extras">
+      <UniqueIdentifier>{aaee174a-1582-403f-8f2d-a25e19162e60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zsLib\extras\win32">
+      <UniqueIdentifier>{a8446a8b-956d-40aa-b868-d9d9dec4a3b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zsLib\extras\uuid">
+      <UniqueIdentifier>{08712a5e-8e48-40ad-8a47-8b644906a71b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Event.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Exception.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\helpers.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\IPAddress.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Log.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueue.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueueAssociator.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueueThread.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Numeric.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Promise.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Proxy.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\ProxySubscriptions.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Socket.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\String.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Stringize.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\TearAway.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Timer.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\types.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\XML.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\zsLib.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\types.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Event.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Exception.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_IPAddress.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Log.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueue.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThread.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadBasic.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingBlackberryChannels.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Numeric.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Promise.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Proxy.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ProxyPack.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ProxySubscriptions.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Socket.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_SocketMonitor.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Stringize.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_TearAway.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Timer.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_TimerMonitor.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_XML.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\config.h">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuid.h">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuid_types.h">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuidd.h">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuidP.h">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Singleton.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\platform.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\MessageQueueThreadPool.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_MessageQueueThreadPool.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\SafeInt.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\win32\strptime.cpp">
+      <Filter>zsLib\extras\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\clear.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\compare.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\copy.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\gen_uuid.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\gen_uuid_nt.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\isnull.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\pack.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\parse.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\tst_uuid.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\unpack.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\unparse.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuid_time.c">
+      <Filter>zsLib\extras\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Event.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Exception.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_helpers.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_IPAddress.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Log.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueue.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThread.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadBasic.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingBlackberryChannels.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Numeric.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Promise.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Proxy.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Socket.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_SocketMonitor.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_String.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Stringize.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Timer.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_TimerMonitor.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XML.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLAttribute.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLComment.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLDeclaration.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLDocument.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLElement.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLGenerator.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLNode.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLParser.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLParserPos.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLParserWarningTypes.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLText.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_XMLUnknown.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_Singleton.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\cpp\zsLib_MessageQueueThreadPool.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\license.txt">
+      <Filter>zsLib</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

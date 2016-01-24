@@ -1,30 +1,40 @@
-
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
+#include <zsLib/String.h>
+#include <zsLib/Singleton.h>
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -54,14 +64,13 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Subsystem::setOutputLevel(Log::Level inLevel)
   {
-    ULONG value = (ULONG)inLevel;
-    atomicSetValue32(mLevel, static_cast<Subsystem::LevelType>(value));
+    mLevel = inLevel;
   }
 
   //---------------------------------------------------------------------------
   Log::Level Subsystem::getOutputLevel() const
   {
-    return (Log::Level)atomicGetValue32(mLevel);
+    return mLevel;
   }
 
   //---------------------------------------------------------------------------
@@ -71,6 +80,81 @@ namespace zsLib
   #pragma mark
   #pragma mark Log
   #pragma mark
+
+  namespace internal
+  {
+    String Log::paramize(const char *name)
+    {
+      if (!name) return String();
+
+      auto orignalLength = strlen(name);
+      auto maxLength = orignalLength * 2;
+
+      char buffer[256] {};
+      char *useBuffer = &(buffer[0]);
+
+      char *allocatedBuffer = NULL;
+
+      if (maxLength >= sizeof(buffer)) {
+        allocatedBuffer = new char[maxLength+1] {};
+        useBuffer = allocatedBuffer;
+      }
+
+      bool lastWasSpace = true;
+      bool lastWasUpper = true;
+
+      const char *source = name;
+      char *dest = useBuffer;
+
+      while (*source) {
+        char gliph = *source;
+
+        if (!isalnum(gliph)) {
+          if (lastWasSpace) {
+            ++source;
+            continue;
+          }
+          *dest = ' ';
+          ++dest;
+          ++source;
+
+          lastWasSpace = true;
+          continue;
+        }
+
+        if (isupper(gliph)) {
+          if (!lastWasUpper) {
+            if (!lastWasSpace) {
+              *dest = ' ';
+              ++dest;
+            }
+          }
+
+          *dest = tolower(gliph);
+          ++dest;
+          ++source;
+
+          lastWasSpace = false;
+          lastWasUpper = true;
+          continue;
+        }
+
+        lastWasUpper = false;
+        lastWasSpace = false;
+
+        *dest = gliph;
+        ++dest;
+        ++source;
+      }
+
+      String result((const char *)useBuffer);
+
+      delete [] allocatedBuffer;
+      allocatedBuffer = NULL;
+
+      return result;
+    }
+  }
 
   //---------------------------------------------------------------------------
   const char *Log::toString(Severity severity)
@@ -84,6 +168,28 @@ namespace zsLib
     return "undefined";
   }
 
+  //---------------------------------------------------------------------------
+  Log::Severity Log::toSeverity(const char *inSeverityStr)
+  {
+    static Severity severityArray[] = {
+      Warning,
+      Error,
+      Fatal,
+
+      Informational
+    };
+
+    String severityStr(inSeverityStr);
+
+    for (int index = 0; Informational != severityArray[index]; ++index) {
+      if (severityStr == toString(severityArray[index])) {
+        return severityArray[index];
+      }
+    }
+
+    return Informational;
+  }
+  
   //---------------------------------------------------------------------------
   const char *Log::toString(Level level)
   {
@@ -99,7 +205,31 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Log::Log()
+  Log::Level Log::toLevel(const char *inLevelStr)
+  {
+    static Level levelArray[] = {
+      Basic,
+      Detail,
+      Debug,
+      Trace,
+      Insane,
+
+      None
+    };
+
+    String levelStr(inLevelStr);
+
+    for (int index = 0; None != levelArray[index]; ++index) {
+      if (levelStr == toString(levelArray[index])) {
+        return levelArray[index];
+      }
+    }
+
+    return None;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Log(const make_private &)
   {
   }
 
@@ -118,7 +248,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   LogPtr Log::create()
   {
-    return LogPtr(new Log);
+    return make_shared<Log>(make_private{});
   }
 
   //---------------------------------------------------------------------------
@@ -134,7 +264,7 @@ namespace zsLib
     {
       AutoRecursiveLock lock(refThis.mLock);
 
-      ListenerListPtr replaceList(new ListenerList);
+      ListenerListPtr replaceList(make_shared<ListenerList>());
 
       if (refThis.mListeners) {
         (*replaceList) = (*refThis.mListeners);
@@ -165,7 +295,7 @@ namespace zsLib
 
     AutoRecursiveLock lock(refThis.mLock);
 
-    ListenerListPtr replaceList(new ListenerList);
+    ListenerListPtr replaceList(make_shared<ListenerList>());
 
     if (refThis.mListeners) {
       (*replaceList) = (*refThis.mListeners);
@@ -414,30 +544,57 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Log::Param::Param(const char *name, const Duration &value)
+  Log::Param::Param(const char *name, const Hours &value)
   {
-    if (Duration() == value) return;
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    if (name) {
-      if (strstr(name, "(ms)")) {
-        Param tmp(name, value.total_milliseconds());
-        mParam = tmp.mParam;
-        return;
-      }
-      if (strstr(name, "(s)")) {
-        Param tmp(name, value.total_seconds());
-        mParam = tmp.mParam;
-        return;
-      }
-      if (strstr(name, "(seconds)")) {
-        Param tmp(name, value.total_seconds());
-        mParam = tmp.mParam;
-        return;
-      }
-    }
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Minutes &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
 
-    Param tmp(name, boost::posix_time::to_simple_string(value));
-    mParam = tmp.mParam;
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Seconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Milliseconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Microseconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Param::Param(const char *name, const Nanoseconds &value)
+  {
+    if (Hours() == value) return;
+    Param temp(name, string(value));
+    mParam = temp.mParam;
+    return;
   }
 
   //---------------------------------------------------------------------------

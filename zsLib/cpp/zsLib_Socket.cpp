@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/internal/zsLib_SocketMonitor.h>
@@ -28,6 +37,10 @@
 
 #include <fcntl.h>
 #include <signal.h>
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif //ndef _WIN32
 
 #pragma warning(push)
 #pragma warning(disable:4290)
@@ -54,36 +67,57 @@ namespace zsLib
 
   namespace internal
   {
-#ifdef __QNX__
-    static pthread_once_t ignoreSigTermKeyOnce = PTHREAD_ONCE_INIT;
-    static pthread_key_t ignoreSigTermKey;
+    //-----------------------------------------------------------------------
+    static zsLib::Log::Params slog(const char *message)
+    {
+      return zsLib::Log::Params(message, "Socket");
+    }
 
-    void ignoreSigTermKeyDestructor(void* value) {
+#if defined(__QNX__) || defined(__APPLE__)
+    //-------------------------------------------------------------------------
+    static pthread_once_t &getIgnoreSigTermKeyOnce()
+    {
+      static pthread_once_t ignoreSigTermKeyOnce = PTHREAD_ONCE_INIT;
+      return ignoreSigTermKeyOnce;
+    }
+
+    //-------------------------------------------------------------------------
+    static pthread_key_t &getIgnoreSigTermKey()
+    {
+      static pthread_key_t ignoreSigTermKey {};
+      return ignoreSigTermKey;
+    }
+
+    //-------------------------------------------------------------------------
+    static void ignoreSigTermKeyDestructor(void* value) {
       delete (bool*) value;
-      pthread_setspecific(ignoreSigTermKey, NULL);
+      pthread_setspecific(getIgnoreSigTermKey(), NULL);
     }
 
-    void makeIgnoreSigTermKeyOnce() {
-      pthread_key_create(&ignoreSigTermKey, ignoreSigTermKeyDestructor);
+    //-------------------------------------------------------------------------
+    static void makeIgnoreSigTermKeyOnce() {
+      pthread_key_create(&(getIgnoreSigTermKey()), ignoreSigTermKeyDestructor);
     }
-
-#else
-    static boost::thread_specific_ptr<bool> threadLocalData;
-#endif
+#endif //defined(__QNX__) || defined(__APPLE__)
 
     //-------------------------------------------------------------------------
     static void ignoreSigTermOnThread()
     {
-#ifdef __QNX__
-      pthread_once(&ignoreSigTermKeyOnce, makeIgnoreSigTermKeyOnce);
+#ifndef _WIN32
 
-      if (!pthread_getspecific(ignoreSigTermKey)) {
-        pthread_setspecific(ignoreSigTermKey, new bool);
+#if defined(__QNX__) || defined(__APPLE__)
+      pthread_once(& (getIgnoreSigTermKeyOnce()), makeIgnoreSigTermKeyOnce);
+
+      if (!pthread_getspecific(getIgnoreSigTermKey())) {
+        pthread_setspecific(getIgnoreSigTermKey(), new bool {});
 
 #else
-      if (!threadLocalData.get()) {
-        threadLocalData.reset(new bool);
-#endif
+      static thread_local bool alreadyIgnored {};
+
+      if (!alreadyIgnored) {
+        alreadyIgnored = true;
+
+#endif //__QNX__
         struct sigaction act;
         memset(&act, 0, sizeof(act));
 
@@ -92,12 +126,8 @@ namespace zsLib
         act.sa_flags=0;
         sigaction(SIGPIPE, &act, NULL);
       }
-
-#ifdef __QNX__
+#endif //ndef _WIN32
     }
-#else 
-    }
-#endif //_QNX__
 
 #ifdef _WIN32
     class SocketInit
@@ -110,7 +140,7 @@ namespace zsLib
         memset(&data, 0, sizeof(data));
         int result = WSAStartup(MAKEWORD(2, 2), &data);
         if (0 != result) {
-          ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
+          ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, result, String("WSAStartup failed with error code: ") + string(result))
         }
       }
 
@@ -119,7 +149,7 @@ namespace zsLib
       {
         int result = WSACleanup();
         if (0 != result) {
-          ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
+          ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, result, String("WSACleanup failed with error code: ") + string(result))
         }
       }
     };
@@ -144,15 +174,12 @@ namespace zsLib
       outAddress = NULL;
       outSize = 0;
 
-      if (inAddress.isIPv6())
-      {
+      if (inAddress.isIPv6()) {
         memset(&inIPv6, 0, sizeof(inIPv6));
         inAddress.getIPv6(inIPv6);
         outAddress = (sockaddr *)&inIPv6;
         outSize = sizeof(inIPv6);
-      }
-      else
-      {
+      } else {
         memset(&inIPv4, 0, sizeof(inIPv4));
         inAddress.getIPv4(inIPv4);
         outAddress = (sockaddr *)&inIPv4;
@@ -268,6 +295,9 @@ namespace zsLib
       int error = WSAGetLastError();
       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Could not create socket due to an unexpected error, where error=" + (string(error)))
     }
+
+    ZS_LOG_TRACE(internal::slog("creating socket") + ZS_PARAM("socket", (PTRNUMBER)socket))
+
     SocketPtr object = create();
     object->mThis = object;
     object->adopt(socket);
@@ -325,6 +355,7 @@ namespace zsLib
     close();
 
     AutoRecursiveLock lock(mLock);
+    ZS_LOG_TRACE(internal::slog("adopting socket") + ZS_PARAM("socket", (PTRNUMBER)inSocket))
     mSocket = inSocket;
   }
 
@@ -416,6 +447,8 @@ namespace zsLib
     AutoRecursiveLock lock(mLock);
     if (INVALID_SOCKET == mSocket)
       return;
+
+    ZS_LOG_TRACE(internal::slog("closing socket") + ZS_PARAM("socket", (PTRNUMBER)mSocket))
 
     int result = closesocket(mSocket);
     mSocket = INVALID_SOCKET;
@@ -547,18 +580,18 @@ namespace zsLib
       AutoRecursiveLock lock(mLock);
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
 
-      sockaddr_in addressv4;
-      sockaddr_in6 addressv6;
+      sockaddr_in addressv4 {};
+      sockaddr_in6 addressv6 {};
       sockaddr *address = NULL;
       int size = 0;
       internal::prepareRawIPAddress(inBindIP, addressv4, addressv6, address, size);
+#ifdef _WIN32
+//      if (0 != addressv6.sin6_scope_id) {
+//        addressv6.sin6_scope_struct.Level = ScopeLevelLink;
+//      }
+#endif //_WIN32
 
       int result = ::bind(mSocket, address, size);
-#ifdef __APPLE__
-#define TODO_INVESTIGATE_WHY_THIS_FAILED_WITH_IPV6_ON_MAC 1
-#define TODO_INVESTIGATE_WHY_THIS_FAILED_WITH_IPV6_ON_MAC 2
-#endif //__APPLE__
-
       if (SOCKET_ERROR == result)
       {
         int error = handleError(0, outNoThrowErrorResult);

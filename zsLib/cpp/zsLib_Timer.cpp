@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/Timer.h>
@@ -33,14 +42,13 @@ namespace zsLib
   namespace internal
   {
     //-------------------------------------------------------------------------
-    bool Timer::tick(const Time &time, Duration &sleepTime)
+    bool Timer::tick(const Time &time, Microseconds &sleepTime)
     {
       AutoRecursiveLock lock(mLock);
       bool fired = false;
       UINT totalFires = 0;
 
-      boost::posix_time::time_iterator iterator(mFireNextAt, mTimeout);
-      while (iterator < time)
+      while (mFireNextAt < time)
       {
         fired = true;
         try {
@@ -49,7 +57,8 @@ namespace zsLib
           mOnceOnly = true;   // this has to stop firing now that the proxy to the delegate points to something that is now gone
           break;
         }
-        ++iterator;
+
+        mFireNextAt += mTimeout;
         ++totalFires;
 
         if (mOnceOnly)  // do not allow the timer to fire more than once
@@ -65,11 +74,10 @@ namespace zsLib
           mFireNextAt = time + mTimeout;  // the next timeout resets to the clock plus the timeout
           break;
         }
-        mFireNextAt = *iterator;
       }
 
       if (!mOnceOnly) {
-        Duration diff = mFireNextAt - time;
+		  Microseconds diff = std::chrono::duration_cast<Microseconds>(mFireNextAt - time);
         if (diff < sleepTime)
           sleepTime = diff;
       }
@@ -88,8 +96,9 @@ namespace zsLib
 
   //---------------------------------------------------------------------------
   Timer::Timer(
+               const make_private &,
                ITimerDelegatePtr delegate,
-               Duration timeout,
+               Microseconds timeout,
                bool repeat,
                UINT maxFiringsAtOnce
                )
@@ -103,7 +112,7 @@ namespace zsLib
     mTimeout = timeout;
     mID = createPUID();
     mMonitored = false;
-    mFireNextAt = (boost::posix_time::microsec_clock::universal_time() + timeout);
+    mFireNextAt = (std::chrono::system_clock::now() + timeout);
   }
 
   //---------------------------------------------------------------------------
@@ -122,12 +131,12 @@ namespace zsLib
   //---------------------------------------------------------------------------
   TimerPtr Timer::create(
                          ITimerDelegatePtr delegate,
-                         Duration timeout,
+                         Microseconds timeout,
                          bool repeat,
                          UINT maxFiringTimerAtOnce
                          )
   {
-    TimerPtr timer = TimerPtr(new Timer(delegate, timeout, repeat, maxFiringTimerAtOnce));
+    TimerPtr timer(make_shared<Timer>(make_private {}, delegate, timeout, repeat, maxFiringTimerAtOnce));
     timer->mThisWeak = timer;
 
     internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
@@ -136,6 +145,20 @@ namespace zsLib
     }
     timer->mMonitored = true;
     return timer;
+  }
+
+  //---------------------------------------------------------------------------
+  TimerPtr Timer::create(
+                         ITimerDelegatePtr delegate,
+                         Time timeout
+                         )
+  {
+    Time now = zsLib::now();
+    if (now > timeout) {
+      return create(delegate, Microseconds(0), false, 1);
+    }
+	Microseconds waitTime = std::chrono::duration_cast<Microseconds>(timeout - now);
+    return create(delegate, waitTime, false, 1);
   }
 
   //---------------------------------------------------------------------------

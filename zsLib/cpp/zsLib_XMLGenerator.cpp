@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/XML.h>
@@ -27,6 +36,10 @@
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 #define ZS_INTERNAL_STACK_BUFFER_PADDING_SPACE 1024
+
+#ifndef _WIN32
+#define strcpy_s(x, y, z) strcpy(x, z)
+#endif //ndef _WIN32
 
 namespace zsLib
 {
@@ -152,6 +165,25 @@ namespace zsLib
       {
         return Log::Params(message, "Generator");
       }
+
+      //-------------------------------------------------------------------------
+      static bool objectObjectCheck(const NodePtr &onlyThisNode)
+      {
+        if (onlyThisNode->isDocument()) {
+          ElementPtr el = onlyThisNode->toDocument()->getFirstChildElement();
+          if (el) {
+            if (el->getValue().isEmpty()) {
+              return false;
+            }
+          }
+        }
+        if (onlyThisNode->isElement()) {
+          if (onlyThisNode->toElement()->getValue().isEmpty()) {
+            return false;
+          }
+        }
+        return true;
+      }
       
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
@@ -163,6 +195,7 @@ namespace zsLib
 
       //-----------------------------------------------------------------------
       Generator::Generator(UINT writeFlags) :
+        mCaseSensitive(true),
         mDepth(0),
         mWriteFlags(writeFlags),
         mJSONForcedText(ZS_JSON_DEFAULT_FORCED_TEXT),
@@ -273,7 +306,7 @@ namespace zsLib
           return;
 
         size_t length = strlen(inString);
-        strcpy(ioPos, inString);
+        strcpy_s(ioPos, length+1, inString);
         ioPos += length;
       }
 
@@ -301,7 +334,7 @@ namespace zsLib
         size_t length = strlen(inString);
         if (NULL == ioPos) return length;
 
-        strcpy(ioPos, inString);
+        strcpy_s(ioPos, length+1, inString);
         ioPos += length;
         return length;
       }
@@ -367,12 +400,7 @@ namespace zsLib
               nextName = nextSibling->getValue();
             }
 
-            bool caseSensitive = true;
-
-            NodePtr root = el->getRoot();
-            if (root->isDocument()) {
-              caseSensitive = root->toDocument()->isElementNameIsCaseSensative();
-            }
+            bool caseSensitive = mCaseSensitive;
 
             if (caseSensitive) {
               beforeMatch = (prevSibling) && (currentName == prevName);
@@ -463,7 +491,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     GeneratorPtr Generator::createXMLGenerator(XMLWriteFlags writeFlags)
     {
-      GeneratorPtr pThis(new Generator(writeFlags));
+      GeneratorPtr pThis(make_shared<Generator>(make_private{}, writeFlags));
       pThis->mThis = pThis;
       pThis->mGeneratorMode = GeneratorMode_XML;
       return pThis;
@@ -485,7 +513,7 @@ namespace zsLib
                                                 char attributePrefix
                                                 )
     {
-      GeneratorPtr pThis(new Generator(writeFlags));
+      GeneratorPtr pThis(make_shared<Generator>(make_private{}, writeFlags));
       pThis->mThis = pThis;
       pThis->mGeneratorMode = GeneratorMode_JSON;
       pThis->mJSONForcedText = (forcedText ? forcedText : "");
@@ -494,33 +522,23 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    Generator::Generator(UINT writeFlags) :
+    Generator::Generator(
+                         const make_private &,
+                         UINT writeFlags
+                         ) :
       internal::Generator(writeFlags)
     {
-    }
-
-    static bool objectObjectCheck(const NodePtr &onlyThisNode)
-    {
-      if (onlyThisNode->isDocument()) {
-        ElementPtr el = onlyThisNode->toDocument()->getFirstChildElement();
-        if (el) {
-          if (el->getValue().isEmpty()) {
-            return false;
-          }
-        }
-      }
-      if (onlyThisNode->isElement()) {
-        if (onlyThisNode->toElement()->getValue().isEmpty()) {
-          return false;
-        }
-      }
-      return true;
     }
 
     //-------------------------------------------------------------------------
     size_t Generator::getOutputSize(const NodePtr &onlyThisNode) const
     {
       mGeneratorRoot = onlyThisNode;
+
+      NodePtr root = onlyThisNode->getRoot();
+      if (root->isDocument()) {
+        mCaseSensitive = root->toDocument()->isElementNameIsCaseSensative();
+      }
 
       char *ioPos = NULL;
       size_t result = 0;
@@ -551,13 +569,18 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    boost::shared_array<char> Generator::write(const NodePtr &onlyThisNode, size_t *outLength) const
+    std::unique_ptr<char[]> Generator::write(const NodePtr &onlyThisNode, size_t *outLength) const
     {
       size_t totalSize = getOutputSize(onlyThisNode);
 
       mGeneratorRoot = onlyThisNode;
 
-      boost::shared_array<char> buffer(new char[totalSize+1]);
+      NodePtr root = onlyThisNode->getRoot();
+      if (root->isDocument()) {
+        mCaseSensitive = root->toDocument()->isElementNameIsCaseSensative();
+      }
+
+      std::unique_ptr<char[]> buffer(new char[totalSize+1]);
       char *ioPos = buffer.get();
       *ioPos = 0;
 

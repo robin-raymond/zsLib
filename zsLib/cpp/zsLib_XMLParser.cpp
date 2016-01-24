@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #include <zsLib/XML.h>
@@ -652,7 +661,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       String Parser::compressWhiteSpace(const String &inString)
       {
-        boost::shared_array<char> temp(new char[inString.getLength()+1]);
+        std::unique_ptr<char[]> temp(new char[inString.getLength()+1]);
 
         bool lastWasWhiteSpace = false;
 
@@ -917,7 +926,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     ParserPtr Parser::createXMLParser()
     {
-      ParserPtr pThis(new Parser);
+      ParserPtr pThis(make_shared<Parser>(make_private {}));
       pThis->mThis = pThis;
       pThis->mParserMode = ParserMode_XML;
       return pThis;
@@ -929,7 +938,7 @@ namespace zsLib
                                        char attributePrefix
                                        )
     {
-      ParserPtr pThis(new Parser);
+      ParserPtr pThis(make_shared<Parser>(make_private{}));
       pThis->mThis = pThis;
       pThis->mParserMode = ParserMode_JSON;
       pThis->mJSONForcedText = (forcedText ? forcedText : "");
@@ -942,7 +951,7 @@ namespace zsLib
                                              char jsonAttributePrefix
                                              )
     {
-      ParserPtr pThis(new Parser);
+      ParserPtr pThis(make_shared<Parser>(make_private{}));
       pThis->mThis = pThis;
       pThis->mParserMode = ParserMode_AutoDetect;
       pThis->mJSONForcedText = (jsonForcedText ? jsonForcedText : "");
@@ -951,7 +960,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    Parser::Parser() :
+    Parser::Parser(const make_private &) :
       internal::Parser()
     {
     }
@@ -1368,7 +1377,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::convertFromEntities(const String &inString)
     {
-      boost::shared_array<char> result(new char[inString.getLength()*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE+1]);
+      std::unique_ptr<char[]> result(new char[inString.getLength()*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE+1]);
       memset(result.get(), 0, sizeof(char)*(inString.getLength()*ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE+1));
 
       char *dest = result.get();
@@ -1482,7 +1491,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::makeTextEntitySafe(const String &inString, bool entityEncode0xD)
     {
-      boost::shared_array<char>buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
+      std::unique_ptr<char[]>buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
 
       const char *source = inString;
       char *dest = buffer.get();
@@ -1563,7 +1572,7 @@ namespace zsLib
         }
       }
 
-      boost::shared_array<char> buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
+      std::unique_ptr<char[]> buffer(new char[(inString.getLength()*strlen(ZS_INTERNAL_LONGEST_MANDITORY_ENTITY))+1]);
 
       const char *source = inString;
       char *dest = buffer.get();
@@ -1651,7 +1660,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::convertFromJSONEncoding(const String &inString)
     {
-      boost::shared_array<char> temp(new char[inString.getLength()+1]);
+      std::unique_ptr<char[]> temp(new char[inString.getLength()+1]);
 
       const char *source = inString.c_str();
       char *dest = temp.get();
@@ -1722,7 +1731,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     String Parser::convertToJSONEncoding(const String &inString)
     {
-      boost::shared_array<char> temp(new char[(inString.getLength()*2)+1]);
+      std::unique_ptr<char[]> temp(new char[(inString.getLength()*2)+1]);
 
       const char *source = inString.c_str();
       char *dest = temp.get();

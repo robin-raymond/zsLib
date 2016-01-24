@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #pragma once
@@ -29,9 +38,6 @@
 
 #include <zsLib/types.h>
 #include <zsLib/String.h>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/utility.hpp>
 
 #define ZS_INTERNAL_XML_DEFAULT_TAB_SIZE 2
 
@@ -61,9 +67,11 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Node : public boost::noncopyable
+      class Node : public noncopyable
       {
       protected:
+        struct make_private {};
+
         friend class XML::Document;
         friend class XML::Element;
         friend class XML::Attribute;
@@ -103,7 +111,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Document : public boost::noncopyable
+      class Document : public noncopyable
       {
       public:
         Document(
@@ -135,7 +143,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Element : public boost::noncopyable
+      class Element : public noncopyable
       {
       protected:
         friend class XML::Attribute;
@@ -184,7 +192,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Attribute : public boost::noncopyable
+      class Attribute : public noncopyable
       {
       public:
         bool parse(XML::ParserPos &ioPos);
@@ -218,7 +226,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Text : public boost::noncopyable
+      class Text : public noncopyable
       {
       public:
         void parse(XML::ParserPos &ioPos);
@@ -251,7 +259,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Comment : public boost::noncopyable
+      class Comment : public noncopyable
       {
       public:
         void parse(XML::ParserPos &ioPos);
@@ -274,7 +282,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Declaration : public boost::noncopyable
+      class Declaration : public noncopyable
       {
       protected:
         friend class XML::Attribute;
@@ -301,7 +309,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Unknown : public boost::noncopyable
+      class Unknown : public noncopyable
       {
       public:
         void parse(XML::ParserPos &ioPos, const char *start = NULL, const char *ending = NULL);
@@ -341,6 +349,9 @@ namespace zsLib
       //-----------------------------------------------------------------------
       class Parser
       {
+      protected:
+        struct make_private {};
+
       public:
         friend class XML::Node;
         friend class XML::Document;
@@ -505,8 +516,11 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Generator : public boost::noncopyable
+      class Generator : public noncopyable
       {
+      protected:
+        struct make_private {};
+
       public:
         friend class XML::Node;
         friend class XML::Document;
@@ -599,6 +613,7 @@ namespace zsLib
 
         mutable NodePtr mGeneratorRoot;
 
+        mutable bool mCaseSensitive;
         mutable ULONG mDepth;
         JSONStrs &mStrs;
       };

@@ -1,23 +1,32 @@
 /*
- *  Created by Robin Raymond.
- *  Copyright 2009-2013. Robin Raymond. All rights reserved.
- *
- * This file is part of zsLib.
- *
- * zsLib is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License (LGPL) as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * zsLib is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
- * more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with zsLib; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
- *
+
+ Copyright (c) 2014, Robin Raymond
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies,
+ either expressed or implied, of the FreeBSD Project.
+ 
  */
 
 #pragma once
@@ -44,6 +53,7 @@
 
 #define ZS_LOG_PARAMS(xMsg)                                             ZS_INTERNAL_LOG_PARAMS(xMsg)
 #define ZS_PARAM(xName, xValue)                                         ZS_INTERNAL_PARAM(xName, xValue)
+#define ZS_PARAMIZE(xValueName)                                         ZS_INTERNAL_PARAMIZE(xValueName)
 
 #define ZS_GET_LOG_LEVEL()                                              ZS_INTERNAL_GET_LOG_LEVEL()
 #define ZS_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                          ZS_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
@@ -57,6 +67,12 @@
 #define ZS_LOG_DEBUG(xMsg)                                              ZS_INTERNAL_LOG_DEBUG(xMsg)
 #define ZS_LOG_TRACE(xMsg)                                              ZS_INTERNAL_LOG_TRACE(xMsg)
 #define ZS_LOG_INSANE(xMsg)                                             ZS_INTERNAL_LOG_INSANE(xMsg)
+
+#define ZS_LOG_BASIC_WITH_SEVERITY(xSeverity, xMsg)                     ZS_INTERNAL_LOG_BASIC_WITH_SEVERITY(xSeverity, xMsg)
+#define ZS_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)                    ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverity, xMsg)
+#define ZS_LOG_DEBUG_WITH_SEVERITY(xSeverity, xMsg)                     ZS_INTERNAL_LOG_DEBUG_WITH_SEVERITY(xSeverity, xMsg)
+#define ZS_LOG_TRACE_WITH_SEVERITY(xSeverity, xMsg)                     ZS_INTERNAL_LOG_TRACE_WITH_SEVERITY(xSeverity, xMsg)
+#define ZS_LOG_INSANE_WITH_SEVERITY(xSeverity, xMsg)                    ZS_INTERNAL_LOG_INSANE_WITH_SEVERITY(xSeverity, xMsg)
 
 #define ZS_LOG_SUBSYSTEM_BASIC(xSubsystem, xMsg)                        ZS_INTERNAL_LOG_SUBSYSTEM_BASIC(xSubsystem, xMsg)
 #define ZS_LOG_SUBSYSTEM_DETAIL(xSubsystem, xMsg)                       ZS_INTERNAL_LOG_SUBSYSTEM_DETAIL(xSubsystem, xMsg)
@@ -109,6 +125,7 @@ namespace zsLib
     };
 
     static const char *toString(Severity severity);
+    static Severity toSeverity(const char *severityStr);
 
     enum Level
     {
@@ -121,6 +138,7 @@ namespace zsLib
     };
 
     static const char *toString(Level level);
+    static Level toLevel(const char *levelStr);
 
     //-------------------------------------------------------------------------
     #pragma mark
@@ -148,7 +166,12 @@ namespace zsLib
       Param(const char *name, FLOAT value);
       Param(const char *name, DOUBLE value);
       Param(const char *name, const Time &value);
-      Param(const char *name, const Duration &value);
+      Param(const char *name, const Hours &value);
+      Param(const char *name, const Minutes &value);
+      Param(const char *name, const Seconds &value);
+      Param(const char *name, const Milliseconds &value);
+      Param(const char *name, const Microseconds &value);
+      Param(const char *name, const Nanoseconds &value);
 
       const XML::ElementPtr &param() const;
 
@@ -221,8 +244,10 @@ namespace zsLib
                     ULONG lineNumber
                     );
 
+  public:
+    Log(const make_private &);
+
   protected:
-    Log();
 
     static LogPtr singleton();
     static LogPtr create();
@@ -265,7 +290,7 @@ namespace zsLib
   class Subsystem
   {
   public:
-    typedef DWORD LevelType;
+    typedef Log::Level LevelType;
 
   public:
     Subsystem(CSTR inName, Log::Level inLevel = Log::Basic);
@@ -279,7 +304,7 @@ namespace zsLib
 
   private:
     CSTR mSubsystem;
-    mutable LevelType mLevel;
+    mutable std::atomic<LevelType> mLevel;
   };
 
 } // namespace zsLib
