@@ -31,6 +31,7 @@
 
 #include <zsLib/MessageQueueThread.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadBasic.h>
+#include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingBlackberryChannels.h>
