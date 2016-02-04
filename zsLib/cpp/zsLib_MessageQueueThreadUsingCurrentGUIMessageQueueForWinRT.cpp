@@ -67,7 +67,7 @@ namespace zsLib
       //      if (nullptr != Windows::ApplicationModel::Core::CoreApplication::MainView) {
 //        dispatcher = Windows::ApplicationModel::Core::CoreApplication::MainView->Dispatcher;
 //      }
-      if (nullptr != dispatcher) {
+      if (nullptr == dispatcher) {
         static SingletonLazySharedPtr<MessageQueueThreadBasic> singleton(MessageQueueThreadBasic::create("zsLib.winrt.backgroundDispatcher"));
         return singleton.singleton();
       }
