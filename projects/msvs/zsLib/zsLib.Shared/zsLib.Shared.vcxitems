@@ -61,6 +61,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_TearAway.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_TimerMonitor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Tracing.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_XML.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\IPAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Log.h" />

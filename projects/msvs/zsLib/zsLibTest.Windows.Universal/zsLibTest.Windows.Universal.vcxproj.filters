@@ -10,14 +10,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.xaml.cpp" />
-    <ClCompile Include="MainPage.xaml.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="App.xaml.h" />
-    <ClInclude Include="MainPage.xaml.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>

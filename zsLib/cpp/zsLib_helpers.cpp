@@ -170,7 +170,7 @@ namespace zsLib
   void setup(Windows::UI::Core::CoreDispatcher ^dispatcher)
   {
     setup();
-    MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(dispatcher);
+    internal::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(dispatcher);
   }
 #endif //WINRT
 
