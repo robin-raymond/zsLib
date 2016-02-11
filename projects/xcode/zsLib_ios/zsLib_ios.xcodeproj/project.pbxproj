@@ -63,6 +63,7 @@
 		000CBF8117A40C690075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
 		0020ED5A1AB86DDE00B66C74 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		00265E571B3F29BA00D9B45F /* SafeInt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SafeInt.h; sourceTree = "<group>"; };
+		0049A6541C6C3FB500A7AACB /* zsLib_Tracing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_Tracing.h; sourceTree = "<group>"; };
 		004B60A91B29066800568C22 /* MessageQueueThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageQueueThreadPool.h; sourceTree = "<group>"; };
 		004B60AD1B2906E800568C22 /* zsLib_MessageQueueThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadPool.h; sourceTree = "<group>"; };
 		004B60AE1B2906F800568C22 /* zsLib_MessageQueueThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadPool.cpp; sourceTree = "<group>"; };
@@ -258,6 +259,7 @@
 		006681B716C9D65E00259F81 /* internal */ = {
 			isa = PBXGroup;
 			children = (
+				0049A6541C6C3FB500A7AACB /* zsLib_Tracing.h */,
 				006681B916C9D65E00259F81 /* types.h */,
 				0020ED5A1AB86DDE00B66C74 /* platform.h */,
 				006681BA16C9D65E00259F81 /* zsLib_Event.h */,

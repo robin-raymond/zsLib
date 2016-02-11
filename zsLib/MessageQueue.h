@@ -80,6 +80,7 @@ namespace zsLib
                  const make_private &,
                  IMessageQueueNotifyPtr notify
                  );
+    ~MessageQueue();
 
   public:
     static MessageQueuePtr create(IMessageQueueNotifyPtr notify);

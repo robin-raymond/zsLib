@@ -66,8 +66,9 @@ namespace zsLib
 
     public:
       ~MessageQueueThreadUsingCurrentGUIMessageQueueForWindows();
-      
+
       static MessageQueueThreadPtr singleton();
+      static CoreDispatcher ^setupDispatcher(CoreDispatcher ^dispatcher = nullptr);
 
       // IMessageQueue
       virtual void post(IMessageQueueMessageUniPtr message);

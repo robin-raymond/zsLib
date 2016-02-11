@@ -41,6 +41,8 @@
 #include <windows.h>
 #endif //HAVE_WINDOWS_H
 
+#include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h>
+
 #ifdef _WIN32
 namespace std {
 	inline time_t mktime(struct tm *timeptr) { return ::mktime(timeptr); }
@@ -163,6 +165,14 @@ namespace zsLib
   {
     internal::initSubsystems();
   }
+
+#ifdef WINRT
+  void setup(Windows::UI::Core::CoreDispatcher ^dispatcher)
+  {
+    setup();
+    MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(dispatcher);
+  }
+#endif //WINRT
 
   //---------------------------------------------------------------------------
   void debugSetCurrentThreadName(const char *name)

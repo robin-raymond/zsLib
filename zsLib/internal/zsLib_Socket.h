@@ -145,9 +145,9 @@ namespace zsLib
 
       SocketMonitorPtr mMonitor;
 
-      bool mMonitorReadReady;
-      bool mMonitorWriteReady;
-      bool mMonitorException;
+      std::atomic<bool> mMonitorReadReady {};
+      std::atomic<bool> mMonitorWriteReady {};
+      std::atomic<bool> mMonitorException {};
     };
   }
 }

@@ -32,6 +32,8 @@
 #include <zsLib/MessageQueue.h>
 #include <zsLib/Log.h>
 
+#include <zsLib/internal/zsLib_Tracing.h>
+
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
@@ -42,6 +44,13 @@ namespace zsLib
                              IMessageQueueNotifyPtr notify
                              ) : internal::MessageQueue(notify)
   {
+    EventWriteZsMessageQueueCreate(__func__, this);
+  }
+
+  //---------------------------------------------------------------------------
+  MessageQueue::~MessageQueue()
+  {
+    EventWriteZsMessageQueueDestroy(__func__, this);
   }
 
   //---------------------------------------------------------------------------
@@ -53,6 +62,8 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void MessageQueue::post(IMessageQueueMessageUniPtr message)
   {
+    EventWriteZsMessageQueuePost(__func__, this);
+
     {
       AutoLock lock(mLock);
       mMessages.push(std::move(message));
@@ -75,6 +86,8 @@ namespace zsLib
         mMessages.pop();
       }
 
+      EventWriteZsMessageQueueProcess(__func__, this);
+
       // process the next message
       message->processMessage();
     } while (true);
@@ -93,6 +106,8 @@ namespace zsLib
       mMessages.pop();
     }
 
+    EventWriteZsMessageQueueProcess(__func__, this);
+
     // process the next message
     message->processMessage();
   }
@@ -101,6 +116,7 @@ namespace zsLib
   IMessageQueue::size_type MessageQueue::getTotalUnprocessedMessages() const
   {
     AutoLock lock(mLock);
+    EventWriteZsMessageQueueTotalUnprocessedMessages(__func__, this, mMessages.size());
     return static_cast<size_type>(mMessages.size());
   }
 
