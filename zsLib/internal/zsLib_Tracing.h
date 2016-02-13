@@ -46,6 +46,8 @@
 // NO-OP VERSIONS OF ALL TRACING MACROS
 #ifdef ZSLIB_INTERNAL_USE_NOOP_EVENT_TRACE_MACROS
 
+#define EventWriteZsExceptionEventFired(xStr_Method, xStr_Subsystem, xStr_Message, xStr_Function, xStr_FilePath, xULONG_LineNumber, xStr_Expression) {}
+
 #define EventWriteZsMessageQueueCreate(xStr_Method, xPtr_this)
 #define EventWriteZsMessageQueueDestroy(xStr_Method, xPtr_this)
 #define EventWriteZsMessageQueuePost(xStr_Method, xPtr_this)
@@ -84,6 +86,8 @@
 
 // duplicate testing compilation methods used to verify compilation when macros get defined
 namespace zsLib {
+
+inline void EventWriteZsExceptionEventFired(const char *xStr_Method, const char *xStr_Subsystem, const char *xStr_Message, const char *xStr_Function, const char *xStr_FilePath, ULONG xULONG_LineNumber, const char *xStr_Expression) {}
 
 inline void EventWriteZsMessageQueueCreate(const char *xStr_Method, void *xPtr_this) {}
 inline void EventWriteZsMessageQueueDestroy(const char *xStr_Method, void *xPtr_this) {}
