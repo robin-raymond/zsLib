@@ -116,32 +116,6 @@ namespace zsLib
       return global;
     }
 
-    class EpochHelper
-    {
-    public:
-      EpochHelper()
-      {
-        std::tm tmepoch {};
-
-        tmepoch.tm_year = 70;
-        tmepoch.tm_mon = 0;
-        tmepoch.tm_mday = 1;
-
-        time_t tepoch = std::mktime(&tmepoch);
-
-        mEpoch = std::chrono::system_clock::from_time_t(tepoch);
-      }
-
-      static Time &epoch()
-      {
-        static EpochHelper singleton;
-        return singleton.mEpoch;
-      }
-
-    private:
-      Time mEpoch;
-    };
-
     void initSubsystems();
   }
 
@@ -200,11 +174,5 @@ namespace zsLib
   Time now()
   {
     return std::chrono::system_clock::now();
-  }
-
-  //---------------------------------------------------------------------------
-  Time epoch()
-  {
-    return internal::EpochHelper::epoch();
   }
 }

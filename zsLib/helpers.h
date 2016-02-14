@@ -64,21 +64,18 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Time now();
 
-  Time epoch();
-
   template <typename duration_type>
   inline duration_type timeSinceEpoch(Time time)
   {
     if (Time() == time) return duration_type();
-
-    return std::chrono::duration_cast<duration_type>(time - zsLib::epoch());
+    return std::chrono::duration_cast<duration_type>(time.time_since_epoch());
   }
 
   template <typename duration_type>
   inline Time timeSinceEpoch(duration_type duration)
   {
     if (decltype(duration)() == duration) return Time();
-    return zsLib::epoch() + duration;
+    return Time(duration);
   }
 
   inline Hours toHours(const Hours &v) {return v;}
