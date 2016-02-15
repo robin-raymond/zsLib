@@ -12,20 +12,24 @@
           name="zsLib"
           message="$(string.zsLib.ProviderMessage)"
           symbol="ZSLIB_PROVIDER_GUID"
-          messageFileName="zsLib_ETWProviders.dll"
-          resourceFileName="zsLib_ETWProviders.dll" >
+          messageFileName="zsLib_ETWTracing.dll"
+          resourceFileName="zsLib_ETWTracing.dll" >
         <channels>
-          <importChannel chid="ec"
-                 name="ExceptionChannel"
+          <channel chid="ec"
+                 name="zsLib-ExceptionChannel"
+                 type="Analytic"
                  symbol="CHANNEL_EXCEPTION" />
-          <importChannel chid="mqc"
-                 name="MessageQueueChannel"
+          <channel chid="mqc"
+                 name="zsLib-MessageQueueChannel"
+                 type="Analytic"
                  symbol="CHANNEL_MESSAGE_QUEUE" />
-          <importChannel chid="sc"
-                 name="SocketChannel"
+          <channel chid="sc"
+                 name="zsLib-SocketChannel"
+                 type="Analytic"
                  symbol="CHANNEL_SOCKET" />
-          <importChannel chid="tc"
-                 name="TimerChannel"
+          <channel chid="tc"
+                 name="zsLib-TimerChannel"
+                 type="Analytic"
                  symbol="CHANNEL_TIMER" />
         </channels>
         <templates>
