@@ -59,7 +59,7 @@
 #define EventWriteZsSocketCreate(xStr_Method, xPtr_this, xSocket, xUInt_Family, xUInt_Type, xUInt_Protocol)
 #define EventWriteZsSocketOrphan(xStr_Method, xSocket)
 #define EventWriteZsSocketAdopt(xStr_Method, xSocket)
-#define EventWriteZsSocketNotifyEventFired(xStr_Method, xPtr_this)
+#define EventWriteZsSocketNotifyEventFired(xStr_Method, xPtr_this, xStr_EventType)
 #define EventWriteZsSocketNotifyEventReset(xStr_Method, xPtr_this, xSocket)
 #define EventWriteZsSocketClose(xStr_Method, xSocket, xInt_Result)
 #define EventWriteZsSocketGetLocalAddress(xStr_Method, xSocket, xInt_Result, xPtr_Address, xsocklen_t_AddressSize)
@@ -75,7 +75,7 @@
 #define EventWriteZsSocketShutdown(xStr_Method, xSocket, xInt_Result, xUInt_Options)
 #define EventWriteZsSocketSetOption(xStr_Method, xSocket, xInt_Result, xInt_Level, xInt_OptionName, xPtr_OptionValue, xsocklen_t_OptionLengthInBytes)
 #define EventWriteZsSocketGetOption(xStr_Method, xSocket, xInt_Result, xInt_Level, xInt_OptionName, xPtr_OptionValue, xsocklen_t_OptionLengthInBytes)
-#define EventWriteZsSocketSetOptionFlag(xStr_Method, xSocket, xInt_Result, xULONG_Option, xBool_Enabled)
+#define EventWriteZsSocketSetOptionFlag(xStr_Method, xSocket, xInt_Result, xUInt_Option, xBool_Enabled)
 #define EventWriteZsSocketGetOptionFlag(xStr_Method, xSocket, xInt_Result, xUInt_Option, xBool_Enabled)
 
 #define EventWriteZsTimerCreate(xStr_Method, xPtr_this, xPUID, xBool_Repeat, xLONGLONG_TimeoutMicroseconds);
@@ -100,7 +100,7 @@ inline void EventWriteZsSocketWouldBlock(const char *xStr_Method, PTRNUMBER xSoc
 inline void EventWriteZsSocketCreate(const char *xStr_Method, void *pThis, PTRNUMBER xSocket, unsigned xUInt_Family, unsigned xUInt_Type, unsigned xUInt_Protocol) {}
 inline void EventWriteZsSocketOrphan(const char *xStr_Method, PTRNUMBER xSocket) {}
 inline void EventWriteZsSocketAdopt(const char *xStr_Method, PTRNUMBER xSocket) {}
-inline void EventWriteZsSocketNotifyEventFired(const char *xStr_Method, void *pThis) {}
+inline void EventWriteZsSocketNotifyEventFired(const char *xStr_Method, void *pThis, const char *xStr_EventType) {}
 inline void EventWriteZsSocketNotifyEventReset(const char *xStr_Method, const void *pThis, PTRNUMBER xSocket) {}
 inline void EventWriteZsSocketClose(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result) {}
 inline void EventWriteZsSocketGetLocalAddress(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
@@ -116,8 +116,8 @@ inline void EventWriteZsSocketSendTo(const char *xStr_Method, PTRNUMBER xSocket,
 inline void EventWriteZsSocketShutdown(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned xUInt_Options) {}
 inline void EventWriteZsSocketSetOption(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, int xInt_Level, int xInt_OptionName, void *xPtr_OptionValue, size_t xsocklen_t_OptionLengthInBytes) {}
 inline void EventWriteZsSocketGetOption(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, int xInt_Level, int xInt_OptionName, void *xPtr_OptionValue, size_t xsocklen_t_OptionLengthInBytes) {}
-inline void EventWriteZsSocketSetOptionFlag(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned long xUInt_Option, bool xBool_Enabled) {}
-inline void EventWriteZsSocketGetOptionFlag(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned xUInt_Option, bool xBool_Enabled) {}
+inline void EventWriteZsSocketSetOptionFlag(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned int xUInt_Option, bool xBool_Enabled) {}
+inline void EventWriteZsSocketGetOptionFlag(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned int xUInt_Option, bool xBool_Enabled) {}
 
 inline void EventWriteZsTimerCreate(const char *xStr_Method, void *xPtr_this, PUID xPUID, bool xBool_Repeat, long long xLONGLONG_TimeoutMicroseconds) {}
 inline void EventWriteZsTimerDestroy(const char *xStr_Method, void *xPtr_this, PUID xPUID) {}

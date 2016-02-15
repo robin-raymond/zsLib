@@ -129,6 +129,7 @@
 		00D667651AB51105001D8E34 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp; sourceTree = "<group>"; };
 		00D667661AB51105001D8E34 /* zsLib_Singleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Singleton.cpp; sourceTree = "<group>"; };
 		00D667691AB5111D001D8E34 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
+		00E3EDAB1C722C250059D006 /* zsLib_ETWTracing.man */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib_ETWTracing.man; sourceTree = "<group>"; };
 		00EB8E86177D32C800FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
 		00EB8E8A177D32EE00FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		00EC6C8F1A8E383C004BDA4E /* Promise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Promise.h; sourceTree = "<group>"; };
@@ -274,6 +275,7 @@
 				006680EC16C9CE8700259F81 /* zsLib_Timer.h */,
 				006680ED16C9CE8700259F81 /* zsLib_TimerMonitor.h */,
 				0049A6531C6C0FFF00A7AACB /* zsLib_Tracing.h */,
+				00E3EDAB1C722C250059D006 /* zsLib_ETWTracing.man */,
 				006680EE16C9CE8700259F81 /* zsLib_XML.h */,
 			);
 			path = internal;

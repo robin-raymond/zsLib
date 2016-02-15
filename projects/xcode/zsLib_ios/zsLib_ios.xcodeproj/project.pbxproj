@@ -144,6 +144,7 @@
 		00D6676D1AB5CBF4001D8E34 /* zsLib_Singleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_Singleton.h; sourceTree = "<group>"; };
 		00D6676E1AB5CC0A001D8E34 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp; sourceTree = "<group>"; };
 		00D6676F1AB5CC0A001D8E34 /* zsLib_Singleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Singleton.cpp; sourceTree = "<group>"; };
+		00E3EDAC1C722C4E0059D006 /* zsLib_ETWTracing.man */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib_ETWTracing.man; sourceTree = "<group>"; };
 		00EB8E8F177D334900FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
 		00EB8E90177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		00EF0B11184A5A4F00101BEE /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
@@ -259,7 +260,6 @@
 		006681B716C9D65E00259F81 /* internal */ = {
 			isa = PBXGroup;
 			children = (
-				0049A6541C6C3FB500A7AACB /* zsLib_Tracing.h */,
 				006681B916C9D65E00259F81 /* types.h */,
 				0020ED5A1AB86DDE00B66C74 /* platform.h */,
 				006681BA16C9D65E00259F81 /* zsLib_Event.h */,
@@ -286,6 +286,8 @@
 				00FA3FB51A87EDA000C7C32B /* zsLib_TearAway.h */,
 				006681CA16C9D65E00259F81 /* zsLib_Timer.h */,
 				006681CB16C9D65E00259F81 /* zsLib_TimerMonitor.h */,
+				0049A6541C6C3FB500A7AACB /* zsLib_Tracing.h */,
+				00E3EDAC1C722C4E0059D006 /* zsLib_ETWTracing.man */,
 				006681CC16C9D65E00259F81 /* zsLib_XML.h */,
 			);
 			path = internal;

@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+  <instrumentation
+      xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <events xmlns="http://schemas.microsoft.com/win/2004/08/events">
+
+      <provider
+          guid="{6586be19-7cf9-44f1-996b-3751e3549ccd}"
+          name="zsLib"
+          message="$(string.zsLib.ProviderMessage)"
+          symbol="ZSLIB_PROVIDER_GUID"
+          messageFileName="zsLib_ETWProviders.dll"
+          resourceFileName="zsLib_ETWProviders.dll" >
+      <channels>
+          <exceptionChannel chid="ec"
+               name="ExceptionChannel"
+               symbol="CHANNEL_EXCEPTION" />
+          <messageQueueChannel chid="mqc"
+               name="MessageQueueChannel"
+               symbol="CHANNEL_MESSAGE_QUEUE" />
+          <socketChannel chid="sc"
+               name="SocketChannel"
+               symbol="CHANNEL_SOCKET" />
+          <timerChannel chid="tc"
+               name="TimerChannel"
+               symbol="CHANNEL_TIMER" />
+      </channels>
+      <templates>
+          <template tid="T_Exception">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:AnsiString" name="Subsystem" />
+            <data inType="win:AnsiString" name="Message" />
+            <data inType="win:AnsiString" name="Function" />
+            <data inType="win:AnsiString" name="FilePath" />
+            <data inType="win:UInt64"     name="LineNumber" />
+            <data inType="win:AnsiString" name="Expression" />
+          </template>
+          <template tid="T_BasicThis">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+          </template>
+          <template tid="T_BasicThisWithTotal">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+            <data inType="win:UInt64"     name="Total" />
+          </template>
+          </template>
+          <template tid="T_SocketBasic">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+          </template>
+          <template tid="T_SocketBasicEventFired">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+            <data inType="win:AnsiString" name="EventType" />
+          </template>
+          <template tid="T_SocketBasicWithThis">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+            <data inType="win:UInt64"     name="Socket" />
+          </template>
+          <template tid="T_SocketWithError">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Int64"      name="Error" />
+          </template>
+          <template tid="T_SocketWithWouldBlock">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Boolean     name="WouldBlock" />
+          </template>
+          <template tid="T_SocketWithResult">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Int64"      name="Result" />
+          </template>
+          <template tid="T_SocketWithCreateParams">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:UInt64"     name="Family" />
+            <data inType="win:UInt64"     name="Type" />
+            <data inType="win:UInt64"     name="Protocol" />
+          </template>
+          <template tid="T_SocketWithAddress">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Int64"      name="Result" />
+            <data inType="win:Binary"     name="Address" length="AddressSize" />
+            <data inType="win:UInt64"     name="AddressSize" />
+          </template>
+          <template tid="T_SocketAccept">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="AcceptedSocket" />
+            <data inType="win:UInt64"     name="ListeningSocket" />
+            <data inType="win:Binary"     name="Address" length="AddressSize" />
+            <data inType="win:UInt64"     name="AddressSize" />
+          </template>
+          <template tid="T_SocketRecvSend">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:UInt64"     name="Result" />
+            <data inType="win:UInt64"     name="Flags" />
+            <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
+            <data inType="win:UInt64"     name="BufferLengthInBytes" />
+          </template>
+          <template tid="T_SocketRecvFromSendTo">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:UInt64"     name="Result" />
+            <data inType="win:UInt64"     name="Flags" />
+            <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
+            <data inType="win:UInt64"     name="BufferLengthInBytes" />
+            <data inType="win:Binary"     name="Address" length="AddressSize" />
+            <data inType="win:UInt64"     name="AddressSize" />
+          </template>
+          <template tid="T_SocketShutdown">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:UInt64"     name="Options" />
+          </template>
+          <template tid="T_SocketOption">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Int64"      name="Result" />
+            <data inType="win:Int64"      name="Level" />
+            <data inType="win:Int64"      name="OptionName" />
+            <data inType="win:Binary"     name="OptionValue" length="OptionLengthInBytes" />
+            <data inType="win:UInt64"     name="OptionLengthInBytes" />
+          </template>
+          <template tid="T_SocketOptionFlag">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Int64"      name="Result" />
+            <data inType="win:UInt64"     name="Option" />
+            <data inType="win:Boolean"    name="Enabled" />
+          </template>
+          <template tid="T_TimerBasic">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+            <data inType="win:UInt64"     name="TimerID" />
+          </template>
+          <template tid="T_TimerCreateParams">
+            <data inType="win:AnsiString" name="Method" />
+            <data inType="win:Pointer"    name="This" />
+            <data inType="win:UInt64"     name="TimerID" />
+            <data inType="win:Boolean"    name="Repeat" />
+            <data inType="win:UInt64"     name="TimeoutMicroseconds" />
+          </template>
+        </templates>
+        <events>
+          <event symbol="ZsExceptionEventFired" channel="ec" template="T_Exception" value="1001" level="win:Error" />
+
+          <event symbol="ZsMessageQueueCreate" channel="mqc" template="T_BasicThis" value="1101" level="win:Informational" />
+          <event symbol="ZsMessageQueueDestroy" channel="mqc" template="T_BasicThis" value="1102" level="win:Informational" />
+          <event symbol="ZsMessageQueuePost" channel="mqc" template="T_BasicThis" value="1103" level="win:Verbose" />
+          <event symbol="ZsMessageQueueProcess" channel="mqc" template="T_BasicThis" value="1104" level="win:Verbose" />
+          <event symbol="ZsMessageQueueTotalUnprocessedMessages" channel="mqc" template="T_BasicThisWithTotal" value="1105" level="win:Verbose" />
+
+          <event symbol="ZsSocketError" channel="sc" template="T_SocketWithError" value="1201" level="win:Error" />
+          <event symbol="ZsSocketWouldBlock" channel="sc" template="T_SocketWithWouldBlock" value="1202" level="win:Verbose" />
+          <event symbol="ZsSocketCreate" channel="sc" template="T_SocketWithCreateParams" value="1203" level="win:Informational" />
+          <event symbol="ZsSocketOrphan" channel="sc" template="T_SocketBasic" value="1204" level="win:Informational" />
+          <event symbol="ZsSocketAdopt" channel="sc" template="T_SocketBasic" value="1205" level="win:Informational" />
+          <event symbol="ZsSocketNotifyEventFired" channel="sc" template="T_SocketBasicEventFired" value="1206" level="win:Verbose" />
+          <event symbol="ZsSocketNotifyEventReset" channel="sc" template="T_SocketBasicWithThis" value="1207" level="win:Verbose" />
+          <event symbol="ZsSocketClose" channel="sc" template="T_SocketWithResult" value="1208" level="win:Informational" />
+          <event symbol="ZsSocketGetLocalAddress" channel="sc" template="T_SocketWithAddress" value="1209" level="win:Informational" />
+          <event symbol="ZsSocketGetRemoteAddress" channel="sc" template="T_SocketWithAddress" value="1210" level="win:Informational" />
+          <event symbol="ZsSocketBind" channel="sc" template="T_SocketWithAddress" value="1211" level="win:Informational" />
+          <event symbol="ZsSocketListen" channel="sc" template="T_SocketWithResult" value="1212" level="win:Informational" />
+          <event symbol="ZsSocketAccept" channel="sc" template="T_SocketAccept" value="1213" level="win:Informational" />
+          <event symbol="ZsSocketConnect" channel="sc" template="T_SocketWithAddress" value="1214" level="win:Informational" />
+          <event symbol="ZsSocketRecv" channel="sc" template="T_SocketRecvSend" value="1215" level="win:Verbose" />
+          <event symbol="ZsSocketRecvFrom" channel="sc" template="T_SocketRecvFromSendTo" value="1216" level="win:Verbose" />
+          <event symbol="ZsSocketSend" channel="sc" template="T_SocketRecvSend" value="1217" level="win:Verbose" />
+          <event symbol="ZsSocketSendTo" channel="sc" template="T_SocketRecvFromSendTo" value="1218" level="win:Verbose" />
+          <event symbol="ZsSocketShutdown" channel="sc" template="T_SocketShutdown" value="1219" level="win:Informational" />
+          <event symbol="ZsSocketSetOption" channel="sc" template="T_SocketOption" value="1220" level="win:Informational" />
+          <event symbol="ZsSocketGetOption" channel="sc" template="T_SocketOption" value="1221" level="win:Informational" />
+          <event symbol="ZsSocketSetOptionFlag" channel="sc" template="T_SocketOptionFlag" value="1222" level="win:Informational" />
+          <event symbol="ZsSocketGetOptionFlag" channel="sc" template="T_SocketOptionFlag" value="1223" level="win:Informational" />
+
+          <event symbol="ZsTimerCreate" channel="tc" template="T_TimerCreateParams" value="1301" level="win:Verbose" />
+          <event symbol="ZsTimerDestroy" channel="tc" template="T_TimerBasic" value="1302" level="win:Verbose" />
+          <event symbol="ZsTimerEventFired" channel="tc" template="T_TimerBasic" value="1303" level="win:Verbose" />
+        </events>
+      </provider>
+
+    </events>
+  </instrumentation>
+  <localization>
+        <resources culture="en-US">
+            <stringTable>
+                <string id="level.Critical" value="Critical"/>
+                <string id="level.Error" value="Error"/>
+                <string id="level.Warning" value="Warning"/>
+                <string id="level.Informational" value="Informational"/>
+                <string id="level.Verbose" value="Verbose"/>
+
+                <string id="channel.ExceptionChannel" value="Exception Channel"/>
+                <string id="channel.MessageQueueChannel" value="Message Queue Channel"/>
+                <string id="channel.SocketChannel" value="Socket Channel"/>
+                <string id="channel.TimerChannel" value="Timer Channel"/>
+
+                <string id="zsLib.ProviderMessage"
+                        value="zsLib Provider"/>
+ 
+                <string id="zsLib.event.1101.message"
+                        value="Message queue created."/>
+                <string id="zsLib.event.1102.message"
+                        value="Message queue destroyed."/>
+                <string id="MyService.event.1103.message"
+                        value="Message posted too message queue."/>
+                <string id="MyService.event.1104.message"
+                        value="Message processed from message queue."/>
+                <string id="MyService.event.1105.message"
+                        value="Total of %3 messages remaining in message queue."/>
+            </stringTable>
+        </resources>
+    </localization>
+</instrumentationManifest>

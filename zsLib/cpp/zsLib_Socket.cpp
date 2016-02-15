@@ -201,7 +201,7 @@ namespace zsLib
       if (!delegate)
         return;
 
-      EventWriteZsSocketNotifyEventFired(__func__, this);
+      EventWriteZsSocketNotifyEventFired(__func__, this, "read ready");
 
       delegate->onReadReady(socket);
     }
@@ -219,7 +219,7 @@ namespace zsLib
       if (!delegate)
         return;
 
-      EventWriteZsSocketNotifyEventFired(__func__, this);
+      EventWriteZsSocketNotifyEventFired(__func__, this, "write ready");
 
       delegate->onWriteReady(socket);
     }
@@ -237,7 +237,7 @@ namespace zsLib
       if (!delegate)
         return;
 
-      EventWriteZsSocketNotifyEventFired(__func__, this);
+      EventWriteZsSocketNotifyEventFired(__func__, this, "exception");
 
       delegate->onException(socket);
     }
@@ -1263,7 +1263,7 @@ namespace zsLib
         }
       }
 #endif //WIN32
-      EventWriteZsSocketSetOptionFlag(__func__, mSocket, result, to_underlying(inOption), inEnabled);
+      EventWriteZsSocketSetOptionFlag(__func__, mSocket, result, static_cast<unsigned int>(to_underlying(inOption)), inEnabled);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
