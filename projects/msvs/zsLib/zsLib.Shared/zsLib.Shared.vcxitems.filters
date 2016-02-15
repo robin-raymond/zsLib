@@ -187,6 +187,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Tracing.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\win32\strptime.cpp">
@@ -344,5 +347,10 @@
     <Text Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\license.txt">
       <Filter>zsLib</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+      <Filter>zsLib\internal</Filter>
+    </None>
   </ItemGroup>
 </Project>

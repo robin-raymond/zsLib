@@ -111,7 +111,7 @@
             <data inType="win:UInt64"     name="Socket" />
             <data inType="win:UInt64"     name="Result" />
             <data inType="win:UInt64"     name="Flags" />
-            <data inType="win:UInt64"     name="BufferLengthInBytes" />
+            <data inType="win:UInt32"     name="BufferLengthInBytes" />
             <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
             <data inType="win:UInt32"     name="AddressSize" />
             <data inType="win:Binary"     name="Address" length="AddressSize" />

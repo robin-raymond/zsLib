@@ -37,6 +37,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\helpers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Exception.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_IPAddress.h" />
@@ -166,5 +167,13 @@
     <Text Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\license.txt">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild>false</ExcludedFromBuild>
+      <DeploymentContent>
+      </DeploymentContent>
+    </Xml>
   </ItemGroup>
 </Project>
