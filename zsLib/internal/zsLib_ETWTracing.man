@@ -47,7 +47,6 @@
             <data inType="win:Pointer"    name="This" />
             <data inType="win:UInt64"     name="Total" />
           </template>
-          </template>
           <template tid="T_SocketBasic">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="Socket" />
@@ -70,7 +69,7 @@
           <template tid="T_SocketWithWouldBlock">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="Socket" />
-            <data inType="win:Boolean     name="WouldBlock" />
+            <data inType="win:Boolean"    name="WouldBlock" />
           </template>
           <template tid="T_SocketWithResult">
             <data inType="win:AnsiString" name="Method" />
