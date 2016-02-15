@@ -145,8 +145,9 @@ rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)zsLib_ETWTracing.dll
-copy $(IntermediateOutputPath)zsLib_ETWTracing.man $(OutDir)zsLib_ETWTracing.man
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
 icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
@@ -165,7 +166,8 @@ echo.
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.man;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;%(Outputs)</Outputs>
+      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -190,8 +192,9 @@ rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)zsLib_ETWTracing.dll
-copy $(IntermediateOutputPath)zsLib_ETWTracing.man $(OutDir)zsLib_ETWTracing.man
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
 icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
@@ -210,7 +213,8 @@ echo.
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.man;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;%(Outputs)</Outputs>
+      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
@@ -235,8 +239,9 @@ rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)zsLib_ETWTracing.dll
-copy $(IntermediateOutputPath)zsLib_ETWTracing.man $(OutDir)zsLib_ETWTracing.man
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
 icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
@@ -255,7 +260,8 @@ echo.
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.man;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;%(Outputs)</Outputs>
+      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
@@ -280,8 +286,9 @@ rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)zsLib_ETWTracing.dll
-copy $(IntermediateOutputPath)zsLib_ETWTracing.man $(OutDir)zsLib_ETWTracing.man
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
 icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
@@ -300,7 +307,8 @@ echo.
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.man;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;%(Outputs)</Outputs>
+      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -325,8 +333,9 @@ rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)zsLib_ETWTracing.dll
-copy $(IntermediateOutputPath)zsLib_ETWTracing.man $(OutDir)zsLib_ETWTracing.man
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
 icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
@@ -345,7 +354,8 @@ echo.
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.man;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;%(Outputs)</Outputs>
+      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -370,8 +380,9 @@ rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)zsLib_ETWTracing.dll
-copy $(IntermediateOutputPath)zsLib_ETWTracing.man $(OutDir)zsLib_ETWTracing.man
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
+copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
 icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
@@ -390,7 +401,8 @@ echo.
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.man;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;%(Outputs)</Outputs>
+      <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
