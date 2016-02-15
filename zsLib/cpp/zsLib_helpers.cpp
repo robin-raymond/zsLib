@@ -31,6 +31,7 @@
 
 #include <zsLib/helpers.h>
 #include <zsLib/Log.h>
+#include <zsLib/internal/zsLib_Tracing.h>
 #include <zsLib/internal/platform.h>
 
 #ifdef HAVE_PTHREAD_H
@@ -106,24 +107,63 @@ namespace zsLib
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     #pragma mark
-    #pragma mark (helpers)
+    #pragma mark Setup
     #pragma mark
 
     //-------------------------------------------------------------------------
-    std::atomic_ulong &globalPUID()
-    {
-      static std::atomic_ulong global {};
-      return global;
-    }
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark (helpers)
+    #pragma mark
 
+    // forward declarations
     void initSubsystems();
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Setup
+    #pragma mark
+
+    class Setup
+    {
+    protected:
+      Setup()
+      {
+        EventRegisterzsLib();
+        initSubsystems();
+      }
+
+    public:
+      ~Setup()
+      {
+        EventUnregisterzsLib();
+      }
+
+      static Setup &singleton()
+      {
+        static Setup setup;
+        return setup;
+      }
+
+      PUID createPUID()
+      {
+        return ++mID;
+      }
+
+    protected:
+      std::atomic_ulong mID;
+    };
   }
 
   //---------------------------------------------------------------------------
   PUID createPUID()
   {
-    std::atomic_ulong &global = internal::globalPUID();
-    return ++global;
+    return internal::Setup::singleton().createPUID();
   }
 
   //---------------------------------------------------------------------------
@@ -137,7 +177,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void setup()
   {
-    internal::initSubsystems();
+    internal::Setup::singleton();
   }
 
 #ifdef WINRT
