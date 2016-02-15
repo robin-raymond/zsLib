@@ -14,21 +14,21 @@
           symbol="ZSLIB_PROVIDER_GUID"
           messageFileName="zsLib_ETWProviders.dll"
           resourceFileName="zsLib_ETWProviders.dll" >
-      <channels>
-          <exceptionChannel chid="ec"
-               name="ExceptionChannel"
-               symbol="CHANNEL_EXCEPTION" />
-          <messageQueueChannel chid="mqc"
-               name="MessageQueueChannel"
-               symbol="CHANNEL_MESSAGE_QUEUE" />
-          <socketChannel chid="sc"
-               name="SocketChannel"
-               symbol="CHANNEL_SOCKET" />
-          <timerChannel chid="tc"
-               name="TimerChannel"
-               symbol="CHANNEL_TIMER" />
-      </channels>
-      <templates>
+        <channels>
+          <importChannel chid="ec"
+                 name="ExceptionChannel"
+                 symbol="CHANNEL_EXCEPTION" />
+          <importChannel chid="mqc"
+                 name="MessageQueueChannel"
+                 symbol="CHANNEL_MESSAGE_QUEUE" />
+          <importChannel chid="sc"
+                 name="SocketChannel"
+                 symbol="CHANNEL_SOCKET" />
+          <importChannel chid="tc"
+                 name="TimerChannel"
+                 symbol="CHANNEL_TIMER" />
+        </channels>
+        <templates>
           <template tid="T_Exception">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:AnsiString" name="Subsystem" />
@@ -89,14 +89,14 @@
             <data inType="win:UInt64"     name="Socket" />
             <data inType="win:Int64"      name="Result" />
             <data inType="win:Binary"     name="Address" length="AddressSize" />
-            <data inType="win:UInt64"     name="AddressSize" />
+            <data inType="win:UInt32"     name="AddressSize" />
           </template>
           <template tid="T_SocketAccept">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="AcceptedSocket" />
             <data inType="win:UInt64"     name="ListeningSocket" />
             <data inType="win:Binary"     name="Address" length="AddressSize" />
-            <data inType="win:UInt64"     name="AddressSize" />
+            <data inType="win:UInt32"     name="AddressSize" />
           </template>
           <template tid="T_SocketRecvSend">
             <data inType="win:AnsiString" name="Method" />
@@ -104,7 +104,7 @@
             <data inType="win:UInt64"     name="Result" />
             <data inType="win:UInt64"     name="Flags" />
             <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
-            <data inType="win:UInt64"     name="BufferLengthInBytes" />
+            <data inType="win:UInt32"     name="BufferLengthInBytes" />
           </template>
           <template tid="T_SocketRecvFromSendTo">
             <data inType="win:AnsiString" name="Method" />
@@ -114,7 +114,7 @@
             <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
             <data inType="win:UInt64"     name="BufferLengthInBytes" />
             <data inType="win:Binary"     name="Address" length="AddressSize" />
-            <data inType="win:UInt64"     name="AddressSize" />
+            <data inType="win:UInt32"     name="AddressSize" />
           </template>
           <template tid="T_SocketShutdown">
             <data inType="win:AnsiString" name="Method" />
@@ -128,7 +128,7 @@
             <data inType="win:Int64"      name="Level" />
             <data inType="win:Int64"      name="OptionName" />
             <data inType="win:Binary"     name="OptionValue" length="OptionLengthInBytes" />
-            <data inType="win:UInt64"     name="OptionLengthInBytes" />
+            <data inType="win:UInt32"     name="OptionLengthInBytes" />
           </template>
           <template tid="T_SocketOptionFlag">
             <data inType="win:AnsiString" name="Method" />
@@ -192,33 +192,33 @@
     </events>
   </instrumentation>
   <localization>
-        <resources culture="en-US">
-            <stringTable>
-                <string id="level.Critical" value="Critical"/>
-                <string id="level.Error" value="Error"/>
-                <string id="level.Warning" value="Warning"/>
-                <string id="level.Informational" value="Informational"/>
-                <string id="level.Verbose" value="Verbose"/>
+    <resources culture="en-US">
+      <stringTable>
+        <string id="level.Critical" value="Critical"/>
+        <string id="level.Error" value="Error"/>
+        <string id="level.Warning" value="Warning"/>
+        <string id="level.Informational" value="Informational"/>
+        <string id="level.Verbose" value="Verbose"/>
 
-                <string id="channel.ExceptionChannel" value="Exception Channel"/>
-                <string id="channel.MessageQueueChannel" value="Message Queue Channel"/>
-                <string id="channel.SocketChannel" value="Socket Channel"/>
-                <string id="channel.TimerChannel" value="Timer Channel"/>
+        <string id="channel.ExceptionChannel" value="Exception Channel"/>
+        <string id="channel.MessageQueueChannel" value="Message Queue Channel"/>
+        <string id="channel.SocketChannel" value="Socket Channel"/>
+        <string id="channel.TimerChannel" value="Timer Channel"/>
 
-                <string id="zsLib.ProviderMessage"
-                        value="zsLib Provider"/>
- 
-                <string id="zsLib.event.1101.message"
-                        value="Message queue created."/>
-                <string id="zsLib.event.1102.message"
-                        value="Message queue destroyed."/>
-                <string id="MyService.event.1103.message"
-                        value="Message posted too message queue."/>
-                <string id="MyService.event.1104.message"
-                        value="Message processed from message queue."/>
-                <string id="MyService.event.1105.message"
-                        value="Total of %3 messages remaining in message queue."/>
-            </stringTable>
-        </resources>
-    </localization>
+        <string id="zsLib.ProviderMessage"
+                value="zsLib Provider"/>
+
+        <string id="zsLib.event.1101.message"
+                value="Message queue created."/>
+        <string id="zsLib.event.1102.message"
+                value="Message queue destroyed."/>
+        <string id="zsLib.event.1103.message"
+                value="Message posted too message queue."/>
+        <string id="zsLib.event.1104.message"
+                value="Message processed from message queue."/>
+        <string id="zsLib.event.1105.message"
+                value="Total of %3 messages remaining in message queue."/>
+      </stringTable>
+    </resources>
+  </localization>
 </instrumentationManifest>
