@@ -41,7 +41,7 @@
 #else
 
 // Comment the following line to test inline versions of the same macros to test compilation
-#define ZSLIB_INTERNAL_USE_NOOP_EVENT_TRACE_MACROS
+//#define ZSLIB_INTERNAL_USE_NOOP_EVENT_TRACE_MACROS
 
 // NO-OP VERSIONS OF ALL TRACING MACROS
 #ifdef ZSLIB_INTERNAL_USE_NOOP_EVENT_TRACE_MACROS
@@ -62,19 +62,19 @@
 #define EventWriteZsSocketNotifyEventFired(xStr_Method, xPtr_this, xStr_EventType)
 #define EventWriteZsSocketNotifyEventReset(xStr_Method, xPtr_this, xSocket)
 #define EventWriteZsSocketClose(xStr_Method, xSocket, xInt_Result)
-#define EventWriteZsSocketGetLocalAddress(xStr_Method, xSocket, xInt_Result, xPtr_Address, xsocklen_t_AddressSize)
-#define EventWriteZsSocketGetRemoteAddress(xStr_Method, xSocket, xInt_Result, xPtr_Address, xsocklen_t_AddressSize)
-#define EventWriteZsSocketBind(xStr_Method, xSocket, xInt_Result, xPtr_Address, xsocklen_t_AddressSize)
+#define EventWriteZsSocketGetLocalAddress(xStr_Method, xSocket, xInt_Result, xsocklen_t_AddressSize, xPtr_Address)
+#define EventWriteZsSocketGetRemoteAddress(xStr_Method, xSocket, xInt_Result, xsocklen_t_AddressSize, xPtr_Address)
+#define EventWriteZsSocketBind(xStr_Method, xSocket, xInt_Result, xsocklen_t_AddressSize, xPtr_Address)
 #define EventWriteZsSocketListen(xStr_Method, xSocket, xInt_Result)
-#define EventWriteZsSocketAccept(xStr_Method, xSocket_Result, xSocket_Listening, xPtr_Address, xsocklen_t_AddressSize)
-#define EventWriteZsSocketConnect(xStr_Method, xSocket, xInt_Result, xPtr_Address, xsocklen_t_AddressSize)
-#define EventWriteZsSocketRecv(xStr_Method, xSocket, xsize_t_Result, xULONG_Flags, xPtr_Buffer, xsize_t_BufferLengthInBytes)
-#define EventWriteZsSocketRecvFrom(xStr_Method, xSocket, xsize_t_Result, xULONG_Flags, xPtr_Buffer, xsize_t_BufferLengthInBytes, xPtr_Address, xsocklen_t_AddressSize)
+#define EventWriteZsSocketAccept(xStr_Method, xSocket_Result, xSocket_Listening, xsocklen_t_AddressSize, xPtr_Address)
+#define EventWriteZsSocketConnect(xStr_Method, xSocket, xInt_Result, xsocklen_t_AddressSize, xPtr_Address)
+#define EventWriteZsSocketRecv(xStr_Method, xSocket, xsize_t_Result, xULONG_Flags, xsize_t_BufferLengthInBytes, xPtr_Buffer)
+#define EventWriteZsSocketRecvFrom(xStr_Method, xSocket, xsize_t_Result, xULONG_Flags, xsize_t_BufferLengthInBytes, xPtr_Buffer, xsocklen_t_AddressSize, xPtr_Address)
 #define EventWriteZsSocketSend(xStr_Method, xSocket, xsize_t_Result, xULONG_Flags, xPtr_Buffer, xsize_t_BufferLengthInBytes)
 #define EventWriteZsSocketSendTo(xStr_Method, xSocket, xsize_t_Result, xULONG_Flags, xPtr_Buffer, xsize_t_BufferLengthInBytes, xPtr_Address, xsocklen_t_AddressSize)
 #define EventWriteZsSocketShutdown(xStr_Method, xSocket, xInt_Result, xUInt_Options)
-#define EventWriteZsSocketSetOption(xStr_Method, xSocket, xInt_Result, xInt_Level, xInt_OptionName, xPtr_OptionValue, xsocklen_t_OptionLengthInBytes)
-#define EventWriteZsSocketGetOption(xStr_Method, xSocket, xInt_Result, xInt_Level, xInt_OptionName, xPtr_OptionValue, xsocklen_t_OptionLengthInBytes)
+#define EventWriteZsSocketSetOption(xStr_Method, xSocket, xInt_Result, xInt_Level, xInt_OptionName, xsocklen_t_OptionLengthInBytes, xPtr_OptionValue)
+#define EventWriteZsSocketGetOption(xStr_Method, xSocket, xInt_Result, xInt_Level, xInt_OptionName, xsocklen_t_OptionLengthInBytes, xPtr_OptionValue)
 #define EventWriteZsSocketSetOptionFlag(xStr_Method, xSocket, xInt_Result, xUInt_Option, xBool_Enabled)
 #define EventWriteZsSocketGetOptionFlag(xStr_Method, xSocket, xInt_Result, xUInt_Option, xBool_Enabled)
 
@@ -103,19 +103,19 @@ inline void EventWriteZsSocketAdopt(const char *xStr_Method, PTRNUMBER xSocket) 
 inline void EventWriteZsSocketNotifyEventFired(const char *xStr_Method, void *pThis, const char *xStr_EventType) {}
 inline void EventWriteZsSocketNotifyEventReset(const char *xStr_Method, const void *pThis, PTRNUMBER xSocket) {}
 inline void EventWriteZsSocketClose(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result) {}
-inline void EventWriteZsSocketGetLocalAddress(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
-inline void EventWriteZsSocketGetRemoteAddress(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
-inline void EventWriteZsSocketBind(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
+inline void EventWriteZsSocketGetLocalAddress(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, size_t xsocklen_t_AddressSize, void *xPtr_Address) {}
+inline void EventWriteZsSocketGetRemoteAddress(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, size_t xsocklen_t_AddressSize, void *xPtr_Address) {}
+inline void EventWriteZsSocketBind(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, size_t xsocklen_t_AddressSize, void *xPtr_Address) {}
 inline void EventWriteZsSocketListen(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result) {}
-inline void EventWriteZsSocketAccept(const char *xStr_Method, PTRNUMBER xSocket_Result, PTRNUMBER xSocket_Listening, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
-inline void EventWriteZsSocketConnect(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
-inline void EventWriteZsSocketRecv(const char *xStr_Method, PTRNUMBER xSocket, size_t xsize_t_Result, ULONG xULONG_Flags, void *xPtr_Buffer, size_t xsize_t_BufferLengthInBytes) {}
-inline void EventWriteZsSocketRecvFrom(const char *xStr_Method, PTRNUMBER xSocket, size_t xsize_t_Result, ULONG xULONG_Flags, void *xPtr_Buffer, size_t xsize_t_BufferLengthInBytes, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
+inline void EventWriteZsSocketAccept(const char *xStr_Method, PTRNUMBER xSocket_Result, PTRNUMBER xSocket_Listening, size_t xsocklen_t_AddressSize, void *xPtr_Address) {}
+inline void EventWriteZsSocketConnect(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, size_t xsocklen_t_AddressSize, void *xPtr_Address) {}
+inline void EventWriteZsSocketRecv(const char *xStr_Method, PTRNUMBER xSocket, size_t xsize_t_Result, ULONG xULONG_Flags, size_t xsize_t_BufferLengthInBytes, void *xPtr_Buffer) {}
+inline void EventWriteZsSocketRecvFrom(const char *xStr_Method, PTRNUMBER xSocket, size_t xsize_t_Result, ULONG xULONG_Flags, size_t xsize_t_BufferLengthInBytes, void *xPtr_Buffer, size_t xsocklen_t_AddressSize, void *xPtr_Address) {}
 inline void EventWriteZsSocketSend(const char *xStr_Method, PTRNUMBER xSocket, size_t xsize_t_Result, ULONG xULONG_Flags, const void *xPtr_Buffer, size_t xsize_t_BufferLengthInBytes) {}
 inline void EventWriteZsSocketSendTo(const char *xStr_Method, PTRNUMBER xSocket, size_t xsize_t_Result, ULONG xULONG_Flags, const void *xPtr_Buffer, size_t xsize_t_BufferLengthInBytes, void *xPtr_Address, size_t xsocklen_t_AddressSize) {}
 inline void EventWriteZsSocketShutdown(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned xUInt_Options) {}
-inline void EventWriteZsSocketSetOption(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, int xInt_Level, int xInt_OptionName, void *xPtr_OptionValue, size_t xsocklen_t_OptionLengthInBytes) {}
-inline void EventWriteZsSocketGetOption(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, int xInt_Level, int xInt_OptionName, void *xPtr_OptionValue, size_t xsocklen_t_OptionLengthInBytes) {}
+inline void EventWriteZsSocketSetOption(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, int xInt_Level, int xInt_OptionName, size_t xsocklen_t_OptionLengthInBytes, void *xPtr_OptionValue) {}
+inline void EventWriteZsSocketGetOption(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, int xInt_Level, int xInt_OptionName, size_t xsocklen_t_OptionLengthInBytes, void *xPtr_OptionValue) {}
 inline void EventWriteZsSocketSetOptionFlag(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned int xUInt_Option, bool xBool_Enabled) {}
 inline void EventWriteZsSocketGetOptionFlag(const char *xStr_Method, PTRNUMBER xSocket, int xInt_Result, unsigned int xUInt_Option, bool xBool_Enabled) {}
 

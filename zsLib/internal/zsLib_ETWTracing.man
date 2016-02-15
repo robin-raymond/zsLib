@@ -88,33 +88,33 @@
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="Socket" />
             <data inType="win:Int64"      name="Result" />
-            <data inType="win:Binary"     name="Address" length="AddressSize" />
             <data inType="win:UInt32"     name="AddressSize" />
+            <data inType="win:Binary"     name="Address" length="AddressSize" />
           </template>
           <template tid="T_SocketAccept">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="AcceptedSocket" />
             <data inType="win:UInt64"     name="ListeningSocket" />
-            <data inType="win:Binary"     name="Address" length="AddressSize" />
             <data inType="win:UInt32"     name="AddressSize" />
+            <data inType="win:Binary"     name="Address" length="AddressSize" />
           </template>
           <template tid="T_SocketRecvSend">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="Socket" />
             <data inType="win:UInt64"     name="Result" />
             <data inType="win:UInt64"     name="Flags" />
-            <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
             <data inType="win:UInt32"     name="BufferLengthInBytes" />
+            <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
           </template>
           <template tid="T_SocketRecvFromSendTo">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="Socket" />
             <data inType="win:UInt64"     name="Result" />
             <data inType="win:UInt64"     name="Flags" />
-            <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
             <data inType="win:UInt64"     name="BufferLengthInBytes" />
-            <data inType="win:Binary"     name="Address" length="AddressSize" />
+            <data inType="win:Binary"     name="Buffer" length="BufferLengthInBytes" />
             <data inType="win:UInt32"     name="AddressSize" />
+            <data inType="win:Binary"     name="Address" length="AddressSize" />
           </template>
           <template tid="T_SocketShutdown">
             <data inType="win:AnsiString" name="Method" />
@@ -127,8 +127,8 @@
             <data inType="win:Int64"      name="Result" />
             <data inType="win:Int64"      name="Level" />
             <data inType="win:Int64"      name="OptionName" />
-            <data inType="win:Binary"     name="OptionValue" length="OptionLengthInBytes" />
             <data inType="win:UInt32"     name="OptionLengthInBytes" />
+            <data inType="win:Binary"     name="OptionValue" length="OptionLengthInBytes" />
           </template>
           <template tid="T_SocketOptionFlag">
             <data inType="win:AnsiString" name="Method" />

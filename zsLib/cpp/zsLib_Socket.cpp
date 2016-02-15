@@ -502,7 +502,7 @@ namespace zsLib
                              &size
                              );
 
-    EventWriteZsSocketGetLocalAddress(__func__, mSocket, result, &address, size);
+    EventWriteZsSocketGetLocalAddress(__func__, mSocket, result, size, &address);
 
     if (SOCKET_ERROR == result)
     {
@@ -539,7 +539,7 @@ namespace zsLib
                              &size
                              );
 
-    EventWriteZsSocketGetRemoteAddress(__func__, mSocket, result, &address, size);
+    EventWriteZsSocketGetRemoteAddress(__func__, mSocket, result, size, &address);
 
     if (SOCKET_ERROR == result)
     {
@@ -622,7 +622,7 @@ namespace zsLib
 #endif //_WIN32
 
       int result = ::bind(mSocket, address, size);
-      EventWriteZsSocketBind(__func__, mSocket, result, address, size);
+      EventWriteZsSocketBind(__func__, mSocket, result, size, address);
       if (SOCKET_ERROR == result)
       {
         int error = handleError(0, outNoThrowErrorResult);
@@ -701,7 +701,7 @@ namespace zsLib
       address.sin6_family = AF_INET6;
       socklen_t size = sizeof(address);
       acceptSocket = ::accept(mSocket, (sockaddr *)(&address), &size);
-      EventWriteZsSocketAccept(__func__, acceptSocket, mSocket, &address, size);
+      EventWriteZsSocketAccept(__func__, acceptSocket, mSocket, size, &address);
       if (INVALID_SOCKET == acceptSocket)
       {
         int error = handleError(0, outNoThrowErrorResult);
@@ -769,7 +769,7 @@ namespace zsLib
       internal::prepareRawIPAddress(inDestination, addressv4, addressv6, address, size);
 
       int result = ::connect(mSocket, address, size);
-      EventWriteZsSocketConnect(__func__, mSocket, result, address, size);
+      EventWriteZsSocketConnect(__func__, mSocket, result, size, address);
 
       if (SOCKET_ERROR == result)
       {
@@ -855,7 +855,7 @@ namespace zsLib
                       flags
                       );
 
-      EventWriteZsSocketRecv(__func__, mSocket, result, inFlags, ioBuffer, inBufferLengthInBytes);
+      EventWriteZsSocketRecv(__func__, mSocket, result, inFlags, inBufferLengthInBytes, ioBuffer);
 
       if (SOCKET_ERROR == result)
       {
@@ -941,7 +941,7 @@ namespace zsLib
                         &size
                         );
 
-      EventWriteZsSocketRecvFrom(__func__, mSocket, result, inFlags, ioBuffer, inBufferLengthInBytes, &address, size);
+      EventWriteZsSocketRecvFrom(__func__, mSocket, result, inFlags, inBufferLengthInBytes, ioBuffer, size, &address);
 
       if (SOCKET_ERROR == result)
       {
@@ -1197,7 +1197,7 @@ namespace zsLib
                                  )
     {
       int result = ::setsockopt(inSocket, inLevel, inOptionName, (const char *)inOptionValue, inOptionLength);
-      EventWriteZsSocketSetOption(__func__, inSocket, result, inLevel, inOptionName, inOptionValue, inOptionLength);
+      EventWriteZsSocketSetOption(__func__, inSocket, result, inLevel, inOptionName, inOptionLength, inOptionValue);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
@@ -1217,7 +1217,7 @@ namespace zsLib
     {
       socklen_t length = inOptionLength;
       int result = ::getsockopt(inSocket, inLevel, inOptionName, (char *)outOptionValue, &length);
-      EventWriteZsSocketGetOption(__func__, inSocket, result, inLevel, inOptionName, outOptionValue, inOptionLength);
+      EventWriteZsSocketGetOption(__func__, inSocket, result, inLevel, inOptionName, inOptionLength, outOptionValue);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
@@ -1379,7 +1379,7 @@ namespace zsLib
       int value = 0;
       int result = ioctl(mSocket, inOption, &value);
 #endif //_WIN32
-      EventWriteZsSocketGetOption(__func__, mSocket, result, 0, to_underlying(inOption), &value, sizeof(value));
+      EventWriteZsSocketGetOption(__func__, mSocket, result, 0, to_underlying(inOption), sizeof(value), &value);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
