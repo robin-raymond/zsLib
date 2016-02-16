@@ -139,17 +139,17 @@
     </Link>
     <CustomBuildStep>
       <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\internal $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man
+mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man"
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
-icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" "$(OutDir)"
+icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:RX
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
 echo.
@@ -187,17 +187,17 @@ echo.
     </Link>
     <CustomBuildStep>
       <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\internal $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man
+mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man"
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
-icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" "$(OutDir)"
+icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:RX
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
 echo.
@@ -235,17 +235,17 @@ echo.
     </Link>
     <CustomBuildStep>
       <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\internal $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man
+mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man"
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
-icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" "$(OutDir)"
+icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:RX
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
 echo.
@@ -283,17 +283,17 @@ echo.
     </Link>
     <CustomBuildStep>
       <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\internal $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man
+mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man"
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
-icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" "$(OutDir)"
+icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:RX
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
 echo.
@@ -331,17 +331,17 @@ echo.
     </Link>
     <CustomBuildStep>
       <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\internal $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man
+mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man"
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
-icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" "$(OutDir)"
+icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:RX
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
 echo.
@@ -379,17 +379,17 @@ echo.
     </Link>
     <CustomBuildStep>
       <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\internal $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man
+mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man"
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
 echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
 link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
-copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp $(OutDir)
-icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:F
+copy $(IntermediateOutputPath)zsLib_ETWTracing.dll "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" "$(OutDir)"
+copy "$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" "$(OutDir)"
+icacls "$(OutDir)zsLib_ETWTracing.dll" /grant Users:RX
 echo.
 echo Steps to register manifest file with for Windows Performance Recorder...
 echo.
