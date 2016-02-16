@@ -19,7 +19,8 @@
     </EventCollector>
 
     <!-- Our custom ETW Provider and its associated GUID -->
-    <EventProvider Id="EventProvider_zsLib" Name="zsLib" Stack="true"/>
+    <!-- Warning: GUID must match value from manifest otherwise the events will not be captured -->
+    <EventProvider Id="EventProvider_zsLib" Name="6586be19-7cf9-44f1-996b-3751e3549ccd" />
 
     <!-- A fully specified .wprp file should have four profiles, with DetailLevel set to Verbose and Light and with Logging Mode set to Memory and File. WPR enforces that the name conforms to <name>Profile.Level.OutputType -->
     <Profile

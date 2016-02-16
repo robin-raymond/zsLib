@@ -7,6 +7,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <events xmlns="http://schemas.microsoft.com/win/2004/08/events">
 
+      <!-- Warning: GUID must match value from wprp otherwise the events will not be captured -->
       <provider
           guid="{6586be19-7cf9-44f1-996b-3751e3549ccd}"
           name="zsLib"
@@ -15,23 +16,39 @@
           messageFileName="zsLib_ETWTracing.dll"
           resourceFileName="zsLib_ETWTracing.dll" >
         <channels>
-          <channel chid="ec"
-                 name="zsLib-ExceptionChannel"
-                 type="Analytic"
-                 symbol="CHANNEL_EXCEPTION" />
-          <channel chid="mqc"
-                 name="zsLib-MessageQueueChannel"
-                 type="Analytic"
-                 symbol="CHANNEL_MESSAGE_QUEUE" />
-          <channel chid="sc"
-                 name="zsLib-SocketChannel"
-                 type="Analytic"
-                 symbol="CHANNEL_SOCKET" />
-          <channel chid="tc"
-                 name="zsLib-TimerChannel"
-                 type="Analytic"
-                 symbol="CHANNEL_TIMER" />
+          <channel chid="zs"
+                 name="zsLib/Debug"
+                 type="Debug"
+                 symbol="CHANNEL_ZSLIB_DEBUG"
+                 message="$(string.Channel.zsLibDebug)" />
         </channels>
+        <tasks>
+          <task name="Exception" symbol="TASK_EXCEPTION" value="1" message="$(string.Task.Exception)">
+            <opcodes>
+              <opcode name="Exception" symbol="OPCODE_EXCEPTION_EXCEPTION" value="11" message="$(string.Opcode.Exception.Exception)" />
+            </opcodes>
+          </task>
+          <task name="MessageQueue" symbol="TASK_MESSAGEQUEUE" value="2" message="$(string.Task.MessageQueue)" />
+          <task name="Socket" symbol="TASK_SOCKET" value="3" message="$(string.Task.Socket)">
+            <opcodes>
+              <opcode name="Exception" symbol="OPCODE_SOCKET_EXCEPTION" value="11" message="$(string.Opcode.Socket.Exception)" />
+              <opcode name="Orphan" symbol="OPCODE_SOCKET_ORPHAN" value="12" message="$(string.Opcode.Socket.Orphan)" />
+              <opcode name="Adopt" symbol="OPCODE_SOCKET_ADOPT" value="13" message="$(string.Opcode.Socket.Adopt)" />
+              <opcode name="Event" symbol="OPCODE_SOCKET_EVENT" value="14" message="$(string.Opcode.Socket.Event)" />
+              <opcode name="Bind" symbol="OPCODE_SOCKET_BIND" value="15" message="$(string.Opcode.Socket.Bind)" />
+              <opcode name="Listen" symbol="OPCODE_SOCKET_LISTEN" value="16" message="$(string.Opcode.Socket.Listen)" />
+              <opcode name="Accept" symbol="OPCODE_SOCKET_ACCEPT" value="17" message="$(string.Opcode.Socket.Accept)" />
+              <opcode name="Connect" symbol="OPCODE_SOCKET_CONNECT" value="18" message="$(string.Opcode.Socket.Connect)" />
+              <opcode name="Shutdown" symbol="OPCODE_SOCKET_SHUTDOWN" value="19" message="$(string.Opcode.Socket.Shutdown)" />
+              <opcode name="Option" symbol="OPCODE_SOCKET_OPTION" value="20" message="$(string.Opcode.Socket.Option)" />
+            </opcodes>
+          </task>
+          <task name="Timer" symbol="TASK_TIMER" value="4" message="$(string.Task.Timer)">
+            <opcodes>
+              <opcode name="Event" symbol="OPCODE_TIMER_EVENT" value="11" message="$(string.Opcode.Timer.Event)" />
+            </opcodes>
+          </task>
+        </tasks>
         <templates>
           <template tid="T_Exception">
             <data inType="win:AnsiString" name="Method" />
@@ -155,41 +172,41 @@
           </template>
         </templates>
         <events>
-          <event symbol="ZsExceptionEventFired" channel="ec" template="T_Exception" value="1001" level="win:Error" />
+          <event symbol="ZsExceptionEventFired" channel="zs" template="T_Exception" task="Exception" opcode="Exception" value="1001" level="win:Error" message="$(string.Event.ZsExceptionEventFired)" />
 
-          <event symbol="ZsMessageQueueCreate" channel="mqc" template="T_BasicThis" value="1101" level="win:Informational" />
-          <event symbol="ZsMessageQueueDestroy" channel="mqc" template="T_BasicThis" value="1102" level="win:Informational" />
-          <event symbol="ZsMessageQueuePost" channel="mqc" template="T_BasicThis" value="1103" level="win:Verbose" />
-          <event symbol="ZsMessageQueueProcess" channel="mqc" template="T_BasicThis" value="1104" level="win:Verbose" />
-          <event symbol="ZsMessageQueueTotalUnprocessedMessages" channel="mqc" template="T_BasicThisWithTotal" value="1105" level="win:Verbose" />
+          <event symbol="ZsMessageQueueCreate" channel="zs" template="T_BasicThis" task="MessageQueue" opcode="win:Start" value="1101" level="win:Informational" message="$(string.Event.ZsMessageQueueCreate)" />
+          <event symbol="ZsMessageQueueDestroy" channel="zs" template="T_BasicThis" task="MessageQueue" opcode="win:Stop" value="1102" level="win:Informational" message="$(string.Event.ZsMessageQueueDestroy)" />
+          <event symbol="ZsMessageQueuePost" channel="zs" template="T_BasicThis" task="MessageQueue" opcode="win:Send" value="1103" level="win:Verbose" message="$(string.Event.ZsMessageQueuePost)" />
+          <event symbol="ZsMessageQueueProcess" channel="zs" template="T_BasicThis" task="MessageQueue" opcode="win:Receive" value="1104" level="win:Verbose" message="$(string.Event.ZsMessageQueueProcess)" />
+          <event symbol="ZsMessageQueueTotalUnprocessedMessages" channel="zs" task="MessageQueue" opcode="win:Info" template="T_BasicThisWithTotal" value="1105" level="win:Verbose" message="$(string.Event.ZsMessageQueueTotalUnprocessedMessages)" />
 
-          <event symbol="ZsSocketError" channel="sc" template="T_SocketWithError" value="1201" level="win:Error" />
-          <event symbol="ZsSocketWouldBlock" channel="sc" template="T_SocketWithWouldBlock" value="1202" level="win:Verbose" />
-          <event symbol="ZsSocketCreate" channel="sc" template="T_SocketWithCreateParams" value="1203" level="win:Informational" />
-          <event symbol="ZsSocketOrphan" channel="sc" template="T_SocketBasic" value="1204" level="win:Informational" />
-          <event symbol="ZsSocketAdopt" channel="sc" template="T_SocketBasic" value="1205" level="win:Informational" />
-          <event symbol="ZsSocketNotifyEventFired" channel="sc" template="T_SocketBasicEventFired" value="1206" level="win:Verbose" />
-          <event symbol="ZsSocketNotifyEventReset" channel="sc" template="T_SocketBasicWithThis" value="1207" level="win:Verbose" />
-          <event symbol="ZsSocketClose" channel="sc" template="T_SocketWithResult" value="1208" level="win:Informational" />
-          <event symbol="ZsSocketGetLocalAddress" channel="sc" template="T_SocketWithAddress" value="1209" level="win:Informational" />
-          <event symbol="ZsSocketGetRemoteAddress" channel="sc" template="T_SocketWithAddress" value="1210" level="win:Informational" />
-          <event symbol="ZsSocketBind" channel="sc" template="T_SocketWithAddress" value="1211" level="win:Informational" />
-          <event symbol="ZsSocketListen" channel="sc" template="T_SocketWithResult" value="1212" level="win:Informational" />
-          <event symbol="ZsSocketAccept" channel="sc" template="T_SocketAccept" value="1213" level="win:Informational" />
-          <event symbol="ZsSocketConnect" channel="sc" template="T_SocketWithAddress" value="1214" level="win:Informational" />
-          <event symbol="ZsSocketRecv" channel="sc" template="T_SocketRecvSend" value="1215" level="win:Verbose" />
-          <event symbol="ZsSocketRecvFrom" channel="sc" template="T_SocketRecvFromSendTo" value="1216" level="win:Verbose" />
-          <event symbol="ZsSocketSend" channel="sc" template="T_SocketRecvSend" value="1217" level="win:Verbose" />
-          <event symbol="ZsSocketSendTo" channel="sc" template="T_SocketRecvFromSendTo" value="1218" level="win:Verbose" />
-          <event symbol="ZsSocketShutdown" channel="sc" template="T_SocketShutdown" value="1219" level="win:Informational" />
-          <event symbol="ZsSocketSetOption" channel="sc" template="T_SocketOption" value="1220" level="win:Informational" />
-          <event symbol="ZsSocketGetOption" channel="sc" template="T_SocketOption" value="1221" level="win:Informational" />
-          <event symbol="ZsSocketSetOptionFlag" channel="sc" template="T_SocketOptionFlag" value="1222" level="win:Informational" />
-          <event symbol="ZsSocketGetOptionFlag" channel="sc" template="T_SocketOptionFlag" value="1223" level="win:Informational" />
+          <event symbol="ZsSocketError" channel="zs" template="T_SocketWithError" task="Socket" opcode="Exception" value="1201" level="win:Error" message="$(string.Event.ZsSocketError)" />
+          <event symbol="ZsSocketWouldBlock" channel="zs" template="T_SocketWithWouldBlock" task="Socket" opcode="win:Info" value="1202" level="win:Verbose" message="$(string.Event.ZsSocketWouldBlock)" />
+          <event symbol="ZsSocketCreate" channel="zs" template="T_SocketWithCreateParams" task="Socket" opcode="win:Start" value="1203" level="win:Informational" message="$(string.Event.ZsSocketCreate)" />
+          <event symbol="ZsSocketOrphan" channel="zs" template="T_SocketBasic" task="Socket" opcode="Orphan" value="1204" level="win:Informational" message="$(string.Event.ZsSocketOrphan)" />
+          <event symbol="ZsSocketAdopt" channel="zs" template="T_SocketBasic" task="Socket" opcode="Adopt" value="1205" level="win:Informational" message="$(string.Event.ZsSocketAdopt)" />
+          <event symbol="ZsSocketNotifyEventFired" channel="zs" template="T_SocketBasicEventFired" task="Socket" opcode="Event" value="1206" level="win:Verbose" message="$(string.Event.ZsSocketNotifyEventFired)" />
+          <event symbol="ZsSocketNotifyEventReset" channel="zs" template="T_SocketBasicWithThis" task="Socket" opcode="Event" value="1207" level="win:Verbose" message="$(string.Event.ZsSocketNotifyEventReset)" />
+          <event symbol="ZsSocketClose" channel="zs" template="T_SocketWithResult" task="Socket" opcode="win:Stop" value="1208" level="win:Informational" message="$(string.Event.ZsSocketClose)" />
+          <event symbol="ZsSocketGetLocalAddress" channel="zs" template="T_SocketWithAddress" task="Socket" opcode="win:Info" value="1209" level="win:Informational" message="$(string.Event.ZsSocketGetLocalAddress)" />
+          <event symbol="ZsSocketGetRemoteAddress" channel="zs" template="T_SocketWithAddress" task="Socket" opcode="win:Info" value="1210" level="win:Informational" message="$(string.Event.ZsSocketGetRemoteAddress)" />
+          <event symbol="ZsSocketBind" channel="zs" template="T_SocketWithAddress" task="Socket" opcode="Bind" value="1211" level="win:Informational" message="$(string.Event.ZsSocketBind)" />
+          <event symbol="ZsSocketListen" channel="zs" template="T_SocketWithResult" task="Socket" opcode="Listen" value="1212" level="win:Informational" message="$(string.Event.ZsSocketListen)" />
+          <event symbol="ZsSocketAccept" channel="zs" template="T_SocketAccept" task="Socket" opcode="Accept" value="1213" level="win:Informational" message="$(string.Event.ZsSocketAccept)" />
+          <event symbol="ZsSocketConnect" channel="zs" template="T_SocketWithAddress" task="Socket" opcode="Connect" value="1214" level="win:Informational" message="$(string.Event.ZsSocketConnect)" />
+          <event symbol="ZsSocketRecv" channel="zs" template="T_SocketRecvSend" task="Socket" opcode="win:Receive" value="1215" level="win:Verbose" message="$(string.Event.ZsSocketRecv)" />
+          <event symbol="ZsSocketRecvFrom" channel="zs" template="T_SocketRecvFromSendTo" task="Socket" opcode="win:Receive" value="1216" level="win:Verbose" message="$(string.Event.ZsSocketRecvFrom)" />
+          <event symbol="ZsSocketSend" channel="zs" template="T_SocketRecvSend" value="1217" task="Socket" opcode="win:Send" level="win:Verbose" message="$(string.Event.ZsSocketSend)" />
+          <event symbol="ZsSocketSendTo" channel="zs" template="T_SocketRecvFromSendTo" task="Socket" opcode="win:Send" value="1218" level="win:Verbose" message="$(string.Event.ZsSocketSendTo)" />
+          <event symbol="ZsSocketShutdown" channel="zs" template="T_SocketShutdown" task="Socket" opcode="Shutdown" value="1219" level="win:Informational" message="$(string.Event.ZsSocketShutdown)" />
+          <event symbol="ZsSocketSetOption" channel="zs" template="T_SocketOption" task="Socket" opcode="Option" value="1220" level="win:Informational" message="$(string.Event.ZsSocketSetOption)" />
+          <event symbol="ZsSocketGetOption" channel="zs" template="T_SocketOption" task="Socket" opcode="Option" value="1221" level="win:Informational" message="$(string.Event.ZsSocketGetOption)" />
+          <event symbol="ZsSocketSetOptionFlag" channel="zs" template="T_SocketOptionFlag" task="Socket" opcode="Option" value="1222" level="win:Informational" message="$(string.Event.ZsSocketSetOptionFlag)" />
+          <event symbol="ZsSocketGetOptionFlag" channel="zs" template="T_SocketOptionFlag" task="Socket" opcode="Option" value="1223" level="win:Informational" message="$(string.Event.ZsSocketGetOptionFlag)" />
 
-          <event symbol="ZsTimerCreate" channel="tc" template="T_TimerCreateParams" value="1301" level="win:Verbose" />
-          <event symbol="ZsTimerDestroy" channel="tc" template="T_TimerBasic" value="1302" level="win:Verbose" />
-          <event symbol="ZsTimerEventFired" channel="tc" template="T_TimerBasic" value="1303" level="win:Verbose" />
+          <event symbol="ZsTimerCreate" channel="zs" template="T_TimerCreateParams" task="Timer" opcode="win:Start" value="1301" level="win:Verbose" message="$(string.Event.ZsTimerCreate)" />
+          <event symbol="ZsTimerDestroy" channel="zs" template="T_TimerBasic" task="Timer" opcode="win:Stop" value="1302" level="win:Verbose" message="$(string.Event.ZsTimerDestroy)" />
+          <event symbol="ZsTimerEventFired" channel="zs" template="T_TimerBasic" task="Timer" opcode="Event" value="1303" level="win:Verbose" message="$(string.Event.ZsTimerEventFired)" />
         </events>
       </provider>
 
@@ -198,30 +215,73 @@
   <localization>
     <resources culture="en-US">
       <stringTable>
+        <string id="zsLib.ProviderMessage" value="zsLib Provider"/>
+
         <string id="level.Critical" value="Critical"/>
         <string id="level.Error" value="Error"/>
         <string id="level.Warning" value="Warning"/>
         <string id="level.Informational" value="Informational"/>
         <string id="level.Verbose" value="Verbose"/>
 
-        <string id="channel.ExceptionChannel" value="Exception Channel"/>
-        <string id="channel.MessageQueueChannel" value="Message Queue Channel"/>
-        <string id="channel.SocketChannel" value="Socket Channel"/>
-        <string id="channel.TimerChannel" value="Timer Channel"/>
+        <string id="Channel.zsLibDebug" value="zsLib Debug Channel"/>
 
-        <string id="zsLib.ProviderMessage"
-                value="zsLib Provider"/>
+        <string id="Task.Exception" value="Exception"/>
+        <string id="Task.MessageQueue" value="MessageQueue"/>
+        <string id="Task.Socket" value="Socket"/>
+        <string id="Task.Timer" value="Timer"/>
 
-        <string id="zsLib.event.1101.message"
-                value="Message queue created."/>
-        <string id="zsLib.event.1102.message"
-                value="Message queue destroyed."/>
-        <string id="zsLib.event.1103.message"
-                value="Message posted too message queue."/>
-        <string id="zsLib.event.1104.message"
-                value="Message processed from message queue."/>
-        <string id="zsLib.event.1105.message"
-                value="Total of %3 messages remaining in message queue."/>
+        <string id="Opcode.Exception.Exception" value="Exception"/>
+
+        <string id="Opcode.Socket.Exception" value="Exception"/>
+        <string id="Opcode.Socket.Orphan" value="Orphan"/>
+        <string id="Opcode.Socket.Adopt" value="Adopt"/>
+        <string id="Opcode.Socket.Event" value="Event"/>
+        <string id="Opcode.Socket.Bind" value="Bind"/>
+        <string id="Opcode.Socket.Listen" value="Listen"/>
+        <string id="Opcode.Socket.Accept" value="Accept"/>
+        <string id="Opcode.Socket.Connect" value="Connect"/>
+        <string id="Opcode.Socket.Shutdown" value="Shutdown"/>
+        <string id="Opcode.Socket.Option" value="Option"/>
+
+        <string id="Opcode.Timer.Event" value="Event"/>
+
+        <string id="Event.ZsExceptionEventFired" value="ZsExceptionEventFired"/>
+
+        <string id="Event.ZsMessageQueueCreate" value="ZsMessageQueueCreate: Message queue created."/>
+        <string id="Event.ZsMessageQueueDestroy" value="ZsMessageQueueDestroy: Message queue destroyed."/>
+        <string id="Event.ZsMessageQueuePost" value="ZsMessageQueuePost: Message posted too message queue."/>
+        <string id="Event.ZsMessageQueueProcess" value="ZsMessageQueueProcess: Message processed from message queue."/>
+        <string id="Event.ZsMessageQueueTotalUnprocessedMessages" value="ZsMessageQueueTotalUnprocessedMessages: Total of %3 messages remaining in message queue."/>
+
+
+        <string id="Event.ZsSocketError" value="ZsSocketError"/>
+        <string id="Event.ZsSocketWouldBlock" value="ZsSocketWouldBlock"/>
+        <string id="Event.ZsSocketCreate" value="ZsSocketCreate"/>
+        <string id="Event.ZsSocketOrphan" value="ZsSocketOrphan"/>
+        <string id="Event.ZsSocketAdopt" value="ZsSocketAdopt"/>
+        <string id="Event.ZsSocketNotifyEventFired" value="ZsSocketNotifyEventFired"/>
+        <string id="Event.ZsSocketNotifyEventReset" value="ZsSocketNotifyEventReset"/>
+        <string id="Event.ZsSocketClose" value="ZsSocketClose"/>
+        <string id="Event.ZsSocketGetLocalAddress" value="ZsSocketGetLocalAddress"/>
+        <string id="Event.ZsSocketGetRemoteAddress" value="ZsSocketGetRemoteAddress"/>
+        <string id="Event.ZsSocketBind" value="ZsSocketBind"/>
+        <string id="Event.ZsSocketListen" value="ZsSocketListen"/>
+        <string id="Event.ZsSocketAccept" value="ZsSocketAccept"/>
+        <string id="Event.ZsSocketConnect" value="ZsSocketConnect"/>
+        <string id="Event.ZsSocketRecv" value="ZsSocketRecv"/>
+        <string id="Event.ZsSocketRecvFrom" value="ZsSocketRecvFrom"/>
+        <string id="Event.ZsSocketSend" value="ZsSocketSend"/>
+        <string id="Event.ZsSocketSendTo" value="ZsSocketSendTo"/>
+        <string id="Event.ZsSocketShutdown" value="ZsSocketShutdown"/>
+        <string id="Event.ZsSocketSetOption" value="ZsSocketSetOption"/>
+        <string id="Event.ZsSocketGetOption" value="ZsSocketGetOption"/>
+        <string id="Event.ZsSocketSetOptionFlag" value="ZsSocketSetOptionFlag"/>
+        <string id="Event.ZsSocketGetOptionFlag" value="ZsSocketGetOptionFlag"/>
+        
+        <string id="Event.ZsTimerCreate" value="ZsTimerCreate"/>
+        <string id="Event.ZsTimerDestroy" value="ZsTimerDestroy"/>
+        <string id="Event.ZsTimerEventFired" value="ZsTimerEventFired"/>
+
       </stringTable>
     </resources>
   </localization>
