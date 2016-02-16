@@ -143,7 +143,8 @@ mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\intern
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
-csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
 copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
 copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
@@ -190,7 +191,8 @@ mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\intern
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
-csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
 copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
 copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
@@ -237,7 +239,8 @@ mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\intern
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
-csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
 copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
 copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
@@ -284,7 +287,8 @@ mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\intern
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
-csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
 copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
 copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
@@ -331,7 +335,8 @@ mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\intern
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
-csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
 copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
 copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
@@ -378,7 +383,8 @@ mc.exe -um -r $(IntermediateOutputPath) -h $(ProjectDir)..\..\..\..\zsLib\intern
 echo Create resource file...
 rc.exe $(IntermediateOutputPath)zsLib_ETWTracing.rc
 echo Create manifest resource dll...
-csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib_ETWTracing.dll /target:library /win32res:$(IntermediateOutputPath)zsLib_ETWTracing.res
+link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib_ETWTracing.dll $(IntermediateOutputPath)zsLib_ETWTracing.res
 echo Copy files to output directory...
 copy $(IntermediateOutputPath)zsLib_ETWTracing.dll $(OutDir)
 copy $(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man $(OutDir)
