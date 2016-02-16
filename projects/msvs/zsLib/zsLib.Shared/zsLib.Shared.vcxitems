@@ -169,11 +169,13 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
       <ExcludedFromBuild>false</ExcludedFromBuild>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
+      <FileType>Document</FileType>
+    </Xml>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
-    </None>
+      <FileType>Document</FileType>
+    </Xml>
   </ItemGroup>
 </Project>
