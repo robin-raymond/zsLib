@@ -349,11 +349,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
-      <Filter>zsLib\internal</Filter>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
-      <Filter>zsLib\internal</Filter>
-    </None>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" />
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" />
   </ItemGroup>
 </Project>
