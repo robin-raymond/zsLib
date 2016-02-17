@@ -176,6 +176,7 @@
     <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
       <FileType>Document</FileType>
+      <SubType>Designer</SubType>
     </Xml>
   </ItemGroup>
 </Project>
