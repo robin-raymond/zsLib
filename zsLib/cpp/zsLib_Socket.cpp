@@ -1125,9 +1125,11 @@ namespace zsLib
         result = 0;
 
         int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
         if (0 == error) goto sendto_final;
 
         error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return 0;
 
         switch (error)

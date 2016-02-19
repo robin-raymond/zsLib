@@ -168,7 +168,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuidP.h">
       <Filter>zsLib\extras\uuid</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Singleton.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
@@ -189,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h">
       <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h">
+      <Filter>zsLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -349,7 +351,11 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man" />
-    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" />
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+      <Filter>zsLib\internal</Filter>
+    </Xml>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
+      <Filter>zsLib\internal</Filter>
+    </Xml>
   </ItemGroup>
 </Project>
