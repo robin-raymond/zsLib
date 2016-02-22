@@ -679,6 +679,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   SocketPtr Socket::accept(
                            IPAddress &outRemoteIP,
+                           bool *outWouldBlock,
                            int *outNoThrowErrorResult
                            ) const throw(
                                          Exceptions::InvalidSocket,
@@ -704,7 +705,11 @@ namespace zsLib
       EventWriteZsSocketAccept(__func__, acceptSocket, mSocket, size, reinterpret_cast<const BYTE *>(&address));
       if (INVALID_SOCKET == acceptSocket)
       {
-        int error = handleError(0, outNoThrowErrorResult);
+        int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
+        if (0 == error) return SocketPtr();
+
+        error = handleError(error, outNoThrowErrorResult);
         EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return SocketPtr();
 
