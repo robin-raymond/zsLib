@@ -144,10 +144,15 @@ namespace zsLib
     template <typename data_type>
     std::shared_ptr<data_type> reason() const {return ZS_DYNAMIC_PTR_CAST(data_type, mReason);}
 
-    void userData(AnyPtr userData) {mUserData = userData;}
-
     template <typename data_type>
     std::shared_ptr<data_type> userData() const {return ZS_DYNAMIC_PTR_CAST(data_type, mUserData);}
+
+    void setUserData(AnyPtr userData) {mUserData = userData;}
+
+    template <typename data_type>
+    std::shared_ptr<data_type> referenceHolder() const {return ZS_DYNAMIC_PTR_CAST(data_type, mReferenceHolder);}
+
+    void setReferenceHolder(AnyPtr referenceHolder) {mReferenceHolder = referenceHolder;}
 
   protected:
     virtual void onPromiseSettled(PromisePtr promise) {}

@@ -82,6 +82,7 @@ namespace zsLib
       AnyPtr mValue;
       AnyPtr mReason;
       AnyPtr mUserData;
+      AnyPtr mReferenceHolder;
 
       bool mFired {false};
       std::list<PromisePtr> mPromises;
