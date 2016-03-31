@@ -83,6 +83,7 @@ namespace zsLib
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create(CoreDispatcher ^dispatcher)
     {
       MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr thread(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindows);
+      thread->mThisWeak = thread;
       thread->mQueue = zsLib::MessageQueue::create(thread);
       thread->mDispatcher = dispatcher;
       assert(thread->mDispatcher);
