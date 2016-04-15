@@ -182,6 +182,9 @@ echo.
       <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
+    <Lib>
+      <AdditionalOptions>/ignore:4264 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -230,6 +233,9 @@ echo.
       <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
+    <Lib>
+      <AdditionalOptions>/ignore:4264 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
     <ClCompile>
@@ -278,6 +284,9 @@ echo.
       <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
+    <Lib>
+      <AdditionalOptions>/ignore:4264 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
     <ClCompile>
@@ -326,6 +335,9 @@ echo.
       <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
+    <Lib>
+      <AdditionalOptions>/ignore:4264 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -374,6 +386,9 @@ echo.
       <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
+    <Lib>
+      <AdditionalOptions>/ignore:4264 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -422,6 +437,9 @@ echo.
       <Outputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h;$(IntermediateOutputPath)zsLib_ETWTracing.rc;$(IntermediateOutputPath)zsLib_ETWTracing.res;$(IntermediateOutputPath)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.dll;$(OutDir)zsLib_ETWTracing.man;$(OutDir)zsLib_ETWTracing.wprp;%(Outputs)</Outputs>
       <Inputs>$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man;$(ProjectDir)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp;%(Inputs)</Inputs>
     </CustomBuildStep>
+    <Lib>
+      <AdditionalOptions>/ignore:4264 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

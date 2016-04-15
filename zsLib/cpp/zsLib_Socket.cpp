@@ -36,6 +36,8 @@
 #include <zsLib/IPAddress.h>
 #include <zsLib/Stringize.h>
 
+#include <zsLib/SafeInt.h>
+
 #include <fcntl.h>
 #include <signal.h>
 
@@ -131,6 +133,9 @@ namespace zsLib
     }
 
 #ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable:4297)
+
     class SocketInit
     {
     public:
@@ -154,6 +159,7 @@ namespace zsLib
         }
       }
     };
+#pragma warning(pop)
 #else
     class SocketInit
     {
@@ -856,11 +862,11 @@ namespace zsLib
       result = ::recv(
                       mSocket,
                       (char *)ioBuffer,
-                      inBufferLengthInBytes,
+                      SafeInt<int>(inBufferLengthInBytes),
                       flags
                       );
 
-      EventWriteZsSocketRecv(__func__, mSocket, result, inFlags, inBufferLengthInBytes, ioBuffer);
+      EventWriteZsSocketRecv(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), ioBuffer);
 
       if (SOCKET_ERROR == result)
       {
@@ -940,13 +946,13 @@ namespace zsLib
       result = recvfrom(
                         mSocket,
                         (char *)ioBuffer,
-                        inBufferLengthInBytes,
+                        SafeInt<int>(inBufferLengthInBytes),
                         static_cast<int>(inFlags),
                         (sockaddr *)&address,
                         &size
                         );
 
-      EventWriteZsSocketRecvFrom(__func__, mSocket, result, inFlags, inBufferLengthInBytes, ioBuffer, size, reinterpret_cast<const BYTE *>(&address));
+      EventWriteZsSocketRecvFrom(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), ioBuffer, SafeInt<unsigned int>(size), reinterpret_cast<const BYTE *>(&address));
 
       if (SOCKET_ERROR == result)
       {
@@ -1028,11 +1034,11 @@ namespace zsLib
       result = ::send(
                       mSocket,
                       (const char *)inBuffer,
-                      inBufferLengthInBytes,
+                      SafeInt<int>(inBufferLengthInBytes),
                       static_cast<int>(inFlags)
                       );
 
-      EventWriteZsSocketSend(__func__, mSocket, result, inFlags, inBufferLengthInBytes, inBuffer);
+      EventWriteZsSocketSend(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), inBuffer);
 
       if (SOCKET_ERROR == result)
       {
@@ -1117,13 +1123,13 @@ namespace zsLib
       result = ::sendto(
                         mSocket,
                         (const char *)inBuffer,
-                        inBufferLengthInBytes,
+                        SafeInt<int>(inBufferLengthInBytes),
                         static_cast<int>(inFlags),
                         address,
-                        size
+                        SafeInt<int>(size)
                         );
 
-      EventWriteZsSocketSendTo(__func__, mSocket, result, inFlags, inBufferLengthInBytes, inBuffer, size, reinterpret_cast<const BYTE *>(address));
+      EventWriteZsSocketSendTo(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), inBuffer, SafeInt<unsigned int>(size), reinterpret_cast<const BYTE *>(address));
 
       if (SOCKET_ERROR == result)
       {

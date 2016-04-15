@@ -31,6 +31,7 @@
 
 #include <zsLib/XML.h>
 #include <zsLib/Exception.h>
+#include <zsLib/SafeInt.h>
 
 
 #ifdef _WIN32
@@ -402,7 +403,7 @@ namespace zsLib
 
             // these characters cause the column to get messed up, simplest method is to
             // recalculate the column position from the start of the line
-            mColumn = internal::calculateColumnFromSOL(mPos, parser->mSOF, parser->mTabSize);
+            mColumn = SafeInt<decltype(mColumn)>(internal::calculateColumnFromSOL(mPos, parser->mSOF, parser->mTabSize));
             break;
           }
           default:

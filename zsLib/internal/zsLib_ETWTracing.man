@@ -140,6 +140,7 @@
           <template tid="T_SocketShutdown">
             <data inType="win:AnsiString" name="Method" />
             <data inType="win:UInt64"     name="Socket" />
+            <data inType="win:Int64"      name="Result" />
             <data inType="win:UInt64"     name="Options" />
           </template>
           <template tid="T_SocketOption">

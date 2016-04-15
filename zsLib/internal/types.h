@@ -123,17 +123,28 @@ namespace zsLib
   typedef char CHAR;
   typedef unsigned char UCHAR;
 
+#ifdef _WIN32
+  using ::SHORT;
+  using ::USHORT;
+
+  using ::LONG;
+  using ::ULONG;
+
+  using ::LONGLONG;
+  using ::ULONGLONG;
+#else
   typedef short SHORT;
   typedef unsigned short USHORT;
-
-  typedef int INT;
-  typedef unsigned int UINT;
 
   typedef long LONG;
   typedef unsigned long ULONG;
 
   typedef long long LONGLONG;
   typedef unsigned long long ULONGLONG;
+#endif //_WIN32
+
+  typedef int INT;
+  typedef unsigned int UINT;
 
   typedef std::intmax_t LONGEST;
   typedef std::uintmax_t ULONGEST;
@@ -142,8 +153,12 @@ namespace zsLib
   typedef double DOUBLE;
 
 #if UCHAR_MAX == 0xFF
+#ifdef _WIN32
+  using ::BYTE;
+#else
   typedef UCHAR BYTE;
-#endif
+#endif //_WIN32
+#endif //UCHAR_MAX == 0xFF
 
 #if USHRT_MAX == 0xFFFF
   typedef USHORT WORD;
@@ -151,7 +166,7 @@ namespace zsLib
 
 #if UINT_MAX == 0xFFFFFFFF
 #ifdef _WIN32
-  typedef ::DWORD DWORD;
+  using ::DWORD;
 #else
   typedef UINT DWORD;
 #endif //_WIN32
