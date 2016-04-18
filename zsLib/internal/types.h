@@ -116,48 +116,61 @@ namespace std
 	typedef uintmax_t uintmax_t;
 }
 #define alignof(xValue) __alignof(xValue)
+
+#if ULLONG_MAX == 0xFFFFFFFFFFFFFFFF
+typedef ULONGLONG QWORD;
+
+#else //ULLONG_MAX == 0xFFFFFFFFFFFFFFFF
+
+#if ULONG_MAX == 0xFFFFFFFFFFFFFFFF
+typedef ULONG QWORD;
+#endif //ULONG_MAX == 0xFFFFFFFFFFFFFFFF
+
+#endif //ULONG_MAX == 0xFFFFFFFFFFFFFFFF
+
 #endif //_WIN32
 
 namespace zsLib
 {
-  typedef char CHAR;
-  typedef unsigned char UCHAR;
-
 #ifdef _WIN32
+  using ::CHAR;
+  using ::UCHAR;
+
   using ::SHORT;
   using ::USHORT;
+
+  using ::INT;
+  using ::UINT;
 
   using ::LONG;
   using ::ULONG;
 
   using ::LONGLONG;
   using ::ULONGLONG;
+
+  using ::BYTE;
+  using ::WORD;
+  using ::DWORD;
+  using ::QWORD;
+
 #else
+  typedef char CHAR;
+  typedef unsigned char UCHAR;
+
   typedef short SHORT;
   typedef unsigned short USHORT;
+
+  typedef int INT;
+  typedef unsigned int UINT;
 
   typedef long LONG;
   typedef unsigned long ULONG;
 
   typedef long long LONGLONG;
   typedef unsigned long long ULONGLONG;
-#endif //_WIN32
-
-  typedef int INT;
-  typedef unsigned int UINT;
-
-  typedef std::intmax_t LONGEST;
-  typedef std::uintmax_t ULONGEST;
-
-  typedef float FLOAT;
-  typedef double DOUBLE;
 
 #if UCHAR_MAX == 0xFF
-#ifdef _WIN32
-  using ::BYTE;
-#else
   typedef UCHAR BYTE;
-#endif //_WIN32
 #endif //UCHAR_MAX == 0xFF
 
 #if USHRT_MAX == 0xFFFF
@@ -165,11 +178,7 @@ namespace zsLib
 #endif
 
 #if UINT_MAX == 0xFFFFFFFF
-#ifdef _WIN32
-  using ::DWORD;
-#else
   typedef UINT DWORD;
-#endif //_WIN32
 #endif //UINT_MAX == 0xFFFFFFFF
 
 #if ULONG_MAX == 0xFFFFFFFFFFFFFFFF
@@ -182,6 +191,14 @@ namespace zsLib
 #endif
 
 #endif //ULONG_MAX == 0xFFFFFFFFFFFFFFFF
+
+#endif //_WIN32
+
+  typedef std::intmax_t LONGEST;
+  typedef std::uintmax_t ULONGEST;
+
+  typedef float FLOAT;
+  typedef double DOUBLE;
 
   typedef ULONG PUID;
 
@@ -198,7 +215,9 @@ namespace zsLib
 #endif //_LP64
 
   typedef PTRNUMBER USERPARAM;
-  namespace internal {
+
+  namespace internal
+  {
     struct uuid_wrapper {
 		typedef UCHAR * iterator;
 		typedef UCHAR const* const_iterator;
