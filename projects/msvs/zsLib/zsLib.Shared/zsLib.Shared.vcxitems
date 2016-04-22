@@ -17,6 +17,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\date.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Exception.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\config.h">
