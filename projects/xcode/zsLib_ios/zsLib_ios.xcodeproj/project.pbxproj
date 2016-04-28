@@ -135,6 +135,7 @@
 		006681DA16C9D65E00259F81 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		006681DB16C9D65E00259F81 /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
 		006681DC16C9D65E00259F81 /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+		00AF93761CD2281400B47463 /* date.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date.h; sourceTree = "<group>"; };
 		00CEE9911A8E983800BE86D6 /* license.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		00CEE9921A8E983800BE86D6 /* Promise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Promise.h; sourceTree = "<group>"; };
 		00CEE9931A8E984D00BE86D6 /* zsLib_Promise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Promise.h; sourceTree = "<group>"; };
@@ -187,6 +188,7 @@
 				00CEE9911A8E983800BE86D6 /* license.txt */,
 				006681DA16C9D65E00259F81 /* types.h */,
 				006681DC16C9D65E00259F81 /* zsLib.h */,
+				00AF93761CD2281400B47463 /* date.h */,
 				006681B416C9D65E00259F81 /* Event.h */,
 				006681B516C9D65E00259F81 /* Exception.h */,
 				006681B616C9D65E00259F81 /* helpers.h */,

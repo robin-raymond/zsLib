@@ -123,6 +123,7 @@
 		006680FC16C9CE8700259F81 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		006680FD16C9CE8700259F81 /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
 		006680FE16C9CE8700259F81 /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+		00AF93751CD227C700B47463 /* date.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date.h; sourceTree = "<group>"; };
 		00CF4E301A1671D400573A34 /* license.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		00D667631AB510DE001D8E34 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h; sourceTree = "<group>"; };
 		00D667641AB510DE001D8E34 /* zsLib_Singleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_Singleton.h; sourceTree = "<group>"; };
@@ -176,6 +177,7 @@
 				00CF4E301A1671D400573A34 /* license.txt */,
 				006680FC16C9CE8700259F81 /* types.h */,
 				006680FE16C9CE8700259F81 /* zsLib.h */,
+				00AF93751CD227C700B47463 /* date.h */,
 				006680D616C9CE8700259F81 /* Event.h */,
 				006680D716C9CE8700259F81 /* Exception.h */,
 				006680D816C9CE8700259F81 /* helpers.h */,
