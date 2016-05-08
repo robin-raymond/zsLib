@@ -120,27 +120,27 @@ namespace testing_numeric
       TESTING_EQUAL(zsLib::string(uuid), zsLib::string(uuid3));
     }
 
-    { bool thrown = false; try { auto val = (char)zsLib::Numeric<char>("128"); (void)val; } catch(zsLib::Numeric<char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (char)zsLib::Numeric<char>("-129"); (void)val; } catch(zsLib::Numeric<char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (char)zsLib::Numeric<char>(" 7F ", false, 16); (void)val; } catch(zsLib::Numeric<char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (char)zsLib::Numeric<char>("128"); (void)val; } catch(const zsLib::Numeric<char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (char)zsLib::Numeric<char>("-129"); (void)val; } catch(const zsLib::Numeric<char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (char)zsLib::Numeric<char>(" 7F ", false, 16); (void)val; } catch(const zsLib::Numeric<char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
-    { bool thrown = false; try { auto val = (unsigned char)zsLib::Numeric<unsigned char>("-1"); (void)val; } catch(zsLib::Numeric<unsigned char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (unsigned char)zsLib::Numeric<unsigned char>("256"); (void)val; } catch(zsLib::Numeric<unsigned char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (unsigned char)zsLib::Numeric<unsigned char>("-1"); (void)val; } catch(const zsLib::Numeric<unsigned char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (unsigned char)zsLib::Numeric<unsigned char>("256"); (void)val; } catch(const zsLib::Numeric<unsigned char>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
-    { bool thrown = false; try { auto val = (short)zsLib::Numeric<short>("32768"); (void)val; } catch(zsLib::Numeric<short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (short)zsLib::Numeric<short>("-32769"); (void)val; } catch(zsLib::Numeric<short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (short)zsLib::Numeric<short>("32768"); (void)val; } catch(const zsLib::Numeric<short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (short)zsLib::Numeric<short>("-32769"); (void)val; } catch(const zsLib::Numeric<short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
-    { bool thrown = false; try { auto val = (unsigned short)zsLib::Numeric<unsigned short>("65536"); (void)val; } catch(zsLib::Numeric<unsigned short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (unsigned short)zsLib::Numeric<unsigned short>("-1"); (void)val; } catch(zsLib::Numeric<unsigned short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (unsigned short)zsLib::Numeric<unsigned short>("65536"); (void)val; } catch(const zsLib::Numeric<unsigned short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (unsigned short)zsLib::Numeric<unsigned short>("-1"); (void)val; } catch(const zsLib::Numeric<unsigned short>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
-    { bool thrown = false; try { auto val = (int)zsLib::Numeric<int>("2147483648"); (void)val; } catch(zsLib::Numeric<int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (int)zsLib::Numeric<int>("-2147483649"); (void)val; } catch(zsLib::Numeric<int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (int)zsLib::Numeric<int>("2147483648"); (void)val; } catch(const zsLib::Numeric<int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (int)zsLib::Numeric<int>("-2147483649"); (void)val; } catch(const zsLib::Numeric<int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
-    { bool thrown = false; try { auto val = (unsigned int)zsLib::Numeric<unsigned int>("4294967296"); (void)val; } catch(zsLib::Numeric<unsigned int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (unsigned int)zsLib::Numeric<unsigned int>("-1"); (void)val; } catch(zsLib::Numeric<unsigned int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (unsigned int)zsLib::Numeric<unsigned int>("4294967296"); (void)val; } catch(const zsLib::Numeric<unsigned int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (unsigned int)zsLib::Numeric<unsigned int>("-1"); (void)val; } catch(const zsLib::Numeric<unsigned int>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
-    { bool thrown = false; try { auto val = (LONGLONG)zsLib::Numeric<LONGLONG>("9223372036854775808"); (void)val; } catch(zsLib::Numeric<LONGLONG>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
-    { bool thrown = false; try { auto val = (LONGLONG)zsLib::Numeric<LONGLONG>("-9223372036854775809"); (void)val; } catch(zsLib::Numeric<LONGLONG>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (LONGLONG)zsLib::Numeric<LONGLONG>("9223372036854775808"); (void)val; } catch(const zsLib::Numeric<LONGLONG>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
+    { bool thrown = false; try { auto val = (LONGLONG)zsLib::Numeric<LONGLONG>("-9223372036854775809"); (void)val; } catch(const zsLib::Numeric<LONGLONG>::ValueOutOfRange &) {thrown = true;} TESTING_CHECK(thrown); }
 
     {
       zsLib::String durStr = "10";

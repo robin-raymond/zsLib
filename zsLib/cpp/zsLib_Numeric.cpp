@@ -547,7 +547,7 @@ namespace zsLib
 	  {
           zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
           outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
-      } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+      } catch(const Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
         return false;
       }
 

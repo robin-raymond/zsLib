@@ -293,7 +293,7 @@ namespace zsLib
                                ((String::npos != openBracketPos) || (String::npos != closeBracketPos)),  // could not be an IPv4 if contained brackets
                                "Found illegal [] brackets around a non-IPv6 address <" + inString + ">: "
                                )
-      } catch (Numeric<WORD>::ValueOutOfRange &) {
+      } catch(const Numeric<WORD>::ValueOutOfRange &) {
         ZS_THROW_CUSTOM(Exceptions::ParseError, ("Failed to parse IP address: " + inString).c_str())
       }
 
@@ -329,7 +329,7 @@ namespace zsLib
           (*this) = temp;
           goto next;
         }
-      } catch (Numeric<WORD>::ValueOutOfRange &) {
+      } catch(const Numeric<WORD>::ValueOutOfRange &) {
         ZS_THROW_CUSTOM(Exceptions::ParseError, ("Failed to parse IP address: " + inString).c_str())
       }
 
@@ -421,7 +421,7 @@ namespace zsLib
 
       DWORD address = 0;
       if (internal::inet_pton4(ipv4, (BYTE *)&address)) return true;
-    } catch (Numeric<WORD>::ValueOutOfRange &) {
+    } catch(const Numeric<WORD>::ValueOutOfRange &) {
       return false;
     }
 
@@ -984,7 +984,7 @@ namespace zsLib
     try {
       mScope = Numeric<decltype(mScope)>(zone);
       mZonePostfix.clear();
-    } catch(Numeric<decltype(mScope)>::ValueOutOfRange &) {
+    } catch(const Numeric<decltype(mScope)>::ValueOutOfRange &) {
       mZonePostfix = zone;
 #ifdef HAVE_IF_NAMETOINDEX
       auto result = if_nametoindex(mZonePostfix);
