@@ -99,6 +99,12 @@ namespace zsLib
     static DelegatePtr create(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__)         {return delegate->proxy_implementation_for_this_interface_is_not_defined();}
 
     //------------------------------------------------------------------------
+    // PURPOSE: Create a proxy for a delegate interaction. The object's
+    //          message queue from zsLib::MessageQueueAssociator is only used
+    //          as a fallback if the queue passsed in is null.
+    static DelegatePtr createUsingQueue(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__) { return delegate->proxy_implementation_for_this_interface_is_not_defined(); }
+
+    //------------------------------------------------------------------------
     // PURPOSE: Create a proxy for a delegate interaction but use a weak
     //          reference to the original delegate (thus the delegate might
     //          disappear at any time). Assumes the objec that implemented the
@@ -134,6 +140,13 @@ namespace zsLib
     //   }
     //
     static DelegatePtr createWeak(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__)     {return delegate->proxy_implementation_for_this_interface_is_not_defined();}
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Create a proxy for a delegate interaction but use a weak
+    ///         reference to the original delegate. The object's message queue
+    //          from zsLib::MessageQueueAssociator is only used as a fallback
+    //          if the queue passsed in is null.
+    static DelegatePtr createWeakUsingQueue(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, int line = __LINE__, const char *fileName = __FILE__) { return delegate->proxy_implementation_for_this_interface_is_not_defined(); }
 
     //------------------------------------------------------------------------
     // PURPOSE: Create a no operation proxy for a delegate interaction but
