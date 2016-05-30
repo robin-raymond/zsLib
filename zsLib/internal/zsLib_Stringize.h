@@ -177,8 +177,6 @@ namespace zsLib
   template<>
   inline Stringize<ULONGLONG>::operator String() const
   {
-    if (10 == mBase)
-      return std::to_string(mValue);
     return internal::convert(mValue, mBase);
   }
 
