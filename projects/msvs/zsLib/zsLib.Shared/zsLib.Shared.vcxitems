@@ -83,6 +83,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\TearAway.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\WeightedMovingAverage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\XML.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\zsLib.h" />
   </ItemGroup>

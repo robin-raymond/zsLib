@@ -195,6 +195,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\date.h">
       <Filter>zsLib</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\WeightedMovingAverage.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\win32\strptime.cpp">

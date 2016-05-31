@@ -52,6 +52,7 @@
 #include <zsLib/Stringize.h>
 #include <zsLib/TearAway.h>
 #include <zsLib/Timer.h>
+#include <zsLib/WeightedMovingAverage.h>
 #include <zsLib/XML.h>
 //#include <zsLib/zsLib.h>
 #include <zsLib/types.h>
