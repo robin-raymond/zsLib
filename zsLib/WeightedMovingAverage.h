@@ -67,12 +67,18 @@ namespace zsLib
   protected:
     void adjust(AverageType vaule)
     {
-      mLastValue = (mLastValue * (static_cast<AverageType>(1.0) - mWeightOfNewValues)) + (vaule * mWeightOfNewValues);
+      if (mFirstAdjustment) {
+        mLastValue = value;
+        mFirstAdjustment = false;
+      } else {
+        mLastValue = (mLastValue * (static_cast<AverageType>(1.0) - mWeightOfNewValues)) + (vaule * mWeightOfNewValues);
+      }
     }
 
   public:
   protected:
 
+    bool mFirstAdjustment {true};
     AverageType mWeightOfNewValues {};
     AverageType mLastValue {};
   };
