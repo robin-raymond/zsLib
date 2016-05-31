@@ -65,13 +65,13 @@ namespace zsLib
     data_type value() const { return static_cast<data_type>(mLastValue); }
 
   protected:
-    void adjust(AverageType vaule)
+    void adjust(AverageType input)
     {
       if (mFirstAdjustment) {
-        mLastValue = value;
+        mLastValue = input;
         mFirstAdjustment = false;
       } else {
-        mLastValue = (mLastValue * (static_cast<AverageType>(1.0) - mWeightOfNewValues)) + (vaule * mWeightOfNewValues);
+        mLastValue = (mLastValue * (static_cast<AverageType>(1.0) - mWeightOfNewValues)) + (input * mWeightOfNewValues);
       }
     }
 
