@@ -34,6 +34,8 @@
 #include <zsLib/internal/zsLib_TimerMonitor.h>
 #include <zsLib/helpers.h>
 
+#include <zsLib/internal/zsLib_Tracing.h>
+
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 
@@ -52,6 +54,7 @@ namespace zsLib
       {
         fired = true;
         try {
+          EventWriteZsTimerEventFired(__func__, this, mID);
           mDelegate->onTimer(mThisWeak.lock());
         } catch (ITimerDelegateProxy::Exceptions::DelegateGone &) {
           mOnceOnly = true;   // this has to stop firing now that the proxy to the delegate points to something that is now gone
@@ -113,6 +116,8 @@ namespace zsLib
     mID = createPUID();
     mMonitored = false;
     mFireNextAt = (std::chrono::system_clock::now() + timeout);
+
+    EventWriteZsTimerCreate(__func__, this, mID, repeat, timeout.count());
   }
 
   //---------------------------------------------------------------------------
@@ -120,6 +125,7 @@ namespace zsLib
   {
     mThisWeak.reset();
     cancel();
+    EventWriteZsTimerDestroy(__func__, this, mID);
   }
 
   //---------------------------------------------------------------------------
@@ -157,7 +163,7 @@ namespace zsLib
     if (now > timeout) {
       return create(delegate, Microseconds(0), false, 1);
     }
-	Microseconds waitTime = std::chrono::duration_cast<Microseconds>(timeout - now);
+    Microseconds waitTime = std::chrono::duration_cast<Microseconds>(timeout - now);
     return create(delegate, waitTime, false, 1);
   }
 

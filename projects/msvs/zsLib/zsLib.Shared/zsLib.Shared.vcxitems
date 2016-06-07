@@ -17,6 +17,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\date.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Exception.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\config.h">
@@ -37,6 +38,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\helpers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Exception.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_IPAddress.h" />
@@ -61,6 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_TearAway.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_TimerMonitor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Tracing.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_XML.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\IPAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Log.h" />
@@ -80,6 +83,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\TearAway.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\WeightedMovingAverage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\XML.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\zsLib.h" />
   </ItemGroup>
@@ -165,5 +169,16 @@
     <Text Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\license.txt">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+      <ExcludedFromBuild>false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </Xml>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
+      <ExcludedFromBuild>false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
 </Project>

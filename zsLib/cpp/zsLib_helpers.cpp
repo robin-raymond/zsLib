@@ -31,6 +31,7 @@
 
 #include <zsLib/helpers.h>
 #include <zsLib/Log.h>
+#include <zsLib/internal/zsLib_Tracing.h>
 #include <zsLib/internal/platform.h>
 
 #ifdef HAVE_PTHREAD_H
@@ -40,6 +41,8 @@
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif //HAVE_WINDOWS_H
+
+#include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h>
 
 #ifdef _WIN32
 namespace std {
@@ -104,50 +107,63 @@ namespace zsLib
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     #pragma mark
-    #pragma mark (helpers)
+    #pragma mark Setup
     #pragma mark
 
     //-------------------------------------------------------------------------
-    std::atomic_ulong &globalPUID()
-    {
-      static std::atomic_ulong global {};
-      return global;
-    }
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark (helpers)
+    #pragma mark
 
-    class EpochHelper
-    {
-    public:
-      EpochHelper()
-      {
-        std::tm tmepoch {};
-
-        tmepoch.tm_year = 70;
-        tmepoch.tm_mon = 0;
-        tmepoch.tm_mday = 1;
-
-        time_t tepoch = std::mktime(&tmepoch);
-
-        mEpoch = std::chrono::system_clock::from_time_t(tepoch);
-      }
-
-      static Time &epoch()
-      {
-        static EpochHelper singleton;
-        return singleton.mEpoch;
-      }
-
-    private:
-      Time mEpoch;
-    };
-
+    // forward declarations
     void initSubsystems();
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Setup
+    #pragma mark
+
+    class Setup
+    {
+    protected:
+      Setup()
+      {
+        EventRegisterzsLib();
+        initSubsystems();
+      }
+
+    public:
+      ~Setup()
+      {
+        EventUnregisterzsLib();
+      }
+
+      static Setup &singleton()
+      {
+        static Setup setup;
+        return setup;
+      }
+
+      PUID createPUID()
+      {
+        return ++mID;
+      }
+
+    protected:
+      std::atomic_ulong mID;
+    };
   }
 
   //---------------------------------------------------------------------------
   PUID createPUID()
   {
-    std::atomic_ulong &global = internal::globalPUID();
-    return ++global;
+    return internal::Setup::singleton().createPUID();
   }
 
   //---------------------------------------------------------------------------
@@ -161,8 +177,16 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void setup()
   {
-    internal::initSubsystems();
+    internal::Setup::singleton();
   }
+
+#ifdef WINRT
+  void setup(Windows::UI::Core::CoreDispatcher ^dispatcher)
+  {
+    setup();
+    internal::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(dispatcher);
+  }
+#endif //WINRT
 
   //---------------------------------------------------------------------------
   void debugSetCurrentThreadName(const char *name)
@@ -190,11 +214,5 @@ namespace zsLib
   Time now()
   {
     return std::chrono::system_clock::now();
-  }
-
-  //---------------------------------------------------------------------------
-  Time epoch()
-  {
-    return internal::EpochHelper::epoch();
   }
 }

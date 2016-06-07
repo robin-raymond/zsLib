@@ -34,6 +34,8 @@
 #include <zsLib/helpers.h>
 #include <zsLib/XML.h>
 
+#include <zsLib/SafeInt.h>
+
 #include <stdlib.h>
 
 #define ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS (10*(1000))
@@ -841,7 +843,7 @@ namespace zsLib
         auto result =
 
 #ifdef _WIN32
-        WSAWaitForMultipleEvents(size, pollEvents, FALSE, ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS, FALSE);
+        WSAWaitForMultipleEvents(SafeInt<DWORD>(size), pollEvents, FALSE, ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS, FALSE);
 #else
         poll(pollFDs, size, ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS);
         if (-1 == result) {
@@ -873,7 +875,7 @@ namespace zsLib
             if (nextIndex >= size) goto completed;
             ++nextIndex;
 
-            result = WSAWaitForMultipleEvents(size - index, &(pollEvents[index]), FALSE, 0, FALSE);
+            result = WSAWaitForMultipleEvents(SafeInt<DWORD>(size - index), &(pollEvents[index]), FALSE, 0, FALSE);
             if (WSA_WAIT_TIMEOUT == result) goto completed;
 
             index = (result - WSA_WAIT_EVENT_0) + index;

@@ -168,7 +168,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\extras\uuid\uuidP.h">
       <Filter>zsLib\extras\uuid</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Singleton.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
@@ -182,6 +181,21 @@
       <Filter>zsLib\internal</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\SafeInt.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_Tracing.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\Singleton.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\date.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\WeightedMovingAverage.h">
       <Filter>zsLib</Filter>
     </ClInclude>
   </ItemGroup>
@@ -341,5 +355,13 @@
     <Text Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\license.txt">
       <Filter>zsLib</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+      <Filter>zsLib\internal</Filter>
+    </Xml>
+    <Xml Include="$(MSBuildThisFileDirectory)..\..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
+      <Filter>zsLib\internal</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

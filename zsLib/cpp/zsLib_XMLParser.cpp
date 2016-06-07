@@ -1435,7 +1435,7 @@ namespace zsLib
               try {
                 Numeric<ULONG> numeric(lookup, false, isHex ? 16 : 10);
                 number = (ULONG)numeric;
-              } catch (Numeric<ULONG>::ValueOutOfRange &) {
+              } catch(const Numeric<ULONG>::ValueOutOfRange &) {
               }
               newLetter = (WCHAR)number;
             }
@@ -1707,7 +1707,7 @@ namespace zsLib
 
               source += 4;
 
-            } catch(Numeric<WORD>::ValueOutOfRange &) {
+            } catch(const Numeric<WORD>::ValueOutOfRange &) {
               *dest = '\\';
               ++dest;
               --source;

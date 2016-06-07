@@ -30,10 +30,13 @@
  */
 
 #include <zsLib/internal/zsLib_SocketMonitor.h>
+#include <zsLib/internal/zsLib_Tracing.h>
 
 #include <zsLib/Socket.h>
 #include <zsLib/IPAddress.h>
 #include <zsLib/Stringize.h>
+
+#include <zsLib/SafeInt.h>
 
 #include <fcntl.h>
 #include <signal.h>
@@ -130,6 +133,9 @@ namespace zsLib
     }
 
 #ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable:4297)
+
     class SocketInit
     {
     public:
@@ -153,6 +159,7 @@ namespace zsLib
         }
       }
     };
+#pragma warning(pop)
 #else
     class SocketInit
     {
@@ -169,7 +176,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    static void prepareRawIPAddress(const IPAddress &inAddress, sockaddr_in &inIPv4, sockaddr_in6 &inIPv6, sockaddr * &outAddress, int &outSize)
+    static void prepareRawIPAddress(const IPAddress &inAddress, sockaddr_in &inIPv4, sockaddr_in6 &inIPv6, sockaddr * &outAddress, socklen_t &outSize)
     {
       outAddress = NULL;
       outSize = 0;
@@ -200,6 +207,8 @@ namespace zsLib
       if (!delegate)
         return;
 
+      EventWriteZsSocketNotifyEventFired(__func__, this, "read ready");
+
       delegate->onReadReady(socket);
     }
 
@@ -216,6 +225,8 @@ namespace zsLib
       if (!delegate)
         return;
 
+      EventWriteZsSocketNotifyEventFired(__func__, this, "write ready");
+
       delegate->onWriteReady(socket);
     }
 
@@ -231,6 +242,8 @@ namespace zsLib
       }
       if (!delegate)
         return;
+
+      EventWriteZsSocketNotifyEventFired(__func__, this, "exception");
 
       delegate->onException(socket);
     }
@@ -290,16 +303,22 @@ namespace zsLib
   {
     internal::socketInit();
     SOCKET socket = ::socket(inFamily, inType, inProtocol);
+
+    SocketPtr object = create();
+    object->mThis = object;
+
+    EventWriteZsSocketCreate(__func__, object.get(), socket, to_underlying(inFamily), to_underlying(inType), to_underlying(inProtocol));
+
     if (INVALID_SOCKET == socket)
     {
       int error = WSAGetLastError();
+
+      EventWriteZsSocketError(__func__, socket, error);
       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Could not create socket due to an unexpected error, where error=" + (string(error)))
     }
 
     ZS_LOG_TRACE(internal::slog("creating socket") + ZS_PARAM("socket", (PTRNUMBER)socket))
 
-    SocketPtr object = create();
-    object->mThis = object;
     object->adopt(socket);
     return object;
   }
@@ -346,6 +365,9 @@ namespace zsLib
     AutoRecursiveLock lock(mLock);
     SOCKET temp = mSocket;
     mSocket = INVALID_SOCKET;
+
+    EventWriteZsSocketOrphan(__func__, temp);
+
     return temp;
   }
 
@@ -357,6 +379,8 @@ namespace zsLib
     AutoRecursiveLock lock(mLock);
     ZS_LOG_TRACE(internal::slog("adopting socket") + ZS_PARAM("socket", (PTRNUMBER)inSocket))
     mSocket = inSocket;
+
+    EventWriteZsSocketAdopt(__func__, mSocket);
   }
 
   //---------------------------------------------------------------------------
@@ -451,10 +475,14 @@ namespace zsLib
     ZS_LOG_TRACE(internal::slog("closing socket") + ZS_PARAM("socket", (PTRNUMBER)mSocket))
 
     int result = closesocket(mSocket);
+
+    EventWriteZsSocketClose(__func__, mSocket, result);
+
     mSocket = INVALID_SOCKET;
     if (SOCKET_ERROR == result)
     {
       int error = WSAGetLastError();
+      EventWriteZsSocketError(__func__, mSocket, error);
       switch (error)
       {
         case WSAEWOULDBLOCK: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::WouldBlock, error, "closesocket on an asynchronous socket would block, where socket id=" + (string((PTRNUMBER)mSocket))); break;
@@ -479,9 +507,13 @@ namespace zsLib
                              (sockaddr *)&address,
                              &size
                              );
+
+    EventWriteZsSocketGetLocalAddress(__func__, mSocket, result, size, reinterpret_cast<const BYTE *>(&address));
+
     if (SOCKET_ERROR == result)
     {
       int error = WSAGetLastError();
+      EventWriteZsSocketError(__func__, mSocket, error);
       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "getsockname returned an unexpected error, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
     }
 
@@ -512,9 +544,13 @@ namespace zsLib
                              (sockaddr *)&address,
                              &size
                              );
+
+    EventWriteZsSocketGetRemoteAddress(__func__, mSocket, result, size, reinterpret_cast<const BYTE *>(&address));
+
     if (SOCKET_ERROR == result)
     {
       int error = WSAGetLastError();
+      EventWriteZsSocketError(__func__, mSocket, error);
       ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "getpeername returned an unexpected error, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
     }
 
@@ -583,7 +619,7 @@ namespace zsLib
       sockaddr_in addressv4 {};
       sockaddr_in6 addressv6 {};
       sockaddr *address = NULL;
-      int size = 0;
+      socklen_t size = 0;
       internal::prepareRawIPAddress(inBindIP, addressv4, addressv6, address, size);
 #ifdef _WIN32
 //      if (0 != addressv6.sin6_scope_id) {
@@ -592,9 +628,11 @@ namespace zsLib
 #endif //_WIN32
 
       int result = ::bind(mSocket, address, size);
+      EventWriteZsSocketBind(__func__, mSocket, result, size, reinterpret_cast<const BYTE *>(address));
       if (SOCKET_ERROR == result)
       {
         int error = handleError(0, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, error);
         if (0 == error) return;
 
         switch (error)
@@ -623,9 +661,11 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
 
       int result = ::listen(mSocket, SOMAXCONN);
+      EventWriteZsSocketListen(__func__, mSocket, result);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, mSocket, error);
         switch (error)
         {
           case WSAEADDRINUSE: ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::AddressInUse, error, "Cannot listen on socket as address is already in use, where socket id=" + (string((PTRNUMBER)mSocket))); break;
@@ -645,6 +685,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   SocketPtr Socket::accept(
                            IPAddress &outRemoteIP,
+                           bool *outWouldBlock,
                            int *outNoThrowErrorResult
                            ) const throw(
                                          Exceptions::InvalidSocket,
@@ -667,9 +708,15 @@ namespace zsLib
       address.sin6_family = AF_INET6;
       socklen_t size = sizeof(address);
       acceptSocket = ::accept(mSocket, (sockaddr *)(&address), &size);
+      EventWriteZsSocketAccept(__func__, acceptSocket, mSocket, size, reinterpret_cast<const BYTE *>(&address));
       if (INVALID_SOCKET == acceptSocket)
       {
-        int error = handleError(0, outNoThrowErrorResult);
+        int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
+        if (0 == error) return SocketPtr();
+
+        error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return SocketPtr();
 
         switch (error)
@@ -729,16 +776,20 @@ namespace zsLib
       sockaddr_in addressv4;
       sockaddr_in6 addressv6;
       sockaddr *address = NULL;
-      int size = 0;
+      socklen_t size = 0;
       internal::prepareRawIPAddress(inDestination, addressv4, addressv6, address, size);
 
       int result = ::connect(mSocket, address, size);
+      EventWriteZsSocketConnect(__func__, mSocket, result, size, reinterpret_cast<const BYTE *>(address));
+
       if (SOCKET_ERROR == result)
       {
         int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
         if (0 == error) goto connect_final;
 
         error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return;
 
         switch (error)
@@ -811,17 +862,22 @@ namespace zsLib
       result = ::recv(
                       mSocket,
                       (char *)ioBuffer,
-                      inBufferLengthInBytes,
+                      SafeInt<int>(inBufferLengthInBytes),
                       flags
                       );
+
+      EventWriteZsSocketRecv(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), ioBuffer);
+
       if (SOCKET_ERROR == result)
       {
         result = 0;
 
         int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
         if (0 == error) goto receive_final;
 
         error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return 0;
 
         switch (error)
@@ -890,20 +946,24 @@ namespace zsLib
       result = recvfrom(
                         mSocket,
                         (char *)ioBuffer,
-                        inBufferLengthInBytes,
+                        SafeInt<int>(inBufferLengthInBytes),
                         static_cast<int>(inFlags),
                         (sockaddr *)&address,
                         &size
                         );
+
+      EventWriteZsSocketRecvFrom(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), ioBuffer, SafeInt<unsigned int>(size), reinterpret_cast<const BYTE *>(&address));
 
       if (SOCKET_ERROR == result)
       {
         result = 0;
 
         int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
         if (0 == error) goto recvfrom_final;
 
         error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return 0;
 
         switch (error)
@@ -974,18 +1034,22 @@ namespace zsLib
       result = ::send(
                       mSocket,
                       (const char *)inBuffer,
-                      inBufferLengthInBytes,
+                      SafeInt<int>(inBufferLengthInBytes),
                       static_cast<int>(inFlags)
                       );
+
+      EventWriteZsSocketSend(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), inBuffer);
 
       if (SOCKET_ERROR == result)
       {
         result = 0;
 
         int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
         if (0 == error) goto send_final;
 
         error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return 0;
 
         switch (error)
@@ -1053,25 +1117,30 @@ namespace zsLib
       sockaddr_in addressv4;
       sockaddr_in6 addressv6;
       sockaddr *address = NULL;
-      int size = 0;
+      socklen_t size = 0;
       internal::prepareRawIPAddress(inDestination, addressv4, addressv6, address, size);
 
       result = ::sendto(
                         mSocket,
                         (const char *)inBuffer,
-                        inBufferLengthInBytes,
+                        SafeInt<int>(inBufferLengthInBytes),
                         static_cast<int>(inFlags),
                         address,
-                        size
+                        SafeInt<int>(size)
                         );
+
+      EventWriteZsSocketSendTo(__func__, mSocket, result, inFlags, SafeInt<unsigned int>(inBufferLengthInBytes), inBuffer, SafeInt<unsigned int>(size), reinterpret_cast<const BYTE *>(address));
+
       if (SOCKET_ERROR == result)
       {
         result = 0;
 
         int error = handleError(outWouldBlock);
+        EventWriteZsSocketWouldBlock(__func__, mSocket, NULL == outWouldBlock ? false : *outWouldBlock);
         if (0 == error) goto sendto_final;
 
         error = handleError(error, outNoThrowErrorResult);
+        EventWriteZsSocketError(__func__, mSocket, NULL == outNoThrowErrorResult ? error : *outNoThrowErrorResult);
         if (0 == error) return 0;
 
         switch (error)
@@ -1112,9 +1181,11 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::InvalidSocket, !isValid())
 
       int result = ::shutdown(mSocket, inOptions);
+      EventWriteZsSocketShutdown(__func__, mSocket, result, to_underlying(inOptions));
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, mSocket, error);
         ZS_THROW_CUSTOM_PROPERTIES_1(Exceptions::Unspecified, error, "Failed to perform a shutdown on the socket, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
     }
@@ -1139,9 +1210,11 @@ namespace zsLib
                                  )
     {
       int result = ::setsockopt(inSocket, inLevel, inOptionName, (const char *)inOptionValue, inOptionLength);
+      EventWriteZsSocketSetOption(__func__, inSocket, result, inLevel, inOptionName, inOptionLength, inOptionValue);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, inSocket, error);
         ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, error, "setsockopt failed, where socket id=" + (string((PTRNUMBER)inSocket)) + ", socket option=" + (string(inOptionName)) + ", error=" + (string(error)))
       }
     }
@@ -1157,9 +1230,11 @@ namespace zsLib
     {
       socklen_t length = inOptionLength;
       int result = ::getsockopt(inSocket, inLevel, inOptionName, (char *)outOptionValue, &length);
+      EventWriteZsSocketGetOption(__func__, inSocket, result, inLevel, inOptionName, inOptionLength, outOptionValue);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, inSocket, error);
         ZS_THROW_CUSTOM_PROPERTIES_1(zsLib::Socket::Exceptions::Unspecified, error, "getsockopt failed, where socket id=" + (string((PTRNUMBER)inSocket)) + ", socket option=" + (string(inOptionName)) + ", error=" + (string(error)))
       }
       ZS_THROW_BAD_STATE_IF(length != inOptionLength)
@@ -1201,9 +1276,11 @@ namespace zsLib
         }
       }
 #endif //WIN32
+      EventWriteZsSocketSetOptionFlag(__func__, mSocket, result, static_cast<unsigned int>(to_underlying(inOption)), inEnabled);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, mSocket, error);
         ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to set the socket to non-blocking, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
       return;
@@ -1270,9 +1347,11 @@ namespace zsLib
       int value = 0;
       int result = ioctl(mSocket, inOption, &value);
 #endif //_WIN32
+      EventWriteZsSocketGetOptionFlag(__func__, mSocket, result, to_underlying(inOption), value);
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, mSocket, error);
         ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to determine if OOB data was available or not, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
       return 0 != value;
@@ -1313,9 +1392,11 @@ namespace zsLib
       int value = 0;
       int result = ioctl(mSocket, inOption, &value);
 #endif //_WIN32
+      EventWriteZsSocketGetOption(__func__, mSocket, result, 0, to_underlying(inOption), sizeof(value), reinterpret_cast<const BYTE *>(&value));
       if (SOCKET_ERROR == result)
       {
         int error = WSAGetLastError();
+        EventWriteZsSocketError(__func__, mSocket, error);
         ZS_THROW_CUSTOM_PROPERTIES_1(Socket::Exceptions::Unspecified, error, "Failed to determine amount of data ready to read, where socket id=" + (string((PTRNUMBER)mSocket)) + ", error=" + (string(error)))
       }
       return value;
@@ -1352,8 +1433,10 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::DelegateNotSet, !mDelegate)
     }
 
-    if (mMonitorReadReady)
+    if (mMonitorReadReady) {
+      EventWriteZsSocketNotifyEventReset(__func__, this, mSocket);
       mMonitor->monitorRead(*this);
+    }
   }
 
   //---------------------------------------------------------------------------
@@ -1365,8 +1448,10 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::DelegateNotSet, !mDelegate)
     }
 
-    if (mMonitorWriteReady)
+    if (mMonitorWriteReady) {
+      EventWriteZsSocketNotifyEventReset(__func__, this, mSocket);
       mMonitor->monitorWrite(*this);
+    }
   }
 
   //---------------------------------------------------------------------------
@@ -1378,8 +1463,10 @@ namespace zsLib
       ZS_THROW_CUSTOM_IF(Exceptions::DelegateNotSet, !mDelegate)
     }
 
-    if (mMonitorException)
+    if (mMonitorException) {
+      EventWriteZsSocketNotifyEventReset(__func__, this, mSocket);
       mMonitor->monitorException(*this);
+    }
   }
 
 } // namespace zsLib

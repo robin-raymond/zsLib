@@ -34,6 +34,7 @@
 #ifdef WINRT
 
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h>
+#include <zsLib/internal/zsLib_MessageQueueThreadBasic.h>
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
@@ -58,35 +59,41 @@ namespace zsLib
 
 
     //-------------------------------------------------------------------------
-    MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton()
+    MessageQueueThreadPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton()
     {
-      static SingletonLazySharedPtr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindows> singleton(MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create());
+      CoreDispatcher ^dispatcher = setupDispatcher();
+
+      if (nullptr == dispatcher) {
+        static SingletonLazySharedPtr<MessageQueueThreadBasic> singleton(MessageQueueThreadBasic::create("zsLib.winrt.backgroundDispatcher"));
+        return singleton.singleton();
+      }
+
+      static SingletonLazySharedPtr<MessageQueueThreadUsingCurrentGUIMessageQueueForWindows> singleton(MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create(dispatcher));
       return singleton.singleton();
     }
 
     //-------------------------------------------------------------------------
-    MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create()
+    Windows::UI::Core::CoreDispatcher ^MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(CoreDispatcher ^dispatcher)
+    {
+      static CoreDispatcher ^gDispatcher = dispatcher;
+      return gDispatcher;
+    }
+
+    //-------------------------------------------------------------------------
+    MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::create(CoreDispatcher ^dispatcher)
     {
       MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr thread(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindows);
+      thread->mThisWeak = thread;
       thread->mQueue = zsLib::MessageQueue::create(thread);
-      thread->setup();
+      thread->mDispatcher = dispatcher;
+      assert(thread->mDispatcher);
       return thread;
     }
 
     //-------------------------------------------------------------------------
-    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setup()
+    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::dispatch(MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr queue)
     {
-      // make sure the window message queue was created by peeking a message
-      //mDispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
-      mDispatcher =  Windows::ApplicationModel::Core::CoreApplication::MainView->Dispatcher;
-      assert(mDispatcher);
-    }
-
-    //-------------------------------------------------------------------------
-    void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::dispatch()
-    {
-      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr singleton = MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton();
-      singleton->process();
+      queue->process();
     }
 
     //-------------------------------------------------------------------------
@@ -97,6 +104,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::~MessageQueueThreadUsingCurrentGUIMessageQueueForWindows()
     {
+      mThisWeak.reset();
       mDispatcher = nullptr;
     }
 
@@ -131,6 +139,7 @@ namespace zsLib
     void MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::notifyMessagePosted()
     {
       CoreDispatcher ^dispatcher;
+      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr queue;
 
       {
         AutoLock lock(mLock);
@@ -139,9 +148,10 @@ namespace zsLib
           ZS_THROW_CUSTOM(Exceptions::MessageQueueAlreadyDeleted, "message posted to message queue after message queue was deleted.")
         }
         dispatcher = mDispatcher;
+        queue = mThisWeak.lock();
       }
 
-      auto callback = [] () {dispatch();};
+      auto callback = [queue] () {dispatch(queue);};
 
       dispatcher->RunAsync(
         Windows::UI::Core::CoreDispatcherPriority::Normal,

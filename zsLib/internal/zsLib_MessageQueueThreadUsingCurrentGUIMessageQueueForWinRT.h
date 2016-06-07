@@ -31,10 +31,10 @@
 
 #pragma once
 
-#ifdef _WIN32
+#ifdef WINRT
 
-#ifndef ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINDOWS_H_e059928c0dab4631bdaeab09d5b25847
-#define ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINDOWS_H_e059928c0dab4631bdaeab09d5b25847
+#ifndef ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINRT_H_f2c9eb6907a5b2e960f957688a668fcb
+#define ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINRT_H_f2c9eb6907a5b2e960f957688a668fcb
 
 #include <Windows.h>
 
@@ -61,14 +61,14 @@ namespace zsLib
 
     protected:
       MessageQueueThreadUsingCurrentGUIMessageQueueForWindows();
-      static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr create();
-      void setup();
-      static void dispatch();
+      static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr create(CoreDispatcher ^dispatcher);
+      static void dispatch(MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr queue);
 
     public:
       ~MessageQueueThreadUsingCurrentGUIMessageQueueForWindows();
 
-      static MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr singleton();
+      static MessageQueueThreadPtr singleton();
+      static CoreDispatcher ^setupDispatcher(CoreDispatcher ^dispatcher = nullptr);
 
       // IMessageQueue
       virtual void post(IMessageQueueMessageUniPtr message);
@@ -89,6 +89,7 @@ namespace zsLib
 
     protected:
       mutable Lock mLock;
+      MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsWeakPtr mThisWeak;
 
       MessageQueuePtr mQueue;
       CoreDispatcher ^mDispatcher;
@@ -98,6 +99,6 @@ namespace zsLib
   }
 }
 
-#endif //ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINDOWS_H_e059928c0dab4631bdaeab09d5b25847
+#endif //ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINRT_H_f2c9eb6907a5b2e960f957688a668fcb
 
-#endif //_WIN32
+#endif //WINRT

@@ -270,6 +270,7 @@ namespace zsLib
 
     virtual SocketPtr accept(
                              IPAddress &outRemoteIP,
+                             bool *outWouldBlock = NULL,         // if this param is used, will return the "would block" as a result rather than throwing an exception
                              int *noThrowErrorResult = NULL
                              ) const throw(
                                            Exceptions::InvalidSocket,

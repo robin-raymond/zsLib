@@ -11,3 +11,4 @@ projects/android/obj
 *.pfx
 ipch/
 *.opensdf
+zsLib/internal/zsLib_ETWTracing.h

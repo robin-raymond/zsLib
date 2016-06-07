@@ -293,14 +293,14 @@ namespace zsLib
 
     static ULONGLONG gMinLongLongs[] =
     {
-      0xFFFFFFFFFFFFFF80LL,  // 1 bytes
-      0xFFFFFFFFFFFF8000LL,  // 2 bytes
-      0xFFFFFFFFFF800000LL,  // 3 bytes
-      0xFFFFFFFF80000000LL,  // 4 bytes
-      0xFFFFFF8000000000LL,  // 5 bytes
-      0xFFFF800000000000LL,  // 6 bytes
-      0xFF80000000000000LL,  // 7 bytes
-      0x8000000000000000LL   // 8 bytes
+      0xFFFFFFFFFFFFFF80ULL,  // 1 bytes
+      0xFFFFFFFFFFFF8000ULL,  // 2 bytes
+      0xFFFFFFFFFF800000ULL,  // 3 bytes
+      0xFFFFFFFF80000000ULL,  // 4 bytes
+      0xFFFFFF8000000000ULL,  // 5 bytes
+      0xFFFF800000000000ULL,  // 6 bytes
+      0xFF80000000000000ULL,  // 7 bytes
+      0x8000000000000000ULL   // 8 bytes
     };
 
     static LONGLONG gMaxLongLongs[] =
@@ -317,14 +317,14 @@ namespace zsLib
 
     static ULONGLONG gMaxULongLongs[] =
     {
-      0x00000000000000FFLL,  // 1 bytes
-      0x000000000000FFFFLL,  // 2 bytes
-      0x0000000000FFFFFFLL,  // 3 bytes
-      0x00000000FFFFFFFFLL,  // 4 bytes
-      0x000000FFFFFFFFFFLL,  // 5 bytes
-      0x0000FFFFFFFFFFFFLL,  // 6 bytes
-      0x00FFFFFFFFFFFFFFLL,  // 7 bytes
-      0xFFFFFFFFFFFFFFFFLL   // 8 bytes
+      0x00000000000000FFULL,  // 1 bytes
+      0x000000000000FFFFULL,  // 2 bytes
+      0x0000000000FFFFFFULL,  // 3 bytes
+      0x00000000FFFFFFFFULL,  // 4 bytes
+      0x000000FFFFFFFFFFULL,  // 5 bytes
+      0x0000FFFFFFFFFFFFULL,  // 6 bytes
+      0x00FFFFFFFFFFFFFFULL,  // 7 bytes
+      0xFFFFFFFFFFFFFFFFULL   // 8 bytes
     };
 
     void skipSpace(CSTR &ioStr)
@@ -547,7 +547,7 @@ namespace zsLib
 	  {
           zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
           outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
-      } catch(Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+      } catch(const Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
         return false;
       }
 

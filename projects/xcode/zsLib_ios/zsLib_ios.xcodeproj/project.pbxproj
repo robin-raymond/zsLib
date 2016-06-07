@@ -63,6 +63,7 @@
 		000CBF8117A40C690075E86C /* ProxySubscriptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
 		0020ED5A1AB86DDE00B66C74 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		00265E571B3F29BA00D9B45F /* SafeInt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SafeInt.h; sourceTree = "<group>"; };
+		0049A6541C6C3FB500A7AACB /* zsLib_Tracing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_Tracing.h; sourceTree = "<group>"; };
 		004B60A91B29066800568C22 /* MessageQueueThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageQueueThreadPool.h; sourceTree = "<group>"; };
 		004B60AD1B2906E800568C22 /* zsLib_MessageQueueThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadPool.h; sourceTree = "<group>"; };
 		004B60AE1B2906F800568C22 /* zsLib_MessageQueueThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadPool.cpp; sourceTree = "<group>"; };
@@ -134,6 +135,7 @@
 		006681DA16C9D65E00259F81 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		006681DB16C9D65E00259F81 /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
 		006681DC16C9D65E00259F81 /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+		00AF93761CD2281400B47463 /* date.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date.h; sourceTree = "<group>"; };
 		00CEE9911A8E983800BE86D6 /* license.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		00CEE9921A8E983800BE86D6 /* Promise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Promise.h; sourceTree = "<group>"; };
 		00CEE9931A8E984D00BE86D6 /* zsLib_Promise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Promise.h; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		00D6676D1AB5CBF4001D8E34 /* zsLib_Singleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_Singleton.h; sourceTree = "<group>"; };
 		00D6676E1AB5CC0A001D8E34 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp; sourceTree = "<group>"; };
 		00D6676F1AB5CC0A001D8E34 /* zsLib_Singleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Singleton.cpp; sourceTree = "<group>"; };
+		00E3EDAC1C722C4E0059D006 /* zsLib_ETWTracing.man */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib_ETWTracing.man; sourceTree = "<group>"; };
 		00EB8E8F177D334900FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
 		00EB8E90177D335700FFD40F /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
 		00EF0B11184A5A4F00101BEE /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 				00CEE9911A8E983800BE86D6 /* license.txt */,
 				006681DA16C9D65E00259F81 /* types.h */,
 				006681DC16C9D65E00259F81 /* zsLib.h */,
+				00AF93761CD2281400B47463 /* date.h */,
 				006681B416C9D65E00259F81 /* Event.h */,
 				006681B516C9D65E00259F81 /* Exception.h */,
 				006681B616C9D65E00259F81 /* helpers.h */,
@@ -284,6 +288,8 @@
 				00FA3FB51A87EDA000C7C32B /* zsLib_TearAway.h */,
 				006681CA16C9D65E00259F81 /* zsLib_Timer.h */,
 				006681CB16C9D65E00259F81 /* zsLib_TimerMonitor.h */,
+				0049A6541C6C3FB500A7AACB /* zsLib_Tracing.h */,
+				00E3EDAC1C722C4E0059D006 /* zsLib_ETWTracing.man */,
 				006681CC16C9D65E00259F81 /* zsLib_XML.h */,
 			);
 			path = internal;

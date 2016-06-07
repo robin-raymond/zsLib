@@ -34,38 +34,48 @@
 #ifndef ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17
 #define ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17
 
+#ifdef WINRT
+#include <Windows.h>
+#endif //WINRT
+
 #include <zsLib/types.h>
+
 
 namespace zsLib
 {
+  void setup();
+#ifdef WINRT
+  void setup(Windows::UI::Core::CoreDispatcher ^dispatcher);
+#endif //WINRT
 
   //---------------------------------------------------------------------------
   PUID createPUID();
   UUID createUUID();
 
-  void setup();
-
   //---------------------------------------------------------------------------
   void debugSetCurrentThreadName(const char *name);
 
+  // see: http://stackoverflow.com/questions/8357240/how-to-automatically-convert-strongly-typed-enum-into-int
+  template <typename E>
+  constexpr typename std::underlying_type<E>::type to_underlying(E e) {
+    return static_cast<typename std::underlying_type<E>::type>(e);
+  }
+
   //---------------------------------------------------------------------------
   Time now();
-
-  Time epoch();
 
   template <typename duration_type>
   inline duration_type timeSinceEpoch(Time time)
   {
     if (Time() == time) return duration_type();
-
-    return std::chrono::duration_cast<duration_type>(time - zsLib::epoch());
+    return std::chrono::duration_cast<duration_type>(time.time_since_epoch());
   }
 
   template <typename duration_type>
   inline Time timeSinceEpoch(duration_type duration)
   {
     if (decltype(duration)() == duration) return Time();
-    return zsLib::epoch() + duration;
+    return Time(duration);
   }
 
   inline Hours toHours(const Hours &v) {return v;}

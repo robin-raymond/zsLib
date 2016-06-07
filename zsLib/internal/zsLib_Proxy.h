@@ -207,6 +207,36 @@ namespace zsLib                                                                 
       return make_shared<ProxyType>(queue, delegate, line, fileName);                                         \
     }                                                                                                         \
                                                                                                               \
+    static DelegatePtr createUsingQueue(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)   \
+    {                                                                                                         \
+      if (!delegate)                                                                                          \
+        return delegate;                                                                                      \
+                                                                                                              \
+      ProxyType *proxy = dynamic_cast<ProxyType *>(delegate.get());                                           \
+      if (proxy) {                                                                                            \
+        if (proxy->isNoop())                                                                                  \
+          return delegate;                                                                                    \
+        delegate = proxy->getDelegate(throwDelegateGone);                                                     \
+        if (!delegate)                                                                                        \
+          return delegate;                                                                                    \
+        if (!queue)                                                                                           \
+          queue = proxy->getQueue();                                                                          \
+      }                                                                                                       \
+                                                                                                              \
+      if (!queue) {                                                                                           \
+        MessageQueueAssociator *associator = dynamic_cast<MessageQueueAssociator *>(delegate.get());            \
+        if (associator)                                                                                         \
+          queue = (associator->getAssociatedMessageQueue() ? associator->getAssociatedMessageQueue() : queue);  \
+      }                                                                                                       \
+                                                                                                              \
+      if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
+        return delegate;                                                                                      \
+      }                                                                                                       \
+                                                                                                              \
+      return make_shared<ProxyType>(queue, delegate, line, fileName);                                         \
+    }                                                                                                         \
+                                                                                                              \
     static DelegatePtr createWeak(DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__)                       \
     {                                                                                                         \
       if (!delegate)                                                                                          \
@@ -255,6 +285,36 @@ namespace zsLib                                                                 
       MessageQueueAssociator *associator = dynamic_cast<MessageQueueAssociator *>(delegate.get());            \
       if (associator)                                                                                         \
         queue = (associator->getAssociatedMessageQueue() ? associator->getAssociatedMessageQueue() : queue);  \
+                                                                                                              \
+      if (!queue) {                                                                                           \
+        if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \
+        return delegate;                                                                                      \
+      }                                                                                                       \
+                                                                                                              \
+      return make_shared<ProxyType>(queue, DelegateWeakPtr(delegate), line, fileName);                        \
+    }                                                                                                         \
+                                                                                                              \
+    static DelegatePtr createWeakUsingQueue(IMessageQueuePtr queue, DelegatePtr delegate, bool throwDelegateGone = false, bool overrideDelegateMustHaveQueue = true, int line = __LINE__, const char *fileName = __FILE__) \
+    {                                                                                                         \
+      if (!delegate)                                                                                          \
+        return delegate;                                                                                      \
+                                                                                                              \
+      ProxyType *proxy = dynamic_cast<ProxyType *>(delegate.get());                                           \
+      if (proxy) {                                                                                            \
+        if (proxy->isNoop())                                                                                  \
+          return delegate;                                                                                    \
+        delegate = proxy->getDelegate(throwDelegateGone);                                                     \
+        if (!delegate)                                                                                        \
+          return delegate;                                                                                    \
+        if (!queue)                                                                                           \
+          queue = proxy->getQueue();                                                                          \
+      }                                                                                                       \
+                                                                                                              \
+      if (!queue) {                                                                                           \
+        MessageQueueAssociator *associator = dynamic_cast<MessageQueueAssociator *>(delegate.get());            \
+        if (associator)                                                                                         \
+          queue = (associator->getAssociatedMessageQueue() ? associator->getAssociatedMessageQueue() : queue);  \
+      }                                                                                                       \
                                                                                                               \
       if (!queue) {                                                                                           \
         if ((xDelegateMustHaveQueue) && (overrideDelegateMustHaveQueue)) throwMissingMessageQueue();          \

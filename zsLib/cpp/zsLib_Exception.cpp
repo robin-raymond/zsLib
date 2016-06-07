@@ -35,6 +35,8 @@
 #include <zsLib/Log.h>
 #include <zsLib/XML.h>
 
+#include <zsLib/internal/zsLib_Tracing.h>
+
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 namespace zsLib
@@ -66,6 +68,8 @@ namespace zsLib
     mFilePath(filePath),
     mLineNumber(lineNumber)
   {
+    EventWriteZsExceptionEventFired(__func__, subsystem.getName(), message, function, filePath, lineNumber, expression);
+
     if (expression) {
       mParams << ZS_PARAM("expression", expression);
     }
@@ -89,6 +93,8 @@ namespace zsLib
     mFilePath(filePath),
     mLineNumber(lineNumber)
   {
+    EventWriteZsExceptionEventFired(__func__, subsystem.getName(), message, function, filePath, lineNumber, expression);
+
     if (expression) {
       mParams << ZS_PARAM("expression", expression);
     }
@@ -113,6 +119,8 @@ namespace zsLib
     mLineNumber(lineNumber),
     mParams(params)
   {
+    EventWriteZsExceptionEventFired(__func__, subsystem.getName(), params.message(), function, filePath, lineNumber, expression);
+
     if (expression) {
       mParams << ZS_PARAM("expression", expression);
     }
