@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include "App.g.h"
+#include "UnitTestApp.g.h"
 
-namespace zsLibTest_Windows_Universal
+namespace zsLib_Test_Universal
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.

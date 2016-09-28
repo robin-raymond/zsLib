@@ -12,3 +12,8 @@ projects/android/obj
 ipch/
 *.opensdf
 zsLib/internal/zsLib_ETWTracing.h
+*.opendb
+*.db
+.vs/
+Generated Files/
+*.user

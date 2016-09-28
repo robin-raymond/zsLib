@@ -4,9 +4,8 @@
 //
 
 #include "pch.h"
-#include "MainPage.xaml.h"
 
-using namespace zsLibTest_Windows_Universal;
+using namespace zsLib_Test_Universal;
 
 using namespace Platform;
 using namespace Windows::ApplicationModel;
@@ -21,6 +20,8 @@ using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
+
+// The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
 /// <summary>
 /// Initializes the singleton application object.  This is the first line of authored code
@@ -68,30 +69,15 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
 
 		}
 
-		if (rootFrame->Content == nullptr)
-		{
-			// When the navigation stack isn't restored navigate to the first page,
-			// configuring the new page by passing required information as a navigation
-			// parameter
-			rootFrame->Navigate(TypeName(MainPage::typeid), e->Arguments);
-		}
 		// Place the frame in the current Window
 		Window::Current->Content = rootFrame;
-		// Ensure the current window is active
-		Window::Current->Activate();
 	}
-	else
-	{
-		if (rootFrame->Content == nullptr)
-		{
-			// When the navigation stack isn't restored navigate to the first page,
-			// configuring the new page by passing required information as a navigation
-			// parameter
-			rootFrame->Navigate(TypeName(MainPage::typeid), e->Arguments);
-		}
-		// Ensure the current window is active
-		Window::Current->Activate();
-	}
+		
+	Microsoft::VisualStudio::TestPlatform::TestExecutor::WinRTCore::UnitTestClient::CreateDefaultUI();
+
+	Window::Current->Activate();
+
+	Microsoft::VisualStudio::TestPlatform::TestExecutor::WinRTCore::UnitTestClient::Run(e->Arguments);
 }
 
 /// <summary>

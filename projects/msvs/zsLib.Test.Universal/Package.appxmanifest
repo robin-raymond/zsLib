@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="80b298f1-a1b9-49d4-8a8d-536f4b4d155a"
-    Publisher="CN=Sergej"
+    Name="61d3f33a-ac65-47ef-ac4e-8eb52a72091a"
+    Publisher="CN=robin"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="80b298f1-a1b9-49d4-8a8d-536f4b4d155a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="61d3f33a-ac65-47ef-ac4e-8eb52a72091a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>zsLibTest.Windows.Universal</DisplayName>
-    <PublisherDisplayName>Sergej</PublisherDisplayName>
+    <DisplayName>zsLib.Test.Universal</DisplayName>
+    <PublisherDisplayName>robin</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -28,14 +28,14 @@
   </Resources>
 
   <Applications>
-    <Application Id="App"
-      Executable="$targetnametoken$.exe"
-      EntryPoint="zsLibTest_Windows_Universal.App">
+    <Application Id="vstest.executionengine.universal.App"
+        Executable="$targetnametoken$.exe"
+        EntryPoint="zsLib_Test_Universal.App">
       <uap:VisualElements
-        DisplayName="zsLibTest.Windows.Universal"
+        DisplayName="zsLib.Test.Universal"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="zsLibTest.Windows.Universal"
+        Description="zsLib.Test.Universal"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
