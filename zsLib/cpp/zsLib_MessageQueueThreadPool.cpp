@@ -33,7 +33,7 @@
 #include <zsLib/Event.h>
 #include <zsLib/Log.h>
 
-namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
+//namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 ZS_DECLARE_USING_PTR(zsLib::internal, MessageQueueThreadPoolDispatcherThread)
 ZS_DECLARE_USING_PTR(zsLib::internal, MessageQueueThreadPoolQueueNotifier)

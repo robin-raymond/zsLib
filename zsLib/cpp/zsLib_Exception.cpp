@@ -37,7 +37,7 @@
 
 #include <zsLib/internal/zsLib_Tracing.h>
 
-namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
+//namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 namespace zsLib
 {

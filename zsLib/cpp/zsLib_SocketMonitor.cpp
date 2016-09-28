@@ -94,10 +94,12 @@ namespace zsLib
     }
 
     //-----------------------------------------------------------------------
+#ifdef _WIN32
     static zsLib::Log::Params slog(const char *message, const char *object)
     {
       return zsLib::Log::Params(message, object);
     }
+#endif //_WIN32
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------

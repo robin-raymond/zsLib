@@ -17,3 +17,5 @@ zsLib/internal/zsLib_ETWTracing.h
 .vs/
 Generated Files/
 *.user
+*.xcuserstate
+*.xcuserdatad
