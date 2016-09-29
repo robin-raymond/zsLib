@@ -53,7 +53,7 @@ namespace testing
     int mCalledFunc5 {};
     int mCalledFunc6 {};
 
-    bool mDestroyedTestProxyCallback;
+    bool mDestroyedTestProxyCallback {};
   };
 
   static check &getCheck()

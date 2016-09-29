@@ -54,7 +54,12 @@ namespace zsLib
     BoxedAllocation()
     {
       BYTE *buffer = (&(mBuffer[0]));
-      BYTE *alignedBuffer = buffer + alignof(T) - reinterpret_cast<uintptr_t>(buffer) % alignof(T);
+      auto alignment = alignof(T);
+      auto misalignment = reinterpret_cast<uintptr_t>(buffer) % alignment;
+      // alignment = 8, misalignment = 1, add alignment - misalignmnet (8-1 = +7)
+      // alignment = 8, misalignment = 7, add alignment - misalignmnet (8-7 = +1)
+      // alignment = 8, misalignment = 0, add 0 to alignment
+      BYTE *alignedBuffer = buffer + (misalignment == 0 ? 0 : (alignment - misalignment));
       mObject = new (alignedBuffer) T;
     }
 

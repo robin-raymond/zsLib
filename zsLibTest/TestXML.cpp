@@ -1288,7 +1288,7 @@ static CSTR *get_gSingleLineElements12()
   return gSingleLineElements12;
 }
 
-static XMLResultInfo get_gXMLResults12()
+static XMLResultInfo &get_gXMLResults12()
 {
   static XMLResultInfo gXMLResults12 =
   {

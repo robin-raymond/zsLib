@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:zsLib-osx/zsLib-osx.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:zsLib-ios/zsLib-ios.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:zsLib-Test-osx/zsLib-Test-osx.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:zsLib-Test-ios/zsLib-Test-ios.xcodeproj">
+   </FileRef>
+</Workspace>
