@@ -7,7 +7,7 @@
 
 #include "UnitTestApp.g.h"
 
-namespace zsLib_Test_Universal
+namespace zsLib_Test
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.

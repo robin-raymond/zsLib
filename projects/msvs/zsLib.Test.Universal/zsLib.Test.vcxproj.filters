@@ -2,14 +2,14 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Common">
-      <UniqueIdentifier>99fe348d-50e8-48d4-96e6-e4052fb3eeb4</UniqueIdentifier>
+      <UniqueIdentifier>087200f9-914e-48e3-a8dc-b5fa61175392</UniqueIdentifier>
     </Filter>
     <Filter Include="Assets">
-      <UniqueIdentifier>4cb0f937-7376-41c9-8886-2a49b9ed86cc</UniqueIdentifier>
+      <UniqueIdentifier>dd5f4369-bb69-4219-9b7c-348021f2d775</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
     <Filter Include="zsLibTest">
-      <UniqueIdentifier>{b3716d14-b5ef-4346-ad7b-aa187eee2bfc}</UniqueIdentifier>
+      <UniqueIdentifier>{373d090c-db65-4d1c-8b42-77ec37b969c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,15 +19,6 @@
     <ClCompile Include="UnitTestApp.xaml.cpp" />
     <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="..\..\..\zsLibTest\main.cpp">
-      <Filter>zsLibTest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\zsLibTest\TestHelper.cpp">
-      <Filter>zsLibTest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\zsLibTest\testing.cpp">
-      <Filter>zsLibTest</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\zsLibTest\TestIPAddress.cpp">
       <Filter>zsLibTest</Filter>
     </ClCompile>
@@ -64,14 +55,23 @@
     <ClCompile Include="..\..\..\zsLibTest\TestXML.cpp">
       <Filter>zsLibTest</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\main.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestHelper.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\testing.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="UnitTestApp.xaml.h" />
-    <ClInclude Include="..\..\..\zsLibTest\main.h">
+    <ClInclude Include="..\..\..\zsLibTest\testing.h">
       <Filter>zsLibTest</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\zsLibTest\testing.h">
+    <ClInclude Include="..\..\..\zsLibTest\main.h">
       <Filter>zsLibTest</Filter>
     </ClInclude>
   </ItemGroup>
@@ -105,6 +105,6 @@
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="zsLib.Test.Universal_TemporaryKey.pfx" />
+    <None Include="zsLib.Test_TemporaryKey.pfx" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 
 #include "pch.h"
 
-using namespace zsLib_Test_Universal;
+using namespace zsLib_Test;
 
 using namespace Platform;
 using namespace Windows::ApplicationModel;
