@@ -42,7 +42,7 @@
 
 #ifdef WINRT
 #include <assert.h>
-#endif
+#endif //WINRT
 
 namespace zsLib
 {

@@ -34,9 +34,9 @@
 #ifndef ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17
 #define ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17
 
-#ifdef WINRT
+#ifdef __cplusplus_winrt
 #include <Windows.h>
-#endif //WINRT
+#endif //__cplusplus_winrt
 
 #include <zsLib/types.h>
 

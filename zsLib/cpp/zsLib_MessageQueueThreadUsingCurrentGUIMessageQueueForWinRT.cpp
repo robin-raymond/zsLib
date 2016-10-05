@@ -30,6 +30,7 @@
  */
 
 #include <zsLib/types.h>
+#include <zsLib/internal/platform.h>
 
 #ifdef WINRT
 
