@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="zsLibTest">
+      <UniqueIdentifier>{1e8288c4-ffb3-4982-bf33-02f96ed5c954}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\zsLibTest\main.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestHelper.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\testing.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestIPAddress.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestNumeric.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestPromise.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestProxy.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestProxyUsingGUIThread.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestSocket.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestSocketAsync.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestString.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestStringize.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestTearAway.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestTimer.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestXML.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\zsLibTest\main.h">
+      <Filter>zsLibTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLibTest\testing.h">
+      <Filter>zsLibTest</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -40,9 +40,9 @@
 #include <objbase.h>
 #endif //_WIN32
 
-#ifdef WINRT
+#ifdef _WIN32
 #include <assert.h>
-#endif //WINRT
+#endif //_WIN32
 
 namespace zsLib
 {

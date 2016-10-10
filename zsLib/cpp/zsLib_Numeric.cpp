@@ -45,7 +45,9 @@
 #pragma warning(push)
 #pragma warning(disable:4290)
 
+#if 0
 char *strptime(const char *buf, const char *fmt, struct tm *tm);
+#endif //0
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
