@@ -19,6 +19,9 @@
     <Filter Include="zsLib\extras\uuid">
       <UniqueIdentifier>{6eccb844-76d0-4eea-8d2f-c6711dbb4ede}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zsLib\eventing">
+      <UniqueIdentifier>{e6246791-82e3-4f72-ae74-4a19cecb2a37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\Event.h">
@@ -197,6 +200,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\internal\platform.h">
       <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\noop.h">
+      <Filter>zsLib\eventing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

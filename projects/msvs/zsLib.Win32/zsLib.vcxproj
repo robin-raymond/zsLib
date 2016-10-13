@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\date.h" />
     <ClInclude Include="..\..\..\zsLib\Event.h" />
+    <ClInclude Include="..\..\..\zsLib\eventing\noop.h" />
     <ClInclude Include="..\..\..\zsLib\Exception.h" />
     <ClInclude Include="..\..\..\zsLib\extras\uuid\config.h" />
     <ClInclude Include="..\..\..\zsLib\extras\uuid\uuid.h" />

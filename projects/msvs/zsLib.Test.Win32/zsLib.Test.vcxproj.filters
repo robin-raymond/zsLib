@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="zsLibTest">
-      <UniqueIdentifier>{1e8288c4-ffb3-4982-bf33-02f96ed5c954}</UniqueIdentifier>
+      <UniqueIdentifier>{8e6a4e6f-5ef7-420c-97d8-245404dd1a14}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

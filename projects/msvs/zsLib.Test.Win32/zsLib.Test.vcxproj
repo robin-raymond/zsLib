@@ -19,11 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\zsLib.Win32\zsLib.vcxproj">
-      <Project>{80306fbe-b1df-4741-ae97-9be65c8c4cae}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\..\zsLibTest\main.cpp" />
     <ClCompile Include="..\..\..\zsLibTest\TestHelper.cpp" />
     <ClCompile Include="..\..\..\zsLibTest\testing.cpp" />
@@ -44,8 +39,13 @@
     <ClInclude Include="..\..\..\zsLibTest\main.h" />
     <ClInclude Include="..\..\..\zsLibTest\testing.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\zsLib.Win32\zsLib.vcxproj">
+      <Project>{80306fbe-b1df-4741-ae97-9be65c8c4cae}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7ECF53B2-B795-4CE7-893B-529DF8AB9496}</ProjectGuid>
+    <ProjectGuid>{FE05FD1B-97E8-4F44-B18F-D1C4F414BC91}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>zsLibTest</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
@@ -115,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4068</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -131,7 +131,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4068</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -149,7 +149,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4068</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -169,7 +169,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4068</DisableSpecificWarnings>
     </ClCompile>
     <Link>
