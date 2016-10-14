@@ -22,6 +22,9 @@
     <Filter Include="zsLib\eventing">
       <UniqueIdentifier>{e6246791-82e3-4f72-ae74-4a19cecb2a37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zsLib\eventing\internal">
+      <UniqueIdentifier>{a5bc8fac-8baf-40b9-8369-f517dc996d69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\Event.h">
@@ -203,6 +206,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\eventing\noop.h">
       <Filter>zsLib\eventing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\Log.h">
+      <Filter>zsLib\eventing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_Log.h">
+      <Filter>zsLib\eventing\internal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

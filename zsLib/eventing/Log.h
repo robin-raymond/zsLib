@@ -31,22 +31,22 @@
 
 #pragma once
 
-#ifndef ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
-#define ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
+#ifndef ZSLIB_EVENTING_LOG_H_018218a1084f40d301941b196789c11839beb7ed
+#define ZSLIB_EVENTING_LOG_H_018218a1084f40d301941b196789c11839beb7ed
 
-#include <zsLib/types.h>
+#include <zsLib/Log.h>
+#include <zsLib/eventing/internal/zsLib_eventing_Log.h>
 
-
-#define ZS_EVENTING_0(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode)
-#define ZS_EVENTING_1(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode, xType1, xName1, xValue1)
-#define ZS_EVENTING_2(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode, xType1, xName1, xValue1, xType2, xName2, xValue2)
+#define ZS_EVENTING_GET_LOG_LEVEL()                                              ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()
+#define ZS_EVENTING_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                          ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
+#define ZS_EVENTING_IS_LOGGING(xLevel)                                           ZS_EVENTING_INTERNAL_IS_LOGGING(xLevel)
+#define ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)                     ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)
 
 namespace zsLib
 {
   namespace eventing
   {
-    ZS_EVENTING_0(x, i, t, Name, x, x, d.Start);
   }
 }
 
-#endif //ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
+#endif //ZSLIB_EVENTING_LOG_H_018218a1084f40d301941b196789c11839beb7ed

@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\date.h" />
     <ClInclude Include="..\..\..\zsLib\Event.h" />
+    <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_Log.h" />
+    <ClInclude Include="..\..\..\zsLib\eventing\Log.h" />
     <ClInclude Include="..\..\..\zsLib\eventing\noop.h" />
     <ClInclude Include="..\..\..\zsLib\Exception.h" />
     <ClInclude Include="..\..\..\zsLib\extras\uuid\config.h" />
@@ -201,8 +203,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.man" />
-    <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.wprp" />
+    <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.man">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{80306FBE-B1DF-4741-AE97-9BE65C8C4CAE}</ProjectGuid>

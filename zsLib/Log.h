@@ -295,18 +295,26 @@ namespace zsLib
     typedef Log::Level LevelType;
 
   public:
-    Subsystem(CSTR inName, Log::Level inLevel = Log::Basic);
+    Subsystem(
+              CSTR inName,
+              Log::Level inOutputLevel = Log::Basic,
+              Log::Level inEventingLevel = Log::Basic
+              );
     CSTR getName() const {return mSubsystem;}
 
     void setOutputLevel(Log::Level inLevel);
     Log::Level getOutputLevel() const;
+
+    void setEventingLevel(Log::Level inLevel);
+    Log::Level getEventingLevel() const;
 
   protected:
     virtual void notifyNewSubsystem();
 
   private:
     CSTR mSubsystem;
-    mutable std::atomic<LevelType> mLevel;
+    mutable std::atomic<LevelType> mOutputLevel;
+    mutable std::atomic<LevelType> mEventingLevel;
   };
 
 } // namespace zsLib

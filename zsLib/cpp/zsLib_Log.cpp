@@ -30,6 +30,7 @@
  */
 
 #include <zsLib/Log.h>
+#include <zsLib/eventing/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
@@ -49,9 +50,14 @@ namespace zsLib
   #pragma mark
 
   //---------------------------------------------------------------------------
-  Subsystem::Subsystem(CSTR inName, Log::Level inLevel) :
+  Subsystem::Subsystem(
+                       CSTR inName,
+                       Log::Level inOutputLevel,
+                       Log::Level inEventingLevel
+                       ) :
     mSubsystem(inName),
-    mLevel(static_cast<Subsystem::LevelType>(inLevel))
+    mOutputLevel(static_cast<Subsystem::LevelType>(inOutputLevel)),
+    mEventingLevel(static_cast<Subsystem::LevelType>(inEventingLevel))
   {
   }
 
@@ -64,13 +70,25 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Subsystem::setOutputLevel(Log::Level inLevel)
   {
-    mLevel = inLevel;
+    mOutputLevel = inLevel;
   }
 
   //---------------------------------------------------------------------------
   Log::Level Subsystem::getOutputLevel() const
   {
-    return mLevel;
+    return mOutputLevel;
+  }
+
+  //---------------------------------------------------------------------------
+  void Subsystem::setEventingLevel(Log::Level inLevel)
+  {
+    mEventingLevel = inLevel;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Level Subsystem::getEventingLevel() const
+  {
+    return mEventingLevel;
   }
 
   //---------------------------------------------------------------------------
