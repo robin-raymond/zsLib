@@ -199,6 +199,14 @@ namespace zsLib
   }
 
   template<>
+  inline Stringize<long double>::operator String() const
+  {
+    std::string result = std::to_string(mValue);
+    internal::trimTrailingZeros(result);
+    return result;
+  }
+
+  template<>
   inline Stringize<UUID>::operator String() const
   {
 #ifndef _WIN32
