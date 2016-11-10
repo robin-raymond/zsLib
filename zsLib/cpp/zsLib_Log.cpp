@@ -205,6 +205,7 @@ namespace zsLib
       }
     }
 
+    ZS_THROW_INVALID_ARGUMENT(String("Invalid severity: ") + severityStr);
     return Informational;
   }
   
@@ -243,6 +244,7 @@ namespace zsLib
       }
     }
 
+    ZS_THROW_INVALID_ARGUMENT(String("Invalid level: ") + levelStr);
     return None;
   }
 

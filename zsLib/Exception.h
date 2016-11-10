@@ -99,7 +99,7 @@ namespace zsLib
 
 namespace zsLib
 {
-  struct Exceptions
+  namespace Exceptions
   {
     ZS_DECLARE_CUSTOM_EXCEPTION(InvalidArgument)
     ZS_DECLARE_CUSTOM_EXCEPTION(BadState)

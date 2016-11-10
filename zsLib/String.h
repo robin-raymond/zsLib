@@ -49,6 +49,8 @@ namespace zsLib
     String(CSTR);
     String(CWSTR);
     String(const std::string &);
+    String(CSTR, size_t);
+    String(CWSTR, size_t);
     explicit String(const std::wstring &);
 
     static String copyFrom(CSTR, size_t maxCharacters);

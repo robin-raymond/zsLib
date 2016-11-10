@@ -212,18 +212,30 @@ namespace zsLib
     UseType mType {};
   };
 
+  namespace Exceptions
+  {
+    ZS_DECLARE_CLASS_PTR(InvalidArgument);
+    ZS_DECLARE_CLASS_PTR(BadState);
+    ZS_DECLARE_CLASS_PTR(SyntaxError);
+    ZS_DECLARE_CLASS_PTR(ResourceError);
+    ZS_DECLARE_CLASS_PTR(UnexpectedError);
+    ZS_DECLARE_CLASS_PTR(InvalidUsage);
+    ZS_DECLARE_CLASS_PTR(InvalidAssumption);
+    ZS_DECLARE_CLASS_PTR(NotImplemented);
+  }
+
   namespace XML
   {
-    ZS_DECLARE_CLASS_PTR(Node)
-    ZS_DECLARE_CLASS_PTR(Document)
-    ZS_DECLARE_CLASS_PTR(Element)
-    ZS_DECLARE_CLASS_PTR(Attribute)
-    ZS_DECLARE_CLASS_PTR(Text)
-    ZS_DECLARE_CLASS_PTR(Comment)
-    ZS_DECLARE_CLASS_PTR(Declaration)
-    ZS_DECLARE_CLASS_PTR(Unknown)
-    ZS_DECLARE_CLASS_PTR(Parser)
-    ZS_DECLARE_CLASS_PTR(Generator)
+    ZS_DECLARE_CLASS_PTR(Node);
+    ZS_DECLARE_CLASS_PTR(Document);
+    ZS_DECLARE_CLASS_PTR(Element);
+    ZS_DECLARE_CLASS_PTR(Attribute);
+    ZS_DECLARE_CLASS_PTR(Text);
+    ZS_DECLARE_CLASS_PTR(Comment);
+    ZS_DECLARE_CLASS_PTR(Declaration);
+    ZS_DECLARE_CLASS_PTR(Unknown);
+    ZS_DECLARE_CLASS_PTR(Parser);
+    ZS_DECLARE_CLASS_PTR(Generator);
 
     class ParserPos;
     class ParserWarning;

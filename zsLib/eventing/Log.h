@@ -42,6 +42,9 @@
 #define ZS_EVENTING_IS_LOGGING(xLevel)                                           ZS_EVENTING_INTERNAL_IS_LOGGING(xLevel)
 #define ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)                     ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)
 
+#define ZS_EVENTING_WRITE_EVENT(xFunc, xLine, xEventValue, xBuffer, xBufferSize)
+#define ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(xFunc, xLine, xEventValue, xBuffer, xBufferSize, xBuffers, xBufferSizez, xTotalBuffers)
+
 namespace zsLib
 {
   namespace eventing
