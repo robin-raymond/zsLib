@@ -248,6 +248,7 @@ namespace zsLib
 
   // force templates to be generated for these types
   template void Numeric<CHAR>::get(CHAR &) const throw (ValueOutOfRange);
+  template void Numeric<WCHAR>::get(WCHAR &) const throw (ValueOutOfRange);
   template void Numeric<UCHAR>::get(UCHAR &) const throw (ValueOutOfRange);
   template void Numeric<SHORT>::get(SHORT &) const throw (ValueOutOfRange);
   template void Numeric<USHORT>::get(USHORT &) const throw (ValueOutOfRange);
