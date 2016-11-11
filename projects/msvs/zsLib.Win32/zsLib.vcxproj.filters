@@ -378,5 +378,8 @@
     <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
       <Filter>zsLib\internal</Filter>
     </None>
+    <None Include="..\..\..\zsLib\cpp\zsLib.events.json">
+      <Filter>zsLib\cpp</Filter>
+    </None>
   </ItemGroup>
 </Project>

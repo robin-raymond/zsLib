@@ -203,6 +203,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\zsLib\cpp\zsLib.events.json" />
     <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.man">
       <SubType>Designer</SubType>
     </None>

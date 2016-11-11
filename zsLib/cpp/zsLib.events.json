@@ -1,0 +1,87 @@
+{
+  "provider": {
+    "id": "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f",
+    "name": "zsLib",
+    "symbol": "ZSLIB",
+    "description": "Cross platform asychronous threading, socket, and timer API",
+    "resourceName": "zsLib_ETW",
+    "aliases": {
+      "alias": [
+        {
+          "in": "i",
+          "out": "Informational"
+        },
+        {
+          "in": "w",
+          "out": "Warning"
+        },
+        {
+          "in": "e",
+          "out": "Error"
+        },
+        {
+          "in": "f",
+          "out": "Fatal"
+        }
+      ]
+    },
+    "sources": {
+      "source": [
+        "zsLib/cpp/zsLib_Exception.cpp",
+        "zsLib/cpp/zsLib_MessageQueue.cpp",
+        "zsLib/cpp/zsLib_Socket.cpp",
+        "zsLib/cpp/zsLib_Socket.cpp",
+        "zsLib/cpp/zsLib_Timer.cpp"
+      ]
+    },
+    "channels": {
+      "channel": [
+        {
+          "id": "zs",
+          "name": "zsLib",
+          "type": "Debug"
+        }
+      ]
+    },
+    "tasks": {
+      "task": [
+        {
+          "name": "Exception",
+          "opCodes": {
+            "opCode": [
+              { "name": "Exception" }
+            ]
+          }
+        },
+        {
+          "name": "MessageQueue"
+        },
+        {
+          "name": "Socket",
+          "opCodes": {
+            "opCode": [
+              { "name": "Exception" },
+              { "name": "Orphan" },
+              { "name": "Adopt" },
+              { "name": "Event" },
+              { "name": "Bind" },
+              { "name": "Listen" },
+              { "name": "Accept" },
+              { "name": "Connect" },
+              { "name": "Shutdown" },
+              { "name": "Option" }
+            ]
+          }
+        },
+        {
+          "name": "Timer",
+          "opCodes": {
+            "opCode": [
+              { "name": "Event" }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
