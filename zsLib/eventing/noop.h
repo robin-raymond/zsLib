@@ -31,6 +31,8 @@
 
 #pragma once
 
+#ifdef ZSLIB_EVENTING_NOOP
+
 #ifndef ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
 #define ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
 
@@ -63,8 +65,8 @@
 #define ZS_EVENTING_24(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode, xType1, xName1, xValue1, xType2, xName2, xValue2, xType3, xName3, xValue3, xType4, xName4, xValue4, xType5, xName5, xValue5, xType6, xName6, xValue6, xType7, xName7, xValue7, xType8, xName8, xValue8, xType9, xName9, xValue9, xType10, xName10, xValue10, xType11, xName11, xValue11, xType12, xName12, xValue12, xType13, xName13, xValue13, xType14, xName14, xValue14, xType15, xName15, xValue15, xType16, xName16, xValue16, xType17, xName17, xValue17, xType18, xName18, xValue18, xType19, xName19, xValue19, xType20, xName20, xValue20, xType21, xName21, xValue21, xType22, xName22, xValue22, xType23, xName23, xValue23, xType24, xName24, xValue24)
 #define ZS_EVENTING_25(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode, xType1, xName1, xValue1, xType2, xName2, xValue2, xType3, xName3, xValue3, xType4, xName4, xValue4, xType5, xName5, xValue5, xType6, xName6, xValue6, xType7, xName7, xValue7, xType8, xName8, xValue8, xType9, xName9, xValue9, xType10, xName10, xValue10, xType11, xName11, xValue11, xType12, xName12, xValue12, xType13, xName13, xValue13, xType14, xName14, xValue14, xType15, xName15, xValue15, xType16, xName16, xValue16, xType17, xName17, xValue17, xType18, xName18, xValue18, xType19, xName19, xValue19, xType20, xName20, xValue20, xType21, xName21, xValue21, xType22, xName22, xValue22, xType23, xName23, xValue23, xType24, xName24, xValue24, xType25, xName25, xValue25)
 
-#define ZS_EVENTING_INIT(xName)
-#define ZS_EVENTING_DEINIT(xName)
+#define ZS_EVENTING_REGISTER(xName)
+#define ZS_EVENTING_UNREGISTER(xName)
 
 #define ZS_EVENTING_PROVIDER(xUUID, xName, xSymbolName, xDescription, xResourceName)
 #define ZS_EVENTING_ALIAS(xAliasInput, xAliasOuput)
@@ -83,3 +85,5 @@ namespace zsLib
 }
 
 #endif //ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
+
+#endif //ZSLIB_EVENTING_NOOP

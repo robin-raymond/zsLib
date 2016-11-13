@@ -120,10 +120,14 @@ namespace zsLib
   public:
     enum Severity
     {
-      Informational,
+      Severity_First,
+
+      Informational = Severity_First,
       Warning,
       Error,
-      Fatal
+      Fatal,
+
+      Severity_Last = Fatal
     };
 
     static const char *toString(Severity severity);
@@ -131,12 +135,16 @@ namespace zsLib
 
     enum Level
     {
-      None,
+      Level_First,
+
+      None = Level_First,
       Basic,
       Detail,
       Debug,
       Trace,
-      Insane
+      Insane,
+
+      Level_Last = Insane,
     };
 
     static const char *toString(Level level);

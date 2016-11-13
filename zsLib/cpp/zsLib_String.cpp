@@ -100,7 +100,7 @@ namespace zsLib
   {
   }
 
-  String::String(CSTR value, size_t length) : std::string(value ? value : std::string(), length)
+  String::String(CSTR value, size_t length) : std::string(value ? value : static_cast<const char *>(NULL), length)
   {
   }
 

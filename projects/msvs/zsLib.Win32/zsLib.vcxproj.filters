@@ -120,9 +120,6 @@
     <ClInclude Include="..\..\..\zsLib\internal\types.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\zsLib\internal\zsLib_ETWTracing.h">
-      <Filter>zsLib\internal</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Event.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
@@ -195,9 +192,6 @@
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_TimerMonitor.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\zsLib\internal\zsLib_Tracing.h">
-      <Filter>zsLib\internal</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_XML.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
@@ -212,6 +206,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_Log.h">
       <Filter>zsLib\eventing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib.events_win.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib.events_win_etw.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib.events.h">
+      <Filter>zsLib\internal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -372,14 +375,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.man">
-      <Filter>zsLib\internal</Filter>
-    </None>
-    <None Include="..\..\..\zsLib\internal\zsLib_ETWTracing.wprp">
-      <Filter>zsLib\internal</Filter>
-    </None>
     <None Include="..\..\..\zsLib\cpp\zsLib.events.json">
       <Filter>zsLib\cpp</Filter>
+    </None>
+    <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.man">
+      <Filter>zsLib\internal</Filter>
+    </None>
+    <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.wprp">
+      <Filter>zsLib\internal</Filter>
+    </None>
+    <None Include="..\..\..\zsLib\internal\zsLib.events.jman">
+      <Filter>zsLib\internal</Filter>
     </None>
   </ItemGroup>
 </Project>
