@@ -42,10 +42,14 @@ using zsLib::IMessageQueue;
 
 namespace testing
 {
-  struct check {
-    check()
+  struct TearAwayCheck {
+    TearAwayCheck()
     {
     }
+    ~TearAwayCheck()
+    {
+    }
+
     bool mCalledFunc1 {};
     ULONG mCalledFunc2 {};
     zsLib::String mCalledFunc3;
@@ -55,12 +59,6 @@ namespace testing
 
     bool mDestroyedTestProxyCallback {};
   };
-
-  static check &getCheck()
-  {
-    static check gCheck;
-    return gCheck;
-  }
 
   ZS_DECLARE_INTERACTION_PTR(Subscription)
   ZS_DECLARE_INTERACTION_PTR(ITestProxyDelegate)
@@ -102,31 +100,34 @@ namespace testing
 
   class TestTearAwayCallback : public ITestTearAway
   {
+    TearAwayCheck &mCheck;
+
   private:
-    TestTearAwayCallback()
+    TestTearAwayCallback(TearAwayCheck &check) : mCheck(check)
     {
     }
+
   public:
-    static TestTearAwayCallbackPtr create()
+    static TestTearAwayCallbackPtr create(TearAwayCheck &check)
     {
-      return TestTearAwayCallbackPtr(new TestTearAwayCallback());
+      return TestTearAwayCallbackPtr(new TestTearAwayCallback(check));
     }
 
     virtual void func1()
     {
-      getCheck().mCalledFunc1 = true;
+      mCheck.mCalledFunc1 = true;
     }
     virtual void func2() const
     {
-      ++(getCheck().mCalledFunc2);
+      ++(mCheck.mCalledFunc2);
     }
     virtual void func3(zsLib::String value)
     {
-      getCheck().mCalledFunc3 = value;
+      mCheck.mCalledFunc3 = value;
     }
     virtual void func4(int value)
     {
-      getCheck().mCalledFunc4 = value;
+      mCheck.mCalledFunc4 = value;
     }
     virtual zsLib::String func5(ULONG value1, ULONG value2)
     {
@@ -139,17 +140,19 @@ namespace testing
 
     ~TestTearAwayCallback()
     {
-      getCheck().mDestroyedTestProxyCallback = true;
+      mCheck.mDestroyedTestProxyCallback = true;
     }
   };
 
   class TestTearAway
   {
+    TearAwayCheck mCheck;
+
   public:
 
     TestTearAway()
     {
-      TestTearAwayCallbackPtr testObject = TestTearAwayCallback::create();
+      TestTearAwayCallbackPtr testObject = TestTearAwayCallback::create(mCheck);
 
       ITestTearAwayPtr delegate = ITestTearAwayTearAway::create(testObject);
 
@@ -173,7 +176,7 @@ namespace testing
       str = "bogus3";
 
       delegate->func4(0xFFFF);
-      TESTING_EQUAL(getCheck().mCalledFunc4, 0xFFFF);
+      TESTING_EQUAL(mCheck.mCalledFunc4, 0xFFFF);
 
       TESTING_EQUAL(delegate->func5(0xABC, 0xDEF), "abc def");
       TESTING_EQUAL(delegate->func6(0xDEF, 0xABC), "def abc");
@@ -186,7 +189,7 @@ namespace testing
       MyDataPtr myData(new MyData);
       myData->mValue = 1001;
 
-      TestTearAwayCallbackPtr testObject = TestTearAwayCallback::create();
+      TestTearAwayCallbackPtr testObject = TestTearAwayCallback::create(mCheck);
 
       ITestTearAwayPtr delegate = ITestTearAwayTearAway::create(testObject, myData);
 
@@ -198,10 +201,10 @@ namespace testing
 
     ~TestTearAway()
     {
-      TESTING_EQUAL(getCheck().mCalledFunc3, "func3");
-      TESTING_EQUAL(getCheck().mCalledFunc2, 1000);
-      TESTING_CHECK(getCheck().mCalledFunc1);
-      TESTING_CHECK(getCheck().mDestroyedTestProxyCallback);
+      TESTING_EQUAL(mCheck.mCalledFunc3, "func3");
+      TESTING_EQUAL(mCheck.mCalledFunc2, 1000);
+      TESTING_CHECK(mCheck.mCalledFunc1);
+      TESTING_CHECK(mCheck.mDestroyedTestProxyCallback);
     }
   };
 

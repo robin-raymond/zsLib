@@ -35,7 +35,11 @@
 #include <zsLib/Log.h>
 #include <zsLib/XML.h>
 
-#include <zsLib/internal/zsLib_Tracing.h>
+#ifndef ZSLIB_EVENTING_NOOP
+#include <zsLib/internal/zsLib.events.h>
+#else
+#include <zsLib/eventing/noop.h>
+#endif //ndef ZSLIB_EVENTING_NOOP
 
 //namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
@@ -68,7 +72,7 @@ namespace zsLib
     mFilePath(filePath),
     mLineNumber(lineNumber)
   {
-    EventWriteZsExceptionEventFired(__func__, subsystem.getName(), message, function, filePath, lineNumber, expression);
+    ZS_EVENTING_5(subsystem, e, Basic, ExceptionEvent, zs, Exception, Exception, string, message, message, string, function, function, string, filePath, filePath, ulong, lineNumber, lineNumber, string, expression, expression);
 
     if (expression) {
       mParams << ZS_PARAM("expression", expression);
@@ -93,7 +97,7 @@ namespace zsLib
     mFilePath(filePath),
     mLineNumber(lineNumber)
   {
-    EventWriteZsExceptionEventFired(__func__, subsystem.getName(), message, function, filePath, lineNumber, expression);
+    ZS_EVENTING_5(subsystem, e, Basic, ExceptionEvent, zs, Exception, Exception, string, message, message, string, function, function, string, filePath, filePath, ulong, lineNumber, lineNumber, string, expression, expression);
 
     if (expression) {
       mParams << ZS_PARAM("expression", expression);
@@ -119,7 +123,7 @@ namespace zsLib
     mLineNumber(lineNumber),
     mParams(params)
   {
-    EventWriteZsExceptionEventFired(__func__, subsystem.getName(), params.message(), function, filePath, lineNumber, expression);
+    ZS_EVENTING_5(subsystem, e, Basic, ExceptionEvent, zs, Exception, Exception, string, message, params.message(), string, function, function, string, filePath, filePath, ulong, lineNumber, lineNumber, string, expression, expression);
 
     if (expression) {
       mParams << ZS_PARAM("expression", expression);

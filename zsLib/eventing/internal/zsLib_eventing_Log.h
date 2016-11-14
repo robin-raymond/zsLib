@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2016, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,61 +31,23 @@
 
 #pragma once
 
-#ifndef ZSLIB_STRING_H_8f1651797cde55890f27c67aa67d9976
-#define ZSLIB_STRING_H_8f1651797cde55890f27c67aa67d9976
+#ifndef ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
+#define ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
 
-#include <string>
-
-#include <zsLib/types.h>
+#define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                       ((ZS_GET_SUBSYSTEM()).getEventingLevel())
+#define ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                   ((xSubsystem).getEventingLevel())
+#define ZS_EVENTING_INTERNAL_IS_LOGGING(xLevel)                                    (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel)
+#define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xLevelValue)                         (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue))
+#define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)              (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel)
 
 namespace zsLib
 {
-  class String : public std::string {
-
-  public:
-    String();
-    String(const String &);
-
-    String(CSTR);
-    String(CWSTR);
-    String(const std::string &);
-    String(CSTR, size_t);
-    String(CWSTR, size_t);
-    explicit String(const std::wstring &);
-
-    static String copyFrom(CSTR, size_t maxCharacters);
-    static String copyFromUnicodeSafe(CSTR, size_t maxCharacters);
-
-    std::wstring wstring() const;
-
-    bool isEmpty() const;
-    bool hasData() const;
-    size_t getLength() const;
-
-    operator CSTR() const;
-
-    String &operator=(const std::string &);
-    String &operator=(const std::wstring &);
-    String &operator=(const String &);
-    String &operator=(CSTR);
-    String &operator=(CWSTR);
-
-    int compareNoCase(CSTR) const;
-    int compareNoCase(const String &) const;
-
-    void toLower();
-    void toUpper();
-
-    void trim(CSTR chars = " \t\r\n\v\f");
-    void trimLeft(CSTR chars = " \t\r\n\v\f");
-    void trimRight(CSTR chars = " \t\r\n\v\f");
-
-    size_t lengthUnicodeSafe() const;
-    String substrUnicodeSafe(size_t pos = 0, size_t n = std::string::npos ) const;
-    WCHAR atUnicodeSafe(size_t pos) const;
-
-    void replaceAll(CSTR findStr, CSTR replaceStr, size_t totalOccurances = std::string::npos);
-  };
+  namespace eventing
+  {
+    namespace internal
+    {
+    }
+  }
 }
 
-#endif //ZSLIB_STRING_H_8f1651797cde55890f27c67aa67d9976
+#endif //ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e

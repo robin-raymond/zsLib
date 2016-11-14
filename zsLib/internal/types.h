@@ -208,12 +208,7 @@ namespace zsLib
 #define ZSLIB_32BIT
 #endif //defined(__LP64__) || defined(_WIN64) || defined(_Wp64)
 
-#if defined(_LP64) || defined(_WIN64) || defined(_Wp64)
-  typedef QWORD PTRNUMBER;
-#else
-  typedef DWORD PTRNUMBER;
-#endif //_LP64
-
+  typedef uintptr_t PTRNUMBER;
   typedef PTRNUMBER USERPARAM;
 
   namespace internal
@@ -223,7 +218,7 @@ namespace zsLib
 		typedef UCHAR const* const_iterator;
 
 #ifndef _WIN32
-      typedef uuid_t raw_uuid_type;
+    typedef uuid_t raw_uuid_type;
 	  raw_uuid_type mUUID{};
 
 	  iterator begin() { return mUUID; }
@@ -248,10 +243,16 @@ namespace zsLib
 	  static int uuid_compare(const raw_uuid_type &op1, const raw_uuid_type &op2) {
 		  return memcmp(&op1, &op2, sizeof(op1));
 	  }
-	  static int uuid_is_null(const raw_uuid_type &op) {
-		  raw_uuid_type op2;
-		  uuid_clear(op2);
-		  return 0 == memcmp(&op, &op2, sizeof(op));
+	  static bool uuid_is_null(const raw_uuid_type &op) {
+      struct ClearUUID
+      {
+        ClearUUID() {uuid_clear(mEmpty);}
+        
+        const raw_uuid_type &value() const {return mEmpty;}
+        raw_uuid_type mEmpty;
+      };
+      static ClearUUID emptyUUID;
+		  return 0 == memcmp(&op, &(emptyUUID.value()), sizeof(op));
 	  }
 #endif //ndef _WIN32
 
@@ -268,65 +269,36 @@ namespace zsLib
       }
 
       bool operator!() const {
-        return !uuid_is_null(mUUID);
-      }
-
-      bool operator==(const uuid_wrapper &op2) const {
-        return 0 == (*this).compare(op2);
-      }
-
-      bool operator!=(const uuid_wrapper &op2) const {
-        return 0 != (*this).compare(op2);
-      }
-
-      bool operator<(const uuid_wrapper &op2) const {
-        return (*this).compare(op2) < 0;
-      }
-
-      bool operator>(const uuid_wrapper &op2) const {
-        return (*this).compare(op2) > 0;
-      }
-
-      bool operator<=(const uuid_wrapper &op2) const {
-        return !((*this).compare(op2) > 0);
-      }
-
-      bool operator>=(const uuid_wrapper &op2) const {
-        return !((*this).compare(op2) < 0);
+        return uuid_is_null(mUUID);
       }
 
       uuid_wrapper &operator=(const uuid_wrapper &op2) {
         uuid_copy(mUUID, op2.mUUID);
         return *this;
       }
+
+      bool operator==(const uuid_wrapper &op2) const {
+        return 0 == uuid_compare(mUUID, op2.mUUID);
+      }
+      bool operator!=(const uuid_wrapper &op2) const {
+        return 0 != uuid_compare(mUUID, op2.mUUID);
+      }
+      bool operator<(const uuid_wrapper &op2) const {
+        return uuid_compare(mUUID, op2.mUUID) < 0;
+      }
+      bool operator>(const uuid_wrapper &op2) const {
+        return uuid_compare(mUUID, op2.mUUID) > 0;
+      }
+      bool operator<=(const uuid_wrapper &op2) const {
+        return uuid_compare(mUUID, op2.mUUID) <= 0;
+      }
+      bool operator>=(const uuid_wrapper &op2) const {
+        return uuid_compare(mUUID, op2.mUUID) >= 0;
+      }
     };
   }
 
   typedef internal::uuid_wrapper UUID;
-
-  inline bool operator==(const UUID &op1, const UUID &op2) {
-    return 0 == op1.compare(op2);
-  }
-
-  inline bool operator!=(const UUID &op1, const UUID &op2) {
-    return 0 != op1.compare(op2);
-  }
-
-  inline bool operator<(const UUID &op1, const UUID &op2) {
-    return op1.compare(op2) < 0;
-  }
-
-  inline bool operator>(const UUID &op1, const UUID &op2) {
-    return op1.compare(op2) > 0;
-  }
-
-  inline bool operator<=(const UUID &op1, const UUID &op2) {
-    return !(op1.compare(op2) > 0);
-  }
-
-  inline bool operator>=(const UUID &op1, const UUID &op2) {
-    return !(op1.compare(op2) < 0);
-  }
   
   typedef char CHAR;
   typedef wchar_t WCHAR;

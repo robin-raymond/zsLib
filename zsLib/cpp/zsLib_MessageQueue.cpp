@@ -32,9 +32,13 @@
 #include <zsLib/MessageQueue.h>
 #include <zsLib/Log.h>
 
-#include <zsLib/internal/zsLib_Tracing.h>
+#ifndef ZSLIB_EVENTING_NOOP
+#include <zsLib/internal/zsLib.events.h>
+#else
+#include <zsLib/eventing/noop.h>
+#endif //ndef ZSLIB_EVENTING_NOOP
 
-//namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
+namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
@@ -44,13 +48,13 @@ namespace zsLib
                              IMessageQueueNotifyPtr notify
                              ) : internal::MessageQueue(notify)
   {
-    EventWriteZsMessageQueueCreate(__func__, this);
+    ZS_EVENTING_1(x, i, Detail, MessageQueueCreate, zs, MessageQueue, Start, this, this, this);
   }
 
   //---------------------------------------------------------------------------
   MessageQueue::~MessageQueue()
   {
-    EventWriteZsMessageQueueDestroy(__func__, this);
+    ZS_EVENTING_1(x, i, Detail, MessageQueueDestroy, zs, MessageQueue, Stop, this, this, this);
   }
 
   //---------------------------------------------------------------------------
@@ -62,7 +66,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void MessageQueue::post(IMessageQueueMessageUniPtr message)
   {
-    EventWriteZsMessageQueuePost(__func__, this);
+    ZS_EVENTING_1(x, i, Insane, MessageQueuePost, zs, MessageQueue, Send, this, this, this);
 
     {
       AutoLock lock(mLock);
@@ -86,7 +90,7 @@ namespace zsLib
         mMessages.pop();
       }
 
-      EventWriteZsMessageQueueProcess(__func__, this);
+      ZS_EVENTING_1(x, i, Insane, MessageQueueProcess, zs, MessageQueue, Receive, this, this, this);
 
       // process the next message
       message->processMessage();
@@ -106,7 +110,7 @@ namespace zsLib
       mMessages.pop();
     }
 
-    EventWriteZsMessageQueueProcess(__func__, this);
+    ZS_EVENTING_1(x, i, Insane, MessageQueueProcess, zs, MessageQueue, Receive, this, this, this);
 
     // process the next message
     message->processMessage();
@@ -116,7 +120,7 @@ namespace zsLib
   IMessageQueue::size_type MessageQueue::getTotalUnprocessedMessages() const
   {
     AutoLock lock(mLock);
-    EventWriteZsMessageQueueTotalUnprocessedMessages(__func__, this, mMessages.size());
+    ZS_EVENTING_2(x, i, Insane, MessageQueueTotalUnprocessedMessages, zs, MessageQueue, Info, this, this, this, size_t, messages, mMessages.size());
     return static_cast<size_type>(mMessages.size());
   }
 

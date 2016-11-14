@@ -34,10 +34,13 @@
 #include <zsLib/internal/zsLib_TimerMonitor.h>
 #include <zsLib/helpers.h>
 
-#include <zsLib/internal/zsLib_Tracing.h>
+#ifndef ZSLIB_EVENTING_NOOP
+#include <zsLib/internal/zsLib.events.h>
+#else
+#include <zsLib/eventing/noop.h>
+#endif //ndef ZSLIB_EVENTING_NOOP
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
-
 
 namespace zsLib
 {
@@ -54,7 +57,8 @@ namespace zsLib
       {
         fired = true;
         try {
-          EventWriteZsTimerEventFired(__func__, this, mID);
+          ZS_EVENTING_1(x, i, Insane, TimerEvent, zs, Timer, Event, puid, id, mID);
+
           mDelegate->onTimer(mThisWeak.lock());
         } catch (ITimerDelegateProxy::Exceptions::DelegateGone &) {
           mOnceOnly = true;   // this has to stop firing now that the proxy to the delegate points to something that is now gone
@@ -117,7 +121,7 @@ namespace zsLib
     mMonitored = false;
     mFireNextAt = (std::chrono::system_clock::now() + timeout);
 
-    EventWriteZsTimerCreate(__func__, this, mID, repeat, timeout.count());
+    ZS_EVENTING_3(x, i, Trace, TimerCreate, zs, Timer, Start, puid, id, mID, bool, repeat, repeat, duration, timeoutInMicroseconds, timeout.count());
   }
 
   //---------------------------------------------------------------------------
@@ -125,7 +129,7 @@ namespace zsLib
   {
     mThisWeak.reset();
     cancel();
-    EventWriteZsTimerDestroy(__func__, this, mID);
+    ZS_EVENTING_1(x, i, Trace, TimerDestroy, zs, Timer, Stop, puid, id, mID);
   }
 
   //---------------------------------------------------------------------------

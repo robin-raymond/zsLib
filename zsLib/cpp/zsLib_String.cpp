@@ -100,6 +100,16 @@ namespace zsLib
   {
   }
 
+  String::String(CSTR value, size_t length) : std::string(value ? value : static_cast<const char *>(NULL), length)
+  {
+  }
+
+  String::String(CWSTR value, size_t length)
+  {
+    std::wstring temp(value, length);
+    (*this) = String(temp);
+  }
+
   String::String(const std::string &value) : std::string(value)
   {
   }

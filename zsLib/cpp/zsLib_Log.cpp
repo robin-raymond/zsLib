@@ -30,6 +30,7 @@
  */
 
 #include <zsLib/Log.h>
+#include <zsLib/eventing/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
@@ -49,9 +50,14 @@ namespace zsLib
   #pragma mark
 
   //---------------------------------------------------------------------------
-  Subsystem::Subsystem(CSTR inName, Log::Level inLevel) :
+  Subsystem::Subsystem(
+                       CSTR inName,
+                       Log::Level inOutputLevel,
+                       Log::Level inEventingLevel
+                       ) :
     mSubsystem(inName),
-    mLevel(static_cast<Subsystem::LevelType>(inLevel))
+    mOutputLevel(static_cast<Subsystem::LevelType>(inOutputLevel)),
+    mEventingLevel(static_cast<Subsystem::LevelType>(inEventingLevel))
   {
   }
 
@@ -64,13 +70,25 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Subsystem::setOutputLevel(Log::Level inLevel)
   {
-    mLevel = inLevel;
+    mOutputLevel = inLevel;
   }
 
   //---------------------------------------------------------------------------
   Log::Level Subsystem::getOutputLevel() const
   {
-    return mLevel;
+    return mOutputLevel;
+  }
+
+  //---------------------------------------------------------------------------
+  void Subsystem::setEventingLevel(Log::Level inLevel)
+  {
+    mEventingLevel = inLevel;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Level Subsystem::getEventingLevel() const
+  {
+    return mEventingLevel;
   }
 
   //---------------------------------------------------------------------------
@@ -160,10 +178,10 @@ namespace zsLib
   const char *Log::toString(Severity severity)
   {
     switch (severity) {
-      case Informational: return "info";
-      case Warning:       return "warning";
-      case Error:         return "error";
-      case Fatal:         return "fatal";
+      case Informational: return "Info";
+      case Warning:       return "Warning";
+      case Error:         return "Error";
+      case Fatal:         return "Fatal";
     }
     return "undefined";
   }
@@ -171,22 +189,15 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Log::Severity Log::toSeverity(const char *inSeverityStr)
   {
-    static Severity severityArray[] = {
-      Warning,
-      Error,
-      Fatal,
-
-      Informational
-    };
-
     String severityStr(inSeverityStr);
 
-    for (int index = 0; Informational != severityArray[index]; ++index) {
-      if (severityStr == toString(severityArray[index])) {
-        return severityArray[index];
+    for (Log::Severity index = Log::Severity_First; index <= Log::Severity_Last; index = static_cast<Log::Severity>(static_cast<std::underlying_type<Log::Severity>::type>(index) + 1)) {
+      if (0 == severityStr.compareNoCase(toString(index))) {
+        return index;
       }
     }
 
+    ZS_THROW_INVALID_ARGUMENT(String("Invalid severity: ") + severityStr);
     return Informational;
   }
   
@@ -194,12 +205,12 @@ namespace zsLib
   const char *Log::toString(Level level)
   {
     switch (level) {
-      case None:          return "none";
-      case Basic:         return "basic";
-      case Detail:        return "detail";
-      case Debug:         return "debug";
-      case Trace:         return "trace";
-      case Insane:        return "insane";
+      case None:          return "None";
+      case Basic:         return "Basic";
+      case Detail:        return "Detail";
+      case Debug:         return "Debug";
+      case Trace:         return "Trace";
+      case Insane:        return "Insane";
     }
     return "undefined";
   }
@@ -207,24 +218,15 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Log::Level Log::toLevel(const char *inLevelStr)
   {
-    static Level levelArray[] = {
-      Basic,
-      Detail,
-      Debug,
-      Trace,
-      Insane,
-
-      None
-    };
-
     String levelStr(inLevelStr);
 
-    for (int index = 0; None != levelArray[index]; ++index) {
-      if (levelStr == toString(levelArray[index])) {
-        return levelArray[index];
+    for (Log::Level index = Log::Level_First; index <= Log::Level_Last; index = static_cast<Log::Level>(static_cast<std::underlying_type<Log::Level>::type>(index) + 1)) {
+      if (0 == levelStr.compareNoCase(toString(index))) {
+        return index;
       }
     }
 
+    ZS_THROW_INVALID_ARGUMENT(String("Invalid level: ") + levelStr);
     return None;
   }
 

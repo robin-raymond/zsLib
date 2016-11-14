@@ -203,13 +203,15 @@ namespace testingUsingGUIThread
       memset(&msg, 0, sizeof(msg));
       while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
       {
-        TESTING_CHECK(-1 != result)
+        if (-1 == result) {
+          TESTING_CHECK(false);
+        }
 
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
 
         count = mThread->getTotalUnprocessedMessages();
-        count += mThread->getTotalUnprocessedMessages();
+        count += mThreadNeverCalled->getTotalUnprocessedMessages();
         if (0 == count)
           break;
 

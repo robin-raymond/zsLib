@@ -120,27 +120,35 @@ namespace zsLib
   public:
     enum Severity
     {
-      Informational,
+      Severity_First,
+
+      Informational = Severity_First,
       Warning,
       Error,
-      Fatal
+      Fatal,
+
+      Severity_Last = Fatal
     };
 
     static const char *toString(Severity severity);
-    static Severity toSeverity(const char *severityStr);
+    static Severity toSeverity(const char *severityStr) throw (Exceptions::InvalidArgument);
 
     enum Level
     {
-      None,
+      Level_First,
+
+      None = Level_First,
       Basic,
       Detail,
       Debug,
       Trace,
-      Insane
+      Insane,
+
+      Level_Last = Insane,
     };
 
     static const char *toString(Level level);
-    static Level toLevel(const char *levelStr);
+    static Level toLevel(const char *levelStr) throw (Exceptions::InvalidArgument);
 
     //-------------------------------------------------------------------------
     #pragma mark
@@ -295,18 +303,26 @@ namespace zsLib
     typedef Log::Level LevelType;
 
   public:
-    Subsystem(CSTR inName, Log::Level inLevel = Log::Basic);
+    Subsystem(
+              CSTR inName,
+              Log::Level inOutputLevel = Log::Basic,
+              Log::Level inEventingLevel = Log::Basic
+              );
     CSTR getName() const {return mSubsystem;}
 
     void setOutputLevel(Log::Level inLevel);
     Log::Level getOutputLevel() const;
+
+    void setEventingLevel(Log::Level inLevel);
+    Log::Level getEventingLevel() const;
 
   protected:
     virtual void notifyNewSubsystem();
 
   private:
     CSTR mSubsystem;
-    mutable std::atomic<LevelType> mLevel;
+    mutable std::atomic<LevelType> mOutputLevel;
+    mutable std::atomic<LevelType> mEventingLevel;
   };
 
 } // namespace zsLib

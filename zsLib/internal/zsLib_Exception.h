@@ -80,6 +80,154 @@
     } \
   };
 
+#define ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_1(xObject, xType1, xName1) \
+  class xObject : public ::zsLib::Exception \
+  { \
+    xType1 m_##xName1; \
+  public: \
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1 \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression), m_##xName1(inValue1) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::String &message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1 \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression), m_##xName1(inValue1) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1 \
+    ) : Exception(subsystem, params, function, pathName, lineNumber, expression), m_##xName1(inValue1) \
+    { \
+    } \
+\
+    xType1 xName1() const {return m_##xName1;} \
+  };
+
+#define ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_2(xObject, xType1, xName1, xType2, xName2) \
+  class xObject : public ::zsLib::Exception \
+  { \
+    xType1 m_##xName1; \
+    xType2 m_##xName2; \
+  public: \
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2 \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression), m_##xName1(inValue1), m_##xName2(inValue2) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::String &message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2 \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression), m_##xName1(inValue1), m_##xName2(inValue2) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2 \
+    ) : Exception(subsystem, params, function, pathName, lineNumber, expression), m_##xName1(inValue1), m_##xName2(inValue2) \
+    { \
+    } \
+\
+    xType1 xName1() const {return m_##xName1;} \
+    xType2 xName2() const {return m_##xName2;} \
+  };
+
+
+#define ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_3(xObject, xType1, xName1, xType2, xName2, xType3, xName3) \
+  class xObject : public ::zsLib::Exception \
+  { \
+    xType1 m_##xName1; \
+    xType2 m_##xName2; \
+    xType3 m_##xName3; \
+  public: \
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      ::zsLib::CSTR message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2, \
+      xType3 inValue3 \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression), m_##xName1(inValue1), m_##xName2(inValue2), m_##xName3(inValue3) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::String &message, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2, \
+      xType3 inValue3 \
+    ) : Exception(subsystem, message, function, pathName, lineNumber, expression), m_##xName1(inValue1), m_##xName2(inValue2), m_##xName3(inValue3) \
+    { \
+    } \
+\
+    xObject( \
+      const ::zsLib::Subsystem &subsystem, \
+      const ::zsLib::Log::Params &params, \
+      ::zsLib::CSTR function, \
+      ::zsLib::CSTR pathName, \
+      ::zsLib::ULONG lineNumber, \
+      ::zsLib::CSTR expression, \
+      xType1 inValue1, \
+      xType2 inValue2, \
+      xType3 inValue3 \
+    ) : Exception(subsystem, params, function, pathName, lineNumber, expression), m_##xName1(inValue1), m_##xName2(inValue2), m_##xName3(inValue3) \
+    { \
+    } \
+\
+    xType1 xName1() const {return m_##xName1;} \
+    xType2 xName2() const {return m_##xName2;} \
+    xType3 xName3() const {return m_##xName3;} \
+  };
+
 #define ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase) \
   class xObject : public xBase \
   { \
