@@ -11,7 +11,7 @@ projects/android/obj
 *.pfx
 ipch/
 *.opensdf
-zsLib/internal/zsLib_ETWTracing.h
+zsLib/internal/zsLib.events_win_etw.h
 *.opendb
 *.db
 .vs/
