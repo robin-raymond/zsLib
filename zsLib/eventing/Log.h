@@ -352,8 +352,9 @@
                                                                                 ZS_INTERNAL_EVENTING_EVENT_##xSymbol(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6, xValue7, xValue8, xValue9, xValue10, xValue11, xValue12, xValue13, xValue14, xValue15, xValue16, xValue17, xValue18, xValue19, xValue20, xValue21, xValue22, xValue23, xValue24, xValue25, xValue26, xValue27, xValue28, xValue29, xValue30, xValue31, xValue32, xValue33, xValue34, xValue35, xValue36, xValue37, xValue38, xValue39, xValue40, xValue41, xValue42, xValue43, xValue44, xValue45, xValue46, xValue47, xValue48, xValue49, xValue50, xValue51, xValue52, xValue53, xValue54, xValue55, xValue56, xValue57, xValue58, xValue59, xValue60)
 
 
-#define ZS_EVENTING_REGISTER(xName)                                                  ZS_INTERNAL_REGISTER_EVENTING_##xName()
-#define ZS_EVENTING_UNREGISTER(xName)                                                ZS_INTERNAL_UNREGISTER_EVENTING_##xName()
+#define ZS_EVENTING_EXCLUSIVE(xProviderName)
+#define ZS_EVENTING_REGISTER(xProviderName)                                     ZS_INTERNAL_REGISTER_EVENTING_##xProviderName()
+#define ZS_EVENTING_UNREGISTER(xProviderName)                                   ZS_INTERNAL_UNREGISTER_EVENTING_##xProviderName()
 
 #define ZS_EVENTING_PROVIDER(xUUID, xName, xSymbolName, xDescription, xResourceName)
 #define ZS_EVENTING_ALIAS(xAliasInput, xAliasOuput)
@@ -363,6 +364,7 @@
 #define ZS_EVENTING_TASK(xName)
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
+#define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
 
 namespace zsLib
 {

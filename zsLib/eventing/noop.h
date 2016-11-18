@@ -140,9 +140,9 @@
 #define ZS_EVENTING_COMPACT_59(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode, xType1AndName1, xValue1, xType2AndName2, xValue2, xType3AndName3, xValue3, xType4AndName4, xValue4, xType5AndName5, xValue5, xType6AndName6, xValue6, xType7AndName7, xValue7, xType8AndName8, xValue8, xType9AndName9, xValue9, xType10AndName10, xValue10, xType11AndName11, xValue11, xType12AndName12, xValue12, xType13AndName13, xValue13, xType14AndName14, xValue14, xType15AndName15, xValue15, xType16AndName16, xValue16, xType17AndName17, xValue17, xType18AndName18, xValue18, xType19AndName19, xValue19, xType20AndName20, xValue20, xType21AndName21, xValue21, xType22AndName22, xValue22, xType23AndName23, xValue23, xType24AndName24, xValue24, xType25AndName25, xValue25, xType26AndName26, xValue26, xType27AndName27, xValue27, xType28AndName28, xValue28, xType29AndName29, xValue29, xType30AndName30, xValue30, xType31AndName31, xValue31, xType32AndName32, xValue32, xType33AndName33, xValue33, xType34AndName34, xValue34, xType35AndName35, xValue35, xType36AndName36, xValue36, xType37AndName37, xValue37, xType38AndName38, xValue38, xType39AndName39, xValue39, xType40AndName40, xValue40, xType41AndName41, xValue41, xType42AndName42, xValue42, xType43AndName43, xValue43, xType44AndName44, xValue44, xType45AndName45, xValue45, xType46AndName46, xValue46, xType47AndName47, xValue47, xType48AndName48, xValue48, xType49AndName49, xValue49, xType50AndName50, xValue50, xType51AndName51, xValue51, xType52AndName52, xValue52, xType53AndName53, xValue53, xType54AndName54, xValue54, xType55AndName55, xValue55, xType56AndName56, xValue56, xType57AndName57, xValue57, xType58AndName58, xValue58, xType59AndName59, xValue59)
 #define ZS_EVENTING_COMPACT_60(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode, xType1AndName1, xValue1, xType2AndName2, xValue2, xType3AndName3, xValue3, xType4AndName4, xValue4, xType5AndName5, xValue5, xType6AndName6, xValue6, xType7AndName7, xValue7, xType8AndName8, xValue8, xType9AndName9, xValue9, xType10AndName10, xValue10, xType11AndName11, xValue11, xType12AndName12, xValue12, xType13AndName13, xValue13, xType14AndName14, xValue14, xType15AndName15, xValue15, xType16AndName16, xValue16, xType17AndName17, xValue17, xType18AndName18, xValue18, xType19AndName19, xValue19, xType20AndName20, xValue20, xType21AndName21, xValue21, xType22AndName22, xValue22, xType23AndName23, xValue23, xType24AndName24, xValue24, xType25AndName25, xValue25, xType26AndName26, xValue26, xType27AndName27, xValue27, xType28AndName28, xValue28, xType29AndName29, xValue29, xType30AndName30, xValue30, xType31AndName31, xValue31, xType32AndName32, xValue32, xType33AndName33, xValue33, xType34AndName34, xValue34, xType35AndName35, xValue35, xType36AndName36, xValue36, xType37AndName37, xValue37, xType38AndName38, xValue38, xType39AndName39, xValue39, xType40AndName40, xValue40, xType41AndName41, xValue41, xType42AndName42, xValue42, xType43AndName43, xValue43, xType44AndName44, xValue44, xType45AndName45, xValue45, xType46AndName46, xValue46, xType47AndName47, xValue47, xType48AndName48, xValue48, xType49AndName49, xValue49, xType50AndName50, xValue50, xType51AndName51, xValue51, xType52AndName52, xValue52, xType53AndName53, xValue53, xType54AndName54, xValue54, xType55AndName55, xValue55, xType56AndName56, xValue56, xType57AndName57, xValue57, xType58AndName58, xValue58, xType59AndName59, xValue59, xType60AndName60, xValue60)
 
-
-#define ZS_EVENTING_REGISTER(xName)
-#define ZS_EVENTING_UNREGISTER(xName)
+#define ZS_EVENTING_EXCLUSIVE(xProviderName)
+#define ZS_EVENTING_REGISTER(xProviderName)
+#define ZS_EVENTING_UNREGISTER(xProviderName)
 
 #define ZS_EVENTING_PROVIDER(xUUID, xName, xSymbolName, xDescription, xResourceName)
 #define ZS_EVENTING_ALIAS(xAliasInput, xAliasOuput)
@@ -152,6 +152,7 @@
 #define ZS_EVENTING_TASK(xName)
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
+#define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
 
 namespace zsLib
 {
