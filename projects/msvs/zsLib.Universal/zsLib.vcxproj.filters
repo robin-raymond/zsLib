@@ -19,6 +19,12 @@
     <Filter Include="zsLib\extras\win32">
       <UniqueIdentifier>{0d3d826d-f23e-432a-9095-cecbcdfe638e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zsLib\eventing">
+      <UniqueIdentifier>{7f4af039-822d-4b26-b5b6-84bcf8b0ff20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zsLib\eventing\internal">
+      <UniqueIdentifier>{d02bffd1-1eec-4985-a931-5299daff94d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\Exception.h">
@@ -197,6 +203,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\internal\zsLib.events_win.h">
       <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\noop.h">
+      <Filter>zsLib\eventing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\Log.h">
+      <Filter>zsLib\eventing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_Log.h">
+      <Filter>zsLib\eventing\internal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

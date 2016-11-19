@@ -40,6 +40,10 @@
 #define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xLevelValue)                         (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue))
 #define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)              (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel)
 
+#define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
+#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)                           
+
+
 namespace zsLib
 {
   namespace eventing

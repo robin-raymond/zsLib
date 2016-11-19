@@ -133,7 +133,7 @@ namespace zsLib
     static const char *toString(Severity severity);
     static Severity toSeverity(const char *severityStr) throw (Exceptions::InvalidArgument);
 
-    enum Level
+    enum Level : LevelBaseType
     {
       Level_First,
 
@@ -222,18 +222,22 @@ namespace zsLib
     };
 
   public:
-    //-------------------------------------------------------------------------
-    #pragma mark
-    #pragma mark Log => (methods)
-    #pragma mark
-
     ~Log();
 
-    static void addListener(ILogDelegatePtr delegate);
-    static void removeListener(ILogDelegatePtr delegate);
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log => (output methods)
+    #pragma mark
+
+    static void addOutputListener(ILogOutputDelegatePtr delegate);
+    static void removeOutputListener(ILogOutputDelegatePtr delegate);
 
     static void notifyNewSubsystem(Subsystem *inSubsystem);
 
+    static void setOutputLevelByName(
+                                     const char *subsystemName,
+                                     Level level
+                                     );
     static void log(
                     const Subsystem &subsystem,
                     Severity severity,
@@ -254,6 +258,41 @@ namespace zsLib
                     ULONG lineNumber
                     );
 
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log => (eventing methods)
+    #pragma mark
+
+    static void addEventingListener(ILogOutputDelegatePtr delegate);
+    static void removeEventingListener(ILogOutputDelegatePtr delegate);
+
+    static uintptr_t registerEventWriter(
+                                         const UUID &providerID,
+                                         const char *providerName,
+                                         const char *uniqueProviderHash
+                                         );
+    static void unregisterEventWrite(
+      uintptr_t handle, 
+      Severity severity,
+      Level level,
+      const char *subsystemName,
+      const char *functionName,
+      ULONG lineNumber,
+
+      );
+
+//#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize)
+//#define ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize, xBuffers, xBufferSizez, xTotalBuffers)
+
+    static void setEventingLevelByName(
+                                       const char *subsystemName,
+                                       Level level
+                                       );
+
+    static void writeEvent(
+      uintptr_t handle
+    );
+
   public:
     Log(const make_private &);
 
@@ -271,7 +310,7 @@ namespace zsLib
   #pragma mark ILogDelegate
   #pragma mark
 
-  interaction ILogDelegate
+  interaction ILogOutputDelegate
   {
   public:
     // notification that a new subsystem exists
@@ -287,6 +326,23 @@ namespace zsLib
                        zsLib::ULONG inLineNumber,
                        const zsLib::Log::Params &params
                        ) {}
+  };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark ILogDelegate
+  #pragma mark
+
+  interaction ILogEventingDelegate
+  {
+  public:
+    // notification that a new subsystem exists
+    virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
+
+    // notification of a log event
   };
 
   //---------------------------------------------------------------------------

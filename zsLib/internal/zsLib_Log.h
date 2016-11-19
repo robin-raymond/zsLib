@@ -36,7 +36,10 @@
 
 #include <zsLib/types.h>
 #include <zsLib/Stringize.h>
+
 #include <list>
+#include <map>
+#include <set>
 
 namespace zsLib
 {
@@ -51,19 +54,48 @@ namespace zsLib
     {
     protected:
       struct make_private {};
+      typedef int LevelBaseType;
+
+      typedef std::list<ILogOutputDelegatePtr> OutputListenerList;
+      ZS_DECLARE_PTR(OutputListenerList);
+      typedef std::list<ILogEventingDelegatePtr> EventingListenerList;
+      ZS_DECLARE_PTR(EventingListenerList);
+
+      typedef std::list<Subsystem *> SubsystemList;
+
+      typedef String SubsystemName;
+      typedef std::map<SubsystemName, LevelBaseType> SubsystemLevelMap;
+
+      struct EventingWriter
+      {
+        UUID mProviderID;
+        String mProviderName;
+        String mUniqueProviderHash;
+      };
+
+      typedef std::set<EventingWriter *> EventWriterSet;
+      typedef std::map<UUID, EventingWriter *> EventWriterMap;
 
     public:
+      Log(const make_private &) :
+        mOutputListeners(make_shared<OutputListenerList>()),
+        mEventingListeners(make_shared<EventingListenerList>()) {}
+
       static String paramize(const char *name);
 
     protected:
       RecursiveLock mLock;
-      typedef std::list<ILogDelegatePtr> ListenerList;
-      ZS_DECLARE_PTR(ListenerList)
 
-      ListenerListPtr mListeners;
+      OutputListenerListPtr mOutputListeners;
+      EventingListenerList mEventingListeners;
 
-      typedef std::list<Subsystem *> SubsystemList;
       SubsystemList mSubsystems;
+
+      SubsystemLevelMap mDefaultOutputSubsystemLevels;
+      SubsystemLevelMap mDefaultEventingSubsystemLevels;
+
+      EventWriterMap mEventWriters;
+      EventWriterSet mCleanUpWriters;
     };
   }
 }

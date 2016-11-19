@@ -231,7 +231,8 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  Log::Log(const make_private &)
+  Log::Log(const make_private &ignore) :
+    internal::Log(ignore)
   {
   }
 
@@ -254,7 +255,7 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  void Log::addListener(ILogDelegatePtr delegate)
+  void Log::addOutputListener(ILogOutputDelegatePtr delegate)
   {
     LogPtr log = Log::singleton();
     if (!log) return;
@@ -266,15 +267,13 @@ namespace zsLib
     {
       AutoRecursiveLock lock(refThis.mLock);
 
-      ListenerListPtr replaceList(make_shared<ListenerList>());
+      OutputListenerListPtr replaceList(make_shared<OutputListenerList>());
 
-      if (refThis.mListeners) {
-        (*replaceList) = (*refThis.mListeners);
-      }
+      (*replaceList) = (*refThis.mOutputListeners);
 
       replaceList->push_back(delegate);
 
-      refThis.mListeners = replaceList;
+      refThis.mOutputListeners = replaceList;
 
       notifyList = refThis.mSubsystems;
     }
@@ -288,7 +287,7 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  void Log::removeListener(ILogDelegatePtr delegate)
+  void Log::removeOutputListener(ILogOutputDelegatePtr delegate)
   {
     LogPtr log = Log::singleton();
     if (!log) return;
@@ -297,19 +296,17 @@ namespace zsLib
 
     AutoRecursiveLock lock(refThis.mLock);
 
-    ListenerListPtr replaceList(make_shared<ListenerList>());
+    OutputListenerListPtr replaceList(make_shared<OutputListenerList>());
 
-    if (refThis.mListeners) {
-      (*replaceList) = (*refThis.mListeners);
-    }
+    (*replaceList) = (*refThis.mOutputListeners);
 
-    for (ListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
+    for (OutputListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
     {
       if (delegate.get() == (*iter).get())
       {
         replaceList->erase(iter);
 
-        refThis.mListeners = replaceList;
+        refThis.mOutputListeners = replaceList;
         return;
       }
     }
@@ -325,23 +322,60 @@ namespace zsLib
 
     Log &refThis = (*log);
 
-    ListenerListPtr notifyList;
+    OutputListenerListPtr notifyList;
 
     // scope: remember the subsystem
     {
       AutoRecursiveLock lock(refThis.mLock);
       refThis.mSubsystems.push_back(inSubsystem);
-      notifyList = refThis.mListeners;
+      notifyList = refThis.mOutputListeners;
     }
 
-    if (!notifyList) return;
-
-    for (ListenerList::iterator iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       (*iter)->onNewSubsystem(
                               *inSubsystem
                               );
     }
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::setOutputLevelByName(
+                                 const char *subsystemName,
+                                 Level level
+                                 )
+  {
+    String subsystemNameStr(subsystemName);
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    bool defaultAll = subsystemNameStr.isEmpty();
+
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+      refThis.mDefaultOutputSubsystemLevels[subsystemNameStr] = static_cast<decltype(level)>(static_cast<std::underlying_type<decltype(level)>::type>(level));
+
+      // if no listeners attached then there's no reason to adjust the subsystem's current level
+      if (refThis.mOutputListeners->size() < 1) return;
+
+      for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter)
+      {
+        auto &subsystem = *(*iter);
+
+        if (defaultAll) {
+          subsystem.setOutputLevel(level);
+          continue;
+        }
+
+        if (subsystemNameStr == subsystem.getName()) {
+          subsystem.setOutputLevel(level);
+        }
+      }
+    }
+
   }
 
   //---------------------------------------------------------------------------
@@ -377,16 +411,14 @@ namespace zsLib
 
     Log &refThis = (*log);
 
-    ListenerListPtr notifyList;
+    OutputListenerListPtr notifyList;
 
     {
       AutoRecursiveLock lock(refThis.mLock);
-      notifyList = refThis.mListeners;
+      notifyList = refThis.mOutputListeners;
     }
 
-    if (!notifyList) return;
-
-    for (ListenerList::iterator iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       (*iter)->onLog(
                      inSubsystem,
