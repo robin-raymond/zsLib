@@ -263,26 +263,22 @@ namespace zsLib
     #pragma mark Log => (eventing methods)
     #pragma mark
 
-    static void addEventingListener(ILogOutputDelegatePtr delegate);
-    static void removeEventingListener(ILogOutputDelegatePtr delegate);
+    static void addEventingListener(ILogEventingDelegatePtr delegate);
+    static void removeEventingListener(ILogEventingDelegatePtr delegate);
 
-    static uintptr_t registerEventWriter(
-                                         const UUID &providerID,
-                                         const char *providerName,
-                                         const char *uniqueProviderHash
-                                         );
-    static void unregisterEventWrite(
-      uintptr_t handle, 
-      Severity severity,
-      Level level,
-      const char *subsystemName,
-      const char *functionName,
-      ULONG lineNumber,
+    static uintptr_t registerEventingWriter(
+                                            const UUID &providerID,
+                                            const char *providerName,
+                                            const char *uniqueProviderHash
+                                            );
+    static void unregisterEventingWriter(uintptr_t handle);
 
-      );
-
-//#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize)
-//#define ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize, xBuffers, xBufferSizez, xTotalBuffers)
+    static bool getEventingWriterInfo(
+                                      uintptr_t handle,
+                                      UUID &outProviderID,
+                                      String &outProviderName,
+                                      String &outUniqueProviderHash
+                                      );
 
     static void setEventingLevelByName(
                                        const char *subsystemName,
@@ -290,8 +286,19 @@ namespace zsLib
                                        );
 
     static void writeEvent(
-      uintptr_t handle
-    );
+                           uintptr_t handle,
+                           Severity severity,
+                           Level level,
+                           const char *subsystemName,
+                           const char *functionName,
+                           ULONG lineNumber,
+                           size_t mValue,
+                           const BYTE *buffer,
+                           size_t bufferSize,
+                           const BYTE *buffers,
+                           const size_t *buffersSizes,
+                           size_t totalBuffers
+                           );
 
   public:
     Log(const make_private &);
@@ -343,6 +350,20 @@ namespace zsLib
     virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
 
     // notification of a log event
+    void onWriteEvent(
+                      uintptr_t handle,
+                      zsLib::Log::Severity severity,
+                      zsLib::Log::Level level,
+                      const char *subsystemName,
+                      const char *functionName,
+                      ULONG lineNumber,
+                      size_t mValue,
+                      const BYTE *buffer,
+                      size_t bufferSize,
+                      const BYTE *buffers,
+                      const size_t *buffersSizes,
+                      size_t totalBuffers
+                      ) {}
   };
 
   //---------------------------------------------------------------------------

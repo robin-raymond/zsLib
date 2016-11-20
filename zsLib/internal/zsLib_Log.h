@@ -71,6 +71,7 @@ namespace zsLib
         UUID mProviderID;
         String mProviderName;
         String mUniqueProviderHash;
+        zsLib::Log *mLog {};
       };
 
       typedef std::set<EventingWriter *> EventWriterSet;
@@ -87,7 +88,7 @@ namespace zsLib
       RecursiveLock mLock;
 
       OutputListenerListPtr mOutputListeners;
-      EventingListenerList mEventingListeners;
+      EventingListenerListPtr mEventingListeners;
 
       SubsystemList mSubsystems;
 
