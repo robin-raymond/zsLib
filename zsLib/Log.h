@@ -383,7 +383,7 @@ namespace zsLib
     Subsystem(
               CSTR inName,
               Log::Level inOutputLevel = Log::Basic,
-              Log::Level inEventingLevel = Log::Basic
+              Log::Level inEventingLevel = Log::None
               );
     CSTR getName() const {return mSubsystem;}
 

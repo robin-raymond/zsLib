@@ -387,7 +387,7 @@ namespace zsLib
 
       {
         auto found = refThis.mDefaultOutputSubsystemLevels.find(String(inSubsystem->getName()));
-        if (found != refThis.mDefaultEventingSubsystemLevels.end()) {
+        if (found != refThis.mDefaultOutputSubsystemLevels.end()) {
           inSubsystem->setOutputLevel(static_cast<Level>((*found).second));
         } else {
           auto foundDefault = refThis.mDefaultOutputSubsystemLevels.find(String());
