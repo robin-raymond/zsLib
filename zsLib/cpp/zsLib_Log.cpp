@@ -617,6 +617,8 @@ namespace zsLib
 
     Log &refThis = (*log);
 
+    EventingWriter *writer = NULL;
+
     {
       AutoRecursiveLock lock(refThis.mLock);
 
@@ -628,7 +630,7 @@ namespace zsLib
         }
       }
 
-      EventingWriter *writer = new EventingWriter;
+      writer = new EventingWriter;
       writer->mProviderID = providerID;
       writer->mProviderName = String(providerName);
       writer->mUniqueProviderHash = String(uniqueProviderHash);
@@ -636,6 +638,8 @@ namespace zsLib
 
       refThis.mEventWriters[providerID] = writer;
     }
+
+    return reinterpret_cast<uintptr_t>(writer);
   }
 
   //---------------------------------------------------------------------------

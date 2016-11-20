@@ -50,7 +50,7 @@ namespace zsLib {
       return gHandle;
     }
 
-#define ZS_INTERNAL_REGISTER_EVENTING_zsLib() ZS_EVENTING_REGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib")
+#define ZS_INTERNAL_REGISTER_EVENTING_zsLib() ZS_EVENTING_REGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "c79ef05bce780959d3bae6afd2f71a8edc4d554b6798b2ff7a77e79be7fc7733")
 #define ZS_INTERNAL_UNREGISTER_EVENTING_zsLib() ZS_EVENTING_UNREGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib())
 
 
