@@ -99,7 +99,7 @@ namespace zsLib
   {
     struct Exceptions
     {
-      ZS_DECLARE_CUSTOM_EXCEPTION(CheckFailed)
+      ZS_DECLARE_CUSTOM_EXCEPTION(CheckFailed);
     };
 
     //-------------------------------------------------------------------------

@@ -349,7 +349,6 @@ namespace zsLib
     {
       if (delegate.get() == (*iter).get())
       {
-        auto originalSize = replaceList->size();
         replaceList->erase(iter);
 
         if (0 == replaceList->size()) {

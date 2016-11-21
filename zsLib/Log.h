@@ -131,7 +131,7 @@ namespace zsLib
     };
 
     static const char *toString(Severity severity);
-    static Severity toSeverity(const char *severityStr) throw (Exceptions::InvalidArgument);
+    static Severity toSeverity(const char *severityStr); // throw (Exceptions::InvalidArgument);
 
     enum Level : LevelBaseType
     {
@@ -148,7 +148,7 @@ namespace zsLib
     };
 
     static const char *toString(Level level);
-    static Level toLevel(const char *levelStr) throw (Exceptions::InvalidArgument);
+    static Level toLevel(const char *levelStr); // throw (Exceptions::InvalidArgument);
 
     //-------------------------------------------------------------------------
     #pragma mark
