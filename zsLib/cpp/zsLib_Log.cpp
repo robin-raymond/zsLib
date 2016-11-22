@@ -178,7 +178,7 @@ namespace zsLib
   const char *Log::toString(Severity severity)
   {
     switch (severity) {
-      case Informational: return "Info";
+      case Informational: return "Informational";
       case Warning:       return "Warning";
       case Error:         return "Error";
       case Fatal:         return "Fatal";
@@ -190,6 +190,10 @@ namespace zsLib
   Log::Severity Log::toSeverity(const char *inSeverityStr)
   {
     String severityStr(inSeverityStr);
+
+    if (0 == (severityStr.compareNoCase("Info"))) {
+      severityStr = "Informational";
+    }
 
     for (Log::Severity index = Log::Severity_First; index <= Log::Severity_Last; index = static_cast<Log::Severity>(static_cast<std::underlying_type<Log::Severity>::type>(index) + 1)) {
       if (0 == severityStr.compareNoCase(toString(index))) {
@@ -739,7 +743,7 @@ namespace zsLib
                        size_t mValue,
                        const BYTE *buffer,
                        size_t bufferSize,
-                       const BYTE *buffers,
+                       const BYTE * const* buffers,
                        const size_t *buffersSizes,
                        size_t totalBuffers
                        )

@@ -121,8 +121,6 @@
 		0067EE601D9C5BA4003BE1AC /* helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helpers.h; sourceTree = "<group>"; };
 		0067EE621D9C5BA4003BE1AC /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		0067EE631D9C5BA4003BE1AC /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
-		0067EE641D9C5BA4003BE1AC /* zsLib_ETWTracing.man */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = zsLib_ETWTracing.man; sourceTree = "<group>"; };
-		0067EE651D9C5BA4003BE1AC /* zsLib_ETWTracing.wprp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = zsLib_ETWTracing.wprp; sourceTree = "<group>"; };
 		0067EE661D9C5BA4003BE1AC /* zsLib_Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Event.h; sourceTree = "<group>"; };
 		0067EE671D9C5BA4003BE1AC /* zsLib_Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Exception.h; sourceTree = "<group>"; };
 		0067EE681D9C5BA4003BE1AC /* zsLib_IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_IPAddress.h; sourceTree = "<group>"; };
@@ -147,7 +145,6 @@
 		0067EE7B1D9C5BA4003BE1AC /* zsLib_TearAway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_TearAway.h; sourceTree = "<group>"; };
 		0067EE7C1D9C5BA4003BE1AC /* zsLib_Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Timer.h; sourceTree = "<group>"; };
 		0067EE7D1D9C5BA4003BE1AC /* zsLib_TimerMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_TimerMonitor.h; sourceTree = "<group>"; };
-		0067EE7E1D9C5BA4003BE1AC /* zsLib_Tracing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Tracing.h; sourceTree = "<group>"; };
 		0067EE7F1D9C5BA4003BE1AC /* zsLib_XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_XML.h; sourceTree = "<group>"; };
 		0067EE801D9C5BA4003BE1AC /* IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPAddress.h; sourceTree = "<group>"; };
 		0067EE811D9C5BA4003BE1AC /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
@@ -171,6 +168,14 @@
 		0067EE931D9C5BA4003BE1AC /* WeightedMovingAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeightedMovingAverage.h; sourceTree = "<group>"; };
 		0067EE941D9C5BA4003BE1AC /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
 		0067EE951D9C5BA4003BE1AC /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+		008697321DE3DD92009D669C /* zsLib_eventing_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_eventing_Log.h; sourceTree = "<group>"; };
+		008697331DE3DD92009D669C /* Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
+		008697341DE3DD92009D669C /* noop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = noop.h; sourceTree = "<group>"; };
+		0086973A1DE3DDE2009D669C /* zsLib.events_win_etw.man */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib.events_win_etw.man; sourceTree = "<group>"; };
+		0086973B1DE3DDE2009D669C /* zsLib.events_win_etw.wprp */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib.events_win_etw.wprp; sourceTree = "<group>"; };
+		0086973C1DE3DDE2009D669C /* zsLib.events_win.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events_win.h; sourceTree = "<group>"; };
+		0086973D1DE3DDE2009D669C /* zsLib.events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events.h; sourceTree = "<group>"; };
+		0086973E1DE3DDE2009D669C /* zsLib.events.jman */ = {isa = PBXFileReference; lastKnownFileType = text; path = zsLib.events.jman; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				0067EE221D9C5BA4003BE1AC /* cpp */,
+				008697301DE3DD92009D669C /* eventing */,
 				0067EE4B1D9C5BA4003BE1AC /* extras */,
 				0067EE611D9C5BA4003BE1AC /* internal */,
 				0067EE481D9C5BA4003BE1AC /* date.h */,
@@ -327,8 +333,6 @@
 			children = (
 				0067EE621D9C5BA4003BE1AC /* platform.h */,
 				0067EE631D9C5BA4003BE1AC /* types.h */,
-				0067EE641D9C5BA4003BE1AC /* zsLib_ETWTracing.man */,
-				0067EE651D9C5BA4003BE1AC /* zsLib_ETWTracing.wprp */,
 				0067EE661D9C5BA4003BE1AC /* zsLib_Event.h */,
 				0067EE671D9C5BA4003BE1AC /* zsLib_Exception.h */,
 				0067EE681D9C5BA4003BE1AC /* zsLib_IPAddress.h */,
@@ -353,8 +357,30 @@
 				0067EE7B1D9C5BA4003BE1AC /* zsLib_TearAway.h */,
 				0067EE7C1D9C5BA4003BE1AC /* zsLib_Timer.h */,
 				0067EE7D1D9C5BA4003BE1AC /* zsLib_TimerMonitor.h */,
-				0067EE7E1D9C5BA4003BE1AC /* zsLib_Tracing.h */,
 				0067EE7F1D9C5BA4003BE1AC /* zsLib_XML.h */,
+				0086973A1DE3DDE2009D669C /* zsLib.events_win_etw.man */,
+				0086973B1DE3DDE2009D669C /* zsLib.events_win_etw.wprp */,
+				0086973C1DE3DDE2009D669C /* zsLib.events_win.h */,
+				0086973D1DE3DDE2009D669C /* zsLib.events.h */,
+				0086973E1DE3DDE2009D669C /* zsLib.events.jman */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		008697301DE3DD92009D669C /* eventing */ = {
+			isa = PBXGroup;
+			children = (
+				008697311DE3DD92009D669C /* internal */,
+				008697331DE3DD92009D669C /* Log.h */,
+				008697341DE3DD92009D669C /* noop.h */,
+			);
+			path = eventing;
+			sourceTree = "<group>";
+		};
+		008697311DE3DD92009D669C /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				008697321DE3DD92009D669C /* zsLib_eventing_Log.h */,
 			);
 			path = internal;
 			sourceTree = "<group>";

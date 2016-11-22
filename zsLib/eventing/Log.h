@@ -48,8 +48,8 @@
 #define ZS_EVENTING_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)  ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)
 #define ZS_EVENTING_UNREGISTER_EVENT_WRITER(xHandleReference)                                                 ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
-#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize)  {::zsLib::Log::writeEvent((xHandle), (xSeverity), (xLevel), (xSubsystemName), (xFunc), (xLine), (xEventValue), (xBuffer), (xBufferSize), NULL, NULL, 0);}
-#define ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize, xBuffers, xBuffersSizes, xTotalBuffers) {zsLib::Log::writeEvent((xHandle), (xSeverity), (xLevel), (xSubsystemName), (xFunc), (xLine), (xEventValue), (xBuffer), (xBufferSize), (xBuffers), (xBuffersSizes), (xTotalBuffers)); }
+#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize)  {::zsLib::Log::writeEvent((xHandle), ::zsLib::Log::xSeverity, ::zsLib::Log::xLevel, (xSubsystemName), (xFunc), (xLine), (xEventValue), (xBuffer), (xBufferSize), NULL, NULL, 0);}
+#define ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize, xBuffers, xBuffersSizes, xTotalBuffers) {zsLib::Log::writeEvent((xHandle), zsLib::Log::xSeverity, zsLib::Log::xLevel, (xSubsystemName), (xFunc), (xLine), (xEventValue), (xBuffer), (xBufferSize), (xBuffers), (xBuffersSizes), (xTotalBuffers)); }
 
 
 #define ZS_EVENTING_0(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode) \

@@ -21,16 +21,16 @@ namespace zsLib {
       memcpy(&p, &value, sizeof(value));
       p += sizeof(value);
     }
-    inline void eventWriteBuffer(const BYTE ** &p, const BYTE *buffer, size_t * &bufferSizes, size_t size)
+    inline void eventWriteBuffer(BYTE ** &p, const BYTE *buffer, size_t * &bufferSizes, size_t size)
     {
-      (*p) = buffer;
+      (*p) = const_cast<BYTE *>(buffer);
       (*bufferSizes) = size;
       ++p;
       ++bufferSizes;
     }
-    inline void eventWriteBuffer(const BYTE ** &p, const char *str, size_t * &bufferSizes)
+    inline void eventWriteBuffer(BYTE ** &p, const char *str, size_t * &bufferSizes)
     {
-      (*p) = reinterpret_cast<const BYTE *>(str);
+      (*p) = const_cast<BYTE *>(reinterpret_cast<const BYTE *>(str));
       (*bufferSizes) = (NULL == str ? 0 : strlen(str)) * sizeof(char);
       ++p;
       ++bufferSizes;
@@ -50,7 +50,7 @@ namespace zsLib {
       return gHandle;
     }
 
-#define ZS_INTERNAL_REGISTER_EVENTING_zsLib() ZS_EVENTING_REGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "c79ef05bce780959d3bae6afd2f71a8edc4d554b6798b2ff7a77e79be7fc7733")
+#define ZS_INTERNAL_REGISTER_EVENTING_zsLib() ZS_EVENTING_REGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "5b6e505401fea52757ce75cbcd88e915e18df25994d17b24efe11e090c47f92d")
 #define ZS_INTERNAL_UNREGISTER_EVENTING_zsLib() ZS_EVENTING_UNREGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib())
 
 
@@ -58,16 +58,16 @@ namespace zsLib {
   if (ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xSubsystem, Basic)) { \
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[4]; \
+    BYTE *xxIndirectBuffer[4]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[4]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue1), xxIndirectSize); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue2), xxIndirectSize); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue3), xxIndirectSize); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue1), xxPIndirectSize); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue2), xxPIndirectSize); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue3), xxPIndirectSize); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue5), xxIndirectSize); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Error, Basic, (xSubsystem).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 8, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 4); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue5), xxPIndirectSize); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Error, Basic, (xSubsystem).getName(), __func__, __LINE__, 1000, &(xxOutputBuffer[0]), 8, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 4); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueCreate(xSubsystem, xValue1) \
@@ -75,7 +75,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1001, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueDestroy(xSubsystem, xValue1) \
@@ -83,7 +83,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1002, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueuePost(xSubsystem, xValue1) \
@@ -91,7 +91,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1003, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueProcess(xSubsystem, xValue1) \
@@ -99,7 +99,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1004, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueTotalUnprocessedMessages(xSubsystem, xValue1, xValue2) \
@@ -108,21 +108,21 @@ namespace zsLib {
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 16)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1005, &(xxOutputBuffer[0]), 16); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketAccept(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[16]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 16, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1006, &(xxOutputBuffer[0]), 16, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketAdopt(xSubsystem, xValue1) \
@@ -130,21 +130,21 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1007, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketBind(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[12]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1008, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketClose(xSubsystem, xValue1, xValue2) \
@@ -153,20 +153,20 @@ namespace zsLib {
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 12)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1009, &(xxOutputBuffer[0]), 12); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketConnect(xSubsystem, xValue1, xValue2, xValue3) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue2), xxIndirectSize, (xValue3)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 8, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue2), xxPIndirectSize, (xValue3)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1010, &(xxOutputBuffer[0]), 8, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketCreate(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
@@ -178,7 +178,7 @@ namespace zsLib {
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue4)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue5)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 40)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1011, &(xxOutputBuffer[0]), 40); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketError(xSubsystem, xValue1, xValue2) \
@@ -187,7 +187,7 @@ namespace zsLib {
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 12)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1012, &(xxOutputBuffer[0]), 12); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketExceptionEvent(xSubsystem, xValue1) \
@@ -195,7 +195,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1013, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketExceptionReset(xSubsystem, xValue1) \
@@ -203,21 +203,21 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1014, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetLocalAddress(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[12]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1015, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetOptionFlag(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
@@ -228,7 +228,7 @@ namespace zsLib {
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 24)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1016, &(xxOutputBuffer[0]), 24); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetOptionValue(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
@@ -239,37 +239,37 @@ namespace zsLib {
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 24)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1017, &(xxOutputBuffer[0]), 24); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetOptions(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[20]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue3)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue5), xxIndirectSize, (xValue6)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 20, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue5), xxPIndirectSize, (xValue6)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1018, &(xxOutputBuffer[0]), 20, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetRemoteAddress(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[12]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1019, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketListen(xSubsystem, xValue1, xValue2) \
@@ -278,7 +278,7 @@ namespace zsLib {
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 12)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1020, &(xxOutputBuffer[0]), 12); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketOrphan(xSubsystem, xValue1) \
@@ -286,7 +286,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1021, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketReadReadyEvent(xSubsystem, xValue1) \
@@ -294,7 +294,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1022, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketReadReadyReset(xSubsystem, xValue1) \
@@ -302,85 +302,85 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1023, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketRecv(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
   if (ZS_EVENTING_IS_LOGGING(Trace)) { \
     BYTE xxOutputBuffer[24]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxIndirectSize, (xValue5)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1024, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketRecvFrom(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6, xValue7) \
   if (ZS_EVENTING_IS_LOGGING(Trace)) { \
     BYTE xxOutputBuffer[24]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[2]; \
+    BYTE *xxIndirectBuffer[2]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[2]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxIndirectSize, (xValue5)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue6), xxIndirectSize, (xValue7)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 2); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue6), xxPIndirectSize, (xValue7)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1025, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 2); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSend(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
   if (ZS_EVENTING_IS_LOGGING(Trace)) { \
     BYTE xxOutputBuffer[24]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxIndirectSize, (xValue5)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1026, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSendTo(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6, xValue7) \
   if (ZS_EVENTING_IS_LOGGING(Trace)) { \
     BYTE xxOutputBuffer[24]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[2]; \
+    BYTE *xxIndirectBuffer[2]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[2]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxIndirectSize, (xValue5)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue6), xxIndirectSize, (xValue7)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 2); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue6), xxPIndirectSize, (xValue7)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1027, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 2); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSetOption(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6) \
   if (ZS_EVENTING_IS_LOGGING(Debug)) { \
     BYTE xxOutputBuffer[20]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    const BYTE *xxIndirectBuffer[1]; \
+    BYTE *xxIndirectBuffer[1]; \
     BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
     size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectBuffer = &(xxIndirectSize[0]); \
+    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue3)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue5), xxIndirectSize, (xValue6)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0]), 20, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue5), xxPIndirectSize, (xValue6)); \
+    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1028, &(xxOutputBuffer[0]), 20, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSetOptionFlag(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
@@ -391,7 +391,7 @@ namespace zsLib {
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
     zsLib::eventing::eventWriteBuffer<bool>(xxPOutputBuffer, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 21)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1029, &(xxOutputBuffer[0]), 21); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketShutdown(xSubsystem, xValue1, xValue2, xValue3) \
@@ -401,7 +401,7 @@ namespace zsLib {
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 20)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1030, &(xxOutputBuffer[0]), 20); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketWouldBlock(xSubsystem, xValue1, xValue2) \
@@ -410,7 +410,7 @@ namespace zsLib {
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<bool>(xxPOutputBuffer, (xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 9)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1031, &(xxOutputBuffer[0]), 9); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketWriteReadyEvent(xSubsystem, xValue1) \
@@ -418,7 +418,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1032, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketWriteReadyReset(xSubsystem, xValue1) \
@@ -426,7 +426,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1033, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_TimerCreate(xSubsystem, xValue1, xValue2, xValue3) \
@@ -436,7 +436,7 @@ namespace zsLib {
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
     zsLib::eventing::eventWriteBuffer<bool>(xxPOutputBuffer, (xValue2)); \
     zsLib::eventing::eventWriteBuffer<int64_t>(xxPOutputBuffer, static_cast<int64_t>(xValue3)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 17)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1034, &(xxOutputBuffer[0]), 17); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_TimerDestroy(xSubsystem, xValue1) \
@@ -444,7 +444,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1035, &(xxOutputBuffer[0]), 8); \
   }
 
 #define ZS_INTERNAL_EVENTING_EVENT_TimerEvent(xSubsystem, xValue1) \
@@ -452,7 +452,7 @@ namespace zsLib {
     BYTE xxOutputBuffer[8]; \
     BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
     zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Info, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, &(xxOutputBuffer[0], 8)); \
+    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1036, &(xxOutputBuffer[0]), 8); \
   }
 
   } // namespace eventing

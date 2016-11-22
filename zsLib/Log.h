@@ -123,6 +123,7 @@ namespace zsLib
       Severity_First,
 
       Informational = Severity_First,
+      Info = Informational,
       Warning,
       Error,
       Fatal,
@@ -295,7 +296,7 @@ namespace zsLib
                            size_t mValue,
                            const BYTE *buffer,
                            size_t bufferSize,
-                           const BYTE *buffers,
+                           const BYTE * const* buffers,
                            const size_t *buffersSizes,
                            size_t totalBuffers
                            );
@@ -360,7 +361,7 @@ namespace zsLib
                       size_t mValue,
                       const BYTE *buffer,
                       size_t bufferSize,
-                      const BYTE *buffers,
+                      const BYTE * const* buffers,
                       const size_t *buffersSizes,
                       size_t totalBuffers
                       ) {}

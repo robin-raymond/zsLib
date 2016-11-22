@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "c79ef05bce780959d3bae6afd2f71a8edc4d554b6798b2ff7a77e79be7fc7733",
+  "uniqueHash" : "5b6e505401fea52757ce75cbcd88e915e18df25994d17b24efe11e090c47f92d",
   "typedefs" : {
    "typedef" : [
     {
@@ -166,7 +166,7 @@
     {
      "name" : "MessageQueueCreate",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Detail",
      "channel" : "zs",
      "task" : "MessageQueue",
@@ -176,7 +176,7 @@
     {
      "name" : "MessageQueueDestroy",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Detail",
      "channel" : "zs",
      "task" : "MessageQueue",
@@ -186,7 +186,7 @@
     {
      "name" : "MessageQueuePost",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "MessageQueue",
@@ -196,7 +196,7 @@
     {
      "name" : "MessageQueueProcess",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "MessageQueue",
@@ -206,7 +206,7 @@
     {
      "name" : "MessageQueueTotalUnprocessedMessages",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "MessageQueue",
@@ -216,7 +216,7 @@
     {
      "name" : "SocketAccept",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -226,7 +226,7 @@
     {
      "name" : "SocketAdopt",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -236,7 +236,7 @@
     {
      "name" : "SocketBind",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -246,7 +246,7 @@
     {
      "name" : "SocketClose",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -256,7 +256,7 @@
     {
      "name" : "SocketConnect",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -266,7 +266,7 @@
     {
      "name" : "SocketCreate",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Detail",
      "channel" : "zs",
      "task" : "Socket",
@@ -306,7 +306,7 @@
     {
      "name" : "SocketGetLocalAddress",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -316,7 +316,7 @@
     {
      "name" : "SocketGetOptionFlag",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -326,7 +326,7 @@
     {
      "name" : "SocketGetOptionValue",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -336,7 +336,7 @@
     {
      "name" : "SocketGetOptions",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -346,7 +346,7 @@
     {
      "name" : "SocketGetRemoteAddress",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -356,7 +356,7 @@
     {
      "name" : "SocketListen",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Detail",
      "channel" : "zs",
      "task" : "Socket",
@@ -366,7 +366,7 @@
     {
      "name" : "SocketOrphan",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -376,7 +376,7 @@
     {
      "name" : "SocketReadReadyEvent",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "Socket",
@@ -386,7 +386,7 @@
     {
      "name" : "SocketReadReadyReset",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "Socket",
@@ -396,7 +396,7 @@
     {
      "name" : "SocketRecv",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Socket",
@@ -406,7 +406,7 @@
     {
      "name" : "SocketRecvFrom",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Socket",
@@ -416,7 +416,7 @@
     {
      "name" : "SocketSend",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Socket",
@@ -426,7 +426,7 @@
     {
      "name" : "SocketSendTo",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Socket",
@@ -436,7 +436,7 @@
     {
      "name" : "SocketSetOption",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -446,7 +446,7 @@
     {
      "name" : "SocketSetOptionFlag",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -456,7 +456,7 @@
     {
      "name" : "SocketShutdown",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Debug",
      "channel" : "zs",
      "task" : "Socket",
@@ -466,7 +466,7 @@
     {
      "name" : "SocketWouldBlock",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Socket",
@@ -476,7 +476,7 @@
     {
      "name" : "SocketWriteReadyEvent",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "Socket",
@@ -486,7 +486,7 @@
     {
      "name" : "SocketWriteReadyReset",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "Socket",
@@ -496,7 +496,7 @@
     {
      "name" : "TimerCreate",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Timer",
@@ -506,7 +506,7 @@
     {
      "name" : "TimerDestroy",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Trace",
      "channel" : "zs",
      "task" : "Timer",
@@ -516,7 +516,7 @@
     {
      "name" : "TimerEvent",
      "subsytem" : "x",
-     "severity" : "Info",
+     "severity" : "Informational",
      "level" : "Insane",
      "channel" : "zs",
      "task" : "Timer",
