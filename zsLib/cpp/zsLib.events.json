@@ -63,10 +63,10 @@
     }
     "sources": {
       "source": [
-        "zsLib/cpp/zsLib_Exception.cpp",
-        "zsLib/cpp/zsLib_MessageQueue.cpp",
-        "zsLib/cpp/zsLib_Socket.cpp",
-        "zsLib/cpp/zsLib_Timer.cpp"
+        "zsLib_Exception.cpp",
+        "zsLib_MessageQueue.cpp",
+        "zsLib_Socket.cpp",
+        "zsLib_Timer.cpp"
       ]
     },
     "channels": {
