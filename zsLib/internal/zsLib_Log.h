@@ -71,6 +71,7 @@ namespace zsLib
         UUID mProviderID;
         String mProviderName;
         String mUniqueProviderHash;
+        bool mEnabled {false};
         zsLib::Log *mLog {};
       };
 
@@ -83,6 +84,19 @@ namespace zsLib
         mEventingListeners(make_shared<EventingListenerList>()) {}
 
       static String paramize(const char *name);
+
+#ifdef _WIN32
+      static void NTAPI EventWriterEnableCallback(
+                                                  _In_     LPCGUID                  SourceId,
+                                                  _In_     ULONG                    IsEnabled,
+                                                  _In_     UCHAR                    Level,
+                                                  _In_     ULONGLONG                MatchAnyKeyword,
+                                                  _In_     ULONGLONG                MatchAllKeywords,
+                                                  _In_opt_ PEVENT_FILTER_DESCRIPTOR FilterData,
+                                                  _In_opt_ PVOID                    CallbackContext
+                                                  );
+#endif //_WIN32
+
 
     protected:
       RecursiveLock mLock;

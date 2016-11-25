@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "5b6e505401fea52757ce75cbcd88e915e18df25994d17b24efe11e090c47f92d",
+  "uniqueHash" : "f83fca598d856b5388287e80bf1305cbf23b393304ca1014ae2bf46e7515f140",
   "typedefs" : {
    "typedef" : [
     {
@@ -23,7 +23,7 @@
     },
     {
      "name" : "enum",
-     "type" : "uint64"
+     "type" : "int64"
     },
     {
      "name" : "puid",
@@ -271,7 +271,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opCode" : "Start",
-     "template" : "a832e23f60de53baf5dc0002e2dae27d74011e8ddc00969a7d63c355c7b831f8"
+     "template" : "dcf70147d00214d2954f7e4138c414e003003fe001bdfc057c1124f4f08b2b4d"
     },
     {
      "name" : "SocketError",
@@ -321,7 +321,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opCode" : "Option",
-     "template" : "f9828b022dfbe4767cfa5db8f8df8c7e02151006dab46565e48d28fa12d3a582"
+     "template" : "c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47"
     },
     {
      "name" : "SocketGetOptionValue",
@@ -331,7 +331,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opCode" : "Option",
-     "template" : "f9828b022dfbe4767cfa5db8f8df8c7e02151006dab46565e48d28fa12d3a582"
+     "template" : "c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47"
     },
     {
      "name" : "SocketGetOptions",
@@ -451,7 +451,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opCode" : "Option",
-     "template" : "056a40ee2d757332224da0a0170e8b40517eba9eb191f9cf958ba5d0f9a85209"
+     "template" : "4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a"
     },
     {
      "name" : "SocketShutdown",
@@ -461,7 +461,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opCode" : "Shutdown",
-     "template" : "ba7a4d8bb374d084d7cba588f5b704bc0d6b7f945dff580b117e3b8b40084b0b"
+     "template" : "19848b028ec267f8fcfa92b936ca5134f5ec922320a66b0b3b8ad8fac4d531b4"
     },
     {
      "name" : "SocketWouldBlock",
@@ -531,28 +531,6 @@
      "dataTypes" : {
       "dataType" : [
        {
-        "name" : "socket",
-        "type" : "uint64"
-       },
-       {
-        "name" : "result",
-        "type" : "int"
-       },
-       {
-        "name" : "option",
-        "type" : "uint64"
-       },
-       {
-        "name" : "enabled",
-        "type" : "bool"
-       }
-      ]
-     }
-    },
-    {
-     "dataTypes" : {
-      "dataType" : [
-       {
         "name" : "message",
         "type" : "string"
        },
@@ -577,6 +555,24 @@
     },
     {
      "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "socket",
+        "type" : "uint64"
+       },
+       {
+        "name" : "result",
+        "type" : "int"
+       },
+       {
+        "name" : "options",
+        "type" : "int64"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
       "dataType" : {
        "name" : "socket",
        "type" : "uint64"
@@ -589,6 +585,28 @@
        "name" : "this",
        "type" : "pointer"
       }
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "socket",
+        "type" : "uint64"
+       },
+       {
+        "name" : "result",
+        "type" : "int"
+       },
+       {
+        "name" : "option",
+        "type" : "int64"
+       },
+       {
+        "name" : "enabled",
+        "type" : "bool"
+       }
+      ]
      }
     },
     {
@@ -709,32 +727,6 @@
      "dataTypes" : {
       "dataType" : [
        {
-        "name" : "this",
-        "type" : "pointer"
-       },
-       {
-        "name" : "socket",
-        "type" : "uint64"
-       },
-       {
-        "name" : "family",
-        "type" : "uint64"
-       },
-       {
-        "name" : "type",
-        "type" : "uint64"
-       },
-       {
-        "name" : "protocol",
-        "type" : "uint64"
-       }
-      ]
-     }
-    },
-    {
-     "dataTypes" : {
-      "dataType" : [
-       {
         "name" : "socket",
         "type" : "uint64"
        },
@@ -757,8 +749,12 @@
         "type" : "int"
        },
        {
-        "name" : "options",
-        "type" : "uint64"
+        "name" : "option",
+        "type" : "int64"
+       },
+       {
+        "name" : "value",
+        "type" : "int"
        }
       ]
      }
@@ -845,8 +841,20 @@
         "type" : "pointer"
        },
        {
-        "name" : "messages",
+        "name" : "socket",
         "type" : "uint64"
+       },
+       {
+        "name" : "family",
+        "type" : "int64"
+       },
+       {
+        "name" : "type",
+        "type" : "int64"
+       },
+       {
+        "name" : "protocol",
+        "type" : "int64"
        }
       ]
      }
@@ -855,20 +863,12 @@
      "dataTypes" : {
       "dataType" : [
        {
-        "name" : "socket",
+        "name" : "this",
+        "type" : "pointer"
+       },
+       {
+        "name" : "messages",
         "type" : "uint64"
-       },
-       {
-        "name" : "result",
-        "type" : "int"
-       },
-       {
-        "name" : "option",
-        "type" : "uint64"
-       },
-       {
-        "name" : "value",
-        "type" : "int"
        }
       ]
      }

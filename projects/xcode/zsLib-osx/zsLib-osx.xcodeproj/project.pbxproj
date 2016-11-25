@@ -47,6 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		001AD3921DE7E9E800103DA3 /* zsLib.events.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = zsLib.events.json; sourceTree = "<group>"; };
 		0086972D1DE3DD7E009D669C /* zsLib_eventing_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_eventing_Log.h; sourceTree = "<group>"; };
 		0086972E1DE3DD7E009D669C /* Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
 		0086972F1DE3DD7E009D669C /* noop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = noop.h; sourceTree = "<group>"; };
@@ -252,6 +253,7 @@
 		00FF087E1D9C1B6700462998 /* cpp */ = {
 			isa = PBXGroup;
 			children = (
+				001AD3921DE7E9E800103DA3 /* zsLib.events.json */,
 				00FF087F1D9C1B6700462998 /* zsLib.cpp */,
 				00FF08801D9C1B6700462998 /* zsLib_Event.cpp */,
 				00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */,

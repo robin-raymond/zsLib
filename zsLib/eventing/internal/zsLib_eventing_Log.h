@@ -36,7 +36,7 @@
 
 #define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                              ((ZS_GET_SUBSYSTEM()).getEventingLevel())
 #define ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                          ((xSubsystem).getEventingLevel())
-#define ZS_EVENTING_INTERNAL_IS_LOGGING(xLevel)                                           (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel)
+#define ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xLevel)                         (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel)
 #define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xHandleReference, xLevelValue)              (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue))
 #define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)   (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel)
 
@@ -44,15 +44,15 @@
 #define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
 #define ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) \
-  {                                                                                                 \
-    ::zsLib::Log::writeEvent(                                                                       \
-                             (xHandle),                                                             \
-                             ::zsLib::Log::xSeverity,                                               \
-                             ::zsLib::Log::xLevel,                                                  \
-                             (Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),                  \
-                             (Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),         \
-                             (xEventDataDescriptorCount)                                            \
-                             );                                                                     \
+  {                                                                                                     \
+    ::zsLib::Log::writeEvent(                                                                           \
+                             (xHandle),                                                                 \
+                             ::zsLib::Log::xSeverity,                                                   \
+                             ::zsLib::Log::xLevel,                                                      \
+                             (::zsLib::Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),             \
+                             (::zsLib::Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),    \
+                             (xEventDataDescriptorCount)                                                \
+                             );                                                                         \
   }
 
 #ifdef _WIN32
