@@ -174,15 +174,27 @@ namespace testingUsingGUIThread
 
 #ifdef _WIN32
 #ifdef WINRT
-      CoreDispatcher ^dispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
 
-      while (true) {
-        dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
+      CoreWindow ^coreWindow = CoreWindow::GetForCurrentThread();
+      CoreDispatcher ^dispatcher = coreWindow != nullptr ? coreWindow->Dispatcher : nullptr;
 
-        count = mThread->getTotalUnprocessedMessages();
-        count += mThread->getTotalUnprocessedMessages();
-        if (0 == count)
-          break;
+      if (nullptr != dispatcher) {
+        while (true) {
+          dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
+
+          count = mThread->getTotalUnprocessedMessages();
+          count += mThread->getTotalUnprocessedMessages();
+          if (0 == count)
+            break;
+        }
+      } else {
+        do
+        {
+          count = mThread->getTotalUnprocessedMessages();
+          count += mThreadNeverCalled->getTotalUnprocessedMessages();
+          if (0 != count)
+            std::this_thread::yield();
+        } while (count > 0);
       }
 #else //WINRT
       BOOL result = 0;
@@ -191,13 +203,15 @@ namespace testingUsingGUIThread
       memset(&msg, 0, sizeof(msg));
       while ((result = ::GetMessage(&msg, NULL, 0, 0)) != 0)
       {
-        TESTING_CHECK(-1 != result)
+        if (-1 == result) {
+          TESTING_CHECK(false);
+        }
 
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
 
         count = mThread->getTotalUnprocessedMessages();
-        count += mThread->getTotalUnprocessedMessages();
+        count += mThreadNeverCalled->getTotalUnprocessedMessages();
         if (0 == count)
           break;
 

@@ -120,27 +120,36 @@ namespace zsLib
   public:
     enum Severity
     {
-      Informational,
+      Severity_First,
+
+      Informational = Severity_First,
+      Info = Informational,
       Warning,
       Error,
-      Fatal
+      Fatal,
+
+      Severity_Last = Fatal
     };
 
     static const char *toString(Severity severity);
-    static Severity toSeverity(const char *severityStr);
+    static Severity toSeverity(const char *severityStr); // throw (Exceptions::InvalidArgument);
 
-    enum Level
+    enum Level : LevelBaseType
     {
-      None,
+      Level_First,
+
+      None = Level_First,
       Basic,
       Detail,
       Debug,
       Trace,
-      Insane
+      Insane,
+
+      Level_Last = Insane,
     };
 
     static const char *toString(Level level);
-    static Level toLevel(const char *levelStr);
+    static Level toLevel(const char *levelStr); // throw (Exceptions::InvalidArgument);
 
     //-------------------------------------------------------------------------
     #pragma mark
@@ -214,18 +223,22 @@ namespace zsLib
     };
 
   public:
-    //-------------------------------------------------------------------------
-    #pragma mark
-    #pragma mark Log => (methods)
-    #pragma mark
-
     ~Log();
 
-    static void addListener(ILogDelegatePtr delegate);
-    static void removeListener(ILogDelegatePtr delegate);
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log => (output methods)
+    #pragma mark
+
+    static void addOutputListener(ILogOutputDelegatePtr delegate);
+    static void removeOutputListener(ILogOutputDelegatePtr delegate);
 
     static void notifyNewSubsystem(Subsystem *inSubsystem);
 
+    static void setOutputLevelByName(
+                                     const char *subsystemName,
+                                     Level level
+                                     );
     static void log(
                     const Subsystem &subsystem,
                     Severity severity,
@@ -246,6 +259,48 @@ namespace zsLib
                     ULONG lineNumber
                     );
 
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log => (eventing methods)
+    #pragma mark
+
+    static void addEventingListener(ILogEventingDelegatePtr delegate);
+    static void removeEventingListener(ILogEventingDelegatePtr delegate);
+
+    static uintptr_t registerEventingWriter(
+                                            const UUID &providerID,
+                                            const char *providerName,
+                                            const char *uniqueProviderHash
+                                            );
+    static void unregisterEventingWriter(uintptr_t handle);
+
+    static bool getEventingWriterInfo(
+                                      uintptr_t handle,
+                                      UUID &outProviderID,
+                                      String &outProviderName,
+                                      String &outUniqueProviderHash
+                                      );
+
+    static void setEventingLevelByName(
+                                       const char *subsystemName,
+                                       Level level
+                                       );
+
+    static void writeEvent(
+                           uintptr_t handle,
+                           Severity severity,
+                           Level level,
+                           const char *subsystemName,
+                           const char *functionName,
+                           ULONG lineNumber,
+                           size_t mValue,
+                           const BYTE *buffer,
+                           size_t bufferSize,
+                           const BYTE * const* buffers,
+                           const size_t *buffersSizes,
+                           size_t totalBuffers
+                           );
+
   public:
     Log(const make_private &);
 
@@ -263,7 +318,7 @@ namespace zsLib
   #pragma mark ILogDelegate
   #pragma mark
 
-  interaction ILogDelegate
+  interaction ILogOutputDelegate
   {
   public:
     // notification that a new subsystem exists
@@ -286,6 +341,37 @@ namespace zsLib
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
   #pragma mark
+  #pragma mark ILogDelegate
+  #pragma mark
+
+  interaction ILogEventingDelegate
+  {
+  public:
+    // notification that a new subsystem exists
+    virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
+
+    // notification of a log event
+    void onWriteEvent(
+                      uintptr_t handle,
+                      zsLib::Log::Severity severity,
+                      zsLib::Log::Level level,
+                      const char *subsystemName,
+                      const char *functionName,
+                      ULONG lineNumber,
+                      size_t mValue,
+                      const BYTE *buffer,
+                      size_t bufferSize,
+                      const BYTE * const* buffers,
+                      const size_t *buffersSizes,
+                      size_t totalBuffers
+                      ) {}
+  };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
   #pragma mark Subsystem
   #pragma mark
 
@@ -295,18 +381,26 @@ namespace zsLib
     typedef Log::Level LevelType;
 
   public:
-    Subsystem(CSTR inName, Log::Level inLevel = Log::Basic);
+    Subsystem(
+              CSTR inName,
+              Log::Level inOutputLevel = Log::Basic,
+              Log::Level inEventingLevel = Log::None
+              );
     CSTR getName() const {return mSubsystem;}
 
     void setOutputLevel(Log::Level inLevel);
     Log::Level getOutputLevel() const;
+
+    void setEventingLevel(Log::Level inLevel);
+    Log::Level getEventingLevel() const;
 
   protected:
     virtual void notifyNewSubsystem();
 
   private:
     CSTR mSubsystem;
-    mutable std::atomic<LevelType> mLevel;
+    mutable std::atomic<LevelType> mOutputLevel;
+    mutable std::atomic<LevelType> mEventingLevel;
   };
 
 } // namespace zsLib

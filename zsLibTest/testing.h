@@ -48,6 +48,7 @@ namespace Testing
   void failed();
   void output();
 
+  void setup();
   void runAllTests();
 }
 

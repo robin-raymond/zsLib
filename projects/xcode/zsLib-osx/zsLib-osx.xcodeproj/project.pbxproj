@@ -1,0 +1,623 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00FF08F21D9C1B6700462998 /* zsLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF087F1D9C1B6700462998 /* zsLib.cpp */; };
+		00FF08F31D9C1B6700462998 /* zsLib_Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08801D9C1B6700462998 /* zsLib_Event.cpp */; };
+		00FF08F41D9C1B6700462998 /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */; };
+		00FF08F51D9C1B6700462998 /* zsLib_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08821D9C1B6700462998 /* zsLib_helpers.cpp */; };
+		00FF08F61D9C1B6700462998 /* zsLib_IPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08831D9C1B6700462998 /* zsLib_IPAddress.cpp */; };
+		00FF08F71D9C1B6700462998 /* zsLib_Log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08841D9C1B6700462998 /* zsLib_Log.cpp */; };
+		00FF08F81D9C1B6700462998 /* zsLib_MessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08851D9C1B6700462998 /* zsLib_MessageQueue.cpp */; };
+		00FF08F91D9C1B6700462998 /* zsLib_MessageQueueThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08861D9C1B6700462998 /* zsLib_MessageQueueThread.cpp */; };
+		00FF08FA1D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08871D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp */; };
+		00FF08FB1D9C1B6700462998 /* zsLib_MessageQueueThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08881D9C1B6700462998 /* zsLib_MessageQueueThreadPool.cpp */; };
+		00FF08FC1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08891D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */; };
+		00FF08FD1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF088A1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp */; };
+		00FF08FE1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF088B1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */; };
+		00FF08FF1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF088C1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp */; };
+		00FF09001D9C1B6700462998 /* zsLib_Numeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF088D1D9C1B6700462998 /* zsLib_Numeric.cpp */; };
+		00FF09011D9C1B6700462998 /* zsLib_Promise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF088E1D9C1B6700462998 /* zsLib_Promise.cpp */; };
+		00FF09021D9C1B6700462998 /* zsLib_Proxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF088F1D9C1B6700462998 /* zsLib_Proxy.cpp */; };
+		00FF09031D9C1B6700462998 /* zsLib_Singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08901D9C1B6700462998 /* zsLib_Singleton.cpp */; };
+		00FF09041D9C1B6700462998 /* zsLib_Socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08911D9C1B6700462998 /* zsLib_Socket.cpp */; };
+		00FF09051D9C1B6700462998 /* zsLib_SocketMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08921D9C1B6700462998 /* zsLib_SocketMonitor.cpp */; };
+		00FF09061D9C1B6700462998 /* zsLib_String.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08931D9C1B6700462998 /* zsLib_String.cpp */; };
+		00FF09071D9C1B6700462998 /* zsLib_Stringize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08941D9C1B6700462998 /* zsLib_Stringize.cpp */; };
+		00FF09081D9C1B6700462998 /* zsLib_Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08951D9C1B6700462998 /* zsLib_Timer.cpp */; };
+		00FF09091D9C1B6700462998 /* zsLib_TimerMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08961D9C1B6700462998 /* zsLib_TimerMonitor.cpp */; };
+		00FF090A1D9C1B6700462998 /* zsLib_XML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08971D9C1B6700462998 /* zsLib_XML.cpp */; };
+		00FF090B1D9C1B6700462998 /* zsLib_XMLAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08981D9C1B6700462998 /* zsLib_XMLAttribute.cpp */; };
+		00FF090C1D9C1B6700462998 /* zsLib_XMLComment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08991D9C1B6700462998 /* zsLib_XMLComment.cpp */; };
+		00FF090D1D9C1B6700462998 /* zsLib_XMLDeclaration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF089A1D9C1B6700462998 /* zsLib_XMLDeclaration.cpp */; };
+		00FF090E1D9C1B6700462998 /* zsLib_XMLDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF089B1D9C1B6700462998 /* zsLib_XMLDocument.cpp */; };
+		00FF090F1D9C1B6700462998 /* zsLib_XMLElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF089C1D9C1B6700462998 /* zsLib_XMLElement.cpp */; };
+		00FF09101D9C1B6700462998 /* zsLib_XMLGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF089D1D9C1B6700462998 /* zsLib_XMLGenerator.cpp */; };
+		00FF09111D9C1B6700462998 /* zsLib_XMLNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF089E1D9C1B6700462998 /* zsLib_XMLNode.cpp */; };
+		00FF09121D9C1B6700462998 /* zsLib_XMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF089F1D9C1B6700462998 /* zsLib_XMLParser.cpp */; };
+		00FF09131D9C1B6700462998 /* zsLib_XMLParserPos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08A01D9C1B6700462998 /* zsLib_XMLParserPos.cpp */; };
+		00FF09141D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08A11D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp */; };
+		00FF09151D9C1B6700462998 /* zsLib_XMLText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08A21D9C1B6700462998 /* zsLib_XMLText.cpp */; };
+		00FF09161D9C1B6700462998 /* zsLib_XMLUnknown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08A31D9C1B6700462998 /* zsLib_XMLUnknown.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0086972D1DE3DD7E009D669C /* zsLib_eventing_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_eventing_Log.h; sourceTree = "<group>"; };
+		0086972E1DE3DD7E009D669C /* Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
+		0086972F1DE3DD7E009D669C /* noop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = noop.h; sourceTree = "<group>"; };
+		008697351DE3DDB8009D669C /* zsLib.events_win_etw.man */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib.events_win_etw.man; sourceTree = "<group>"; };
+		008697361DE3DDB8009D669C /* zsLib.events_win_etw.wprp */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = zsLib.events_win_etw.wprp; sourceTree = "<group>"; };
+		008697371DE3DDB8009D669C /* zsLib.events_win.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events_win.h; sourceTree = "<group>"; };
+		008697381DE3DDB8009D669C /* zsLib.events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events.h; sourceTree = "<group>"; };
+		008697391DE3DDB8009D669C /* zsLib.events.jman */ = {isa = PBXFileReference; lastKnownFileType = text; path = zsLib.events.jman; sourceTree = "<group>"; };
+		00FF086F1D9C1B2300462998 /* libzsLib-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libzsLib-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00FF087F1D9C1B6700462998 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
+		00FF08801D9C1B6700462998 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
+		00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Exception.cpp; sourceTree = "<group>"; };
+		00FF08821D9C1B6700462998 /* zsLib_helpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_helpers.cpp; sourceTree = "<group>"; };
+		00FF08831D9C1B6700462998 /* zsLib_IPAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_IPAddress.cpp; sourceTree = "<group>"; };
+		00FF08841D9C1B6700462998 /* zsLib_Log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Log.cpp; sourceTree = "<group>"; };
+		00FF08851D9C1B6700462998 /* zsLib_MessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueue.cpp; sourceTree = "<group>"; };
+		00FF08861D9C1B6700462998 /* zsLib_MessageQueueThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThread.cpp; sourceTree = "<group>"; };
+		00FF08871D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadBasic.cpp; sourceTree = "<group>"; };
+		00FF08881D9C1B6700462998 /* zsLib_MessageQueueThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadPool.cpp; sourceTree = "<group>"; };
+		00FF08891D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingBlackberryChannels.cpp; sourceTree = "<group>"; };
+		00FF088A1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp; sourceTree = "<group>"; };
+		00FF088B1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp; sourceTree = "<group>"; };
+		00FF088C1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp; sourceTree = "<group>"; };
+		00FF088D1D9C1B6700462998 /* zsLib_Numeric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Numeric.cpp; sourceTree = "<group>"; };
+		00FF088E1D9C1B6700462998 /* zsLib_Promise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Promise.cpp; sourceTree = "<group>"; };
+		00FF088F1D9C1B6700462998 /* zsLib_Proxy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Proxy.cpp; sourceTree = "<group>"; };
+		00FF08901D9C1B6700462998 /* zsLib_Singleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Singleton.cpp; sourceTree = "<group>"; };
+		00FF08911D9C1B6700462998 /* zsLib_Socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Socket.cpp; sourceTree = "<group>"; };
+		00FF08921D9C1B6700462998 /* zsLib_SocketMonitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_SocketMonitor.cpp; sourceTree = "<group>"; };
+		00FF08931D9C1B6700462998 /* zsLib_String.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_String.cpp; sourceTree = "<group>"; };
+		00FF08941D9C1B6700462998 /* zsLib_Stringize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Stringize.cpp; sourceTree = "<group>"; };
+		00FF08951D9C1B6700462998 /* zsLib_Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Timer.cpp; sourceTree = "<group>"; };
+		00FF08961D9C1B6700462998 /* zsLib_TimerMonitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_TimerMonitor.cpp; sourceTree = "<group>"; };
+		00FF08971D9C1B6700462998 /* zsLib_XML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XML.cpp; sourceTree = "<group>"; };
+		00FF08981D9C1B6700462998 /* zsLib_XMLAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLAttribute.cpp; sourceTree = "<group>"; };
+		00FF08991D9C1B6700462998 /* zsLib_XMLComment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLComment.cpp; sourceTree = "<group>"; };
+		00FF089A1D9C1B6700462998 /* zsLib_XMLDeclaration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLDeclaration.cpp; sourceTree = "<group>"; };
+		00FF089B1D9C1B6700462998 /* zsLib_XMLDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLDocument.cpp; sourceTree = "<group>"; };
+		00FF089C1D9C1B6700462998 /* zsLib_XMLElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLElement.cpp; sourceTree = "<group>"; };
+		00FF089D1D9C1B6700462998 /* zsLib_XMLGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLGenerator.cpp; sourceTree = "<group>"; };
+		00FF089E1D9C1B6700462998 /* zsLib_XMLNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLNode.cpp; sourceTree = "<group>"; };
+		00FF089F1D9C1B6700462998 /* zsLib_XMLParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLParser.cpp; sourceTree = "<group>"; };
+		00FF08A01D9C1B6700462998 /* zsLib_XMLParserPos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLParserPos.cpp; sourceTree = "<group>"; };
+		00FF08A11D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLParserWarningTypes.cpp; sourceTree = "<group>"; };
+		00FF08A21D9C1B6700462998 /* zsLib_XMLText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLText.cpp; sourceTree = "<group>"; };
+		00FF08A31D9C1B6700462998 /* zsLib_XMLUnknown.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_XMLUnknown.cpp; sourceTree = "<group>"; };
+		00FF08A41D9C1B6700462998 /* date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = date.h; sourceTree = "<group>"; };
+		00FF08A51D9C1B6700462998 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
+		00FF08A61D9C1B6700462998 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
+		00FF08A91D9C1B6700462998 /* clear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = clear.c; sourceTree = "<group>"; };
+		00FF08AA1D9C1B6700462998 /* compare.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = compare.c; sourceTree = "<group>"; };
+		00FF08AB1D9C1B6700462998 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		00FF08AC1D9C1B6700462998 /* copy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = copy.c; sourceTree = "<group>"; };
+		00FF08AD1D9C1B6700462998 /* gen_uuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gen_uuid.c; sourceTree = "<group>"; };
+		00FF08AE1D9C1B6700462998 /* gen_uuid_nt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gen_uuid_nt.c; sourceTree = "<group>"; };
+		00FF08AF1D9C1B6700462998 /* isnull.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = isnull.c; sourceTree = "<group>"; };
+		00FF08B01D9C1B6700462998 /* pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pack.c; sourceTree = "<group>"; };
+		00FF08B11D9C1B6700462998 /* parse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parse.c; sourceTree = "<group>"; };
+		00FF08B21D9C1B6700462998 /* tst_uuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tst_uuid.c; sourceTree = "<group>"; };
+		00FF08B31D9C1B6700462998 /* unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unpack.c; sourceTree = "<group>"; };
+		00FF08B41D9C1B6700462998 /* unparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unparse.c; sourceTree = "<group>"; };
+		00FF08B51D9C1B6700462998 /* uuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uuid.h; sourceTree = "<group>"; };
+		00FF08B61D9C1B6700462998 /* uuid_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = uuid_time.c; sourceTree = "<group>"; };
+		00FF08B71D9C1B6700462998 /* uuid_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uuid_types.h; sourceTree = "<group>"; };
+		00FF08B81D9C1B6700462998 /* uuidd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uuidd.h; sourceTree = "<group>"; };
+		00FF08B91D9C1B6700462998 /* uuidP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uuidP.h; sourceTree = "<group>"; };
+		00FF08BB1D9C1B6700462998 /* strptime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = strptime.cpp; sourceTree = "<group>"; };
+		00FF08BC1D9C1B6700462998 /* helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helpers.h; sourceTree = "<group>"; };
+		00FF08BE1D9C1B6700462998 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		00FF08BF1D9C1B6700462998 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		00FF08C21D9C1B6700462998 /* zsLib_Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Event.h; sourceTree = "<group>"; };
+		00FF08C31D9C1B6700462998 /* zsLib_Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Exception.h; sourceTree = "<group>"; };
+		00FF08C41D9C1B6700462998 /* zsLib_IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_IPAddress.h; sourceTree = "<group>"; };
+		00FF08C51D9C1B6700462998 /* zsLib_Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Log.h; sourceTree = "<group>"; };
+		00FF08C61D9C1B6700462998 /* zsLib_MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueue.h; sourceTree = "<group>"; };
+		00FF08C71D9C1B6700462998 /* zsLib_MessageQueueThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThread.h; sourceTree = "<group>"; };
+		00FF08C81D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadBasic.h; sourceTree = "<group>"; };
+		00FF08C91D9C1B6700462998 /* zsLib_MessageQueueThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadPool.h; sourceTree = "<group>"; };
+		00FF08CA1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingBlackberryChannels.h; sourceTree = "<group>"; };
+		00FF08CB1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h; sourceTree = "<group>"; };
+		00FF08CC1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h; sourceTree = "<group>"; };
+		00FF08CD1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h; sourceTree = "<group>"; };
+		00FF08CE1D9C1B6700462998 /* zsLib_Numeric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Numeric.h; sourceTree = "<group>"; };
+		00FF08CF1D9C1B6700462998 /* zsLib_Promise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Promise.h; sourceTree = "<group>"; };
+		00FF08D01D9C1B6700462998 /* zsLib_Proxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Proxy.h; sourceTree = "<group>"; };
+		00FF08D11D9C1B6700462998 /* zsLib_ProxyPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxyPack.h; sourceTree = "<group>"; };
+		00FF08D21D9C1B6700462998 /* zsLib_ProxySubscriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_ProxySubscriptions.h; sourceTree = "<group>"; };
+		00FF08D31D9C1B6700462998 /* zsLib_Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Singleton.h; sourceTree = "<group>"; };
+		00FF08D41D9C1B6700462998 /* zsLib_Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Socket.h; sourceTree = "<group>"; };
+		00FF08D51D9C1B6700462998 /* zsLib_SocketMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_SocketMonitor.h; sourceTree = "<group>"; };
+		00FF08D61D9C1B6700462998 /* zsLib_Stringize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Stringize.h; sourceTree = "<group>"; };
+		00FF08D71D9C1B6700462998 /* zsLib_TearAway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_TearAway.h; sourceTree = "<group>"; };
+		00FF08D81D9C1B6700462998 /* zsLib_Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_Timer.h; sourceTree = "<group>"; };
+		00FF08D91D9C1B6700462998 /* zsLib_TimerMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_TimerMonitor.h; sourceTree = "<group>"; };
+		00FF08DB1D9C1B6700462998 /* zsLib_XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib_XML.h; sourceTree = "<group>"; };
+		00FF08DC1D9C1B6700462998 /* IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPAddress.h; sourceTree = "<group>"; };
+		00FF08DD1D9C1B6700462998 /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
+		00FF08DE1D9C1B6700462998 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
+		00FF08DF1D9C1B6700462998 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueue.h; sourceTree = "<group>"; };
+		00FF08E01D9C1B6700462998 /* MessageQueueAssociator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueueAssociator.h; sourceTree = "<group>"; };
+		00FF08E11D9C1B6700462998 /* MessageQueueThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueueThread.h; sourceTree = "<group>"; };
+		00FF08E21D9C1B6700462998 /* MessageQueueThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueueThreadPool.h; sourceTree = "<group>"; };
+		00FF08E31D9C1B6700462998 /* Numeric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Numeric.h; sourceTree = "<group>"; };
+		00FF08E41D9C1B6700462998 /* Promise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Promise.h; sourceTree = "<group>"; };
+		00FF08E51D9C1B6700462998 /* Proxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Proxy.h; sourceTree = "<group>"; };
+		00FF08E61D9C1B6700462998 /* ProxySubscriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProxySubscriptions.h; sourceTree = "<group>"; };
+		00FF08E71D9C1B6700462998 /* SafeInt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SafeInt.h; sourceTree = "<group>"; };
+		00FF08E81D9C1B6700462998 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
+		00FF08E91D9C1B6700462998 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
+		00FF08EA1D9C1B6700462998 /* String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = String.h; sourceTree = "<group>"; };
+		00FF08EB1D9C1B6700462998 /* Stringize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stringize.h; sourceTree = "<group>"; };
+		00FF08EC1D9C1B6700462998 /* TearAway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TearAway.h; sourceTree = "<group>"; };
+		00FF08ED1D9C1B6700462998 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
+		00FF08EE1D9C1B6700462998 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		00FF08EF1D9C1B6700462998 /* WeightedMovingAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeightedMovingAverage.h; sourceTree = "<group>"; };
+		00FF08F01D9C1B6700462998 /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
+		00FF08F11D9C1B6700462998 /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00FF086C1D9C1B2300462998 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0086972B1DE3DD7E009D669C /* eventing */ = {
+			isa = PBXGroup;
+			children = (
+				0086972C1DE3DD7E009D669C /* internal */,
+				0086972E1DE3DD7E009D669C /* Log.h */,
+				0086972F1DE3DD7E009D669C /* noop.h */,
+			);
+			path = eventing;
+			sourceTree = "<group>";
+		};
+		0086972C1DE3DD7E009D669C /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				0086972D1DE3DD7E009D669C /* zsLib_eventing_Log.h */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		00FF08661D9C1B2300462998 = {
+			isa = PBXGroup;
+			children = (
+				00FF087D1D9C1B6700462998 /* zsLib */,
+				00FF08701D9C1B2300462998 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		00FF08701D9C1B2300462998 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				00FF086F1D9C1B2300462998 /* libzsLib-osx.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		00FF087D1D9C1B6700462998 /* zsLib */ = {
+			isa = PBXGroup;
+			children = (
+				00FF087E1D9C1B6700462998 /* cpp */,
+				0086972B1DE3DD7E009D669C /* eventing */,
+				00FF08A71D9C1B6700462998 /* extras */,
+				00FF08BD1D9C1B6700462998 /* internal */,
+				00FF08A41D9C1B6700462998 /* date.h */,
+				00FF08A51D9C1B6700462998 /* Event.h */,
+				00FF08A61D9C1B6700462998 /* Exception.h */,
+				00FF08BC1D9C1B6700462998 /* helpers.h */,
+				00FF08DC1D9C1B6700462998 /* IPAddress.h */,
+				00FF08DD1D9C1B6700462998 /* license.txt */,
+				00FF08DE1D9C1B6700462998 /* Log.h */,
+				00FF08DF1D9C1B6700462998 /* MessageQueue.h */,
+				00FF08E01D9C1B6700462998 /* MessageQueueAssociator.h */,
+				00FF08E11D9C1B6700462998 /* MessageQueueThread.h */,
+				00FF08E21D9C1B6700462998 /* MessageQueueThreadPool.h */,
+				00FF08E31D9C1B6700462998 /* Numeric.h */,
+				00FF08E41D9C1B6700462998 /* Promise.h */,
+				00FF08E51D9C1B6700462998 /* Proxy.h */,
+				00FF08E61D9C1B6700462998 /* ProxySubscriptions.h */,
+				00FF08E71D9C1B6700462998 /* SafeInt.h */,
+				00FF08E81D9C1B6700462998 /* Singleton.h */,
+				00FF08E91D9C1B6700462998 /* Socket.h */,
+				00FF08EA1D9C1B6700462998 /* String.h */,
+				00FF08EB1D9C1B6700462998 /* Stringize.h */,
+				00FF08EC1D9C1B6700462998 /* TearAway.h */,
+				00FF08ED1D9C1B6700462998 /* Timer.h */,
+				00FF08EE1D9C1B6700462998 /* types.h */,
+				00FF08EF1D9C1B6700462998 /* WeightedMovingAverage.h */,
+				00FF08F01D9C1B6700462998 /* XML.h */,
+				00FF08F11D9C1B6700462998 /* zsLib.h */,
+			);
+			name = zsLib;
+			path = ../../../zsLib;
+			sourceTree = "<group>";
+		};
+		00FF087E1D9C1B6700462998 /* cpp */ = {
+			isa = PBXGroup;
+			children = (
+				00FF087F1D9C1B6700462998 /* zsLib.cpp */,
+				00FF08801D9C1B6700462998 /* zsLib_Event.cpp */,
+				00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */,
+				00FF08821D9C1B6700462998 /* zsLib_helpers.cpp */,
+				00FF08831D9C1B6700462998 /* zsLib_IPAddress.cpp */,
+				00FF08841D9C1B6700462998 /* zsLib_Log.cpp */,
+				00FF08851D9C1B6700462998 /* zsLib_MessageQueue.cpp */,
+				00FF08861D9C1B6700462998 /* zsLib_MessageQueueThread.cpp */,
+				00FF08871D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp */,
+				00FF08881D9C1B6700462998 /* zsLib_MessageQueueThreadPool.cpp */,
+				00FF08891D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp */,
+				00FF088A1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp */,
+				00FF088B1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp */,
+				00FF088C1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp */,
+				00FF088D1D9C1B6700462998 /* zsLib_Numeric.cpp */,
+				00FF088E1D9C1B6700462998 /* zsLib_Promise.cpp */,
+				00FF088F1D9C1B6700462998 /* zsLib_Proxy.cpp */,
+				00FF08901D9C1B6700462998 /* zsLib_Singleton.cpp */,
+				00FF08911D9C1B6700462998 /* zsLib_Socket.cpp */,
+				00FF08921D9C1B6700462998 /* zsLib_SocketMonitor.cpp */,
+				00FF08931D9C1B6700462998 /* zsLib_String.cpp */,
+				00FF08941D9C1B6700462998 /* zsLib_Stringize.cpp */,
+				00FF08951D9C1B6700462998 /* zsLib_Timer.cpp */,
+				00FF08961D9C1B6700462998 /* zsLib_TimerMonitor.cpp */,
+				00FF08971D9C1B6700462998 /* zsLib_XML.cpp */,
+				00FF08981D9C1B6700462998 /* zsLib_XMLAttribute.cpp */,
+				00FF08991D9C1B6700462998 /* zsLib_XMLComment.cpp */,
+				00FF089A1D9C1B6700462998 /* zsLib_XMLDeclaration.cpp */,
+				00FF089B1D9C1B6700462998 /* zsLib_XMLDocument.cpp */,
+				00FF089C1D9C1B6700462998 /* zsLib_XMLElement.cpp */,
+				00FF089D1D9C1B6700462998 /* zsLib_XMLGenerator.cpp */,
+				00FF089E1D9C1B6700462998 /* zsLib_XMLNode.cpp */,
+				00FF089F1D9C1B6700462998 /* zsLib_XMLParser.cpp */,
+				00FF08A01D9C1B6700462998 /* zsLib_XMLParserPos.cpp */,
+				00FF08A11D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp */,
+				00FF08A21D9C1B6700462998 /* zsLib_XMLText.cpp */,
+				00FF08A31D9C1B6700462998 /* zsLib_XMLUnknown.cpp */,
+			);
+			path = cpp;
+			sourceTree = "<group>";
+		};
+		00FF08A71D9C1B6700462998 /* extras */ = {
+			isa = PBXGroup;
+			children = (
+				00FF08A81D9C1B6700462998 /* uuid */,
+				00FF08BA1D9C1B6700462998 /* win32 */,
+			);
+			path = extras;
+			sourceTree = "<group>";
+		};
+		00FF08A81D9C1B6700462998 /* uuid */ = {
+			isa = PBXGroup;
+			children = (
+				00FF08A91D9C1B6700462998 /* clear.c */,
+				00FF08AA1D9C1B6700462998 /* compare.c */,
+				00FF08AB1D9C1B6700462998 /* config.h */,
+				00FF08AC1D9C1B6700462998 /* copy.c */,
+				00FF08AD1D9C1B6700462998 /* gen_uuid.c */,
+				00FF08AE1D9C1B6700462998 /* gen_uuid_nt.c */,
+				00FF08AF1D9C1B6700462998 /* isnull.c */,
+				00FF08B01D9C1B6700462998 /* pack.c */,
+				00FF08B11D9C1B6700462998 /* parse.c */,
+				00FF08B21D9C1B6700462998 /* tst_uuid.c */,
+				00FF08B31D9C1B6700462998 /* unpack.c */,
+				00FF08B41D9C1B6700462998 /* unparse.c */,
+				00FF08B51D9C1B6700462998 /* uuid.h */,
+				00FF08B61D9C1B6700462998 /* uuid_time.c */,
+				00FF08B71D9C1B6700462998 /* uuid_types.h */,
+				00FF08B81D9C1B6700462998 /* uuidd.h */,
+				00FF08B91D9C1B6700462998 /* uuidP.h */,
+			);
+			path = uuid;
+			sourceTree = "<group>";
+		};
+		00FF08BA1D9C1B6700462998 /* win32 */ = {
+			isa = PBXGroup;
+			children = (
+				00FF08BB1D9C1B6700462998 /* strptime.cpp */,
+			);
+			path = win32;
+			sourceTree = "<group>";
+		};
+		00FF08BD1D9C1B6700462998 /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				00FF08BE1D9C1B6700462998 /* platform.h */,
+				00FF08BF1D9C1B6700462998 /* types.h */,
+				00FF08C21D9C1B6700462998 /* zsLib_Event.h */,
+				00FF08C31D9C1B6700462998 /* zsLib_Exception.h */,
+				00FF08C41D9C1B6700462998 /* zsLib_IPAddress.h */,
+				00FF08C51D9C1B6700462998 /* zsLib_Log.h */,
+				00FF08C61D9C1B6700462998 /* zsLib_MessageQueue.h */,
+				00FF08C71D9C1B6700462998 /* zsLib_MessageQueueThread.h */,
+				00FF08C81D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.h */,
+				00FF08C91D9C1B6700462998 /* zsLib_MessageQueueThreadPool.h */,
+				00FF08CA1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.h */,
+				00FF08CB1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h */,
+				00FF08CC1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h */,
+				00FF08CD1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h */,
+				00FF08CE1D9C1B6700462998 /* zsLib_Numeric.h */,
+				00FF08CF1D9C1B6700462998 /* zsLib_Promise.h */,
+				00FF08D01D9C1B6700462998 /* zsLib_Proxy.h */,
+				00FF08D11D9C1B6700462998 /* zsLib_ProxyPack.h */,
+				00FF08D21D9C1B6700462998 /* zsLib_ProxySubscriptions.h */,
+				00FF08D31D9C1B6700462998 /* zsLib_Singleton.h */,
+				00FF08D41D9C1B6700462998 /* zsLib_Socket.h */,
+				00FF08D51D9C1B6700462998 /* zsLib_SocketMonitor.h */,
+				00FF08D61D9C1B6700462998 /* zsLib_Stringize.h */,
+				00FF08D71D9C1B6700462998 /* zsLib_TearAway.h */,
+				00FF08D81D9C1B6700462998 /* zsLib_Timer.h */,
+				00FF08D91D9C1B6700462998 /* zsLib_TimerMonitor.h */,
+				00FF08DB1D9C1B6700462998 /* zsLib_XML.h */,
+				008697351DE3DDB8009D669C /* zsLib.events_win_etw.man */,
+				008697361DE3DDB8009D669C /* zsLib.events_win_etw.wprp */,
+				008697371DE3DDB8009D669C /* zsLib.events_win.h */,
+				008697381DE3DDB8009D669C /* zsLib.events.h */,
+				008697391DE3DDB8009D669C /* zsLib.events.jman */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		00FF086D1D9C1B2300462998 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		00FF086E1D9C1B2300462998 /* zsLib-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00FF087A1D9C1B2300462998 /* Build configuration list for PBXNativeTarget "zsLib-osx" */;
+			buildPhases = (
+				00FF086B1D9C1B2300462998 /* Sources */,
+				00FF086C1D9C1B2300462998 /* Frameworks */,
+				00FF086D1D9C1B2300462998 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "zsLib-osx";
+			productName = "zsLib-osx";
+			productReference = 00FF086F1D9C1B2300462998 /* libzsLib-osx.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		00FF08671D9C1B2300462998 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Robin Raymond";
+				TargetAttributes = {
+					00FF086E1D9C1B2300462998 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 00FF086A1D9C1B2300462998 /* Build configuration list for PBXProject "zsLib-osx" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 00FF08661D9C1B2300462998;
+			productRefGroup = 00FF08701D9C1B2300462998 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				00FF086E1D9C1B2300462998 /* zsLib-osx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00FF086B1D9C1B2300462998 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FF09031D9C1B6700462998 /* zsLib_Singleton.cpp in Sources */,
+				00FF09021D9C1B6700462998 /* zsLib_Proxy.cpp in Sources */,
+				00FF09041D9C1B6700462998 /* zsLib_Socket.cpp in Sources */,
+				00FF090B1D9C1B6700462998 /* zsLib_XMLAttribute.cpp in Sources */,
+				00FF08F61D9C1B6700462998 /* zsLib_IPAddress.cpp in Sources */,
+				00FF09141D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp in Sources */,
+				00FF09051D9C1B6700462998 /* zsLib_SocketMonitor.cpp in Sources */,
+				00FF08FC1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */,
+				00FF09101D9C1B6700462998 /* zsLib_XMLGenerator.cpp in Sources */,
+				00FF090C1D9C1B6700462998 /* zsLib_XMLComment.cpp in Sources */,
+				00FF08F51D9C1B6700462998 /* zsLib_helpers.cpp in Sources */,
+				00FF08FB1D9C1B6700462998 /* zsLib_MessageQueueThreadPool.cpp in Sources */,
+				00FF090E1D9C1B6700462998 /* zsLib_XMLDocument.cpp in Sources */,
+				00FF09011D9C1B6700462998 /* zsLib_Promise.cpp in Sources */,
+				00FF090D1D9C1B6700462998 /* zsLib_XMLDeclaration.cpp in Sources */,
+				00FF08F91D9C1B6700462998 /* zsLib_MessageQueueThread.cpp in Sources */,
+				00FF09071D9C1B6700462998 /* zsLib_Stringize.cpp in Sources */,
+				00FF09091D9C1B6700462998 /* zsLib_TimerMonitor.cpp in Sources */,
+				00FF08FE1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp in Sources */,
+				00FF090F1D9C1B6700462998 /* zsLib_XMLElement.cpp in Sources */,
+				00FF08F81D9C1B6700462998 /* zsLib_MessageQueue.cpp in Sources */,
+				00FF08F41D9C1B6700462998 /* zsLib_Exception.cpp in Sources */,
+				00FF08FD1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp in Sources */,
+				00FF09151D9C1B6700462998 /* zsLib_XMLText.cpp in Sources */,
+				00FF09001D9C1B6700462998 /* zsLib_Numeric.cpp in Sources */,
+				00FF08FF1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp in Sources */,
+				00FF09161D9C1B6700462998 /* zsLib_XMLUnknown.cpp in Sources */,
+				00FF08FA1D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp in Sources */,
+				00FF090A1D9C1B6700462998 /* zsLib_XML.cpp in Sources */,
+				00FF08F71D9C1B6700462998 /* zsLib_Log.cpp in Sources */,
+				00FF09121D9C1B6700462998 /* zsLib_XMLParser.cpp in Sources */,
+				00FF09061D9C1B6700462998 /* zsLib_String.cpp in Sources */,
+				00FF09111D9C1B6700462998 /* zsLib_XMLNode.cpp in Sources */,
+				00FF09131D9C1B6700462998 /* zsLib_XMLParserPos.cpp in Sources */,
+				00FF08F21D9C1B6700462998 /* zsLib.cpp in Sources */,
+				00FF08F31D9C1B6700462998 /* zsLib_Event.cpp in Sources */,
+				00FF09081D9C1B6700462998 /* zsLib_Timer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		00FF08781D9C1B2300462998 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		00FF08791D9C1B2300462998 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		00FF087B1D9C1B2300462998 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				HEADER_SEARCH_PATHS = ../../..;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		00FF087C1D9C1B2300462998 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				HEADER_SEARCH_PATHS = ../../..;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00FF086A1D9C1B2300462998 /* Build configuration list for PBXProject "zsLib-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00FF08781D9C1B2300462998 /* Debug */,
+				00FF08791D9C1B2300462998 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00FF087A1D9C1B2300462998 /* Build configuration list for PBXNativeTarget "zsLib-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00FF087B1D9C1B2300462998 /* Debug */,
+				00FF087C1D9C1B2300462998 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 00FF08671D9C1B2300462998 /* Project object */;
+}

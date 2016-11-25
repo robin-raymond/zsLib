@@ -45,6 +45,7 @@
 #include <Iphlpapi.h>
 
 #pragma comment(lib, "Iphlpapi.lib")
+#pragma comment(lib, "ws2_32.lib")
 #endif //HAVE_IPHLPAPI_H
 
 #pragma warning(push)

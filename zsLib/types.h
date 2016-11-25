@@ -103,42 +103,43 @@ namespace zsLib
 
   class PrivateGlobalLock;
 
-  ZS_DECLARE_CLASS_PTR(Event)
-  ZS_DECLARE_CLASS_PTR(Exception)
-  ZS_DECLARE_CLASS_PTR(IPAddress)
+  ZS_DECLARE_CLASS_PTR(Event);
+  ZS_DECLARE_CLASS_PTR(Exception);
+  ZS_DECLARE_CLASS_PTR(IPAddress);
 
-  ZS_DECLARE_CLASS_PTR(Log)
-  ZS_DECLARE_INTERACTION_PTR(ILogDelegate)
+  ZS_DECLARE_CLASS_PTR(Log);
+  ZS_DECLARE_INTERACTION_PTR(ILogOutputDelegate);
+  ZS_DECLARE_INTERACTION_PTR(ILogEventingDelegate);
 
-  ZS_DECLARE_CLASS_PTR(SingletonManager)
-  ZS_DECLARE_INTERACTION_PTR(ISingletonManagerDelegate)
+  ZS_DECLARE_CLASS_PTR(SingletonManager);
+  ZS_DECLARE_INTERACTION_PTR(ISingletonManagerDelegate);
 
-  ZS_DECLARE_INTERACTION_PTR(IMessageQueueMessage)
-  ZS_DECLARE_INTERACTION_PTR(IMessageQueueNotify)
-  ZS_DECLARE_INTERACTION_PTR(IMessageQueue)
-  ZS_DECLARE_INTERACTION_PTR(IMessageQueueThread)
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueMessage);
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueNotify);
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueue);
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueThread);
 
-  ZS_DECLARE_CLASS_PTR(MessageQueue)
-  ZS_DECLARE_CLASS_PTR(MessageQueueThread)
-  ZS_DECLARE_CLASS_PTR(MessageQueueThreadPool)
+  ZS_DECLARE_CLASS_PTR(MessageQueue);
+  ZS_DECLARE_CLASS_PTR(MessageQueueThread);
+  ZS_DECLARE_CLASS_PTR(MessageQueueThreadPool);
 
-  ZS_DECLARE_CLASS_PTR(Promise)
-  ZS_DECLARE_INTERACTION_PTR(IPromiseDelegate)
-  ZS_DECLARE_INTERACTION_PTR(IPromiseSettledDelegate)
-  ZS_DECLARE_INTERACTION_PTR(IPromiseResolutionDelegate)
-  ZS_DECLARE_INTERACTION_PTR(IPromiseCatchDelegate)
+  ZS_DECLARE_CLASS_PTR(Promise);
+  ZS_DECLARE_INTERACTION_PTR(IPromiseDelegate);
+  ZS_DECLARE_INTERACTION_PTR(IPromiseSettledDelegate);
+  ZS_DECLARE_INTERACTION_PTR(IPromiseResolutionDelegate);
+  ZS_DECLARE_INTERACTION_PTR(IPromiseCatchDelegate);
 
-  ZS_DECLARE_INTERACTION_PTR(ISocketDelegate)
+  ZS_DECLARE_INTERACTION_PTR(ISocketDelegate);
 
-  ZS_DECLARE_CLASS_PTR(Socket)
-  ZS_DECLARE_CLASS_PTR(String)
+  ZS_DECLARE_CLASS_PTR(Socket);
+  ZS_DECLARE_CLASS_PTR(String);
 
 
-  ZS_DECLARE_INTERACTION_PTR(ITimerDelegate)
+  ZS_DECLARE_INTERACTION_PTR(ITimerDelegate);
 
-  ZS_DECLARE_CLASS_PTR(Timer)
+  ZS_DECLARE_CLASS_PTR(Timer);
 
-  ZS_DECLARE_STRUCT_PTR(Any)
+  ZS_DECLARE_STRUCT_PTR(Any);
 
   struct Any
   {
@@ -212,18 +213,30 @@ namespace zsLib
     UseType mType {};
   };
 
+  namespace Exceptions
+  {
+    ZS_DECLARE_CLASS_PTR(InvalidArgument);
+    ZS_DECLARE_CLASS_PTR(BadState);
+    ZS_DECLARE_CLASS_PTR(SyntaxError);
+    ZS_DECLARE_CLASS_PTR(ResourceError);
+    ZS_DECLARE_CLASS_PTR(UnexpectedError);
+    ZS_DECLARE_CLASS_PTR(InvalidUsage);
+    ZS_DECLARE_CLASS_PTR(InvalidAssumption);
+    ZS_DECLARE_CLASS_PTR(NotImplemented);
+  }
+
   namespace XML
   {
-    ZS_DECLARE_CLASS_PTR(Node)
-    ZS_DECLARE_CLASS_PTR(Document)
-    ZS_DECLARE_CLASS_PTR(Element)
-    ZS_DECLARE_CLASS_PTR(Attribute)
-    ZS_DECLARE_CLASS_PTR(Text)
-    ZS_DECLARE_CLASS_PTR(Comment)
-    ZS_DECLARE_CLASS_PTR(Declaration)
-    ZS_DECLARE_CLASS_PTR(Unknown)
-    ZS_DECLARE_CLASS_PTR(Parser)
-    ZS_DECLARE_CLASS_PTR(Generator)
+    ZS_DECLARE_CLASS_PTR(Node);
+    ZS_DECLARE_CLASS_PTR(Document);
+    ZS_DECLARE_CLASS_PTR(Element);
+    ZS_DECLARE_CLASS_PTR(Attribute);
+    ZS_DECLARE_CLASS_PTR(Text);
+    ZS_DECLARE_CLASS_PTR(Comment);
+    ZS_DECLARE_CLASS_PTR(Declaration);
+    ZS_DECLARE_CLASS_PTR(Unknown);
+    ZS_DECLARE_CLASS_PTR(Parser);
+    ZS_DECLARE_CLASS_PTR(Generator);
 
     class ParserPos;
     class ParserWarning;

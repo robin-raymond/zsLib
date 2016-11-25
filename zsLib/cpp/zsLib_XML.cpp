@@ -32,7 +32,7 @@
 #include <zsLib/XML.h>
 #include <zsLib/Log.h>
 
-namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
+//namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 namespace zsLib
 {

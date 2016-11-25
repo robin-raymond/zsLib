@@ -65,63 +65,10 @@ namespace zsLib
     };
 
     struct Exceptions {
-      ZS_DECLARE_CUSTOM_EXCEPTION(InvalidSocket)
-      ZS_DECLARE_CUSTOM_EXCEPTION(DelegateNotSet)
+      ZS_DECLARE_CUSTOM_EXCEPTION(InvalidSocket);
+      ZS_DECLARE_CUSTOM_EXCEPTION(DelegateNotSet);
 
-      class Unspecified : public Exception
-      {
-      public:
-        typedef int error_type;
-
-        Unspecified(
-                    const Subsystem &subsystem,
-                    CSTR inMessage,
-                    CSTR inFunction,
-                    CSTR inPathName,
-                    ULONG inLineNumber,
-                    const char *expression,
-                    int inErrorCode
-                    ) :
-        Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
-        mErrorCode(inErrorCode)
-        {
-        }
-
-        Unspecified(
-                    const Subsystem &subsystem,
-                    const String &inMessage,
-                    CSTR inFunction,
-                    CSTR inPathName,
-                    ULONG inLineNumber,
-                    const char *expression,
-                    int inErrorCode
-                    ) :
-        Exception(subsystem, inMessage, inFunction, inPathName, inLineNumber, expression),
-        mErrorCode(inErrorCode)
-        {
-        }
-
-        Unspecified(
-                    const Subsystem &subsystem,
-                    const Log::Params &inParams,
-                    CSTR inFunction,
-                    CSTR inPathName,
-                    ULONG inLineNumber,
-                    const char *expression,
-                    int inErrorCode
-                    ) :
-        Exception(subsystem, inParams, inFunction, inPathName, inLineNumber, expression),
-        mErrorCode(inErrorCode)
-        {
-        }
-
-        ~Unspecified() throw() {}
-
-        error_type errorCode() {return mErrorCode;}
-
-      private:
-        error_type mErrorCode;
-      };
+      ZS_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_1(Unspecified, int, errorCode);
 
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(WouldBlock, Unspecified, int)
       ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(ConnectionReset, Unspecified, int)

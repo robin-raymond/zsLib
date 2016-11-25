@@ -67,982 +67,74 @@ struct XMLResultInfo
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-static const char *gXML1Input =
-"<?xml version=\"1.0\" encoding=\"ISO8859-1\" ?>\n"
-"<note>\n"
-"  <!--this is a test comment-->\n"
-"  <%--what is this 1%>\n"
-"  <!what is this 2>\n"
-"  <$what is this 3$>\n"
-"  <to test=\"hello\" test2=\"goodbye\">Tove</to>\n"
-"  <from>Jani</from>\n"
-"  <heading>Reminder</heading>\n"
-"  <body>Don't forget me this weekend!</body>\n"
-"  <cdatatest><![CDATA[your momma wears <army boots>]]></cdatatest>\n"
-"</note>\n";
-static const char *gXML1Output = gXML1Input;
-static const char *gJSON1Output =
-"{"
-"\"#text\":\"\\n\\n\","
-"\"note\":{"
-    "\"#text\":\"\\n  \\n  \\n  \\n  \\n  \\n  \\n  \\n  \\n  \\n\","
-    "\"to\":{"
-      "\"$test\":\"hello\","
-      "\"$test2\":\"goodbye\","
-      "\"#text\":\"Tove\""
-    "},"
-    "\"from\":\"Jani\","
-    "\"heading\":\"Reminder\","
-    "\"body\":\"Don't forget me this weekend!\","
-    "\"cdatatest\":\"your momma wears <army boots>\""
-  "}"
-"}"
-;
-
-static XMLWarningInfo *gXMLWarnings1Array[] = {NULL};
-
-static XMLResultInfo gXMLResults1 =
+static const char *get_gXML1Input()
 {
-  gXML1Input,
-  gXML1Output,
-  gJSON1Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings1Array
-};
+  static const char *gXML1Input =
+    "<?xml version=\"1.0\" encoding=\"ISO8859-1\" ?>\n"
+    "<note>\n"
+    "  <!--this is a test comment-->\n"
+    "  <%--what is this 1%>\n"
+    "  <!what is this 2>\n"
+    "  <$what is this 3$>\n"
+    "  <to test=\"hello\" test2=\"goodbye\">Tove</to>\n"
+    "  <from>Jani</from>\n"
+    "  <heading>Reminder</heading>\n"
+    "  <body>Don't forget me this weekend!</body>\n"
+    "  <cdatatest><![CDATA[your momma wears <army boots>]]></cdatatest>\n"
+    "</note>\n";
+  return gXML1Input;
+}
 
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML2Input =
-"\n"
-"<test>contents</test>\n"
-"  \t\t <!--- this is a non-closed comment -- >\n"
-"<test2>contents2</test2>\n";
-
-static const char *gXML2Output =
-"\n"
-"<test>contents</test>\n"
-"  \t\t <!--- this is a non-closed comment -- >\n"
-"<test2>contents2</test2>\n"
-"-->";
-
-static const char *gJSON2Output =
-"{\"#text\":\"\\n\\n  \\t\\t \",\"test\":\"contents\"}";
-
-static XMLWarningInfo gXMLWarnings2_1[] =
+static const char *get_gXML1Output()
 {
-  {0,"<!---", 3, 18},
-  {
-    zsLib::XML::ParserWarningType_NoEndCommentFound,
-    "Comment was not closed properly\n"
-    "@ row=3 column=18: <!--- this is a non-closed com", 0, 0},
-  {0,NULL, 0, 0}
-};
+  static const char *gXML1Output = get_gXML1Input();
+  return gXML1Output;
+}
 
-static XMLWarningInfo *gXMLWarnings2Array[] =
+static const char *get_gJSON1Output()
 {
-  gXMLWarnings2_1,
-  NULL
-};
-
-static XMLResultInfo gXMLResults2 =
-{
-  gXML2Input,
-  gXML2Output,
-  gJSON2Output,
-  8,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings2Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML3Input =
-"<?xml +bogus=\"1\" x=\"1\"?>\n"
-"</bogus>\n"
-"<test>contents</test>\n"
-"<outer><inner></inner></outer>\n"
-"<outer><inner1></bogus></></outer>\n"
-"<outer><inner2 /></outer>\n"
-"<outer><inner3></outer>\n"
-"<outer><inner4></></></>\n"
-"<outer><inner5></outer></inner5>\n"
-"\n";
-
-static const char *gXML3Output =
-"<?xml x=\"1\" ?>\n"
-"\n"
-"<test>contents</test>\n"
-"<outer><inner /></outer>\n"
-"<outer><inner1 /></outer>\n"
-"<outer><inner2 /></outer>\n"
-"<outer><inner3 /></outer>\n"
-"<outer><inner4 /></outer>\n"
-"<outer><inner5 /></outer>\n"
-"\n";
-
-static const char *gJSON3Output =
-"{"
-  "\"#text\":\"\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\","
-  "\"test\":\"contents\","
-  "\"outer\":"
-  "["
-            "{\"inner\":\"\"},"
-            "{\"inner1\":\"\"},"
-            "{\"inner2\":\"\"},"
-            "{\"inner3\":\"\"},"
-            "{\"inner4\":\"\"},"
-            "{\"inner5\":\"\"}"
-            "]"
-"}";
-
-
-static XMLWarningInfo gXMLWarnings3_1[] =
-{
-  {0,"+bogus", 1, 7},
-  {0,"<?xml", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_IllegalAttributeName,
-    "Illegal attribute name found\n"
-    "@ row=1 column=7: +bogus=\"1\" x=\"1\"?> </bogus> <t\n"
-    "@ row=1 column=1: <?xml +bogus=\"1\" x=\"1\"?> </bog", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings3_2[] =
-{
-  {0,"</bogus>", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_MismatchedEndTag,
-    "Element end tag mismatched\n"
-    "@ row=2 column=1: </bogus> <test>contents</test>", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings3_3[] =
-{
-  {0,"</bogus></>", 5, 16},
-  {0,"<inner1>", 5, 8},
-  {0,"<outer><inner1>", 5, 1},
-  {
-    zsLib::XML::ParserWarningType_MismatchedEndTag,
-    "Element end tag mismatched\n"
-    "@ row=5 column=16: </bogus></></outer> <outer><in\n"
-    "@ row=5 column=8: <inner1></bogus></></outer> <o\n"
-    "@ row=5 column=1: <outer><inner1></bogus></></ou", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings3_4[] =
-{
-  {0,"</>\n", 8, 22},
-  {
-    zsLib::XML::ParserWarningType_MismatchedEndTag,
-    "Element end tag mismatched\n"
-    "@ row=8 column=22: </> <outer><inner5></outer></i", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings3_5[] =
-{
-  {0,"</inner5>", 9, 24},
-  {
-    zsLib::XML::ParserWarningType_MismatchedEndTag,
-    "Element end tag mismatched\n"
-    "@ row=9 column=24: </inner5>", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings3Array[] =
-{
-  gXMLWarnings3_1,
-  gXMLWarnings3_2,
-  gXMLWarnings3_3,
-  gXMLWarnings3_4,
-  gXMLWarnings3_5,
-  NULL
-};
-
-static XMLResultInfo gXMLResults3 =
-{
-  gXML3Input,
-  gXML3Output,
-  gJSON3Output,
-  3,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings3Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML4Input =
-"\n"
-"<test>contents</test>\n"
-"<?xml unclosed_declaration illegal{}name\n";
-
-static const char *gXML4Output =
-"\n"
-"<test>contents</test>\n"
-"<?xml unclosed_declaration ?>";
-
-static const char *gJSON4Output =
-"{\"#text\":\"\\n\\n\",\"test\":\"contents\"}";
-
-static XMLWarningInfo gXMLWarnings4_1[] =
-{
-  {0,"unclosed_declaration", 3, 7},
-  {0,"<?xml", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_AttributeWithoutValue,
-    "Attribute found that does not have a value\n"
-    "@ row=3 column=7: unclosed_declaration illegal{}\n"
-    "@ row=3 column=1: <?xml unclosed_declaration ill", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings4_2[] =
-{
-  {0,"{}name", 3, 35},
-  {0,"illegal{}", 3, 28},
-  {0,"<?xml", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_IllegalAttributeName,
-    "Illegal attribute name found\n"
-    "@ row=3 column=35: {}name\n"
-    "@ row=3 column=28: illegal{}name\n"
-    "@ row=3 column=1: <?xml unclosed_declaration ill", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings4_3[] =
-{
-  {0,"<?xml", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndDeclarationFound,
-    "Declation \"<?xml ...\" was found but closing \"?>\" was not found\n"
-    "@ row=3 column=1: <?xml unclosed_declaration ill", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings4Array[] =
-{
-  gXMLWarnings4_1,
-  gXMLWarnings4_2,
-  gXMLWarnings4_3,
-  NULL
-};
-
-static XMLResultInfo gXMLResults4 =
-{
-  gXML4Input,
-  gXML4Output,
-  gJSON4Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings4Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML5Input =
-"<?xml no_value_found = ?>\n"
-"<test illegal{}name=\"1\" dup=value1 dup=value2 ></test bogus>\n"
-"<?xml dup=value1 dup=\"value2\" no_end_quote_found=\'haha";
-
-static const char *gXML5Output =
-"<?xml ?>\n"
-"<test dup=\"value2\" />\n"
-"<?xml dup=\"value2\" ?>";
-
-static const char *gJSON5Output =
-"{"
-  "\"#text\":\"\\n\\n\","
-  "\"test\":{\"$dup\":\"value2\"}"
-"}";
-
-static XMLWarningInfo gXMLWarnings5_1[] =
-{
-  {0,"?>", 1, 24},
-  {0,"no_value_found", 1, 7},
-  {0,"<?xml", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_AttributeValueNotFound,
-    "Attribute is missing value\n"
-    "@ row=1 column=24: ?> <test illegal{}name=\"1\" dup\n"
-    "@ row=1 column=7: no_value_found = ?> <test ille\n"
-    "@ row=1 column=1: <?xml no_value_found = ?> <tes", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings5_2[] =
-{
-  {0,"{}name", 2, 14},
-  {0,"illegal{}name", 2, 7},
-  {0,"<test", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_IllegalAttributeName,
-    "Illegal attribute name found\n"
-    "@ row=2 column=14: {}name=\"1\" dup=value1 dup=valu\n"
-    "@ row=2 column=7: illegal{}name=\"1\" dup=value1 d\n"
-    "@ row=2 column=1: <test illegal{}name=\"1\" dup=va", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings5_3[] =
-{
-  {0,"dup=value2", 2, 36},
-  {0,"<test", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_DuplicateAttribute,
-    "An attribute on an element was duplicated\n"
-    "@ row=2 column=36: dup=value2 ></test bogus> <?xm\n"
-    "@ row=2 column=1: <test illegal{}name=\"1\" dup=va", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings5_4[] =
-{
-  {0,"bogus>", 2, 55},
-  {0,"<test", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_ContentAfterCloseElementName,
-    "Content found after \"</name \" in closing of element\n"
-    "@ row=2 column=55: bogus> <?xml dup=value1 dup=\"v\n"
-    "@ row=2 column=1: <test illegal{}name=\"1\" dup=va", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings5_5[] =
-{
-  {0,"<?xml dup", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_DuplicateAttribute,
-    "An attribute on an element was duplicated\n"
-    "@ row=3 column=1: <?xml dup=value1 dup=\"value2\"", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings5_6[] =
-{
-  {0,"\'", 3, 50},
-  {0,"no_end_quote_found", 3, 31},
-  {0,"<?xml dup=value1", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_AttributeValueMissingEndQuote,
-    "Attribute value is missing the end quote\n"
-    "@ row=3 column=50: \'haha\n"
-    "@ row=3 column=31: no_end_quote_found=\'haha\n"
-    "@ row=3 column=1: <?xml dup=value1 dup=\"value2\"", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings5_7[] =
-{
-  {0,"<?xml dup=value1", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndDeclarationFound,
-    "Declation \"<?xml ...\" was found but closing \"?>\" was not found\n"
-    "@ row=3 column=1: <?xml dup=value1 dup=\"value2\"", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings5Array[] =
-{
-  gXMLWarnings5_1,
-  gXMLWarnings5_2,
-  gXMLWarnings5_3,
-  gXMLWarnings5_4,
-  gXMLWarnings5_5,
-  gXMLWarnings5_6,
-  gXMLWarnings5_7,
-  NULL
-};
-
-static XMLResultInfo gXMLResults5 =
-{
-  gXML5Input,
-  gXML5Output,
-  gJSON5Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings5Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML6Input =
-"<test>contents</test>\n"
-"<whatever /bogus>\n"
-"<tag";
-
-static const char *gXML6Output =
-"<test>contents</test>\n"
-"<whatever />\n"
-"<tag />";
-
-static const char *gJSON6Output =
-"{"
-  "\"#text\":\"\\n\\n\","
-  "\"test\":\"contents\","
-  "\"whatever\":\"\","
-  "\"tag\":\"\""
-"}";
-
-static XMLWarningInfo gXMLWarnings6_1[] =
-{
-  {0,"bogus>", 2, 12},
-  {0,"<whatever", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_ContentAfterCloseSlashInElement,
-    "Content found after closing \'/\' in element\n"
-    "@ row=2 column=12: bogus> <tag\n"
-    "@ row=2 column=1: <whatever /bogus> <tag", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings6_2[] =
-{
-  {0,"<tag", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndBracketFound,
-    "The closing \'>\' tag was not found\n"
-    "@ row=3 column=1: <tag", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings6_3[] =
-{
-  {0,"<tag", 3, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndTagFound,
-    "Start element found but no \"</>\" end tag found\n"
-    "@ row=3 column=1: <tag", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings6Array[] =
-{
-  gXMLWarnings6_1,
-  gXMLWarnings6_2,
-  gXMLWarnings6_3,
-  NULL
-};
-
-static XMLResultInfo gXMLResults6 =
-{
-  gXML6Input,
-  gXML6Output,
-  gJSON6Output,
-  8,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings6Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML7Input =
-"<test>contents</test>\n"
-"<tag>whatever</tag \n";
-
-static const char *gXML7Output =
-"<test>contents</test>\n"
-"<tag>whatever</tag>";
-
-static const char *gJSON7Output =
-"{"
-  "\"#text\":\"\\n\","
-  "\"test\":\"contents\","
-  "\"tag\":\"whatever\""
-"}";
-
-static XMLWarningInfo gXMLWarnings7_1[] =
-{
-  {0,"</tag", 2, 14},
-  {0,"<tag>whatever", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndBracketFound,
-    "The closing \'>\' tag was not found\n"
-    "@ row=2 column=14: </tag\n"
-    "@ row=2 column=1: <tag>whatever</tag", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings7Array[] =
-{
-  gXMLWarnings7_1,
-  NULL
-};
-
-static XMLResultInfo gXMLResults7 =
-{
-  gXML7Input,
-  gXML7Output,
-  gJSON7Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings7Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML8Input =
-"<test>contents</test>\n"
-"<tag>whatever</ \n";
-
-static const char *gXML8Output =
-"<test>contents</test>\n"
-"<tag>whatever</tag>";
-
-static const char *gJSON8Output =
-"{"
-  "\"#text\":\"\\n\","
-  "\"test\":\"contents\","
-  "\"tag\":\"whatever\""
-"}";
-
-static XMLWarningInfo gXMLWarnings8_1[] =
-{
-  {0,"</ ", 2, 14},
-  {0,"<tag>whatever", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndBracketFound,
-    "The closing \'>\' tag was not found\n"
-    "@ row=2 column=14: </\n"
-    "@ row=2 column=1: <tag>whatever</", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings8Array[] =
-{
-  gXMLWarnings8_1,
-  NULL
-};
-
-static XMLResultInfo gXMLResults8 =
-{
-  gXML8Input,
-  gXML8Output,
-  gJSON8Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings8Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML9Input =
-"<test>contents</test>\n"
-"<tag>whatever</ {\n";
-
-static const char *gXML9Output =
-"<test>contents</test>\n"
-"<tag>whatever</tag>";
-
-static const char *gJSON9Output =
-"{"
-  "\"#text\":\"\\n\","
-  "\"test\":\"contents\","
-  "\"tag\":\"whatever\""
-"}";
-
-static XMLWarningInfo gXMLWarnings9_1[] =
-{
-  {0,"</ {", 2, 14},
-  {0,"<tag>whatever", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_MismatchedEndTag,
-    "Element end tag mismatched\n"
-    "@ row=2 column=14: </ {\n"
-    "@ row=2 column=1: <tag>whatever</ {", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings9_2[] =
-{
-  {0,"<tag>whatever", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndTagFound,
-    "Start element found but no \"</>\" end tag found\n"
-    "@ row=2 column=1: <tag>whatever</ {", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings9Array[] =
-{
-  gXMLWarnings9_1,
-  gXMLWarnings9_2,
-  NULL
-};
-
-static XMLResultInfo gXMLResults9 =
-{
-  gXML9Input,
-  gXML9Output,
-  gJSON9Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings9Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML10Input =
-"<test>contents</test>\n"
-"<!bogus";
-
-static const char *gXML10Output =
-"<test>contents</test>\n"
-"<!bogus>";
-
-static const char *gJSON10Output =
-"{\"#text\":\"\\n\",\"test\":\"contents\"}";
-
-
-static XMLWarningInfo gXMLWarnings10_1[] =
-{
-  {0,"<!bogus", 2, 1},
-  {
-    zsLib::XML::ParserWarningType_NoEndUnknownTagFound,
-    "Open \'<\' was found but no closing \'>\' was found\n"
-    "@ row=2 column=1: <!bogus", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings10Array[] =
-{
-  gXMLWarnings10_1,
-  NULL
-};
-
-static XMLResultInfo gXMLResults10 =
-{
-  gXML10Input,
-  gXML10Output,
-  gJSON10Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings10Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML11Input =
-"<test>contents</test>\n"
-"<BR><Br><br></br>\n"
-"<HR /><hr>\n"
-"<input Dup=alpha DUP=beta dup=/hello.php>\n"
-"<input hi=/hello.php />";
-
-static const char *gXML11Output =
-"<test>contents</test>\n"
-"<BR /><Br /><br />\n"
-"<HR /><hr />\n"
-"<input dup=\"/hello.php\" />\n"
-"<input hi=\"/hello.php\" />";
-
-static const char *gJSON11Output =
-"{"
-  "\"#text\":\"\\n\\n\\n\\n\","
-  "\"test\":\"contents\","
-  "\"BR\":["
-         "\"\","
-         "\"\","
-         "\"\""
-         "],"
-  "\"HR\":["
-         "\"\","
-         "\"\""
-         "],"
-  "\"input\":["
-            "{\"$dup\":\"/hello.php\"},"
-            "{\"$hi\":\"/hello.php\"}"
-            "]"
-"}";
-
-
-static XMLWarningInfo gXMLWarnings11_1[] =
-{
-  {0,"</br>", 2, 13},
-  {
-    zsLib::XML::ParserWarningType_MismatchedEndTag,
-    "Element end tag mismatched\n"
-    "@ row=2 column=13: </br> <HR /><hr> <input Dup=al", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings11_2[] =
-{
-  {0,"DUP=beta", 4, 18},
-  {0,"<input Dup=alpha", 4, 1},
-  {
-    zsLib::XML::ParserWarningType_DuplicateAttribute,
-    "An attribute on an element was duplicated\n"
-    "@ row=4 column=18: DUP=beta dup=/hello.php> <inpu\n"
-    "@ row=4 column=1: <input Dup=alpha DUP=beta dup=", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings11_3[] =
-{
-  {0,"dup=/hello.php", 4, 27},
-  {0,"<input Dup=alpha", 4, 1},
-  {
-    zsLib::XML::ParserWarningType_DuplicateAttribute,
-    "An attribute on an element was duplicated\n"
-    "@ row=4 column=27: dup=/hello.php> <input hi=/hel\n"
-    "@ row=4 column=1: <input Dup=alpha DUP=beta dup=", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings11Array[] =
-{
-  gXMLWarnings11_1,
-  gXMLWarnings11_2,
-  gXMLWarnings11_3,
-  NULL
-};
-
-static CSTR gSingleLineElements11[] =
-{
-  "hr",
-  "br",
-  "INPUT",
-  NULL
-};
-
-static XMLResultInfo gXMLResults11 =
-{
-  gXML11Input,
-  gXML11Output,
-  gJSON11Output,
-  0,
-  gSingleLineElements11,
-  false,
-  false,
-  false,
-  gXMLWarnings11Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML12Input =
-"<img>test\n"
-"<Img>test</Img>"
-"<IMG +bogus value1=1 />";
-
-static const char *gXML12Output =
-"<img />test\n"
-"<Img>test</Img>"
-"<IMG value1=\"1\" />";
-
-static const char *gJSON12Output =
-"{"
-  "\"#text\":\"test\\n\","
-  "\"img\":\"\","
-  "\"Img\":\"test\","
-  "\"IMG\":{\"$value1\":\"1\"}"
-"}";
-
-static XMLWarningInfo gXMLWarnings12_1[] =
-{
-  {0,"+bogus", 2, 21},
-  {0,"<IMG", 2, 16},
-  {
-    zsLib::XML::ParserWarningType_IllegalAttributeName,
-    "Illegal attribute name found\n"
-    "@ row=2 column=21: +bogus value1=1 />\n"
-    "@ row=2 column=16: <IMG +bogus value1=1 />", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings12Array[] =
-{
-  gXMLWarnings12_1,
-  NULL
-};
-
-static CSTR gSingleLineElements12[] =
-{
-  "img",
-  NULL
-};
-
-static XMLResultInfo gXMLResults12 =
-{
-  gXML12Input,
-  gXML12Output,
-  gJSON12Output,
-  0,
-  gSingleLineElements12,
-  true,
-  true,
-  false,
-  gXMLWarnings12Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gXML13Input =
-"<?xml test1=\"test\" />\n"
-"<?xml text2=\"test\" ?>\n";
-
-static const char *gXML13Output =
-"<?xml test1=\"test\" ?>\n"
-"<?xml text2=\"test\" ?>\n";
-
-static const char *gJSON13Output =
-"{\"#text\":\"\\n\\n\"}";
-
-static XMLWarningInfo gXMLWarnings13_1[] =
-{
-  {0,"/>", 1, 20},
-  {0,"<?", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_NotProperEndDeclaration,
-    "Declation \"<?xml ...\" was found but found \">\" instead of closing \"?>\"\n"
-    "@ row=1 column=20: /> <?xml text2=\"test\" ?>\n"
-    "@ row=1 column=1: <?xml test1=\"test\" /> <?xml te", 0, 0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo *gXMLWarnings13Array[] =
-{
-  gXMLWarnings13_1,
-  NULL
-};
-
-static XMLResultInfo gXMLResults13 =
-{
-  gXML13Input,
-  gXML13Output,
-  gJSON13Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings13Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gJSON14Input =
-"   { \n"
-  "\t\"outer\" : {\n"
-    "\t\t\"test\" \t:\t \"hello\\n\\tand\\ngoodbye\"\f\r\n"
-  " }\n"
-"} \n";
-
-static const char *gXML14Output =
-"<outer>"
-"<test>hello\n\tand\ngoodbye</test>"
-"</outer>"
-;
-
-static const char *gJSON14Output =
-"{"
-  "\"outer\":"
+    static const char *gJSON1Output =
     "{"
-      "\"test\":\"hello\\n\\tand\\ngoodbye\""
+    "\"#text\":\"\\n\\n\","
+    "\"note\":{"
+        "\"#text\":\"\\n  \\n  \\n  \\n  \\n  \\n  \\n  \\n  \\n  \\n\","
+        "\"to\":{"
+          "\"$test\":\"hello\","
+          "\"$test2\":\"goodbye\","
+          "\"#text\":\"Tove\""
+        "},"
+        "\"from\":\"Jani\","
+        "\"heading\":\"Reminder\","
+        "\"body\":\"Don't forget me this weekend!\","
+        "\"cdatatest\":\"your momma wears <army boots>\""
+      "}"
     "}"
-"}";
+  ;
+  return gJSON1Output;
+}
 
-static XMLWarningInfo *gXMLWarnings14Array[] = {NULL};
-
-static XMLResultInfo gXMLResults14 =
+static XMLWarningInfo **get_gXMLWarnings1Array()
 {
-  gJSON14Input,
-  gXML14Output,
-  gJSON14Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings14Array
-};
+  static XMLWarningInfo *gXMLWarnings1Array[] = { NULL };
+  return gXMLWarnings1Array;
+}
+
+static XMLResultInfo &get_gXMLResults1()
+{
+  static XMLResultInfo gXMLResults1 =
+  {
+    get_gXML1Input(),
+    get_gXML1Output(),
+    get_gJSON1Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings1Array()
+  };
+  return gXMLResults1;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -1050,214 +142,1978 @@ static XMLResultInfo gXMLResults14 =
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-static const char *gJSON15Input =
-"   { \n"
-"\t\"outer\" : {\n"
-"\t\t\"test\" \t:\t \"hello\\n\\tand\\ngoodbye\"\f\r\n,\n"
-"\t\t\"foos\":{\n"
-    "  \"foo\" : [ \"far\\u000afig\\u000Anewton\" , \n"
-                  "\"mars \\u00E4 attacks\"\n"
-                " ] "
-      " } \n"
-" }\n"
-"}\n.\n";
+static const char *get_gXML2Input()
+{
+  static const char *gXML2Input =
+  "\n"
+  "<test>contents</test>\n"
+  "  \t\t <!--- this is a non-closed comment -- >\n"
+  "<test2>contents2</test2>\n";
+  return gXML2Input;
+}
 
-static const char *gXML15Output =
-"<outer>"
+static const char *get_gXML2Output()
+{
+  static const char *gXML2Output =
+  "\n"
+  "<test>contents</test>\n"
+  "  \t\t <!--- this is a non-closed comment -- >\n"
+  "<test2>contents2</test2>\n"
+  "-->";
+  return gXML2Output;
+}
+
+static const char *get_gJSON2Output()
+{
+  static const char *gJSON2Output =
+  "{\"#text\":\"\\n\\n  \\t\\t \",\"test\":\"contents\"}";
+  return gJSON2Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings2_1()
+{
+  static XMLWarningInfo gXMLWarnings2_1[] =
+  {
+    {0,"<!---", 3, 18},
+    {
+      zsLib::XML::ParserWarningType_NoEndCommentFound,
+      "Comment was not closed properly\n"
+      "@ row=3 column=18: <!--- this is a non-closed com", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings2_1;
+}
+
+static XMLWarningInfo **get_gXMLWarnings2Array()
+{
+  static XMLWarningInfo *gXMLWarnings2Array[] =
+  {
+    get_gXMLWarnings2_1(),
+    NULL
+  };
+  return gXMLWarnings2Array;
+}
+
+static XMLResultInfo &get_gXMLResults2()
+{
+  static XMLResultInfo gXMLResults2 =
+  {
+    get_gXML2Input(),
+    get_gXML2Output(),
+    get_gJSON2Output(),
+    8,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings2Array()
+  };
+  return gXMLResults2;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML3Input()
+{
+  static const char *gXML3Input =
+  "<?xml +bogus=\"1\" x=\"1\"?>\n"
+  "</bogus>\n"
+  "<test>contents</test>\n"
+  "<outer><inner></inner></outer>\n"
+  "<outer><inner1></bogus></></outer>\n"
+  "<outer><inner2 /></outer>\n"
+  "<outer><inner3></outer>\n"
+  "<outer><inner4></></></>\n"
+  "<outer><inner5></outer></inner5>\n"
+  "\n";
+  return gXML3Input;
+}
+
+static const char *get_gXML3Output()
+{
+  static const char *gXML3Output =
+  "<?xml x=\"1\" ?>\n"
+  "\n"
+  "<test>contents</test>\n"
+  "<outer><inner /></outer>\n"
+  "<outer><inner1 /></outer>\n"
+  "<outer><inner2 /></outer>\n"
+  "<outer><inner3 /></outer>\n"
+  "<outer><inner4 /></outer>\n"
+  "<outer><inner5 /></outer>\n"
+  "\n";
+  return gXML3Output;
+}
+
+static const char *get_gJSON3Output()
+{
+  static const char *gJSON3Output =
+  "{"
+    "\"#text\":\"\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\","
+    "\"test\":\"contents\","
+    "\"outer\":"
+    "["
+              "{\"inner\":\"\"},"
+              "{\"inner1\":\"\"},"
+              "{\"inner2\":\"\"},"
+              "{\"inner3\":\"\"},"
+              "{\"inner4\":\"\"},"
+              "{\"inner5\":\"\"}"
+              "]"
+  "}";
+  return gJSON3Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings3_1()
+{
+  static XMLWarningInfo gXMLWarnings3_1[] =
+  {
+    {0,"+bogus", 1, 7},
+    {0,"<?xml", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalAttributeName,
+      "Illegal attribute name found\n"
+      "@ row=1 column=7: +bogus=\"1\" x=\"1\"?> </bogus> <t\n"
+      "@ row=1 column=1: <?xml +bogus=\"1\" x=\"1\"?> </bog", 0, 0},
+    {0,NULL, 0, 0}
+  };
+
+  return gXMLWarnings3_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings3_2()
+{
+  static XMLWarningInfo gXMLWarnings3_2[] =
+  {
+    {0,"</bogus>", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_MismatchedEndTag,
+      "Element end tag mismatched\n"
+      "@ row=2 column=1: </bogus> <test>contents</test>", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings3_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings3_3()
+{
+  static XMLWarningInfo gXMLWarnings3_3[] =
+  {
+    {0,"</bogus></>", 5, 16},
+    {0,"<inner1>", 5, 8},
+    {0,"<outer><inner1>", 5, 1},
+    {
+      zsLib::XML::ParserWarningType_MismatchedEndTag,
+      "Element end tag mismatched\n"
+      "@ row=5 column=16: </bogus></></outer> <outer><in\n"
+      "@ row=5 column=8: <inner1></bogus></></outer> <o\n"
+      "@ row=5 column=1: <outer><inner1></bogus></></ou", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings3_3;
+}
+
+static XMLWarningInfo *get_gXMLWarnings3_4()
+{
+  static XMLWarningInfo gXMLWarnings3_4[] =
+  {
+    {0,"</>\n", 8, 22},
+    {
+      zsLib::XML::ParserWarningType_MismatchedEndTag,
+      "Element end tag mismatched\n"
+      "@ row=8 column=22: </> <outer><inner5></outer></i", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings3_4;
+}
+
+static XMLWarningInfo *get_gXMLWarnings3_5()
+{
+  static XMLWarningInfo gXMLWarnings3_5[] =
+  {
+    {0,"</inner5>", 9, 24},
+    {
+      zsLib::XML::ParserWarningType_MismatchedEndTag,
+      "Element end tag mismatched\n"
+      "@ row=9 column=24: </inner5>", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings3_5;
+}
+
+static XMLWarningInfo **get_gXMLWarnings3Array()
+{
+  static XMLWarningInfo *gXMLWarnings3Array[] =
+  {
+    get_gXMLWarnings3_1(),
+    get_gXMLWarnings3_2(),
+    get_gXMLWarnings3_3(),
+    get_gXMLWarnings3_4(),
+    get_gXMLWarnings3_5(),
+    NULL
+  };
+  return gXMLWarnings3Array;
+}
+
+static XMLResultInfo &get_gXMLResults3()
+{
+  static XMLResultInfo gXMLResults3 =
+  {
+    get_gXML3Input(),
+    get_gXML3Output(),
+    get_gJSON3Output(),
+    3,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings3Array()
+  };
+  return gXMLResults3;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML4Input()
+{
+  static const char *gXML4Input =
+  "\n"
+  "<test>contents</test>\n"
+  "<?xml unclosed_declaration illegal{}name\n";
+  return gXML4Input;
+}
+
+static const char *get_gXML4Output()
+{
+  static const char *gXML4Output =
+  "\n"
+  "<test>contents</test>\n"
+  "<?xml unclosed_declaration ?>";
+  return gXML4Output;
+}
+
+static const char *get_gJSON4Output()
+{
+  static const char *gJSON4Output =
+  "{\"#text\":\"\\n\\n\",\"test\":\"contents\"}";
+  return gJSON4Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings4_1()
+{
+  static XMLWarningInfo gXMLWarnings4_1[] =
+  {
+    {0,"unclosed_declaration", 3, 7},
+    {0,"<?xml", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_AttributeWithoutValue,
+      "Attribute found that does not have a value\n"
+      "@ row=3 column=7: unclosed_declaration illegal{}\n"
+      "@ row=3 column=1: <?xml unclosed_declaration ill", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings4_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings4_2()
+{
+  static XMLWarningInfo gXMLWarnings4_2[] =
+  {
+    {0,"{}name", 3, 35},
+    {0,"illegal{}", 3, 28},
+    {0,"<?xml", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalAttributeName,
+      "Illegal attribute name found\n"
+      "@ row=3 column=35: {}name\n"
+      "@ row=3 column=28: illegal{}name\n"
+      "@ row=3 column=1: <?xml unclosed_declaration ill", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings4_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings4_3()
+{
+  static XMLWarningInfo gXMLWarnings4_3[] =
+  {
+    {0,"<?xml", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndDeclarationFound,
+      "Declation \"<?xml ...\" was found but closing \"?>\" was not found\n"
+      "@ row=3 column=1: <?xml unclosed_declaration ill", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings4_3;
+}
+
+static XMLWarningInfo **get_gXMLWarnings4Array()
+{
+  static XMLWarningInfo *gXMLWarnings4Array[] =
+  {
+    get_gXMLWarnings4_1(),
+    get_gXMLWarnings4_2(),
+    get_gXMLWarnings4_3(),
+    NULL
+  };
+  return gXMLWarnings4Array;
+}
+
+static XMLResultInfo &get_gXMLResults4()
+{
+  static XMLResultInfo gXMLResults4 =
+  {
+    get_gXML4Input(),
+    get_gXML4Output(),
+    get_gJSON4Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings4Array()
+  };
+  return gXMLResults4;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML5Input()
+{
+  static const char *gXML5Input =
+  "<?xml no_value_found = ?>\n"
+  "<test illegal{}name=\"1\" dup=value1 dup=value2 ></test bogus>\n"
+  "<?xml dup=value1 dup=\"value2\" no_end_quote_found=\'haha";
+  return gXML5Input;
+}
+
+static const char *get_gXML5Output()
+{
+  static const char *gXML5Output =
+  "<?xml ?>\n"
+  "<test dup=\"value2\" />\n"
+  "<?xml dup=\"value2\" ?>";
+  return gXML5Output;
+}
+
+static const char *get_gJSON5Output()
+{
+  static const char *gJSON5Output =
+  "{"
+    "\"#text\":\"\\n\\n\","
+    "\"test\":{\"$dup\":\"value2\"}"
+  "}";
+  return gJSON5Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_1()
+{
+  static XMLWarningInfo gXMLWarnings5_1[] =
+  {
+    {0,"?>", 1, 24},
+    {0,"no_value_found", 1, 7},
+    {0,"<?xml", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_AttributeValueNotFound,
+      "Attribute is missing value\n"
+      "@ row=1 column=24: ?> <test illegal{}name=\"1\" dup\n"
+      "@ row=1 column=7: no_value_found = ?> <test ille\n"
+      "@ row=1 column=1: <?xml no_value_found = ?> <tes", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_2()
+{
+  static XMLWarningInfo gXMLWarnings5_2[] =
+  {
+    {0,"{}name", 2, 14},
+    {0,"illegal{}name", 2, 7},
+    {0,"<test", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalAttributeName,
+      "Illegal attribute name found\n"
+      "@ row=2 column=14: {}name=\"1\" dup=value1 dup=valu\n"
+      "@ row=2 column=7: illegal{}name=\"1\" dup=value1 d\n"
+      "@ row=2 column=1: <test illegal{}name=\"1\" dup=va", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_3()
+{
+  static XMLWarningInfo gXMLWarnings5_3[] =
+  {
+    {0,"dup=value2", 2, 36},
+    {0,"<test", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_DuplicateAttribute,
+      "An attribute on an element was duplicated\n"
+      "@ row=2 column=36: dup=value2 ></test bogus> <?xm\n"
+      "@ row=2 column=1: <test illegal{}name=\"1\" dup=va", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_3;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_4()
+{
+  static XMLWarningInfo gXMLWarnings5_4[] =
+  {
+    {0,"bogus>", 2, 55},
+    {0,"<test", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_ContentAfterCloseElementName,
+      "Content found after \"</name \" in closing of element\n"
+      "@ row=2 column=55: bogus> <?xml dup=value1 dup=\"v\n"
+      "@ row=2 column=1: <test illegal{}name=\"1\" dup=va", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_4;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_5()
+{
+  static XMLWarningInfo gXMLWarnings5_5[] =
+  {
+    {0,"<?xml dup", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_DuplicateAttribute,
+      "An attribute on an element was duplicated\n"
+      "@ row=3 column=1: <?xml dup=value1 dup=\"value2\"", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_5;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_6()
+{
+  static XMLWarningInfo gXMLWarnings5_6[] =
+  {
+    {0,"\'", 3, 50},
+    {0,"no_end_quote_found", 3, 31},
+    {0,"<?xml dup=value1", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_AttributeValueMissingEndQuote,
+      "Attribute value is missing the end quote\n"
+      "@ row=3 column=50: \'haha\n"
+      "@ row=3 column=31: no_end_quote_found=\'haha\n"
+      "@ row=3 column=1: <?xml dup=value1 dup=\"value2\"", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_6;
+}
+
+static XMLWarningInfo *get_gXMLWarnings5_7()
+{
+  static XMLWarningInfo gXMLWarnings5_7[] =
+  {
+    {0,"<?xml dup=value1", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndDeclarationFound,
+      "Declation \"<?xml ...\" was found but closing \"?>\" was not found\n"
+      "@ row=3 column=1: <?xml dup=value1 dup=\"value2\"", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings5_7;
+}
+
+static XMLWarningInfo **get_gXMLWarnings5Array()
+{
+  static XMLWarningInfo *gXMLWarnings5Array[] =
+  {
+    get_gXMLWarnings5_1(),
+    get_gXMLWarnings5_2(),
+    get_gXMLWarnings5_3(),
+    get_gXMLWarnings5_4(),
+    get_gXMLWarnings5_5(),
+    get_gXMLWarnings5_6(),
+    get_gXMLWarnings5_7(),
+    NULL
+  };
+  return gXMLWarnings5Array;
+}
+
+static XMLResultInfo &get_gXMLResults5()
+{
+  static XMLResultInfo gXMLResults5 =
+  {
+    get_gXML5Input(),
+    get_gXML5Output(),
+    get_gJSON5Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings5Array()
+  };
+  return gXMLResults5;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML6Input()
+{
+  static const char *gXML6Input =
+  "<test>contents</test>\n"
+  "<whatever /bogus>\n"
+  "<tag";
+  return gXML6Input;
+}
+
+static const char *get_gXML6Output()
+{
+  static const char *gXML6Output =
+  "<test>contents</test>\n"
+  "<whatever />\n"
+  "<tag />";
+  return gXML6Output;
+}
+
+static const char *get_gJSON6Output()
+{
+  static const char *gJSON6Output =
+  "{"
+    "\"#text\":\"\\n\\n\","
+    "\"test\":\"contents\","
+    "\"whatever\":\"\","
+    "\"tag\":\"\""
+  "}";
+  return gJSON6Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings6_1()
+{
+  static XMLWarningInfo gXMLWarnings6_1[] =
+  {
+    {0,"bogus>", 2, 12},
+    {0,"<whatever", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_ContentAfterCloseSlashInElement,
+      "Content found after closing \'/\' in element\n"
+      "@ row=2 column=12: bogus> <tag\n"
+      "@ row=2 column=1: <whatever /bogus> <tag", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings6_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings6_2()
+{
+  static XMLWarningInfo gXMLWarnings6_2[] =
+  {
+    {0,"<tag", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndBracketFound,
+      "The closing \'>\' tag was not found\n"
+      "@ row=3 column=1: <tag", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings6_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings6_3()
+{
+  static XMLWarningInfo gXMLWarnings6_3[] =
+  {
+    {0,"<tag", 3, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndTagFound,
+      "Start element found but no \"</>\" end tag found\n"
+      "@ row=3 column=1: <tag", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings6_3;
+}
+
+static XMLWarningInfo **get_gXMLWarnings6Array()
+{
+  static XMLWarningInfo *gXMLWarnings6Array[] =
+  {
+    get_gXMLWarnings6_1(),
+    get_gXMLWarnings6_2(),
+    get_gXMLWarnings6_3(),
+    NULL
+  };
+  return gXMLWarnings6Array;
+}
+
+static XMLResultInfo &get_gXMLResults6()
+{
+  static XMLResultInfo gXMLResults6 =
+  {
+    get_gXML6Input(),
+    get_gXML6Output(),
+    get_gJSON6Output(),
+    8,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings6Array()
+  };
+  return gXMLResults6;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML7Input()
+{
+  static const char *gXML7Input =
+  "<test>contents</test>\n"
+  "<tag>whatever</tag \n";
+  return gXML7Input;
+}
+
+static const char *get_gXML7Output()
+{
+  static const char *gXML7Output =
+  "<test>contents</test>\n"
+  "<tag>whatever</tag>";
+  return gXML7Output;
+}
+
+static const char *get_gJSON7Output()
+{
+  static const char *gJSON7Output =
+  "{"
+    "\"#text\":\"\\n\","
+    "\"test\":\"contents\","
+    "\"tag\":\"whatever\""
+  "}";
+  return gJSON7Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings7_1()
+{
+  static XMLWarningInfo gXMLWarnings7_1[] =
+  {
+    {0,"</tag", 2, 14},
+    {0,"<tag>whatever", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndBracketFound,
+      "The closing \'>\' tag was not found\n"
+      "@ row=2 column=14: </tag\n"
+      "@ row=2 column=1: <tag>whatever</tag", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings7_1;
+}
+
+static XMLWarningInfo **get_gXMLWarnings7Array()
+{
+  static XMLWarningInfo *gXMLWarnings7Array[] =
+  {
+    get_gXMLWarnings7_1(),
+    NULL
+  };
+  return gXMLWarnings7Array;
+}
+
+static XMLResultInfo &get_gXMLResults7()
+{
+  static XMLResultInfo gXMLResults7 =
+  {
+    get_gXML7Input(),
+    get_gXML7Output(),
+    get_gJSON7Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings7Array()
+  };
+  return gXMLResults7;
+}
+
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML8Input()
+{
+  static const char *gXML8Input =
+  "<test>contents</test>\n"
+  "<tag>whatever</ \n";
+  return gXML8Input;
+}
+
+static const char *get_gXML8Output()
+{
+  static const char *gXML8Output =
+  "<test>contents</test>\n"
+  "<tag>whatever</tag>";
+  return gXML8Output;
+}
+
+static const char *get_gJSON8Output()
+{
+  static const char *gJSON8Output =
+  "{"
+    "\"#text\":\"\\n\","
+    "\"test\":\"contents\","
+    "\"tag\":\"whatever\""
+  "}";
+  return gJSON8Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings8_1()
+{
+  static XMLWarningInfo gXMLWarnings8_1[] =
+  {
+    {0,"</ ", 2, 14},
+    {0,"<tag>whatever", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndBracketFound,
+      "The closing \'>\' tag was not found\n"
+      "@ row=2 column=14: </\n"
+      "@ row=2 column=1: <tag>whatever</", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings8_1;
+}
+
+static XMLWarningInfo **get_gXMLWarnings8Array()
+{
+  static XMLWarningInfo *gXMLWarnings8Array[] =
+  {
+    get_gXMLWarnings8_1(),
+    NULL
+  };
+  return gXMLWarnings8Array;
+}
+
+static XMLResultInfo &get_gXMLResults8()
+{
+  static XMLResultInfo gXMLResults8 =
+  {
+    get_gXML8Input(),
+    get_gXML8Output(),
+    get_gJSON8Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings8Array()
+  };
+  return gXMLResults8;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML9Input()
+{
+  static const char *gXML9Input =
+  "<test>contents</test>\n"
+  "<tag>whatever</ {\n";
+  return gXML9Input;
+}
+
+static const char *get_gXML9Output()
+{
+  static const char *gXML9Output =
+  "<test>contents</test>\n"
+  "<tag>whatever</tag>";
+  return gXML9Output;
+}
+
+static const char *get_gJSON9Output()
+{
+  static const char *gJSON9Output =
+  "{"
+    "\"#text\":\"\\n\","
+    "\"test\":\"contents\","
+    "\"tag\":\"whatever\""
+  "}";
+  return gJSON9Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings9_1()
+{
+  static XMLWarningInfo gXMLWarnings9_1[] =
+  {
+    {0,"</ {", 2, 14},
+    {0,"<tag>whatever", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_MismatchedEndTag,
+      "Element end tag mismatched\n"
+      "@ row=2 column=14: </ {\n"
+      "@ row=2 column=1: <tag>whatever</ {", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings9_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings9_2()
+{
+  static XMLWarningInfo gXMLWarnings9_2[] =
+  {
+    {0,"<tag>whatever", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndTagFound,
+      "Start element found but no \"</>\" end tag found\n"
+      "@ row=2 column=1: <tag>whatever</ {", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings9_2;
+}
+
+static XMLWarningInfo **get_gXMLWarnings9Array()
+{
+  static XMLWarningInfo *gXMLWarnings9Array[] =
+  {
+    get_gXMLWarnings9_1(),
+    get_gXMLWarnings9_2(),
+    NULL
+  };
+  return gXMLWarnings9Array;
+}
+
+static XMLResultInfo &get_gXMLResults9()
+{
+  static XMLResultInfo gXMLResults9 =
+  {
+    get_gXML9Input(),
+    get_gXML9Output(),
+    get_gJSON9Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings9Array()
+  };
+  return gXMLResults9;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML10Input()
+{
+  static const char *gXML10Input =
+  "<test>contents</test>\n"
+  "<!bogus";
+  return gXML10Input;
+}
+
+static const char *get_gXML10Output()
+{
+  static const char *gXML10Output =
+  "<test>contents</test>\n"
+  "<!bogus>";
+  return gXML10Output;
+}
+
+static const char *get_gJSON10Output()
+{
+  static const char *gJSON10Output =
+  "{\"#text\":\"\\n\",\"test\":\"contents\"}";
+  return gJSON10Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings10_1()
+{
+  static XMLWarningInfo gXMLWarnings10_1[] =
+  {
+    {0,"<!bogus", 2, 1},
+    {
+      zsLib::XML::ParserWarningType_NoEndUnknownTagFound,
+      "Open \'<\' was found but no closing \'>\' was found\n"
+      "@ row=2 column=1: <!bogus", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings10_1;
+}
+
+static XMLWarningInfo **get_gXMLWarnings10Array()
+{
+  static XMLWarningInfo *gXMLWarnings10Array[] =
+  {
+    get_gXMLWarnings10_1(),
+    NULL
+  };
+  return gXMLWarnings10Array;
+}
+
+static XMLResultInfo &get_gXMLResults10()
+{
+  static XMLResultInfo gXMLResults10 =
+  {
+    get_gXML10Input(),
+    get_gXML10Output(),
+    get_gJSON10Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings10Array()
+  };
+  return gXMLResults10;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML11Input()
+{
+  static const char *gXML11Input =
+  "<test>contents</test>\n"
+  "<BR><Br><br></br>\n"
+  "<HR /><hr>\n"
+  "<input Dup=alpha DUP=beta dup=/hello.php>\n"
+  "<input hi=/hello.php />";
+  return gXML11Input;
+}
+
+static const char *get_gXML11Output()
+{
+  static const char *gXML11Output =
+  "<test>contents</test>\n"
+  "<BR /><Br /><br />\n"
+  "<HR /><hr />\n"
+  "<input dup=\"/hello.php\" />\n"
+  "<input hi=\"/hello.php\" />";
+  return gXML11Output;
+}
+
+static const char *get_gJSON11Output()
+{
+  static const char *gJSON11Output =
+  "{"
+    "\"#text\":\"\\n\\n\\n\\n\","
+    "\"test\":\"contents\","
+    "\"BR\":["
+           "\"\","
+           "\"\","
+           "\"\""
+           "],"
+    "\"HR\":["
+           "\"\","
+           "\"\""
+           "],"
+    "\"input\":["
+              "{\"$dup\":\"/hello.php\"},"
+              "{\"$hi\":\"/hello.php\"}"
+              "]"
+  "}";
+  return gJSON11Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings11_1()
+{
+  static XMLWarningInfo gXMLWarnings11_1[] =
+  {
+    {0,"</br>", 2, 13},
+    {
+      zsLib::XML::ParserWarningType_MismatchedEndTag,
+      "Element end tag mismatched\n"
+      "@ row=2 column=13: </br> <HR /><hr> <input Dup=al", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings11_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings11_2()
+{
+  static XMLWarningInfo gXMLWarnings11_2[] =
+  {
+    {0,"DUP=beta", 4, 18},
+    {0,"<input Dup=alpha", 4, 1},
+    {
+      zsLib::XML::ParserWarningType_DuplicateAttribute,
+      "An attribute on an element was duplicated\n"
+      "@ row=4 column=18: DUP=beta dup=/hello.php> <inpu\n"
+      "@ row=4 column=1: <input Dup=alpha DUP=beta dup=", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings11_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings11_3()
+{
+  static XMLWarningInfo gXMLWarnings11_3[] =
+  {
+    {0,"dup=/hello.php", 4, 27},
+    {0,"<input Dup=alpha", 4, 1},
+    {
+      zsLib::XML::ParserWarningType_DuplicateAttribute,
+      "An attribute on an element was duplicated\n"
+      "@ row=4 column=27: dup=/hello.php> <input hi=/hel\n"
+      "@ row=4 column=1: <input Dup=alpha DUP=beta dup=", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings11_3;
+}
+
+static XMLWarningInfo **get_gXMLWarnings11Array()
+{
+  static XMLWarningInfo *gXMLWarnings11Array[] =
+  {
+    get_gXMLWarnings11_1(),
+    get_gXMLWarnings11_2(),
+    get_gXMLWarnings11_3(),
+    NULL
+  };
+  return gXMLWarnings11Array;
+}
+
+static CSTR *get_gSingleLineElements11()
+{
+  static CSTR gSingleLineElements11[] =
+  {
+    "hr",
+    "br",
+    "INPUT",
+    NULL
+  };
+  return gSingleLineElements11;
+}
+
+static XMLResultInfo &get_gXMLResults11()
+{
+  static XMLResultInfo gXMLResults11 =
+  {
+    get_gXML11Input(),
+    get_gXML11Output(),
+    get_gJSON11Output(),
+    0,
+    get_gSingleLineElements11(),
+    false,
+    false,
+    false,
+    get_gXMLWarnings11Array()
+  };
+  return gXMLResults11;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML12Input()
+{
+  static const char *gXML12Input =
+  "<img>test\n"
+  "<Img>test</Img>"
+  "<IMG +bogus value1=1 />";
+  return gXML12Input;
+}
+
+static const char *get_gXML12Output()
+{
+  static const char *gXML12Output =
+  "<img />test\n"
+  "<Img>test</Img>"
+  "<IMG value1=\"1\" />";
+  return gXML12Output;
+}
+
+static const char *get_gJSON12Output()
+{
+  static const char *gJSON12Output =
+  "{"
+    "\"#text\":\"test\\n\","
+    "\"img\":\"\","
+    "\"Img\":\"test\","
+    "\"IMG\":{\"$value1\":\"1\"}"
+  "}";
+  return gJSON12Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings12_1()
+{
+  static XMLWarningInfo gXMLWarnings12_1[] =
+  {
+    {0,"+bogus", 2, 21},
+    {0,"<IMG", 2, 16},
+    {
+      zsLib::XML::ParserWarningType_IllegalAttributeName,
+      "Illegal attribute name found\n"
+      "@ row=2 column=21: +bogus value1=1 />\n"
+      "@ row=2 column=16: <IMG +bogus value1=1 />", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings12_1;
+}
+
+static XMLWarningInfo **get_gXMLWarnings12Array()
+{
+  static XMLWarningInfo *gXMLWarnings12Array[] =
+  {
+    get_gXMLWarnings12_1(),
+    NULL
+  };
+  return gXMLWarnings12Array;
+}
+
+static CSTR *get_gSingleLineElements12()
+{
+  static CSTR gSingleLineElements12[] =
+  {
+    "img",
+    NULL
+  };
+  return gSingleLineElements12;
+}
+
+static XMLResultInfo &get_gXMLResults12()
+{
+  static XMLResultInfo gXMLResults12 =
+  {
+    get_gXML12Input(),
+    get_gXML12Output(),
+    get_gJSON12Output(),
+    0,
+    get_gSingleLineElements12(),
+    true,
+    true,
+    false,
+    get_gXMLWarnings12Array()
+  };
+  return gXMLResults12;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gXML13Input()
+{
+  static const char *gXML13Input =
+  "<?xml test1=\"test\" />\n"
+  "<?xml text2=\"test\" ?>\n";
+  return gXML13Input;
+}
+
+static const char *get_gXML13Output()
+{
+  static const char *gXML13Output =
+  "<?xml test1=\"test\" ?>\n"
+  "<?xml text2=\"test\" ?>\n";
+  return gXML13Output;
+}
+
+static const char *get_gJSON13Output()
+{
+  static const char *gJSON13Output =
+  "{\"#text\":\"\\n\\n\"}";
+  return gJSON13Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings13_1()
+{
+  static XMLWarningInfo gXMLWarnings13_1[] =
+  {
+    {0,"/>", 1, 20},
+    {0,"<?", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_NotProperEndDeclaration,
+      "Declation \"<?xml ...\" was found but found \">\" instead of closing \"?>\"\n"
+      "@ row=1 column=20: /> <?xml text2=\"test\" ?>\n"
+      "@ row=1 column=1: <?xml test1=\"test\" /> <?xml te", 0, 0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings13_1;
+}
+
+static XMLWarningInfo **get_gXMLWarnings13Array()
+{
+  static XMLWarningInfo *gXMLWarnings13Array[] =
+  {
+    get_gXMLWarnings13_1(),
+    NULL
+  };
+  return gXMLWarnings13Array;
+}
+
+static XMLResultInfo &get_gXMLResults13()
+{
+  static XMLResultInfo gXMLResults13 =
+  {
+    get_gXML13Input(),
+    get_gXML13Output(),
+    get_gJSON13Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings13Array()
+  };
+  return gXMLResults13;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gJSON14Input()
+{
+  static const char *gJSON14Input =
+  "   { \n"
+    "\t\"outer\" : {\n"
+      "\t\t\"test\" \t:\t \"hello\\n\\tand\\ngoodbye\"\f\r\n"
+    " }\n"
+  "} \n";
+  return gJSON14Input;
+}
+
+static const char *get_gXML14Output()
+{
+  static const char *gXML14Output =
+  "<outer>"
   "<test>hello\n\tand\ngoodbye</test>"
-  "<foos>"
-    "<foo>far\nfig\nnewton</foo>"
-    "<foo>mars \xc3\xa4 attacks</foo>"
-  "</foos>"
-"</outer>"
-;
+  "</outer>"
+  ;
+  return gXML14Output;
+}
 
-static const char *gJSON15Output =
-"{"
-  "\"outer\":"
-    "{"
-      "\"test\":\"hello\\n\\tand\\ngoodbye\","
-      "\"foos\":"
-        "{"
-          "\"foo\":["
-            "\"far\\u000afig\\u000Anewton\","
-            "\"mars \\u00E4 attacks\""
-          "]"
-        "}"
-    "}"
-"}";
-
-static XMLWarningInfo gXMLWarnings15_1[] =
+static const char *get_gJSON14Output()
 {
-  {0,".", 11, 1},
-  {0,"{", 1, 4},
+  static const char *gJSON14Output =
+  "{"
+    "\"outer\":"
+      "{"
+        "\"test\":\"hello\\n\\tand\\ngoodbye\""
+      "}"
+  "}";
+  return gJSON14Output;
+}
+
+static XMLWarningInfo **get_gXMLWarnings14Array()
+{
+  static XMLWarningInfo *gXMLWarnings14Array[] = {NULL};
+  return gXMLWarnings14Array;
+}
+
+static XMLResultInfo &get_gXMLResults14()
+{
+  static XMLResultInfo gXMLResults14 =
   {
-    zsLib::XML::ParserWarningType_DataFoundAfterFinalObjectClose,
-    "Found data after final object close\n"
-    "@ row=11 column=1: .\n"
-    "@ row=1 column=4: {   \"outer\" : {   \"test\"  :  \""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    get_gJSON14Input(),
+    get_gXML14Output(),
+    get_gJSON14Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings14Array()
+  };
+  return gXMLResults14;
+}
 
-static XMLWarningInfo *gXMLWarnings15Array[] =
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gJSON15Input()
 {
-  gXMLWarnings15_1,
-  NULL
-};
+  static const char *gJSON15Input =
+  "   { \n"
+  "\t\"outer\" : {\n"
+  "\t\t\"test\" \t:\t \"hello\\n\\tand\\ngoodbye\"\f\r\n,\n"
+  "\t\t\"foos\":{\n"
+      "  \"foo\" : [ \"far\\u000afig\\u000Anewton\" , \n"
+                    "\"mars \\u00E4 attacks\"\n"
+                  " ] "
+        " } \n"
+  " }\n"
+  "}\n.\n";
+  return gJSON15Input;
+}
 
-
-static XMLResultInfo gXMLResults15 =
+static const char *get_gXML15Output()
 {
-  gJSON15Input,
-  gXML15Output,
-  gJSON15Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings15Array
-};
+  static const char *gXML15Output =
+  "<outer>"
+    "<test>hello\n\tand\ngoodbye</test>"
+    "<foos>"
+      "<foo>far\nfig\nnewton</foo>"
+      "<foo>mars \xc3\xa4 attacks</foo>"
+    "</foos>"
+  "</outer>"
+  ;
+  return gXML15Output;
+}
 
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gJSON16Input =
-"{"
-  "\"outer\":{"
-    "\"inner\":{\"foo\":\"bar\",do\"\"too\\z\"}"
-  ""
-"";
-
-static const char *gXML16Output =
-"<outer>"
-  "<inner>"
-    "<foo>bar</foo>"
-    "<do>too\\z</do>"
-  "</inner>"
-"</outer>"
-;
-
-static const char *gJSON16Output =
-"{\"outer\":{\"inner\":{\"foo\":\"bar\",\"do\":\"too\\z\"}}}"
-;
-
-
-
-static XMLWarningInfo gXMLWarnings16_1[] =
+static const char *get_gJSON15Output()
 {
-  {0,"do", 1, 32},
-  {0,"\"inner", 1, 11},
-  {0,"\"outer", 1, 2},
-  {0,"{\"outer", 1, 1},
+  static const char *gJSON15Output =
+  "{"
+    "\"outer\":"
+      "{"
+        "\"test\":\"hello\\n\\tand\\ngoodbye\","
+        "\"foos\":"
+          "{"
+            "\"foo\":["
+              "\"far\\u000afig\\u000Anewton\","
+              "\"mars \\u00E4 attacks\""
+            "]"
+          "}"
+      "}"
+  "}";
+  return gJSON15Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings15_1()
+{
+  static XMLWarningInfo gXMLWarnings15_1[] =
   {
-    zsLib::XML::ParserWarningType_MissingStringQuotes,
-    "String quotes (\") were expected but not found\n"
-    "@ row=1 column=32: do\"\"too\\z\"}\n"
-    "@ row=1 column=11: \"inner\":{\"foo\":\"bar\",do\"\"too\\z\n"
-    "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
-    "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    {0,".", 11, 1},
+    {0,"{", 1, 4},
+    {
+      zsLib::XML::ParserWarningType_DataFoundAfterFinalObjectClose,
+      "Found data after final object close\n"
+      "@ row=11 column=1: .\n"
+      "@ row=1 column=4: {   \"outer\" : {   \"test\"  :  \""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings15_1;
+}
 
-static XMLWarningInfo gXMLWarnings16_2[] =
+static XMLWarningInfo **get_gXMLWarnings15Array()
 {
-  {0,"\"too", 1, 35},
-  {0,"do", 1, 32},
-  {0,"\"inner", 1, 11},
-  {0,"\"outer", 1, 2},
-  {0,"{\"outer", 1, 1},
+  static XMLWarningInfo *gXMLWarnings15Array[] =
   {
-    zsLib::XML::ParserWarningType_MissingColonBetweenStringAndValue,
-    "Missing \":\" between string : value\n"
-    "@ row=1 column=35: \"too\\z\"}\n"
-    "@ row=1 column=32: do\"\"too\\z\"}\n"
-    "@ row=1 column=11: \"inner\":{\"foo\":\"bar\",do\"\"too\\z\n"
-    "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
-    "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    get_gXMLWarnings15_1(),
+    NULL
+  };
+  return gXMLWarnings15Array;
+}
 
-static XMLWarningInfo gXMLWarnings16_3[] =
+static XMLResultInfo &get_gXMLResults15()
 {
-  {0,"\\z", 1, 39},
-  {0,"\"too", 1, 35},
-  {0,"do", 1, 32},
-  {0,"\"inner", 1, 11},
-  {0,"\"outer", 1, 2},
-  {0,"{\"outer", 1, 1},
+  static XMLResultInfo gXMLResults15 =
   {
-    zsLib::XML::ParserWarningType_InvalidEscapeSequence,
-    "Invalid escape sequence\n"
-    "@ row=1 column=39: \\z\"}\n"
-    "@ row=1 column=35: \"too\\z\"}\n"
-    "@ row=1 column=32: do\"\"too\\z\"}\n"
-    "@ row=1 column=11: \"inner\":{\"foo\":\"bar\",do\"\"too\\z\n"
-    "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
-    "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    get_gJSON15Input(),
+    get_gXML15Output(),
+    get_gJSON15Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings15Array()
+  };
+  return gXMLResults15;
+}
 
-static XMLWarningInfo gXMLWarnings16_4[] =
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gJSON16Input()
 {
-  {0,"{\"inner", 1, 10},
-  {0,"\"outer", 1, 2},
-  {0,"{\"outer", 1, 1},
+  static const char *gJSON16Input =
+  "{"
+    "\"outer\":{"
+      "\"inner\":{\"foo\":\"bar\",do\"\"too\\z\"}"
+    ""
+  "";
+  return gJSON16Input;
+}
+
+static const char *get_gXML16Output()
+{
+  static const char *gXML16Output =
+  "<outer>"
+    "<inner>"
+      "<foo>bar</foo>"
+      "<do>too\\z</do>"
+    "</inner>"
+  "</outer>"
+  ;
+  return gXML16Output;
+}
+
+static const char *get_gJSON16Output()
+{
+  static const char *gJSON16Output =
+  "{\"outer\":{\"inner\":{\"foo\":\"bar\",\"do\":\"too\\z\"}}}"
+  ;
+  return gJSON16Output;
+}
+
+
+static XMLWarningInfo *get_gXMLWarnings16_1()
+{
+  static XMLWarningInfo gXMLWarnings16_1[] =
   {
-    zsLib::XML::ParserWarningType_MissingObjectClose,
-    "Missing object \"}\" close\n"
-    "@ row=1 column=10: {\"inner\":{\"foo\":\"bar\",do\"\"too\\\n"
-    "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
-    "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    {0,"do", 1, 32},
+    {0,"\"inner", 1, 11},
+    {0,"\"outer", 1, 2},
+    {0,"{\"outer", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MissingStringQuotes,
+      "String quotes (\") were expected but not found\n"
+      "@ row=1 column=32: do\"\"too\\z\"}\n"
+      "@ row=1 column=11: \"inner\":{\"foo\":\"bar\",do\"\"too\\z\n"
+      "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
+      "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings16_1;
+}
 
-static XMLWarningInfo gXMLWarnings16_5[] =
+static XMLWarningInfo *get_gXMLWarnings16_2()
 {
-  {0,"", 1, 43},
-  {0,"\"outer", 1, 2},
-  {0,"{\"outer", 1, 1},
+  static XMLWarningInfo gXMLWarnings16_2[] =
   {
-    zsLib::XML::ParserWarningType_MustCloseRootObject,
-    "Expected to close root object with \"}\"\n"
-    "@ row=1 column=43: \n"
-    "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
-    "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    {0,"\"too", 1, 35},
+    {0,"do", 1, 32},
+    {0,"\"inner", 1, 11},
+    {0,"\"outer", 1, 2},
+    {0,"{\"outer", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MissingColonBetweenStringAndValue,
+      "Missing \":\" between string : value\n"
+      "@ row=1 column=35: \"too\\z\"}\n"
+      "@ row=1 column=32: do\"\"too\\z\"}\n"
+      "@ row=1 column=11: \"inner\":{\"foo\":\"bar\",do\"\"too\\z\n"
+      "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
+      "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings16_2;
+}
 
-static XMLWarningInfo *gXMLWarnings16Array[] =
+static XMLWarningInfo *get_gXMLWarnings16_3()
 {
-  gXMLWarnings16_1,
-  gXMLWarnings16_2,
-  gXMLWarnings16_3,
-  gXMLWarnings16_4,
-  gXMLWarnings16_5,
-  NULL
-};
+  static XMLWarningInfo gXMLWarnings16_3[] =
+  {
+    {0,"\\z", 1, 39},
+    {0,"\"too", 1, 35},
+    {0,"do", 1, 32},
+    {0,"\"inner", 1, 11},
+    {0,"\"outer", 1, 2},
+    {0,"{\"outer", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_InvalidEscapeSequence,
+      "Invalid escape sequence\n"
+      "@ row=1 column=39: \\z\"}\n"
+      "@ row=1 column=35: \"too\\z\"}\n"
+      "@ row=1 column=32: do\"\"too\\z\"}\n"
+      "@ row=1 column=11: \"inner\":{\"foo\":\"bar\",do\"\"too\\z\n"
+      "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
+      "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings16_3;
+}
 
-
-static XMLResultInfo gXMLResults16 =
+static XMLWarningInfo *get_gXMLWarnings16_4()
 {
-  gJSON16Input,
-  gXML16Output,
-  gJSON16Output,
-  0,
-  NULL,
-  true,
-  true,
-  true,
-  gXMLWarnings16Array
-};
+  static XMLWarningInfo gXMLWarnings16_4[] =
+  {
+    {0,"{\"inner", 1, 10},
+    {0,"\"outer", 1, 2},
+    {0,"{\"outer", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MissingObjectClose,
+      "Missing object \"}\" close\n"
+      "@ row=1 column=10: {\"inner\":{\"foo\":\"bar\",do\"\"too\\\n"
+      "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
+      "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings16_4;
+}
+
+static XMLWarningInfo *get_gXMLWarnings16_5()
+{
+  static XMLWarningInfo gXMLWarnings16_5[] =
+  {
+    {0,"", 1, 43},
+    {0,"\"outer", 1, 2},
+    {0,"{\"outer", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MustCloseRootObject,
+      "Expected to close root object with \"}\"\n"
+      "@ row=1 column=43: \n"
+      "@ row=1 column=2: \"outer\":{\"inner\":{\"foo\":\"bar\",\n"
+      "@ row=1 column=1: {\"outer\":{\"inner\":{\"foo\":\"bar\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings16_5;
+}
+
+static XMLWarningInfo **get_gXMLWarnings16Array()
+{
+  static XMLWarningInfo *gXMLWarnings16Array[] =
+  {
+    get_gXMLWarnings16_1(),
+    get_gXMLWarnings16_2(),
+    get_gXMLWarnings16_3(),
+    get_gXMLWarnings16_4(),
+    get_gXMLWarnings16_5(),
+    NULL
+  };
+  return gXMLWarnings16Array;
+}
+
+
+static XMLResultInfo &get_gXMLResults16()
+{
+  static XMLResultInfo gXMLResults16 =
+  {
+    get_gJSON16Input(),
+    get_gXML16Output(),
+    get_gJSON16Output(),
+    0,
+    NULL,
+    true,
+    true,
+    true,
+    get_gXMLWarnings16Array()
+  };
+  return gXMLResults16;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gJSON17Input()
+{
+  static const char *gJSON17Input =
+  "{\n"
+    "\"foo\":\"test \\uc00p done\",\n"
+    "\"a\":-1.0e+5,\n"
+    "\"b\":-0.0e-5,\n"
+    "\"c\":0.1e+5,\n"
+    "\"d\":9998337000.1e+549329432,\n"
+    "\"e\":-9998337000.1,\n"
+    "\"f\":-9998337000,\n"
+    "\"g\":9998337000,\n"
+    "\"h\":9998337000.,\n"
+    "\"i\":9998337000.0e+,\n"
+    "\"j\":00.11,\n"
+    "\"k\":9998337000.0e4,\n"
+    "\"l\":-9.0e.0\n"
+  "}";
+  return gJSON17Input;
+}
+
+static const char *get_gXML17Output()
+{
+  static const char *gXML17Output =
+  "<foo>test \\uc00p done</foo>"
+  "<a>-1.0e+5</a>"
+  "<b>-0.0e-5</b>"
+  "<c>0.1e+5</c>"
+  "<d>9998337000.1e+549329432</d>"
+  "<e>-9998337000.1</e>"
+  "<f>-9998337000</f>"
+  "<g>9998337000</g>"
+  "<h>9998337000.</h>"
+  "<i>9998337000.0e+</i>"
+  "<j>00.11</j>"
+  "<k>9998337000.0e4</k>"
+  "<l>-9.0e</l>"
+  ;
+  return gXML17Output;
+}
+
+static const char *get_gJSON17Output()
+{
+  static const char *gJSON17Output =
+  "{"
+  "\"foo\":\"test \\uc00p done\","
+  "\"a\":-1.0e+5,"
+  "\"b\":-0.0e-5,"
+  "\"c\":0.1e+5,"
+  "\"d\":9998337000.1e+549329432,"
+  "\"e\":-9998337000.1,"
+  "\"f\":-9998337000,"
+  "\"g\":9998337000,"
+  "\"h\":9998337000.,"
+  "\"i\":9998337000.0e+,"
+  "\"j\":00.11,"
+  "\"k\":9998337000.0e4,"
+  "\"l\":-9.0e"
+  "}"
+  ;
+  return gJSON17Output;
+}
+
+
+static XMLWarningInfo *get_gXMLWarnings17_1()
+{
+  static XMLWarningInfo gXMLWarnings17_1[] =
+  {
+    {0,"\\uc00p", 2, 13},
+    {0,"\"test", 2, 7},
+    {0,"\"foo", 2, 1},
+    {0,"{", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_InvalidUnicodeEscapeSequence,
+      "Invalid unicode escape sequence\n"
+      "@ row=2 column=13: \\uc00p done\", \"a\":-1.0e+5, \"b\"\n"
+      "@ row=2 column=7: \"test \\uc00p done\", \"a\":-1.0e+\n"
+      "@ row=2 column=1: \"foo\":\"test \\uc00p done\", \"a\":\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_2()
+{
+  static XMLWarningInfo gXMLWarnings17_2[] =
+  {
+    {0,",\n\"i\"", 10, 16},
+    {0,"9998337000.,\n\"i\"", 10, 5},
+    {0,"\"h\"", 10, 1},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalNumberSequence,
+      "Illegal number sequence\n"
+      "@ row=10 column=16: , \"i\":9998337000.0e+, \"j\":00.1\n"
+      "@ row=10 column=5: 9998337000., \"i\":9998337000.0e\n"
+      "@ row=10 column=1: \"h\":9998337000., \"i\":999833700\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_3()
+{
+  static XMLWarningInfo gXMLWarnings17_3[] =
+  {
+    {0,",\n\"j\"", 11, 19},
+    {0,"9998337000.0e+,\n\"j\"", 11, 5},
+    {0,"\"i\":9998337000.0e+", 11, 1},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalNumberSequence,
+      "Illegal number sequence\n"
+      "@ row=11 column=19: , \"j\":00.11, \"k\":9998337000.0e\n"
+      "@ row=11 column=5: 9998337000.0e+, \"j\":00.11, \"k\"\n"
+      "@ row=11 column=1: \"i\":9998337000.0e+, \"j\":00.11,\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_3;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_4()
+{
+  static XMLWarningInfo gXMLWarnings17_4[] =
+  {
+    {0,"0.11,\n\"k\"", 12, 6},
+    {0,"00.11,\n\"k\"", 12, 5},
+    {0,"\"j\":00.11", 12, 1},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalNumberSequence,
+      "Illegal number sequence\n"
+      "@ row=12 column=6: 0.11, \"k\":9998337000.0e4, \"l\":\n"
+      "@ row=12 column=5: 00.11, \"k\":9998337000.0e4, \"l\"\n"
+      "@ row=12 column=1: \"j\":00.11, \"k\":9998337000.0e4,\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_4;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_5()
+{
+  static XMLWarningInfo gXMLWarnings17_5[] =
+  {
+    {0,".0\n}", 14, 10},
+    {0,"-9.0e.0", 14, 5},
+    {0,"\"l\"", 14, 1},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalNumberSequence,
+      "Illegal number sequence\n"
+      "@ row=14 column=10: .0 }\n"
+      "@ row=14 column=5: -9.0e.0 }\n"
+      "@ row=14 column=1: \"l\":-9.0e.0 }\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_5;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_6()
+{
+  static XMLWarningInfo gXMLWarnings17_6[] =
+  {
+    {0,".0\n}", 14, 10},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MissingStringQuotes,
+      "String quotes (\") were expected but not found\n"
+      "@ row=14 column=10: .0 }\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_6;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_7()
+{
+  static XMLWarningInfo gXMLWarnings17_7[] =
+  {
+    {0,"", 15, 2},
+    {0,".0\n}", 14, 10},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MissingStringQuotes,
+      "String quotes (\") were expected but not found\n"
+      "@ row=15 column=2: \n"
+      "@ row=14 column=10: .0 }\n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_7;
+}
+
+static XMLWarningInfo *get_gXMLWarnings17_8()
+{
+  static XMLWarningInfo gXMLWarnings17_8[] =
+  {
+    {0,"", 15, 2},
+    {0,"{\n\"foo", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MustCloseRootObject,
+      "Expected to close root object with \"}\"\n"
+      "@ row=15 column=2: \n"
+      "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings17_8;
+}
+
+static XMLWarningInfo **get_gXMLWarnings17Array()
+{
+  static XMLWarningInfo *gXMLWarnings17Array[] =
+  {
+    get_gXMLWarnings17_1(),
+    get_gXMLWarnings17_2(),
+    get_gXMLWarnings17_3(),
+    get_gXMLWarnings17_4(),
+    get_gXMLWarnings17_5(),
+    get_gXMLWarnings17_6(),
+    get_gXMLWarnings17_7(),
+    get_gXMLWarnings17_8(),
+    NULL
+  };
+  return gXMLWarnings17Array;
+}
+
+static XMLResultInfo &get_gXMLResults17()
+{
+  static XMLResultInfo gXMLResults17 =
+  {
+    get_gJSON17Input(),
+    get_gXML17Output(),
+    get_gJSON17Output(),
+    0,
+    NULL,
+    true,
+    true,
+    true,
+    get_gXMLWarnings17Array()
+  };
+  return gXMLResults17;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+static const char *get_gJSON18Input()
+{
+  static const char *gJSON18Input =
+  "{\n"
+    "\"foo\":\"bar\",\n"
+    "\"#text\":\"hello\",\n"
+    "\"inner\":{\"$\":\"attribute_no_name\"},\n"
+    "\"$root\":\"attribute_root\",\n"
+    "\"\":\"missing\",\n"
+    "\"illegal\":.\n"
+  "}";
+  return gJSON18Input;
+}
+
+static const char *get_gXML18Output()
+{
+  static const char *gXML18Output =
+  "<foo>bar</foo>hello<inner />"
+  ;
+  return gXML18Output;
+}
+
+static const char *get_gJSON18Output()
+{
+  static const char *gJSON18Output =
+  "{"
+    "\"#text\":\"hello\","
+    "\"foo\":\"bar\","
+    "\"inner\":\"\""
+  "}"
+  ;
+  return gJSON18Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings18_1()
+{
+  static XMLWarningInfo gXMLWarnings18_1[] =
+  {
+    {0,"\"$\"", 4, 10},
+    {0,"\"inner\"", 4, 1},
+    {0,"{", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_AttributePrefixWithoutName,
+      "Attribute prefix found but no name for attribute found\n"
+      "@ row=4 column=10: \"$\":\"attribute_no_name\"}, \"$ro\n"
+      "@ row=4 column=1: \"inner\":{\"$\":\"attribute_no_nam\n"
+      "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings18_1;
+}
+
+static XMLWarningInfo *get_gXMLWarnings18_2()
+{
+  static XMLWarningInfo gXMLWarnings18_2[] =
+  {
+    {0,"\"$root\"", 5, 1},
+    {0,"{", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_AttributePrefixAtRoot,
+      "Attribute prefix found at document root\n"
+      "@ row=5 column=1: \"$root\":\"attribute_root\", \"\":\"\n"
+      "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings18_2;
+}
+
+static XMLWarningInfo *get_gXMLWarnings18_3()
+{
+  static XMLWarningInfo gXMLWarnings18_3[] =
+  {
+    {0,"\"\":\"missing\"", 6, 1},
+    {0,"{", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_MissingPairString,
+      "Empty \"string\" found in pair string : value\n"
+      "@ row=6 column=1: \"\":\"missing\", \"illegal\":. }\n"
+      "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings18_3;
+}
+
+static XMLWarningInfo *get_gXMLWarnings18_4()
+{
+  static XMLWarningInfo gXMLWarnings18_4[] =
+  {
+    {0,".\n}", 7, 11},
+    {0,"\"illegal\"", 7, 1},
+    {0,"{", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_IllegalValue,
+      "Illegal value found in pair string : value\n"
+      "@ row=7 column=11: . }\n"
+      "@ row=7 column=1: \"illegal\":. }\n"
+      "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings18_4;
+}
+
+
+static XMLWarningInfo **get_gXMLWarnings18Array()
+{
+  static XMLWarningInfo *gXMLWarnings18Array[] =
+  {
+    get_gXMLWarnings18_1(),
+    get_gXMLWarnings18_2(),
+    get_gXMLWarnings18_3(),
+    get_gXMLWarnings18_4(),
+    NULL
+  };
+  return gXMLWarnings18Array;
+}
+
+static XMLResultInfo &get_gXMLResults18()
+{
+  static XMLResultInfo gXMLResults18 =
+  {
+    get_gJSON18Input(),
+    get_gXML18Output(),
+    get_gJSON18Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings18Array()
+  };
+  return gXMLResults18;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -1265,412 +2121,131 @@ static XMLResultInfo gXMLResults16 =
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-static const char *gJSON17Input =
-"{\n"
-  "\"foo\":\"test \\uc00p done\",\n"
-  "\"a\":-1.0e+5,\n"
-  "\"b\":-0.0e-5,\n"
-  "\"c\":0.1e+5,\n"
-  "\"d\":9998337000.1e+549329432,\n"
-  "\"e\":-9998337000.1,\n"
-  "\"f\":-9998337000,\n"
-  "\"g\":9998337000,\n"
-  "\"h\":9998337000.,\n"
-  "\"i\":9998337000.0e+,\n"
-  "\"j\":00.11,\n"
-  "\"k\":9998337000.0e4,\n"
-  "\"l\":-9.0e.0\n"
-"}";
-
-static const char *gXML17Output =
-"<foo>test \\uc00p done</foo>"
-"<a>-1.0e+5</a>"
-"<b>-0.0e-5</b>"
-"<c>0.1e+5</c>"
-"<d>9998337000.1e+549329432</d>"
-"<e>-9998337000.1</e>"
-"<f>-9998337000</f>"
-"<g>9998337000</g>"
-"<h>9998337000.</h>"
-"<i>9998337000.0e+</i>"
-"<j>00.11</j>"
-"<k>9998337000.0e4</k>"
-"<l>-9.0e</l>"
-;
-
-static const char *gJSON17Output =
-"{"
-"\"foo\":\"test \\uc00p done\","
-"\"a\":-1.0e+5,"
-"\"b\":-0.0e-5,"
-"\"c\":0.1e+5,"
-"\"d\":9998337000.1e+549329432,"
-"\"e\":-9998337000.1,"
-"\"f\":-9998337000,"
-"\"g\":9998337000,"
-"\"h\":9998337000.,"
-"\"i\":9998337000.0e+,"
-"\"j\":00.11,"
-"\"k\":9998337000.0e4,"
-"\"l\":-9.0e"
-"}"
-;
-
-
-
-static XMLWarningInfo gXMLWarnings17_1[] =
+static const char *get_gJSON19Input()
 {
-  {0,"\\uc00p", 2, 13},
-  {0,"\"test", 2, 7},
-  {0,"\"foo", 2, 1},
-  {0,"{", 1, 1},
+  static const char *gJSON19Input =
+  "{\n"
+    "\"foo\":[1,2,,3]\n"
+  "}";
+  return gJSON19Input;
+}
+
+static const char *get_gXML19Output()
+{
+  static const char *gXML19Output =
+  "<foo>1</foo><foo>2</foo><foo /><foo>3</foo>"
+  ;
+  return gXML19Output;
+}
+
+static const char *get_gJSON19Output()
+{
+  static const char *gJSON19Output =
+  "{\"foo\":[1,2,\"\",3]}"
+  ;
+  return gJSON19Output;
+}
+
+static XMLWarningInfo *get_gXMLWarnings19_1()
+{
+  static XMLWarningInfo gXMLWarnings19_1[] =
   {
-    zsLib::XML::ParserWarningType_InvalidUnicodeEscapeSequence,
-    "Invalid unicode escape sequence\n"
-    "@ row=2 column=13: \\uc00p done\", \"a\":-1.0e+5, \"b\"\n"
-    "@ row=2 column=7: \"test \\uc00p done\", \"a\":-1.0e+\n"
-    "@ row=2 column=1: \"foo\":\"test \\uc00p done\", \"a\":\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    {0,",3", 2, 12},
+    {0,"\"foo\"", 2, 1},
+    {0,"{", 1, 1},
+    {
+      zsLib::XML::ParserWarningType_UnexpectedComma,
+      "Parser did not expect a \",\" comma\n"
+      "@ row=2 column=12: ,3] }\n"
+      "@ row=2 column=1: \"foo\":[1,2,,3] }\n"
+      "@ row=1 column=1: { \"foo\":[1,2,,3] }"
+      ,0,0},
+    {0,NULL, 0, 0}
+  };
+  return gXMLWarnings19_1;
+}
 
-static XMLWarningInfo gXMLWarnings17_2[] =
+
+static XMLWarningInfo **get_gXMLWarnings19Array()
 {
-  {0,",\n\"i\"", 10, 16},
-  {0,"9998337000.,\n\"i\"", 10, 5},
-  {0,"\"h\"", 10, 1},
-  {0,"{\n\"foo", 1, 1},
+  static XMLWarningInfo *gXMLWarnings19Array[] =
   {
-    zsLib::XML::ParserWarningType_IllegalNumberSequence,
-    "Illegal number sequence\n"
-    "@ row=10 column=16: , \"i\":9998337000.0e+, \"j\":00.1\n"
-    "@ row=10 column=5: 9998337000., \"i\":9998337000.0e\n"
-    "@ row=10 column=1: \"h\":9998337000., \"i\":999833700\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
+    get_gXMLWarnings19_1(),
+    NULL
+  };
+  return gXMLWarnings19Array;
+}
 
-static XMLWarningInfo gXMLWarnings17_3[] =
+static XMLResultInfo &get_gXMLResults19()
 {
-  {0,",\n\"j\"", 11, 19},
-  {0,"9998337000.0e+,\n\"j\"", 11, 5},
-  {0,"\"i\":9998337000.0e+", 11, 1},
-  {0,"{\n\"foo", 1, 1},
+  static XMLResultInfo gXMLResults19 =
   {
-    zsLib::XML::ParserWarningType_IllegalNumberSequence,
-    "Illegal number sequence\n"
-    "@ row=11 column=19: , \"j\":00.11, \"k\":9998337000.0e\n"
-    "@ row=11 column=5: 9998337000.0e+, \"j\":00.11, \"k\"\n"
-    "@ row=11 column=1: \"i\":9998337000.0e+, \"j\":00.11,\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings17_4[] =
-{
-  {0,"0.11,\n\"k\"", 12, 6},
-  {0,"00.11,\n\"k\"", 12, 5},
-  {0,"\"j\":00.11", 12, 1},
-  {0,"{\n\"foo", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_IllegalNumberSequence,
-    "Illegal number sequence\n"
-    "@ row=12 column=6: 0.11, \"k\":9998337000.0e4, \"l\":\n"
-    "@ row=12 column=5: 00.11, \"k\":9998337000.0e4, \"l\"\n"
-    "@ row=12 column=1: \"j\":00.11, \"k\":9998337000.0e4,\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings17_5[] =
-{
-  {0,".0\n}", 14, 10},
-  {0,"-9.0e.0", 14, 5},
-  {0,"\"l\"", 14, 1},
-  {0,"{\n\"foo", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_IllegalNumberSequence,
-    "Illegal number sequence\n"
-    "@ row=14 column=10: .0 }\n"
-    "@ row=14 column=5: -9.0e.0 }\n"
-    "@ row=14 column=1: \"l\":-9.0e.0 }\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings17_6[] =
-{
-  {0,".0\n}", 14, 10},
-  {0,"{\n\"foo", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_MissingStringQuotes,
-    "String quotes (\") were expected but not found\n"
-    "@ row=14 column=10: .0 }\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings17_7[] =
-{
-  {0,"", 15, 2},
-  {0,".0\n}", 14, 10},
-  {0,"{\n\"foo", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_MissingStringQuotes,
-    "String quotes (\") were expected but not found\n"
-    "@ row=15 column=2: \n"
-    "@ row=14 column=10: .0 }\n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings17_8[] =
-{
-  {0,"", 15, 2},
-  {0,"{\n\"foo", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_MustCloseRootObject,
-    "Expected to close root object with \"}\"\n"
-    "@ row=15 column=2: \n"
-    "@ row=1 column=1: { \"foo\":\"test \\uc00p done\", \"a"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-
-static XMLWarningInfo *gXMLWarnings17Array[] =
-{
-  gXMLWarnings17_1,
-  gXMLWarnings17_2,
-  gXMLWarnings17_3,
-  gXMLWarnings17_4,
-  gXMLWarnings17_5,
-  gXMLWarnings17_6,
-  gXMLWarnings17_7,
-  gXMLWarnings17_8,
-  NULL
-};
-
-
-static XMLResultInfo gXMLResults17 =
-{
-  gJSON17Input,
-  gXML17Output,
-  gJSON17Output,
-  0,
-  NULL,
-  true,
-  true,
-  true,
-  gXMLWarnings17Array
-};
+    get_gJSON19Input(),
+    get_gXML19Output(),
+    get_gJSON19Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings19Array()
+  };
+  return gXMLResults19;
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-static const char *gJSON18Input =
-"{\n"
-  "\"foo\":\"bar\",\n"
-  "\"#text\":\"hello\",\n"
-  "\"inner\":{\"$\":\"attribute_no_name\"},\n"
-  "\"$root\":\"attribute_root\",\n"
-  "\"\":\"missing\",\n"
-  "\"illegal\":.\n"
-"}";
-
-static const char *gXML18Output =
-"<foo>bar</foo>hello<inner />"
-;
-
-static const char *gJSON18Output =
-"{"
-  "\"#text\":\"hello\","
-  "\"foo\":\"bar\","
-  "\"inner\":\"\""
-"}"
-;
-
-static XMLWarningInfo gXMLWarnings18_1[] =
+static const char *get_gJSON20Input()
 {
-  {0,"\"$\"", 4, 10},
-  {0,"\"inner\"", 4, 1},
-  {0,"{", 1, 1},
+  static const char *gJSON20Input =
+  "[\n"
+  "\"hello\",\n"
+  "{ \"goodbye\": \"foo\" }\n"
+  "]";
+  return gJSON20Input;
+}
+
+static const char *get_gXML20Output()
+{
+  static const char *gXML20Output =
+  "<unknown>hello</unknown><unknown><goodbye>foo</goodbye></unknown>";
+  return gXML20Output;
+}
+
+static const char *get_gJSON20Output()
+{
+  static const char *gJSON20Output =
+  "[\"hello\",{\"goodbye\":\"foo\"}]"
+  ;
+  return gJSON20Output;
+}
+
+static XMLWarningInfo **get_gXMLWarnings20Array()
+{
+  static XMLWarningInfo *gXMLWarnings20Array[] =
+  {NULL};
+  return gXMLWarnings20Array;
+}
+
+static XMLResultInfo &get_gXMLResults20()
+{
+  static XMLResultInfo gXMLResults20 =
   {
-    zsLib::XML::ParserWarningType_AttributePrefixWithoutName,
-    "Attribute prefix found but no name for attribute found\n"
-    "@ row=4 column=10: \"$\":\"attribute_no_name\"}, \"$ro\n"
-    "@ row=4 column=1: \"inner\":{\"$\":\"attribute_no_nam\n"
-    "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings18_2[] =
-{
-  {0,"\"$root\"", 5, 1},
-  {0,"{", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_AttributePrefixAtRoot,
-    "Attribute prefix found at document root\n"
-    "@ row=5 column=1: \"$root\":\"attribute_root\", \"\":\"\n"
-    "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings18_3[] =
-{
-  {0,"\"\":\"missing\"", 6, 1},
-  {0,"{", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_MissingPairString,
-    "Empty \"string\" found in pair string : value\n"
-    "@ row=6 column=1: \"\":\"missing\", \"illegal\":. }\n"
-    "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-static XMLWarningInfo gXMLWarnings18_4[] =
-{
-  {0,".\n}", 7, 11},
-  {0,"\"illegal\"", 7, 1},
-  {0,"{", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_IllegalValue,
-    "Illegal value found in pair string : value\n"
-    "@ row=7 column=11: . }\n"
-    "@ row=7 column=1: \"illegal\":. }\n"
-    "@ row=1 column=1: { \"foo\":\"bar\", \"#text\":\"hello\""
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-
-
-static XMLWarningInfo *gXMLWarnings18Array[] =
-{
-  gXMLWarnings18_1,
-  gXMLWarnings18_2,
-  gXMLWarnings18_3,
-  gXMLWarnings18_4,
-  NULL
-};
-
-
-static XMLResultInfo gXMLResults18 =
-{
-  gJSON18Input,
-  gXML18Output,
-  gJSON18Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings18Array
-};
-
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gJSON19Input =
-"{\n"
-  "\"foo\":[1,2,,3]\n"
-"}";
-
-static const char *gXML19Output =
-"<foo>1</foo><foo>2</foo><foo /><foo>3</foo>"
-;
-
-static const char *gJSON19Output =
-"{\"foo\":[1,2,\"\",3]}"
-;
-
-static XMLWarningInfo gXMLWarnings19_1[] =
-{
-  {0,",3", 2, 12},
-  {0,"\"foo\"", 2, 1},
-  {0,"{", 1, 1},
-  {
-    zsLib::XML::ParserWarningType_UnexpectedComma,
-    "Parser did not expect a \",\" comma\n"
-    "@ row=2 column=12: ,3] }\n"
-    "@ row=2 column=1: \"foo\":[1,2,,3] }\n"
-    "@ row=1 column=1: { \"foo\":[1,2,,3] }"
-    ,0,0},
-  {0,NULL, 0, 0}
-};
-
-
-static XMLWarningInfo *gXMLWarnings19Array[] =
-{
-  gXMLWarnings19_1,
-  NULL
-};
-
-
-static XMLResultInfo gXMLResults19 =
-{
-  gJSON19Input,
-  gXML19Output,
-  gJSON19Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings19Array
-};
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-static const char *gJSON20Input =
-"[\n"
-"\"hello\",\n"
-"{ \"goodbye\": \"foo\" }\n"
-"]";
-
-static const char *gXML20Output =
-"<unknown>hello</unknown><unknown><goodbye>foo</goodbye></unknown>";
-
-static const char *gJSON20Output =
-"[\"hello\",{\"goodbye\":\"foo\"}]"
-;
-
-static XMLWarningInfo *gXMLWarnings20Array[] =
-{NULL};
-
-static XMLResultInfo gXMLResults20 =
-{
-  gJSON20Input,
-  gXML20Output,
-  gJSON20Output,
-  0,
-  NULL,
-  true,
-  true,
-  false,
-  gXMLWarnings20Array
-};
-
+    get_gJSON20Input(),
+    get_gXML20Output(),
+    get_gJSON20Output(),
+    0,
+    NULL,
+    true,
+    true,
+    false,
+    get_gXMLWarnings20Array()
+  };
+  return gXMLResults20;
+}
 
 
 class TestXML
@@ -1680,26 +2255,26 @@ public:
 
   TestXML()
   {
-    parse(gXMLResults1);
-    parse(gXMLResults2);
-    parse(gXMLResults3);
-    parse(gXMLResults4);
-    parse(gXMLResults5);
-    parse(gXMLResults6);
-    parse(gXMLResults7);
-    parse(gXMLResults8);
-    parse(gXMLResults9);
-    parse(gXMLResults10);
-    parse(gXMLResults11);
-    parse(gXMLResults12);
-    parse(gXMLResults13);
-    parse(gXMLResults14);
-    parse(gXMLResults15);
-    parse(gXMLResults16);
-    parse(gXMLResults17);
-    parse(gXMLResults18);
-    parse(gXMLResults19);
-    parse(gXMLResults20);
+    parse(get_gXMLResults1());
+    parse(get_gXMLResults2());
+    parse(get_gXMLResults3());
+    parse(get_gXMLResults4());
+    parse(get_gXMLResults5());
+    parse(get_gXMLResults6());
+    parse(get_gXMLResults7());
+    parse(get_gXMLResults8());
+    parse(get_gXMLResults9());
+    parse(get_gXMLResults10());
+    parse(get_gXMLResults11());
+    parse(get_gXMLResults12());
+    parse(get_gXMLResults13());
+    parse(get_gXMLResults14());
+    parse(get_gXMLResults15());
+    parse(get_gXMLResults16());
+    parse(get_gXMLResults17());
+    parse(get_gXMLResults18());
+    parse(get_gXMLResults19());
+    parse(get_gXMLResults20());
     generate();
     parserPosTest();
     {int i = 0; ++i;}

@@ -33,7 +33,7 @@
 #include <zsLib/Exception.h>
 #include <zsLib/Numeric.h>
 
-namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
+//namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 #define ZS_INTERNAL_STACK_BUFFER_PADDING_SPACE 1024
 

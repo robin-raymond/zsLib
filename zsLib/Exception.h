@@ -86,15 +86,20 @@ namespace zsLib
   };
 }
 
-#define ZS_DECLARE_CUSTOM_EXCEPTION(xObject)                                                            ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION(xObject)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)                                            ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)                  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)          ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)
-#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)
+#define ZS_DECLARE_CUSTOM_EXCEPTION(xObject)                                                                    ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION(xObject)
+
+#define ZS_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_1(xObject, xType1, xName1)                                  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_1(xObject, xType1, xName1)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_2(xObject, xType1, xName1, xType2, xName2)                  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_2(xObject, xType1, xName1, xType2, xName2)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_3(xObject, xType1, xName1, xType2, xName2, xType3, xName3)  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_WITH_PROPERTIES_2(xObject, xType1, xName1, xType2, xName2, xType3, xName3)
+
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)                                                    ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE(xObject, xBase)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)                          ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_1(xObject, xBase, xType1)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)                  ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_2(xObject, xBase, xType1, xType2)
+#define ZS_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)          ZS_INTERNAL_DECLARE_CUSTOM_EXCEPTION_ALT_BASE_WITH_PROPERTIES_3(xObject, xBase, xType1, xType2, xType3)
 
 namespace zsLib
 {
-  struct Exceptions
+  namespace Exceptions
   {
     ZS_DECLARE_CUSTOM_EXCEPTION(InvalidArgument)
     ZS_DECLARE_CUSTOM_EXCEPTION(BadState)

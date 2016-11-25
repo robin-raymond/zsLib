@@ -87,9 +87,36 @@ namespace Testing
     }
   }
 
+  class SetupInitializer
+  {
+  public:
+    SetupInitializer()
+    {
+    }
+
+    ~SetupInitializer()
+    {
+      output();
+    }
+
+  private:
+    zsLib::SingletonManager::Initializer mInit;
+  };
+
+  static SetupInitializer &setupInitializer()
+  {
+    static SetupInitializer init;
+    return init;
+  }
+
+  void setup()
+  {
+    setupInitializer();
+  }
+
   void runAllTests()
   {
-    zsLib::SingletonManager::Initializer init;
+    setup();
 
     TESTING_RUN_TEST_CASE(testIPAddress)
     TESTING_RUN_TEST_CASE(testNumeric)

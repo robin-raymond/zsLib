@@ -161,10 +161,12 @@ namespace zsLib
       #pragma mark
 
       //-----------------------------------------------------------------------
+#if 0
       static Log::Params slog(const char *message)
       {
         return Log::Params(message, "Generator");
       }
+#endif //0
 
       //-------------------------------------------------------------------------
       static bool objectObjectCheck(const NodePtr &onlyThisNode)

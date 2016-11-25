@@ -40,9 +40,9 @@
 #include <objbase.h>
 #endif //_WIN32
 
-#ifdef WINRT
+#ifdef _WIN32
 #include <assert.h>
-#endif
+#endif //_WIN32
 
 namespace zsLib
 {
@@ -192,6 +192,14 @@ namespace zsLib
 
   template<>
   inline Stringize<double>::operator String() const
+  {
+    std::string result = std::to_string(mValue);
+    internal::trimTrailingZeros(result);
+    return result;
+  }
+
+  template<>
+  inline Stringize<long double>::operator String() const
   {
     std::string result = std::to_string(mValue);
     internal::trimTrailingZeros(result);

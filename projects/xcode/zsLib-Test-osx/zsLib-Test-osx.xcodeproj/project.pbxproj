@@ -1,0 +1,383 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0067EFC81D9C5D50003BE1AC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF821D9C5D50003BE1AC /* main.cpp */; };
+		0067EFC91D9C5D50003BE1AC /* TestHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF841D9C5D50003BE1AC /* TestHelper.cpp */; };
+		0067EFCA1D9C5D50003BE1AC /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF851D9C5D50003BE1AC /* testing.cpp */; };
+		0067EFCB1D9C5D50003BE1AC /* TestIPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF871D9C5D50003BE1AC /* TestIPAddress.cpp */; };
+		0067EFCC1D9C5D50003BE1AC /* TestNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF881D9C5D50003BE1AC /* TestNumeric.cpp */; };
+		0067EFCD1D9C5D50003BE1AC /* TestPromise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF891D9C5D50003BE1AC /* TestPromise.cpp */; };
+		0067EFCE1D9C5D50003BE1AC /* TestProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF8A1D9C5D50003BE1AC /* TestProxy.cpp */; };
+		0067EFCF1D9C5D50003BE1AC /* TestProxyUsingGUIThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF8B1D9C5D50003BE1AC /* TestProxyUsingGUIThread.cpp */; };
+		0067EFD01D9C5D50003BE1AC /* TestSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF8C1D9C5D50003BE1AC /* TestSocket.cpp */; };
+		0067EFD11D9C5D50003BE1AC /* TestSocketAsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF8D1D9C5D50003BE1AC /* TestSocketAsync.cpp */; };
+		0067EFD21D9C5D50003BE1AC /* TestString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF8E1D9C5D50003BE1AC /* TestString.cpp */; };
+		0067EFD31D9C5D50003BE1AC /* TestStringize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF8F1D9C5D50003BE1AC /* TestStringize.cpp */; };
+		0067EFD41D9C5D50003BE1AC /* TestTearAway.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF901D9C5D50003BE1AC /* TestTearAway.cpp */; };
+		0067EFD51D9C5D50003BE1AC /* TestTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF911D9C5D50003BE1AC /* TestTimer.cpp */; };
+		0067EFD61D9C5D50003BE1AC /* TestXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067EF921D9C5D50003BE1AC /* TestXML.cpp */; };
+		0067EFE51D9C5E91003BE1AC /* libzsLib-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0067EFE21D9C5E36003BE1AC /* libzsLib-osx.a */; };
+		0067EFE81D9C5EE8003BE1AC /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0067EFE71D9C5EE8003BE1AC /* CoreFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0067EFE11D9C5E36003BE1AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0067EFDD1D9C5E36003BE1AC /* zsLib-osx.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 00FF086F1D9C1B2300462998;
+			remoteInfo = "zsLib-osx";
+		};
+		0067EFE31D9C5E71003BE1AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0067EFDD1D9C5E36003BE1AC /* zsLib-osx.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FF086E1D9C1B2300462998;
+			remoteInfo = "zsLib-osx";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0067EECF1D9C5D23003BE1AC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0067EED11D9C5D23003BE1AC /* zsLib-Test-osx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "zsLib-Test-osx"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0067EF821D9C5D50003BE1AC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		0067EF831D9C5D50003BE1AC /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		0067EF841D9C5D50003BE1AC /* TestHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestHelper.cpp; sourceTree = "<group>"; };
+		0067EF851D9C5D50003BE1AC /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
+		0067EF861D9C5D50003BE1AC /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
+		0067EF871D9C5D50003BE1AC /* TestIPAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestIPAddress.cpp; sourceTree = "<group>"; };
+		0067EF881D9C5D50003BE1AC /* TestNumeric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestNumeric.cpp; sourceTree = "<group>"; };
+		0067EF891D9C5D50003BE1AC /* TestPromise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPromise.cpp; sourceTree = "<group>"; };
+		0067EF8A1D9C5D50003BE1AC /* TestProxy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestProxy.cpp; sourceTree = "<group>"; };
+		0067EF8B1D9C5D50003BE1AC /* TestProxyUsingGUIThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestProxyUsingGUIThread.cpp; sourceTree = "<group>"; };
+		0067EF8C1D9C5D50003BE1AC /* TestSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSocket.cpp; sourceTree = "<group>"; };
+		0067EF8D1D9C5D50003BE1AC /* TestSocketAsync.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSocketAsync.cpp; sourceTree = "<group>"; };
+		0067EF8E1D9C5D50003BE1AC /* TestString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestString.cpp; sourceTree = "<group>"; };
+		0067EF8F1D9C5D50003BE1AC /* TestStringize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestStringize.cpp; sourceTree = "<group>"; };
+		0067EF901D9C5D50003BE1AC /* TestTearAway.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTearAway.cpp; sourceTree = "<group>"; };
+		0067EF911D9C5D50003BE1AC /* TestTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTimer.cpp; sourceTree = "<group>"; };
+		0067EF921D9C5D50003BE1AC /* TestXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestXML.cpp; sourceTree = "<group>"; };
+		0067EFDD1D9C5E36003BE1AC /* zsLib-osx.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "zsLib-osx.xcodeproj"; path = "../zsLib-osx/zsLib-osx.xcodeproj"; sourceTree = "<group>"; };
+		0067EFE71D9C5EE8003BE1AC /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0067EECE1D9C5D23003BE1AC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067EFE81D9C5EE8003BE1AC /* CoreFoundation.framework in Frameworks */,
+				0067EFE51D9C5E91003BE1AC /* libzsLib-osx.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0067EEC81D9C5D23003BE1AC = {
+			isa = PBXGroup;
+			children = (
+				0067EFDD1D9C5E36003BE1AC /* zsLib-osx.xcodeproj */,
+				0067EF811D9C5D50003BE1AC /* zsLibTest */,
+				0067EED21D9C5D23003BE1AC /* Products */,
+				0067EFE61D9C5EE8003BE1AC /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		0067EED21D9C5D23003BE1AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0067EED11D9C5D23003BE1AC /* zsLib-Test-osx */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0067EF811D9C5D50003BE1AC /* zsLibTest */ = {
+			isa = PBXGroup;
+			children = (
+				0067EF821D9C5D50003BE1AC /* main.cpp */,
+				0067EF831D9C5D50003BE1AC /* main.h */,
+				0067EF841D9C5D50003BE1AC /* TestHelper.cpp */,
+				0067EF851D9C5D50003BE1AC /* testing.cpp */,
+				0067EF861D9C5D50003BE1AC /* testing.h */,
+				0067EF871D9C5D50003BE1AC /* TestIPAddress.cpp */,
+				0067EF881D9C5D50003BE1AC /* TestNumeric.cpp */,
+				0067EF891D9C5D50003BE1AC /* TestPromise.cpp */,
+				0067EF8A1D9C5D50003BE1AC /* TestProxy.cpp */,
+				0067EF8B1D9C5D50003BE1AC /* TestProxyUsingGUIThread.cpp */,
+				0067EF8C1D9C5D50003BE1AC /* TestSocket.cpp */,
+				0067EF8D1D9C5D50003BE1AC /* TestSocketAsync.cpp */,
+				0067EF8E1D9C5D50003BE1AC /* TestString.cpp */,
+				0067EF8F1D9C5D50003BE1AC /* TestStringize.cpp */,
+				0067EF901D9C5D50003BE1AC /* TestTearAway.cpp */,
+				0067EF911D9C5D50003BE1AC /* TestTimer.cpp */,
+				0067EF921D9C5D50003BE1AC /* TestXML.cpp */,
+			);
+			name = zsLibTest;
+			path = ../../../zsLibTest;
+			sourceTree = "<group>";
+		};
+		0067EFDE1D9C5E36003BE1AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0067EFE21D9C5E36003BE1AC /* libzsLib-osx.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0067EFE61D9C5EE8003BE1AC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0067EFE71D9C5EE8003BE1AC /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0067EED01D9C5D23003BE1AC /* zsLib-Test-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0067EED81D9C5D23003BE1AC /* Build configuration list for PBXNativeTarget "zsLib-Test-osx" */;
+			buildPhases = (
+				0067EECD1D9C5D23003BE1AC /* Sources */,
+				0067EECE1D9C5D23003BE1AC /* Frameworks */,
+				0067EECF1D9C5D23003BE1AC /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0067EFE41D9C5E71003BE1AC /* PBXTargetDependency */,
+			);
+			name = "zsLib-Test-osx";
+			productName = "zsLib-Test-osx";
+			productReference = 0067EED11D9C5D23003BE1AC /* zsLib-Test-osx */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0067EEC91D9C5D23003BE1AC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Robin Raymond";
+				TargetAttributes = {
+					0067EED01D9C5D23003BE1AC = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 0067EECC1D9C5D23003BE1AC /* Build configuration list for PBXProject "zsLib-Test-osx" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0067EEC81D9C5D23003BE1AC;
+			productRefGroup = 0067EED21D9C5D23003BE1AC /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0067EFDE1D9C5E36003BE1AC /* Products */;
+					ProjectRef = 0067EFDD1D9C5E36003BE1AC /* zsLib-osx.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				0067EED01D9C5D23003BE1AC /* zsLib-Test-osx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		0067EFE21D9C5E36003BE1AC /* libzsLib-osx.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libzsLib-osx.a";
+			remoteRef = 0067EFE11D9C5E36003BE1AC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0067EECD1D9C5D23003BE1AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067EFCD1D9C5D50003BE1AC /* TestPromise.cpp in Sources */,
+				0067EFC81D9C5D50003BE1AC /* main.cpp in Sources */,
+				0067EFCA1D9C5D50003BE1AC /* testing.cpp in Sources */,
+				0067EFCF1D9C5D50003BE1AC /* TestProxyUsingGUIThread.cpp in Sources */,
+				0067EFD21D9C5D50003BE1AC /* TestString.cpp in Sources */,
+				0067EFD51D9C5D50003BE1AC /* TestTimer.cpp in Sources */,
+				0067EFCB1D9C5D50003BE1AC /* TestIPAddress.cpp in Sources */,
+				0067EFD31D9C5D50003BE1AC /* TestStringize.cpp in Sources */,
+				0067EFC91D9C5D50003BE1AC /* TestHelper.cpp in Sources */,
+				0067EFD11D9C5D50003BE1AC /* TestSocketAsync.cpp in Sources */,
+				0067EFD01D9C5D50003BE1AC /* TestSocket.cpp in Sources */,
+				0067EFCE1D9C5D50003BE1AC /* TestProxy.cpp in Sources */,
+				0067EFD61D9C5D50003BE1AC /* TestXML.cpp in Sources */,
+				0067EFD41D9C5D50003BE1AC /* TestTearAway.cpp in Sources */,
+				0067EFCC1D9C5D50003BE1AC /* TestNumeric.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0067EFE41D9C5E71003BE1AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "zsLib-osx";
+			targetProxy = 0067EFE31D9C5E71003BE1AC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0067EED61D9C5D23003BE1AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../..;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0067EED71D9C5D23003BE1AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../..;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0067EED91D9C5D23003BE1AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0067EEDA1D9C5D23003BE1AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0067EECC1D9C5D23003BE1AC /* Build configuration list for PBXProject "zsLib-Test-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0067EED61D9C5D23003BE1AC /* Debug */,
+				0067EED71D9C5D23003BE1AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0067EED81D9C5D23003BE1AC /* Build configuration list for PBXNativeTarget "zsLib-Test-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0067EED91D9C5D23003BE1AC /* Debug */,
+				0067EEDA1D9C5D23003BE1AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0067EEC91D9C5D23003BE1AC /* Project object */;
+}

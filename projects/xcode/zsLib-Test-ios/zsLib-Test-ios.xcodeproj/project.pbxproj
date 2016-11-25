@@ -1,0 +1,592 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0067F0701D9C632E003BE1AC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0067F06F1D9C632E003BE1AC /* AppDelegate.m */; };
+		0067F0731D9C632E003BE1AC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0721D9C632E003BE1AC /* ViewController.m */; };
+		0067F0761D9C632E003BE1AC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0067F0741D9C632E003BE1AC /* Main.storyboard */; };
+		0067F0781D9C632E003BE1AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0067F0771D9C632E003BE1AC /* Assets.xcassets */; };
+		0067F07B1D9C632E003BE1AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0067F0791D9C632E003BE1AC /* LaunchScreen.storyboard */; };
+		0067F0861D9C632E003BE1AC /* zsLib_Test_iosTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0851D9C632E003BE1AC /* zsLib_Test_iosTests.mm */; };
+		0067F0961D9C6397003BE1AC /* libzsLib-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0067F0951D9C6376003BE1AC /* libzsLib-ios.a */; };
+		0067F0991D9C99CF003BE1AC /* libzsLib-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0067F0951D9C6376003BE1AC /* libzsLib-ios.a */; };
+		0067F0AE1D9C9B6A003BE1AC /* TestHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F09D1D9C9B6A003BE1AC /* TestHelper.cpp */; };
+		0067F0AF1D9C9B6A003BE1AC /* TestHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F09D1D9C9B6A003BE1AC /* TestHelper.cpp */; };
+		0067F0B01D9C9B6A003BE1AC /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F09E1D9C9B6A003BE1AC /* testing.cpp */; };
+		0067F0B11D9C9B6A003BE1AC /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F09E1D9C9B6A003BE1AC /* testing.cpp */; };
+		0067F0B21D9C9B6A003BE1AC /* TestIPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A01D9C9B6A003BE1AC /* TestIPAddress.cpp */; };
+		0067F0B31D9C9B6A003BE1AC /* TestIPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A01D9C9B6A003BE1AC /* TestIPAddress.cpp */; };
+		0067F0B41D9C9B6A003BE1AC /* TestNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A11D9C9B6A003BE1AC /* TestNumeric.cpp */; };
+		0067F0B51D9C9B6A003BE1AC /* TestNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A11D9C9B6A003BE1AC /* TestNumeric.cpp */; };
+		0067F0B61D9C9B6A003BE1AC /* TestPromise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A21D9C9B6A003BE1AC /* TestPromise.cpp */; };
+		0067F0B71D9C9B6A003BE1AC /* TestPromise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A21D9C9B6A003BE1AC /* TestPromise.cpp */; };
+		0067F0B81D9C9B6A003BE1AC /* TestProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A31D9C9B6A003BE1AC /* TestProxy.cpp */; };
+		0067F0B91D9C9B6A003BE1AC /* TestProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A31D9C9B6A003BE1AC /* TestProxy.cpp */; };
+		0067F0BA1D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A41D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp */; };
+		0067F0BB1D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A41D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp */; };
+		0067F0BC1D9C9B6A003BE1AC /* TestSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A51D9C9B6A003BE1AC /* TestSocket.cpp */; };
+		0067F0BD1D9C9B6A003BE1AC /* TestSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A51D9C9B6A003BE1AC /* TestSocket.cpp */; };
+		0067F0BE1D9C9B6A003BE1AC /* TestSocketAsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A61D9C9B6A003BE1AC /* TestSocketAsync.cpp */; };
+		0067F0BF1D9C9B6A003BE1AC /* TestSocketAsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A61D9C9B6A003BE1AC /* TestSocketAsync.cpp */; };
+		0067F0C01D9C9B6A003BE1AC /* TestString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A71D9C9B6A003BE1AC /* TestString.cpp */; };
+		0067F0C11D9C9B6A003BE1AC /* TestString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A71D9C9B6A003BE1AC /* TestString.cpp */; };
+		0067F0C21D9C9B6A003BE1AC /* TestStringize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A81D9C9B6A003BE1AC /* TestStringize.cpp */; };
+		0067F0C31D9C9B6A003BE1AC /* TestStringize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A81D9C9B6A003BE1AC /* TestStringize.cpp */; };
+		0067F0C41D9C9B6A003BE1AC /* TestTearAway.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A91D9C9B6A003BE1AC /* TestTearAway.cpp */; };
+		0067F0C51D9C9B6A003BE1AC /* TestTearAway.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0A91D9C9B6A003BE1AC /* TestTearAway.cpp */; };
+		0067F0C61D9C9B6A003BE1AC /* TestTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0AA1D9C9B6A003BE1AC /* TestTimer.cpp */; };
+		0067F0C71D9C9B6A003BE1AC /* TestTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0AA1D9C9B6A003BE1AC /* TestTimer.cpp */; };
+		0067F0C81D9C9B6A003BE1AC /* TestXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0AB1D9C9B6A003BE1AC /* TestXML.cpp */; };
+		0067F0C91D9C9B6A003BE1AC /* TestXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0067F0AB1D9C9B6A003BE1AC /* TestXML.cpp */; };
+		0067F0CA1D9C9BDD003BE1AC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0067F06C1D9C632E003BE1AC /* main.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0067F0821D9C632E003BE1AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0067F0601D9C632E003BE1AC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0067F0671D9C632E003BE1AC;
+			remoteInfo = "zsLib-Test-ios";
+		};
+		0067F0941D9C6376003BE1AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0067F0901D9C6375003BE1AC /* zsLib-ios.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0067EE151D9C5B4E003BE1AC;
+			remoteInfo = "zsLib-ios";
+		};
+		0067F0971D9C99CA003BE1AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0067F0901D9C6375003BE1AC /* zsLib-ios.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 0067EE141D9C5B4E003BE1AC;
+			remoteInfo = "zsLib-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0067F0681D9C632E003BE1AC /* zsLib-Test-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "zsLib-Test-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0067F06C1D9C632E003BE1AC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0067F06E1D9C632E003BE1AC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		0067F06F1D9C632E003BE1AC /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		0067F0711D9C632E003BE1AC /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		0067F0721D9C632E003BE1AC /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		0067F0751D9C632E003BE1AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		0067F0771D9C632E003BE1AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0067F07A1D9C632E003BE1AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		0067F07C1D9C632E003BE1AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0067F0811D9C632E003BE1AC /* zsLib-Test-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "zsLib-Test-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0067F0851D9C632E003BE1AC /* zsLib_Test_iosTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = zsLib_Test_iosTests.mm; sourceTree = "<group>"; };
+		0067F0871D9C632E003BE1AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0067F0901D9C6375003BE1AC /* zsLib-ios.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "zsLib-ios.xcodeproj"; path = "../zsLib-ios/zsLib-ios.xcodeproj"; sourceTree = "<group>"; };
+		0067F09B1D9C9B6A003BE1AC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		0067F09C1D9C9B6A003BE1AC /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		0067F09D1D9C9B6A003BE1AC /* TestHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestHelper.cpp; sourceTree = "<group>"; };
+		0067F09E1D9C9B6A003BE1AC /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
+		0067F09F1D9C9B6A003BE1AC /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
+		0067F0A01D9C9B6A003BE1AC /* TestIPAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestIPAddress.cpp; sourceTree = "<group>"; };
+		0067F0A11D9C9B6A003BE1AC /* TestNumeric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestNumeric.cpp; sourceTree = "<group>"; };
+		0067F0A21D9C9B6A003BE1AC /* TestPromise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPromise.cpp; sourceTree = "<group>"; };
+		0067F0A31D9C9B6A003BE1AC /* TestProxy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestProxy.cpp; sourceTree = "<group>"; };
+		0067F0A41D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestProxyUsingGUIThread.cpp; sourceTree = "<group>"; };
+		0067F0A51D9C9B6A003BE1AC /* TestSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSocket.cpp; sourceTree = "<group>"; };
+		0067F0A61D9C9B6A003BE1AC /* TestSocketAsync.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSocketAsync.cpp; sourceTree = "<group>"; };
+		0067F0A71D9C9B6A003BE1AC /* TestString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestString.cpp; sourceTree = "<group>"; };
+		0067F0A81D9C9B6A003BE1AC /* TestStringize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestStringize.cpp; sourceTree = "<group>"; };
+		0067F0A91D9C9B6A003BE1AC /* TestTearAway.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTearAway.cpp; sourceTree = "<group>"; };
+		0067F0AA1D9C9B6A003BE1AC /* TestTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTimer.cpp; sourceTree = "<group>"; };
+		0067F0AB1D9C9B6A003BE1AC /* TestXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestXML.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0067F0651D9C632E003BE1AC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067F0991D9C99CF003BE1AC /* libzsLib-ios.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0067F07E1D9C632E003BE1AC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067F0961D9C6397003BE1AC /* libzsLib-ios.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0067F05F1D9C632E003BE1AC = {
+			isa = PBXGroup;
+			children = (
+				0067F0901D9C6375003BE1AC /* zsLib-ios.xcodeproj */,
+				0067F09A1D9C9B6A003BE1AC /* zsLibTest */,
+				0067F06A1D9C632E003BE1AC /* zsLib-Test-ios */,
+				0067F0841D9C632E003BE1AC /* zsLib-Test-iosTests */,
+				0067F0691D9C632E003BE1AC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0067F0691D9C632E003BE1AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0067F0681D9C632E003BE1AC /* zsLib-Test-ios.app */,
+				0067F0811D9C632E003BE1AC /* zsLib-Test-iosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0067F06A1D9C632E003BE1AC /* zsLib-Test-ios */ = {
+			isa = PBXGroup;
+			children = (
+				0067F06E1D9C632E003BE1AC /* AppDelegate.h */,
+				0067F06F1D9C632E003BE1AC /* AppDelegate.m */,
+				0067F0711D9C632E003BE1AC /* ViewController.h */,
+				0067F0721D9C632E003BE1AC /* ViewController.m */,
+				0067F0741D9C632E003BE1AC /* Main.storyboard */,
+				0067F0771D9C632E003BE1AC /* Assets.xcassets */,
+				0067F0791D9C632E003BE1AC /* LaunchScreen.storyboard */,
+				0067F07C1D9C632E003BE1AC /* Info.plist */,
+				0067F06B1D9C632E003BE1AC /* Supporting Files */,
+			);
+			path = "zsLib-Test-ios";
+			sourceTree = "<group>";
+		};
+		0067F06B1D9C632E003BE1AC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0067F06C1D9C632E003BE1AC /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0067F0841D9C632E003BE1AC /* zsLib-Test-iosTests */ = {
+			isa = PBXGroup;
+			children = (
+				0067F0851D9C632E003BE1AC /* zsLib_Test_iosTests.mm */,
+				0067F0871D9C632E003BE1AC /* Info.plist */,
+			);
+			path = "zsLib-Test-iosTests";
+			sourceTree = "<group>";
+		};
+		0067F0911D9C6375003BE1AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0067F0951D9C6376003BE1AC /* libzsLib-ios.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0067F09A1D9C9B6A003BE1AC /* zsLibTest */ = {
+			isa = PBXGroup;
+			children = (
+				0067F09B1D9C9B6A003BE1AC /* main.cpp */,
+				0067F09C1D9C9B6A003BE1AC /* main.h */,
+				0067F09D1D9C9B6A003BE1AC /* TestHelper.cpp */,
+				0067F09E1D9C9B6A003BE1AC /* testing.cpp */,
+				0067F09F1D9C9B6A003BE1AC /* testing.h */,
+				0067F0A01D9C9B6A003BE1AC /* TestIPAddress.cpp */,
+				0067F0A11D9C9B6A003BE1AC /* TestNumeric.cpp */,
+				0067F0A21D9C9B6A003BE1AC /* TestPromise.cpp */,
+				0067F0A31D9C9B6A003BE1AC /* TestProxy.cpp */,
+				0067F0A41D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp */,
+				0067F0A51D9C9B6A003BE1AC /* TestSocket.cpp */,
+				0067F0A61D9C9B6A003BE1AC /* TestSocketAsync.cpp */,
+				0067F0A71D9C9B6A003BE1AC /* TestString.cpp */,
+				0067F0A81D9C9B6A003BE1AC /* TestStringize.cpp */,
+				0067F0A91D9C9B6A003BE1AC /* TestTearAway.cpp */,
+				0067F0AA1D9C9B6A003BE1AC /* TestTimer.cpp */,
+				0067F0AB1D9C9B6A003BE1AC /* TestXML.cpp */,
+			);
+			name = zsLibTest;
+			path = ../../../zsLibTest;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0067F0671D9C632E003BE1AC /* zsLib-Test-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0067F08A1D9C632E003BE1AC /* Build configuration list for PBXNativeTarget "zsLib-Test-ios" */;
+			buildPhases = (
+				0067F0641D9C632E003BE1AC /* Sources */,
+				0067F0651D9C632E003BE1AC /* Frameworks */,
+				0067F0661D9C632E003BE1AC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0067F0981D9C99CA003BE1AC /* PBXTargetDependency */,
+			);
+			name = "zsLib-Test-ios";
+			productName = "zsLib-Test-ios";
+			productReference = 0067F0681D9C632E003BE1AC /* zsLib-Test-ios.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0067F0801D9C632E003BE1AC /* zsLib-Test-iosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0067F08D1D9C632E003BE1AC /* Build configuration list for PBXNativeTarget "zsLib-Test-iosTests" */;
+			buildPhases = (
+				0067F07D1D9C632E003BE1AC /* Sources */,
+				0067F07E1D9C632E003BE1AC /* Frameworks */,
+				0067F07F1D9C632E003BE1AC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0067F0831D9C632E003BE1AC /* PBXTargetDependency */,
+			);
+			name = "zsLib-Test-iosTests";
+			productName = "zsLib-Test-iosTests";
+			productReference = 0067F0811D9C632E003BE1AC /* zsLib-Test-iosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0067F0601D9C632E003BE1AC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Robin Raymond";
+				TargetAttributes = {
+					0067F0671D9C632E003BE1AC = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = Y9HPRG2XY4;
+						ProvisioningStyle = Automatic;
+					};
+					0067F0801D9C632E003BE1AC = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = Y9HPRG2XY4;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 0067F0671D9C632E003BE1AC;
+					};
+				};
+			};
+			buildConfigurationList = 0067F0631D9C632E003BE1AC /* Build configuration list for PBXProject "zsLib-Test-ios" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0067F05F1D9C632E003BE1AC;
+			productRefGroup = 0067F0691D9C632E003BE1AC /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0067F0911D9C6375003BE1AC /* Products */;
+					ProjectRef = 0067F0901D9C6375003BE1AC /* zsLib-ios.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				0067F0671D9C632E003BE1AC /* zsLib-Test-ios */,
+				0067F0801D9C632E003BE1AC /* zsLib-Test-iosTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		0067F0951D9C6376003BE1AC /* libzsLib-ios.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libzsLib-ios.a";
+			remoteRef = 0067F0941D9C6376003BE1AC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0067F0661D9C632E003BE1AC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067F07B1D9C632E003BE1AC /* LaunchScreen.storyboard in Resources */,
+				0067F0781D9C632E003BE1AC /* Assets.xcassets in Resources */,
+				0067F0761D9C632E003BE1AC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0067F07F1D9C632E003BE1AC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0067F0641D9C632E003BE1AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067F0CA1D9C9BDD003BE1AC /* main.m in Sources */,
+				0067F0B61D9C9B6A003BE1AC /* TestPromise.cpp in Sources */,
+				0067F0731D9C632E003BE1AC /* ViewController.m in Sources */,
+				0067F0B81D9C9B6A003BE1AC /* TestProxy.cpp in Sources */,
+				0067F0701D9C632E003BE1AC /* AppDelegate.m in Sources */,
+				0067F0C01D9C9B6A003BE1AC /* TestString.cpp in Sources */,
+				0067F0C81D9C9B6A003BE1AC /* TestXML.cpp in Sources */,
+				0067F0B01D9C9B6A003BE1AC /* testing.cpp in Sources */,
+				0067F0BE1D9C9B6A003BE1AC /* TestSocketAsync.cpp in Sources */,
+				0067F0B41D9C9B6A003BE1AC /* TestNumeric.cpp in Sources */,
+				0067F0B21D9C9B6A003BE1AC /* TestIPAddress.cpp in Sources */,
+				0067F0BC1D9C9B6A003BE1AC /* TestSocket.cpp in Sources */,
+				0067F0BA1D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp in Sources */,
+				0067F0AE1D9C9B6A003BE1AC /* TestHelper.cpp in Sources */,
+				0067F0C21D9C9B6A003BE1AC /* TestStringize.cpp in Sources */,
+				0067F0C41D9C9B6A003BE1AC /* TestTearAway.cpp in Sources */,
+				0067F0C61D9C9B6A003BE1AC /* TestTimer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0067F07D1D9C632E003BE1AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0067F0861D9C632E003BE1AC /* zsLib_Test_iosTests.mm in Sources */,
+				0067F0B91D9C9B6A003BE1AC /* TestProxy.cpp in Sources */,
+				0067F0BD1D9C9B6A003BE1AC /* TestSocket.cpp in Sources */,
+				0067F0B51D9C9B6A003BE1AC /* TestNumeric.cpp in Sources */,
+				0067F0B71D9C9B6A003BE1AC /* TestPromise.cpp in Sources */,
+				0067F0C11D9C9B6A003BE1AC /* TestString.cpp in Sources */,
+				0067F0C71D9C9B6A003BE1AC /* TestTimer.cpp in Sources */,
+				0067F0B31D9C9B6A003BE1AC /* TestIPAddress.cpp in Sources */,
+				0067F0C31D9C9B6A003BE1AC /* TestStringize.cpp in Sources */,
+				0067F0C51D9C9B6A003BE1AC /* TestTearAway.cpp in Sources */,
+				0067F0BB1D9C9B6A003BE1AC /* TestProxyUsingGUIThread.cpp in Sources */,
+				0067F0B11D9C9B6A003BE1AC /* testing.cpp in Sources */,
+				0067F0C91D9C9B6A003BE1AC /* TestXML.cpp in Sources */,
+				0067F0AF1D9C9B6A003BE1AC /* TestHelper.cpp in Sources */,
+				0067F0BF1D9C9B6A003BE1AC /* TestSocketAsync.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0067F0831D9C632E003BE1AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0067F0671D9C632E003BE1AC /* zsLib-Test-ios */;
+			targetProxy = 0067F0821D9C632E003BE1AC /* PBXContainerItemProxy */;
+		};
+		0067F0981D9C99CA003BE1AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "zsLib-ios";
+			targetProxy = 0067F0971D9C99CA003BE1AC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		0067F0741D9C632E003BE1AC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0067F0751D9C632E003BE1AC /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		0067F0791D9C632E003BE1AC /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0067F07A1D9C632E003BE1AC /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0067F0881D9C632E003BE1AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../..,
+					../../../zsLibTest,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0067F0891D9C632E003BE1AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../..,
+					../../../zsLibTest,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0067F08B1D9C632E003BE1AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = Y9HPRG2XY4;
+				INFOPLIST_FILE = "zsLib-Test-ios/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.robinraymond.zsLib-Test-ios";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0067F08C1D9C632E003BE1AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = Y9HPRG2XY4;
+				INFOPLIST_FILE = "zsLib-Test-ios/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.robinraymond.zsLib-Test-ios";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		0067F08E1D9C632E003BE1AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y9HPRG2XY4;
+				INFOPLIST_FILE = "zsLib-Test-iosTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.robinraymond.zsLib-Test-iosTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/zsLib-Test-ios.app/zsLib-Test-ios";
+			};
+			name = Debug;
+		};
+		0067F08F1D9C632E003BE1AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y9HPRG2XY4;
+				INFOPLIST_FILE = "zsLib-Test-iosTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.robinraymond.zsLib-Test-iosTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/zsLib-Test-ios.app/zsLib-Test-ios";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0067F0631D9C632E003BE1AC /* Build configuration list for PBXProject "zsLib-Test-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0067F0881D9C632E003BE1AC /* Debug */,
+				0067F0891D9C632E003BE1AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0067F08A1D9C632E003BE1AC /* Build configuration list for PBXNativeTarget "zsLib-Test-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0067F08B1D9C632E003BE1AC /* Debug */,
+				0067F08C1D9C632E003BE1AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0067F08D1D9C632E003BE1AC /* Build configuration list for PBXNativeTarget "zsLib-Test-iosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0067F08E1D9C632E003BE1AC /* Debug */,
+				0067F08F1D9C632E003BE1AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0067F0601D9C632E003BE1AC /* Project object */;
+}

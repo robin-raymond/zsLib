@@ -37,7 +37,7 @@
 
 #define ZS_INTERNAL_UTF8_MAX_CHARACTER_ENCODED_BYTE_SIZE (sizeof(BYTE)*6)
 
-namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
+//namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 using namespace std;
 
@@ -98,6 +98,16 @@ namespace zsLib
 
   String::String(CWSTR value) : std::string(internal::convertToString(value))
   {
+  }
+
+  String::String(CSTR value, size_t length) : std::string(value ? value : static_cast<const char *>(NULL), length)
+  {
+  }
+
+  String::String(CWSTR value, size_t length)
+  {
+    std::wstring temp(value, length);
+    (*this) = String(temp);
   }
 
   String::String(const std::string &value) : std::string(value)
@@ -551,6 +561,7 @@ namespace zsLib
 #define ZS_INTERNAL_UTF8_OTHER_DIGITS_MASK         0xC0
 #define ZS_INTERNAL_UTF8_OTHER_DIGITS_INDICATOR    0x80
 
+#if 0
     static UTF32 utf8ToUTF32Reverse(CSTR &ioUTF8, CSTR inStartPos)
     {
       ZS_THROW_INVALID_USAGE_IF(ioUTF8 < inStartPos)
@@ -586,6 +597,7 @@ namespace zsLib
       ioUTF8 = lookAheadPos-1;
       return result;
     }
+#endif //0
 
     static void utf32ToUTF8(UTF32 utf32Char, STR &outUTF8)
     {
@@ -618,6 +630,7 @@ namespace zsLib
       outUTF8 += length;
     }
 
+#if 0
     static WCHAR utf8ToUnicode(CSTR &ioUTF8)
     {
       if (!ioUTF8)
@@ -625,6 +638,7 @@ namespace zsLib
 
       return (WCHAR)(utf8ToUTF32(ioUTF8));
     }
+#endif //0
 
     static std::unique_ptr<WCHAR[]> utf8ToUnicodeConvert(CSTR szInUTF8)
     {
@@ -694,6 +708,7 @@ namespace zsLib
       return result;
     }
 
+#if 0
     static void unicodeAdvance(CWSTR &ioString)
     {
       if (sizeof(WORD) == sizeof(WCHAR))
@@ -701,6 +716,7 @@ namespace zsLib
       else
         ++ioString;
     }
+#endif //0
 
     std::string convertToString(CWSTR value)
     {

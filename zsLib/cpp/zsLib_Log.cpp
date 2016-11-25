@@ -30,6 +30,7 @@
  */
 
 #include <zsLib/Log.h>
+#include <zsLib/eventing/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
@@ -49,9 +50,14 @@ namespace zsLib
   #pragma mark
 
   //---------------------------------------------------------------------------
-  Subsystem::Subsystem(CSTR inName, Log::Level inLevel) :
+  Subsystem::Subsystem(
+                       CSTR inName,
+                       Log::Level inOutputLevel,
+                       Log::Level inEventingLevel
+                       ) :
     mSubsystem(inName),
-    mLevel(static_cast<Subsystem::LevelType>(inLevel))
+    mOutputLevel(static_cast<Subsystem::LevelType>(inOutputLevel)),
+    mEventingLevel(static_cast<Subsystem::LevelType>(inEventingLevel))
   {
   }
 
@@ -64,13 +70,25 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Subsystem::setOutputLevel(Log::Level inLevel)
   {
-    mLevel = inLevel;
+    mOutputLevel = inLevel;
   }
 
   //---------------------------------------------------------------------------
   Log::Level Subsystem::getOutputLevel() const
   {
-    return mLevel;
+    return mOutputLevel;
+  }
+
+  //---------------------------------------------------------------------------
+  void Subsystem::setEventingLevel(Log::Level inLevel)
+  {
+    mEventingLevel = inLevel;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::Level Subsystem::getEventingLevel() const
+  {
+    return mEventingLevel;
   }
 
   //---------------------------------------------------------------------------
@@ -160,10 +178,10 @@ namespace zsLib
   const char *Log::toString(Severity severity)
   {
     switch (severity) {
-      case Informational: return "info";
-      case Warning:       return "warning";
-      case Error:         return "error";
-      case Fatal:         return "fatal";
+      case Informational: return "Informational";
+      case Warning:       return "Warning";
+      case Error:         return "Error";
+      case Fatal:         return "Fatal";
     }
     return "undefined";
   }
@@ -171,22 +189,19 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Log::Severity Log::toSeverity(const char *inSeverityStr)
   {
-    static Severity severityArray[] = {
-      Warning,
-      Error,
-      Fatal,
-
-      Informational
-    };
-
     String severityStr(inSeverityStr);
 
-    for (int index = 0; Informational != severityArray[index]; ++index) {
-      if (severityStr == toString(severityArray[index])) {
-        return severityArray[index];
+    if (0 == (severityStr.compareNoCase("Info"))) {
+      severityStr = "Informational";
+    }
+
+    for (Log::Severity index = Log::Severity_First; index <= Log::Severity_Last; index = static_cast<Log::Severity>(static_cast<std::underlying_type<Log::Severity>::type>(index) + 1)) {
+      if (0 == severityStr.compareNoCase(toString(index))) {
+        return index;
       }
     }
 
+    ZS_THROW_INVALID_ARGUMENT(String("Invalid severity: ") + severityStr);
     return Informational;
   }
   
@@ -194,12 +209,12 @@ namespace zsLib
   const char *Log::toString(Level level)
   {
     switch (level) {
-      case None:          return "none";
-      case Basic:         return "basic";
-      case Detail:        return "detail";
-      case Debug:         return "debug";
-      case Trace:         return "trace";
-      case Insane:        return "insane";
+      case None:          return "None";
+      case Basic:         return "Basic";
+      case Detail:        return "Detail";
+      case Debug:         return "Debug";
+      case Trace:         return "Trace";
+      case Insane:        return "Insane";
     }
     return "undefined";
   }
@@ -207,35 +222,38 @@ namespace zsLib
   //---------------------------------------------------------------------------
   Log::Level Log::toLevel(const char *inLevelStr)
   {
-    static Level levelArray[] = {
-      Basic,
-      Detail,
-      Debug,
-      Trace,
-      Insane,
-
-      None
-    };
-
     String levelStr(inLevelStr);
 
-    for (int index = 0; None != levelArray[index]; ++index) {
-      if (levelStr == toString(levelArray[index])) {
-        return levelArray[index];
+    for (Log::Level index = Log::Level_First; index <= Log::Level_Last; index = static_cast<Log::Level>(static_cast<std::underlying_type<Log::Level>::type>(index) + 1)) {
+      if (0 == levelStr.compareNoCase(toString(index))) {
+        return index;
       }
     }
 
+    ZS_THROW_INVALID_ARGUMENT(String("Invalid level: ") + levelStr);
     return None;
   }
 
   //---------------------------------------------------------------------------
-  Log::Log(const make_private &)
+  Log::Log(const make_private &ignore) :
+    internal::Log(ignore)
   {
   }
 
   //---------------------------------------------------------------------------
   Log::~Log()
   {
+    for (auto iter = mSubsystems.begin(); iter != mSubsystems.end(); ++iter)
+    {
+      auto &subsystem = (*iter);
+      subsystem->setEventingLevel(None);
+    }
+
+    for (auto iter = mCleanUpWriters.begin(); iter != mCleanUpWriters.end(); ++iter)
+    {
+      auto writer = (*iter);
+      delete writer;
+    }
   }
 
   //---------------------------------------------------------------------------
@@ -252,8 +270,18 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  void Log::addListener(ILogDelegatePtr delegate)
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark (output methods)
+  #pragma mark
+
+  //---------------------------------------------------------------------------
+  void Log::addOutputListener(ILogOutputDelegatePtr delegate)
   {
+    if (!delegate) return;
+
     LogPtr log = Log::singleton();
     if (!log) return;
 
@@ -264,30 +292,52 @@ namespace zsLib
     {
       AutoRecursiveLock lock(refThis.mLock);
 
-      ListenerListPtr replaceList(make_shared<ListenerList>());
+      OutputListenerListPtr replaceList(make_shared<OutputListenerList>());
 
-      if (refThis.mListeners) {
-        (*replaceList) = (*refThis.mListeners);
-      }
+      size_t originalSize = refThis.mOutputListeners->size();
+
+      (*replaceList) = (*refThis.mOutputListeners);
 
       replaceList->push_back(delegate);
 
-      refThis.mListeners = replaceList;
+      refThis.mOutputListeners = replaceList;
 
       notifyList = refThis.mSubsystems;
+
+      if (0 == originalSize) {
+        Optional<Level> defaultLevel;
+
+        {
+          auto found = refThis.mDefaultOutputSubsystemLevels.find(String());
+          if (found != refThis.mDefaultOutputSubsystemLevels.end()) defaultLevel = static_cast<Level>((*found).second);
+        }
+
+        for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter)
+        {
+          auto &subsystem = (*iter);
+          auto name = subsystem->getName();
+          auto found = refThis.mDefaultOutputSubsystemLevels.find(String(name));
+          if (found != refThis.mDefaultOutputSubsystemLevels.end()) {
+            auto level = static_cast<Level>((*found).second);
+            subsystem->setOutputLevel(level);
+          } else if (defaultLevel.hasValue()) {
+            subsystem->setOutputLevel(defaultLevel.value());
+          }
+        }
+      }
     }
 
     for (SubsystemList::iterator iter = notifyList.begin(); iter != notifyList.end(); ++iter)
     {
-      delegate->onNewSubsystem(
-                               *(*iter)
-                               );
+      delegate->onNewSubsystem(*(*iter));
     }
   }
 
   //---------------------------------------------------------------------------
-  void Log::removeListener(ILogDelegatePtr delegate)
+  void Log::removeOutputListener(ILogOutputDelegatePtr delegate)
   {
+    if (!delegate) return;
+
     LogPtr log = Log::singleton();
     if (!log) return;
 
@@ -295,24 +345,31 @@ namespace zsLib
 
     AutoRecursiveLock lock(refThis.mLock);
 
-    ListenerListPtr replaceList(make_shared<ListenerList>());
+    OutputListenerListPtr replaceList(make_shared<OutputListenerList>());
 
-    if (refThis.mListeners) {
-      (*replaceList) = (*refThis.mListeners);
-    }
+    (*replaceList) = (*refThis.mOutputListeners);
 
-    for (ListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
+    for (OutputListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
     {
       if (delegate.get() == (*iter).get())
       {
         replaceList->erase(iter);
 
-        refThis.mListeners = replaceList;
+        if (0 == replaceList->size()) {
+          if (refThis.mDefaultOutputSubsystemLevels.size() > 0) {
+            for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter) {
+              auto &subsystem = (*iter);
+              subsystem->setOutputLevel(None);
+            }
+          }
+        }
+
+        refThis.mOutputListeners = replaceList;
         return;
       }
     }
 
-    ZS_THROW_INVALID_ARGUMENT("cound not remove log listener as it was not found")
+    ZS_THROW_INVALID_ARGUMENT("cound not remove log listener as it was not found");
   }
 
   //---------------------------------------------------------------------------
@@ -323,22 +380,71 @@ namespace zsLib
 
     Log &refThis = (*log);
 
-    ListenerListPtr notifyList;
+    OutputListenerListPtr notifyList;
 
     // scope: remember the subsystem
     {
       AutoRecursiveLock lock(refThis.mLock);
       refThis.mSubsystems.push_back(inSubsystem);
-      notifyList = refThis.mListeners;
+      notifyList = refThis.mOutputListeners;
+
+      {
+        auto found = refThis.mDefaultOutputSubsystemLevels.find(String(inSubsystem->getName()));
+        if (found != refThis.mDefaultOutputSubsystemLevels.end()) {
+          inSubsystem->setOutputLevel(static_cast<Level>((*found).second));
+        } else {
+          auto foundDefault = refThis.mDefaultOutputSubsystemLevels.find(String());
+          if (foundDefault != refThis.mDefaultOutputSubsystemLevels.end()) {
+            inSubsystem->setOutputLevel(static_cast<Level>((*foundDefault).second));
+          }
+        }
+      }
     }
 
-    if (!notifyList) return;
-
-    for (ListenerList::iterator iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
-      (*iter)->onNewSubsystem(
-                              *inSubsystem
-                              );
+      (*iter)->onNewSubsystem(*inSubsystem);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::setOutputLevelByName(
+                                 const char *subsystemName,
+                                 Level level
+                                 )
+  {
+    String subsystemNameStr(subsystemName);
+    if (subsystemNameStr.isEmpty()) {
+      subsystemNameStr = String();
+    }
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    bool defaultAll = subsystemNameStr.isEmpty();
+
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+      refThis.mDefaultOutputSubsystemLevels[subsystemNameStr] = static_cast<decltype(level)>(static_cast<std::underlying_type<decltype(level)>::type>(level));
+
+      // if no listeners attached then there's no reason to adjust the subsystem's current level
+      if (refThis.mOutputListeners->size() < 1) return;
+
+      for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter)
+      {
+        auto &subsystem = *(*iter);
+
+        if (defaultAll) {
+          subsystem.setOutputLevel(level);
+          continue;
+        }
+
+        if (subsystemNameStr == subsystem.getName()) {
+          subsystem.setOutputLevel(level);
+        }
+      }
     }
   }
 
@@ -375,16 +481,14 @@ namespace zsLib
 
     Log &refThis = (*log);
 
-    ListenerListPtr notifyList;
+    OutputListenerListPtr notifyList;
 
     {
       AutoRecursiveLock lock(refThis.mLock);
-      notifyList = refThis.mListeners;
+      notifyList = refThis.mOutputListeners;
     }
 
-    if (!notifyList) return;
-
-    for (ListenerList::iterator iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       (*iter)->onLog(
                      inSubsystem,
@@ -395,6 +499,273 @@ namespace zsLib
                      inLineNumber,
                      inParams
                      );
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark (eventing methods)
+  #pragma mark
+
+  //---------------------------------------------------------------------------
+  void Log::addEventingListener(ILogEventingDelegatePtr delegate)
+  {
+    if (!delegate) return;
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    SubsystemList notifyList;
+
+    // copy the list but notify without the lock
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+
+      EventingListenerListPtr replaceList(make_shared<EventingListenerList>());
+
+      size_t originalSize = refThis.mEventingListeners->size();
+
+      (*replaceList) = (*refThis.mEventingListeners);
+
+      replaceList->push_back(delegate);
+
+      refThis.mEventingListeners = replaceList;
+
+      notifyList = refThis.mSubsystems;
+
+      if (0 == originalSize) {
+        Optional<Level> defaultLevel;
+
+        {
+          auto found = refThis.mDefaultEventingSubsystemLevels.find(String());
+          if (found != refThis.mDefaultEventingSubsystemLevels.end()) defaultLevel = static_cast<Level>((*found).second);
+        }
+
+        for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter)
+        {
+          auto &subsystem = (*iter);
+          auto name = subsystem->getName();
+          auto found = refThis.mDefaultEventingSubsystemLevels.find(String(name));
+          if (found != refThis.mDefaultEventingSubsystemLevels.end()) {
+            auto level = static_cast<Level>((*found).second);
+            subsystem->setEventingLevel(level);
+          }
+          else if (defaultLevel.hasValue()) {
+            subsystem->setEventingLevel(defaultLevel.value());
+          }
+        }
+      }
+    }
+
+    for (SubsystemList::iterator iter = notifyList.begin(); iter != notifyList.end(); ++iter)
+    {
+      delegate->onNewSubsystem(*(*iter));
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::removeEventingListener(ILogEventingDelegatePtr delegate)
+  {
+    if (!delegate) return;
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    AutoRecursiveLock lock(refThis.mLock);
+
+    EventingListenerListPtr replaceList(make_shared<EventingListenerList>());
+
+    (*replaceList) = (*refThis.mEventingListeners);
+
+    for (EventingListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
+    {
+      if (delegate.get() == (*iter).get())
+      {
+        replaceList->erase(iter);
+
+        if (0 == replaceList->size()) {
+          if (refThis.mDefaultEventingSubsystemLevels.size() > 0) {
+            for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter) {
+              auto &subsystem = (*iter);
+              subsystem->setEventingLevel(None);
+            }
+          }
+        }
+
+        refThis.mEventingListeners = replaceList;
+        return;
+      }
+    }
+
+    ZS_THROW_INVALID_ARGUMENT("cound not remove log listener as it was not found");
+  }
+
+  //---------------------------------------------------------------------------
+  uintptr_t Log::registerEventingWriter(
+                                        const UUID &providerID,
+                                        const char *providerName,
+                                        const char *uniqueProviderHash
+                                        )
+  {
+    LogPtr log = Log::singleton();
+    if (!log) return 0;
+
+    Log &refThis = (*log);
+
+    EventingWriter *writer = NULL;
+
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+
+      {
+        auto found = refThis.mEventWriters.find(providerID);
+        if (found != refThis.mEventWriters.end()) {
+          auto existingWriter = (*found).second;
+          return reinterpret_cast<uintptr_t>(existingWriter);
+        }
+      }
+
+      writer = new EventingWriter;
+      writer->mProviderID = providerID;
+      writer->mProviderName = String(providerName);
+      writer->mUniqueProviderHash = String(uniqueProviderHash);
+      writer->mLog = log.get();
+
+      refThis.mEventWriters[providerID] = writer;
+    }
+
+    return reinterpret_cast<uintptr_t>(writer);
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::unregisterEventingWriter(uintptr_t handle)
+  {
+    if (0 == handle) return;
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+
+      EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+      
+      for (auto iter = refThis.mEventWriters.begin(); iter != refThis.mEventWriters.end(); ++iter)
+      {
+        uintptr_t found = reinterpret_cast<uintptr_t>((*iter).second);
+        if (found != handle) continue;
+
+        refThis.mEventWriters.erase(iter);
+        break;
+      }
+
+      refThis.mCleanUpWriters.insert(writer);
+    }
+
+  }
+
+  //---------------------------------------------------------------------------
+  bool Log::getEventingWriterInfo(
+                                  uintptr_t handle,
+                                  UUID &outProviderID,
+                                  String &outProviderName,
+                                  String &outUniqueProviderHash
+                                  )
+  {
+    if (0 == handle) return false;
+
+    EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+
+    outProviderID = writer->mProviderID;
+    outProviderName = writer->mProviderName;
+    outUniqueProviderHash = writer->mUniqueProviderHash;
+    return true;
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::setEventingLevelByName(
+                                   const char *subsystemName,
+                                   Level level
+                                   )
+  {
+    String subsystemNameStr(subsystemName);
+    if (subsystemNameStr.isEmpty()) {
+      subsystemNameStr = String();
+    }
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    bool defaultAll = subsystemNameStr.isEmpty();
+
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+      refThis.mDefaultEventingSubsystemLevels[subsystemNameStr] = static_cast<decltype(level)>(static_cast<std::underlying_type<decltype(level)>::type>(level));
+
+      // if no listeners attached then there's no reason to adjust the subsystem's current level
+      if (refThis.mEventingListeners->size() < 1) return;
+
+      for (auto iter = refThis.mSubsystems.begin(); iter != refThis.mSubsystems.end(); ++iter)
+      {
+        auto &subsystem = *(*iter);
+
+        if (defaultAll) {
+          subsystem.setEventingLevel(level);
+          continue;
+        }
+
+        if (subsystemNameStr == subsystem.getName()) {
+          subsystem.setEventingLevel(level);
+        }
+      }
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::writeEvent(
+                       uintptr_t handle,
+                       Severity severity,
+                       Level level,
+                       const char *subsystemName,
+                       const char *functionName,
+                       ULONG lineNumber,
+                       size_t mValue,
+                       const BYTE *buffer,
+                       size_t bufferSize,
+                       const BYTE * const* buffers,
+                       const size_t *buffersSizes,
+                       size_t totalBuffers
+                       )
+  {
+    if (0 == handle) return;
+
+    EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+
+    Log *log = writer->mLog;
+
+    EventingListenerListPtr notifyList;
+
+    {
+      AutoRecursiveLock lock(log->mLock);
+      notifyList = log->mEventingListeners;
+    }
+
+    EventingListenerList &useList = *notifyList;
+
+    for (auto iter = useList.begin(); iter != useList.end(); ++iter)
+    {
+      (*iter)->onWriteEvent(handle, severity, level, subsystemName, functionName, lineNumber, mValue, buffer, bufferSize, buffers, buffersSizes, totalBuffers);
     }
   }
 

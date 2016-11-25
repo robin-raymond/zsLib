@@ -31,8 +31,13 @@
 
 #include <zsLib/helpers.h>
 #include <zsLib/Log.h>
-#include <zsLib/internal/zsLib_Tracing.h>
 #include <zsLib/internal/platform.h>
+
+#ifndef ZSLIB_EVENTING_NOOP
+#include <zsLib/internal/zsLib.events.h>
+#else
+#include <zsLib/eventing/noop.h>
+#endif //ndef ZSLIB_EVENTING_NOOP
 
 #ifdef HAVE_PTHREAD_H
 #include <pthread.h>
@@ -95,7 +100,7 @@ namespace zsLib {
 #endif //_WIN32
 
 
-namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
+//namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
@@ -134,14 +139,14 @@ namespace zsLib
     protected:
       Setup()
       {
-        EventRegisterzsLib();
+        ZS_EVENTING_REGISTER(zsLib);
         initSubsystems();
       }
 
     public:
       ~Setup()
       {
-        EventUnregisterzsLib();
+        ZS_EVENTING_UNREGISTER(zsLib);
       }
 
       static Setup &singleton()

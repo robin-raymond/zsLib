@@ -35,6 +35,8 @@
 #include <zsLib/helpers.h>
 
 #include <math.h>
+#include <sstream>
+#include <iomanip>
 
 #ifdef _WIN32
 #include <objbase.h>
@@ -43,7 +45,9 @@
 #pragma warning(push)
 #pragma warning(disable:4290)
 
+#if 0
 char *strptime(const char *buf, const char *fmt, struct tm *tm);
+#endif //0
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
@@ -244,6 +248,7 @@ namespace zsLib
 
   // force templates to be generated for these types
   template void Numeric<CHAR>::get(CHAR &) const throw (ValueOutOfRange);
+  template void Numeric<WCHAR>::get(WCHAR &) const throw (ValueOutOfRange);
   template void Numeric<UCHAR>::get(UCHAR &) const throw (ValueOutOfRange);
   template void Numeric<SHORT>::get(SHORT &) const throw (ValueOutOfRange);
   template void Numeric<USHORT>::get(USHORT &) const throw (ValueOutOfRange);
@@ -543,12 +548,37 @@ namespace zsLib
         temp.erase(posMore);
       }
 
-      try 
-	  {
-          zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
-          outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
-      } catch(const Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
-        return false;
+      if (std::string::npos != temp.find(':')) {
+        std::tm ttm{};
+        std::istringstream ss(temp);
+
+        ss >> std::get_time(&ttm, "%Y-%m-%d %H:%M:%S");
+
+        if (ss.fail()) {
+          return false;
+        }
+
+#if 0
+        // if need to use strptime instead
+        const char *parsed = strptime(temp.c_str(), "%Y-%m-%d %H:%M:%S", &ttm);
+        if (NULL == parsed) return false;
+#endif //0
+
+#ifdef _WIN32
+        time_t ttime_t = _mkgmtime(&ttm);
+#else
+        time_t ttime_t = timegm(&ttm);
+#endif //_WIN32
+
+        outResult = std::chrono::system_clock::from_time_t(ttime_t);
+      } else {
+        try
+	      {
+            zsLib::Seconds::rep seconds = Numeric<zsLib::Seconds::rep>(temp);
+            outResult = zsLib::timeSinceEpoch(zsLib::Seconds(seconds));
+        } catch(const Numeric<zsLib::Seconds::rep>::ValueOutOfRange &) {
+          return false;
+        }
       }
 
       if (more.hasData()) {

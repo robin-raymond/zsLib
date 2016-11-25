@@ -110,7 +110,7 @@ namespace zsLib
     WeightedMovingAverageUsingTotal &operator+=(unsigned long long newTotal) { adjust(static_cast<AverageType>(newTotal)); return (*this); }
 
     template <typename data_type>
-    data_type value() const { return mCalculator.value<data_type>(); }
+    data_type value() const { return mCalculator.template value<data_type>(); }
 
   protected:
     void adjust(AverageType newTotal)
