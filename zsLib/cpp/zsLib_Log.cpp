@@ -737,15 +737,9 @@ namespace zsLib
                        uintptr_t handle,
                        Severity severity,
                        Level level,
-                       const char *subsystemName,
-                       const char *functionName,
-                       ULONG lineNumber,
-                       size_t mValue,
-                       const BYTE *buffer,
-                       size_t bufferSize,
-                       const BYTE * const* buffers,
-                       const size_t *buffersSizes,
-                       size_t totalBuffers
+                       LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                       LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                       size_t dataDescriptorCount
                        )
   {
     if (0 == handle) return;
@@ -765,7 +759,7 @@ namespace zsLib
 
     for (auto iter = useList.begin(); iter != useList.end(); ++iter)
     {
-      (*iter)->onWriteEvent(handle, severity, level, subsystemName, functionName, lineNumber, mValue, buffer, bufferSize, buffers, buffersSizes, totalBuffers);
+      (*iter)->onWriteEvent(handle, severity, level, descriptor, dataDescriptor, dataDescriptorCount);
     }
   }
 

@@ -150,6 +150,7 @@
 #define ZS_EVENTING_SOURCE(xSourceStr)
 #define ZS_EVENTING_CHANNEL(xID, xNameStr, xOperationalType)
 #define ZS_EVENTING_TASK(xName)
+#define ZS_EVENTING_KEYWORD(xName)
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
 #define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)

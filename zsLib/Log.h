@@ -118,6 +118,16 @@ namespace zsLib
     friend class internal::Log;
 
   public:
+    struct LogEventDescriptor {};
+    struct LogEventDataDescriptor {};
+
+    typedef LogEventDescriptor LOG_EVENT_DESCRIPTOR;
+    typedef LogEventDataDescriptor LOG_EVENT_DATA_DESCRIPTOR;
+
+    typedef const LOG_EVENT_DESCRIPTOR * LOG_EVENT_DESCRIPTOR_HANDLE;
+    typedef const LOG_EVENT_DATA_DESCRIPTOR * LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
+
+  public:
     enum Severity
     {
       Severity_First,
@@ -290,15 +300,9 @@ namespace zsLib
                            uintptr_t handle,
                            Severity severity,
                            Level level,
-                           const char *subsystemName,
-                           const char *functionName,
-                           ULONG lineNumber,
-                           size_t mValue,
-                           const BYTE *buffer,
-                           size_t bufferSize,
-                           const BYTE * const* buffers,
-                           const size_t *buffersSizes,
-                           size_t totalBuffers
+                           LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                           LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                           size_t dataDescriptorCount
                            );
 
   public:
@@ -346,25 +350,24 @@ namespace zsLib
 
   interaction ILogEventingDelegate
   {
-  public:
+    typedef Log::LOG_EVENT_DESCRIPTOR_HANDLE LOG_EVENT_DESCRIPTOR_HANDLE;
+    typedef Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
+    
+    typedef Log::Severity Severity;
+    typedef Log::Level Level;
+
     // notification that a new subsystem exists
     virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
 
     // notification of a log event
-    void onWriteEvent(
-                      uintptr_t handle,
-                      zsLib::Log::Severity severity,
-                      zsLib::Log::Level level,
-                      const char *subsystemName,
-                      const char *functionName,
-                      ULONG lineNumber,
-                      size_t mValue,
-                      const BYTE *buffer,
-                      size_t bufferSize,
-                      const BYTE * const* buffers,
-                      const size_t *buffersSizes,
-                      size_t totalBuffers
-                      ) {}
+    virtual void onWriteEvent(
+                              uintptr_t handle,
+                              Severity severity,
+                              Level level,
+                              LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                              LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                              size_t dataDescriptorCount
+                              ) {}
   };
 
   //---------------------------------------------------------------------------

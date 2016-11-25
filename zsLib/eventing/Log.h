@@ -40,17 +40,20 @@
 #include <zsLib/eventing/internal/zsLib_eventing_Log.h>
 
 
-#define ZS_EVENTING_GET_LOG_LEVEL()                                              ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()
-#define ZS_EVENTING_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                          ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
-#define ZS_EVENTING_IS_LOGGING(xHandleReference, xLevel)                         ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xLevel)
-#define ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)   ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)
+#define ZS_EVENTING_GET_LOG_LEVEL()                                             ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()
+#define ZS_EVENTING_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                         ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
+#define ZS_EVENTING_IS_LOGGING(xHandleReference, xLevel)                        ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xLevel)
+#define ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)  ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)
 
 #define ZS_EVENTING_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)  ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)
 #define ZS_EVENTING_UNREGISTER_EVENT_WRITER(xHandleReference)                                                 ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
-#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize)  {::zsLib::Log::writeEvent((xHandle), ::zsLib::Log::xSeverity, ::zsLib::Log::xLevel, (xSubsystemName), (xFunc), (xLine), (xEventValue), (xBuffer), (xBufferSize), NULL, NULL, 0);}
-#define ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(xHandle, xSeverity, xLevel, xSubsystemName, xFunc, xLine, xEventValue, xBuffer, xBufferSize, xBuffers, xBuffersSizes, xTotalBuffers) {zsLib::Log::writeEvent((xHandle), zsLib::Log::xSeverity, zsLib::Log::xLevel, (xSubsystemName), (xFunc), (xLine), (xEventValue), (xBuffer), (xBufferSize), (xBuffers), (xBuffersSizes), (xTotalBuffers)); }
+#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount)
 
+#define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize)  ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize)
+#define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                    ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)
+#define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                    ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)
+#define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)           ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)
 
 #define ZS_EVENTING_0(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode) \
                                                                                 ZS_INTERNAL_EVENTING_EVENT_##xSymbol(xSubsystem)
@@ -363,6 +366,7 @@
 #define ZS_EVENTING_SOURCE(xSourceStr)
 #define ZS_EVENTING_CHANNEL(xID, xNameStr, xOperationalType)
 #define ZS_EVENTING_TASK(xName)
+#define ZS_EVENTING_KEYWORD(xName)
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
 #define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
@@ -371,6 +375,10 @@ namespace zsLib
 {
   namespace eventing
   {
+    typedef zsLib::eventing::internal::USE_EVENT_DATA_DESCRIPTOR USE_EVENT_DATA_DESCRIPTOR;
+    typedef zsLib::eventing::internal::USE_EVENT_DESCRIPTOR USE_EVENT_DESCRIPTOR;
+    
+    typedef int USE_EVENT_DATA_BOOL_TYPE;
   }
 }
 

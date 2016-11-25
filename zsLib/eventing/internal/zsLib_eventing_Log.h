@@ -41,7 +41,45 @@
 #define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)   (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel)
 
 #define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
-#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)                           
+#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
+
+#define ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) \
+  {                                                                                                 \
+    ::zsLib::Log::writeEvent(                                                                       \
+                             (xHandle),                                                             \
+                             ::zsLib::Log::xSeverity,                                               \
+                             ::zsLib::Log::xLevel,                                                  \
+                             (Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),                  \
+                             (Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),         \
+                             (xEventDataDescriptorCount)                                            \
+                             );                                                                     \
+  }
+
+#ifdef _WIN32
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL(xInDescriptor, xPtrValue, xValueSize) \
+  { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
+#else
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL(xInDescriptor, xPtrValue, xValueSize) \
+  { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
+#endif //_WIN32
+
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xValue)                      (xValue)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xValue)                      (xValue)
+
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        (((const char *)(xValue)) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        (((const wchar_t *)(xValue)) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
+
+#ifdef _WIN32
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { EventDataDescCreate((xInDescriptor), (xPtr), (xSize)); }
+#else
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { (xInDescriptor)->Ptr = (xPtr); (xInDescriptor)->Size = (xSize); }
+#endif //_WIN32
 
 
 namespace zsLib
@@ -50,6 +88,31 @@ namespace zsLib
   {
     namespace internal
     {
+#ifdef _WIN32
+      typedef EVENT_DATA_DESCRIPTOR USE_EVENT_DATA_DESCRIPTOR;
+      typedef EVENT_DESCRIPTOR USE_EVENT_DESCRIPTOR;
+#else
+      struct EventDataDescriptor
+      {
+        const void *Ptr;
+        size_t Size;
+        size_t Type;
+      };
+      
+      struct EventDescriptor
+      {
+        uint16_t Id;
+        uint8_t Version;
+        uint8_t Channel;
+        uint8_t Level;
+        uint8_t Opcode;
+        uint16_t Task;
+        uint64_t Keyword;
+      };
+      
+      typedef EventDataDescriptor USE_EVENT_DATA_DESCRIPTOR;
+      typedef EventDescriptor USE_EVENT_DESCRIPTOR;
+#endif //_WIN32
     }
   }
 }
