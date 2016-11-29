@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_EXCEPTION_H_128581a1508c405cbdac46b96074b91b
-#define ZSLIB_EXCEPTION_H_128581a1508c405cbdac46b96074b91b
-
 #include <zsLib/internal/zsLib_Exception.h>
 
 namespace zsLib
@@ -147,5 +144,3 @@ namespace zsLib
 #define ZS_THROW_CUSTOM_MSG_PROPERTIES_1_IF(xObject, xExperssion, xValue1, xMessage)                    {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion, xValue1);}}
 #define ZS_THROW_CUSTOM_MSG_PROPERTIES_2_IF(xObject, xExperssion, xValue1, xValue2, xMessage)           {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion, xValue1, xValue2);}}
 #define ZS_THROW_CUSTOM_MSG_PROPERTIES_3_IF(xObject, xExperssion, xValue1, xValue2, xValue3, xMessage)  {if (xExperssion) {throw xObject(ZS_GET_SUBSYSTEM(), xMessage, __FUNCTION__, __FILE__, __LINE__, #xExperssion, xValue1, xValue2, xValue3);}}
-
-#endif //ZSLIB_EXCEPTION_H_128581a1508c405cbdac46b96074b91b

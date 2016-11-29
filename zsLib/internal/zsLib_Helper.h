@@ -31,17 +31,27 @@
 
 #pragma once
 
-#include <zsLib/internal/zsLib_Event.h>
+#include <zsLib/IHelper.h>
+#include <zsLib/Log.h>
 
 namespace zsLib
 {
-  class Event : public internal::Event
+  namespace internal
   {
-  public:
-    static EventPtr create();
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Helper
+    #pragma mark
 
-    void reset();   // after an event has been notified, reset must be called to cause the wait to happen again
-    void wait();    // once an event is notified via "notify()", "wait()" will no longer wait until "reset()" is called
-    void notify();  // breaks the wait from executing until the reset is called
-  };
-}
+    class Helper : public IHelper
+    {
+    public:
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::Log::Params, Params);
+
+      static Params slog(const char *message);
+    };
+  } // namespace internal
+} // namespace zsLib

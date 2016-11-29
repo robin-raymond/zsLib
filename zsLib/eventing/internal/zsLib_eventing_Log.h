@@ -34,25 +34,29 @@
 #ifndef ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
 #define ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
 
-#define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                              ((ZS_GET_SUBSYSTEM()).getEventingLevel())
-#define ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                          ((xSubsystem).getEventingLevel())
-#define ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xLevel)                         (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel)
-#define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xHandleReference, xLevelValue)              (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue))
-#define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)   (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel)
+#ifdef _WIN32
+#include <Evntprov.h>
+#endif //_WIN32
+
+#define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                                                ((ZS_GET_SUBSYSTEM()).getEventingLevel())
+#define ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                                            ((xSubsystem).getEventingLevel())
+#define ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xKeywordBitmask, xLevel)                          ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel))
+#define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xHandleReference, xKeywordBitmask, xLevelValue)               ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue)))
+#define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xKeywordBitmask, xSubsystem, xLevel)    ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel))
 
 #define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
 #define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
 #define ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) \
-  {                                                                                                     \
-    ::zsLib::Log::writeEvent(                                                                           \
-                             (xHandle),                                                                 \
-                             ::zsLib::Log::xSeverity,                                                   \
-                             ::zsLib::Log::xLevel,                                                      \
-                             (::zsLib::Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),             \
-                             (::zsLib::Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),    \
-                             (xEventDataDescriptorCount)                                                \
-                             );                                                                         \
+  {                                                                                                                                     \
+    ::zsLib::Log::writeEvent(                                                                                                           \
+                             (xHandle),                                                                                                 \
+                             ::zsLib::Log::xSeverity,                                                                                   \
+                             ::zsLib::Log::xLevel,                                                                                      \
+                             (::zsLib::Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),                                             \
+                             (::zsLib::Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),                                    \
+                             (xEventDataDescriptorCount)                                                                                \
+                             );                                                                                                         \
   }
 
 #ifdef _WIN32

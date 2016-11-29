@@ -30,14 +30,16 @@
  */
 
 #include <zsLib/internal/zsLib_TimerMonitor.h>
+#include <zsLib/internal/zsLib_Timer.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
 
-#include <zsLib/Timer.h>
+#include <zsLib/ISettings.h>
 #include <zsLib/XML.h>
 #include <zsLib/helpers.h>
 
 #ifdef __QNX__
 #include <sys/time.h>
-#endif //
+#endif //__QNX__
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
@@ -45,11 +47,51 @@ namespace zsLib
 {
   namespace internal
   {
+    ZS_DECLARE_CLASS_PTR(TimerMonitorSettingsDefaults);
+
     //-------------------------------------------------------------------------
-    static MonitorPriorityHelper &getTimerMonitorPrioritySingleton()
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark TimerMonitorSettingsDefaults
+    #pragma mark
+
+    class TimerMonitorSettingsDefaults : public ISettingsApplyDefaultsDelegate
     {
-      static Singleton<MonitorPriorityHelper, false> singleton;
-      return singleton.singleton();
+    public:
+      //-----------------------------------------------------------------------
+      ~TimerMonitorSettingsDefaults()
+      {
+        ISettings::removeDefaults(*this);
+      }
+
+      //-----------------------------------------------------------------------
+      static TimerMonitorSettingsDefaultsPtr singleton()
+      {
+        static SingletonLazySharedPtr<TimerMonitorSettingsDefaults> singleton(create());
+        return singleton.singleton();
+      }
+
+      //-----------------------------------------------------------------------
+      static TimerMonitorSettingsDefaultsPtr create()
+      {
+        auto pThis(make_shared<TimerMonitorSettingsDefaults>());
+        ISettings::installDefaults(pThis);
+        return pThis;
+      }
+
+      //-----------------------------------------------------------------------
+      virtual void notifySettingsApplyDefaults() override
+      {
+        ISettings::setString(ZSLIB_SETTING_TIMER_MONITOR_THREAD_PRIORITY, "normal");
+      }
+    };
+
+    //-------------------------------------------------------------------------
+    void installTimerMonitorSettingsDefaults()
+    {
+      TimerMonitorSettingsDefaults::singleton();
     }
 
     //-------------------------------------------------------------------------
@@ -94,12 +136,6 @@ namespace zsLib
       }
 
       static zsLib::SingletonManager::Register registerSingleton("zsLib::TimerMonitor", result);
-
-      class Once {
-      public: Once() {getTimerMonitorPrioritySingleton().notify();}
-      };
-      static Once once;
-
       return result;
     }
 
@@ -113,32 +149,13 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void TimerMonitor::setPriority(ThreadPriorities priority)
-    {
-      MonitorPriorityHelper &prioritySingleton = getTimerMonitorPrioritySingleton();
-
-      bool changed = prioritySingleton.setPriority(priority);
-      if (!changed) return;
-
-      if (!prioritySingleton.wasNotified()) return;
-
-      TimerMonitorPtr singleton = TimerMonitor::singleton();
-      if (!singleton) return;
-
-      AutoRecursiveLock lock(singleton->mLock);
-      if (!singleton->mThread) return;
-
-      setThreadPriority(*singleton->mThread, priority);
-    }
-
-    //-------------------------------------------------------------------------
     void TimerMonitor::monitorBegin(TimerPtr timer)
     {
       AutoRecursiveLock lock(mLock);
 
       if (!mThread) {
         mThread = ThreadPtr(new std::thread(std::ref(*this)));
-        setThreadPriority(mThread->native_handle(), getTimerMonitorPrioritySingleton().getPriority());
+        setThreadPriority(mThread->native_handle(), zsLib::threadPriorityFromString(ISettings::getString(ZSLIB_SETTING_TIMER_MONITOR_THREAD_PRIORITY)));
       }
 
       PUID timerID = timer->getID();
@@ -147,7 +164,7 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void TimerMonitor::monitorEnd(zsLib::Timer &timer)
+    void TimerMonitor::monitorEnd(Timer &timer)
     {
       AutoRecursiveLock lock(mLock);
 
@@ -166,7 +183,7 @@ namespace zsLib
     {
       bool shouldShutdown = false;
 
-      debugSetCurrentThreadName("com.zslib.timer");
+      debugSetCurrentThreadName("org.zsLib.timer");
 
       do
       {

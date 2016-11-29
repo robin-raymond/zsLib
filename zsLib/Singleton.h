@@ -31,11 +31,7 @@
 
 #pragma once
 
-#ifndef ZSLIB_SINGLETON_H_22884db148f0ffb0d830ba431102b0b5
-#define ZSLIB_SINGLETON_H_22884db148f0ffb0d830ba431102b0b5
-
 #include <zsLib/internal/zsLib_Singleton.h>
-
 
 namespace zsLib
 {
@@ -220,5 +216,3 @@ namespace zsLib
   };
 
 } // namespace zsLib
-
-#endif //ZSLIB_SINGLETON_H_22884db148f0ffb0d830ba431102b0b5

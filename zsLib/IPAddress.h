@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_IPADDRESS_H_084245516d22e267a3ef86fb4ff67430
-#define ZSLIB_IPADDRESS_H_084245516d22e267a3ef86fb4ff67430
-
 #include <zsLib/internal/zsLib_IPAddress.h>
 
 #pragma warning(push)
@@ -207,5 +204,3 @@ namespace zsLib
 }
 
 #pragma warning(pop)
-
-#endif //ZSLIB_IPADDRESS_H_084245516d22e267a3ef86fb4ff67430

@@ -13,7 +13,8 @@
 </opcodes>
 </task>
 <task name="MessageQueue" symbol="TASK_MESSAGEQUEUE" value="2" message="$(string.Task.MessageQueue)" />
-<task name="Socket" symbol="TASK_SOCKET" value="3" message="$(string.Task.Socket)">
+<task name="Settings" symbol="TASK_SETTINGS" value="3" message="$(string.Task.Settings)" />
+<task name="Socket" symbol="TASK_SOCKET" value="4" message="$(string.Task.Socket)">
 <opcodes>
 <opcode name="Accept" symbol="TASK_SOCKET_OPCODE_ACCEPT" value="10" message="$(string.Task.Socket.OpCode.Accept)" />
 <opcode name="Adopt" symbol="TASK_SOCKET_OPCODE_ADOPT" value="11" message="$(string.Task.Socket.OpCode.Adopt)" />
@@ -27,7 +28,7 @@
 <opcode name="Shutdown" symbol="TASK_SOCKET_OPCODE_SHUTDOWN" value="19" message="$(string.Task.Socket.OpCode.Shutdown)" />
 </opcodes>
 </task>
-<task name="Timer" symbol="TASK_TIMER" value="4" message="$(string.Task.Timer)">
+<task name="Timer" symbol="TASK_TIMER" value="5" message="$(string.Task.Timer)">
 <opcodes>
 <opcode name="Event" symbol="TASK_TIMER_OPCODE_EVENT" value="10" message="$(string.Task.Timer.OpCode.Event)" />
 </opcodes>
@@ -66,6 +67,14 @@
 <data inType="win:UInt32" name="_line" />
 <data inType="win:Pointer" name="this" />
 </template>
+<template tid="T_40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:AnsiString" name="value" />
+</template>
 <template tid="T_4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a">
 <data inType="win:AnsiString" name="_subsystem" />
 <data inType="win:AnsiString" name="_function" />
@@ -74,6 +83,14 @@
 <data inType="win:Int64" name="result" />
 <data inType="win:Int64" name="option" />
 <data inType="win:Boolean" name="enabled" />
+</template>
+<template tid="T_4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:Int64" name="value" />
 </template>
 <template tid="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091">
 <data inType="win:AnsiString" name="_subsystem" />
@@ -114,6 +131,29 @@
 <data inType="win:UInt32" name="size" />
 <data inType="win:Binary" name="address" length="size" />
 </template>
+<template tid="T_88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:Boolean" name="value" />
+</template>
+<template tid="T_93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+</template>
+<template tid="T_981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:Double" name="value" />
+</template>
 <template tid="T_998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57">
 <data inType="win:AnsiString" name="_subsystem" />
 <data inType="win:AnsiString" name="_function" />
@@ -131,6 +171,21 @@
 <data inType="win:UInt32" name="_line" />
 <data inType="win:UInt64" name="socket" />
 <data inType="win:Int64" name="result" />
+</template>
+<template tid="T_b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="jsonSettings" />
+</template>
+<template tid="T_b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:UInt64" name="value" />
 </template>
 <template tid="T_c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47">
 <data inType="win:AnsiString" name="_subsystem" />
@@ -163,6 +218,14 @@
 <data inType="win:UInt32" name="addressSize" />
 <data inType="win:Binary" name="address" length="addressSize" />
 </template>
+<template tid="T_cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:Float" name="value" />
+</template>
 <template tid="T_d3c2dd9028b5a16d66bec06a2ed83b232fc513a7b6481f75954063f1aff8e56b">
 <data inType="win:AnsiString" name="_subsystem" />
 <data inType="win:AnsiString" name="_function" />
@@ -179,6 +242,14 @@
 <data inType="win:Int64" name="family" />
 <data inType="win:Int64" name="type" />
 <data inType="win:Int64" name="protocol" />
+</template>
+<template tid="T_e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="id" />
+<data inType="win:AnsiString" name="key" />
+<data inType="win:Boolean" name="exists" />
 </template>
 <template tid="T_f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560">
 <data inType="win:AnsiString" name="_subsystem" />
@@ -208,37 +279,55 @@
 <event symbol="MessageQueuePost" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Send" value="1003" level="win:Verbose" message="$(string.Event.MessageQueuePost)" />
 <event symbol="MessageQueueProcess" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Receive" value="1004" level="win:Verbose" message="$(string.Event.MessageQueueProcess)" />
 <event symbol="MessageQueueTotalUnprocessedMessages" channel="zs" template="T_f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560" task="MessageQueue" opcode="win:Info" value="1005" level="win:Verbose" message="$(string.Event.MessageQueueTotalUnprocessedMessages)" />
-<event symbol="SocketAccept" channel="zs" template="T_6dcdbec0e73ed6429121b65eeafb04a7fde8fe65e0988f2a5803b0df177e8ee7" task="Socket" opcode="Accept" value="1006" level="win:Informational" message="$(string.Event.SocketAccept)" />
-<event symbol="SocketAdopt" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Adopt" value="1007" level="win:Informational" message="$(string.Event.SocketAdopt)" />
-<event symbol="SocketBind" channel="zs" template="T_85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f" task="Socket" opcode="win:Info" value="1008" level="win:Informational" message="$(string.Event.SocketBind)" />
-<event symbol="SocketClose" channel="zs" template="T_b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c" task="Socket" opcode="win:Stop" value="1009" level="win:Informational" message="$(string.Event.SocketClose)" />
-<event symbol="SocketConnect" channel="zs" template="T_f9b0e501ce10e328a98633deb51ae300bda1a9142c733c762129705d836cd065" task="Socket" opcode="Connect" value="1010" level="win:Informational" message="$(string.Event.SocketConnect)" />
-<event symbol="SocketCreate" channel="zs" template="T_dcf70147d00214d2954f7e4138c414e003003fe001bdfc057c1124f4f08b2b4d" task="Socket" opcode="win:Start" value="1011" level="win:Informational" message="$(string.Event.SocketCreate)" />
-<event symbol="SocketError" channel="zs" template="T_d3c2dd9028b5a16d66bec06a2ed83b232fc513a7b6481f75954063f1aff8e56b" task="Socket" opcode="Exception" value="1012" level="win:Error" message="$(string.Event.SocketError)" />
-<event symbol="SocketExceptionEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Exception" value="1013" level="win:Error" message="$(string.Event.SocketExceptionEvent)" />
-<event symbol="SocketExceptionReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1014" level="win:Error" message="$(string.Event.SocketExceptionReset)" />
-<event symbol="SocketGetLocalAddress" channel="zs" template="T_85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f" task="Socket" opcode="win:Info" value="1015" level="win:Informational" message="$(string.Event.SocketGetLocalAddress)" />
-<event symbol="SocketGetOptionFlag" channel="zs" template="T_c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47" task="Socket" opcode="Option" value="1016" level="win:Informational" message="$(string.Event.SocketGetOptionFlag)" />
-<event symbol="SocketGetOptionValue" channel="zs" template="T_c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47" task="Socket" opcode="Option" value="1017" level="win:Informational" message="$(string.Event.SocketGetOptionValue)" />
-<event symbol="SocketGetOptions" channel="zs" template="T_998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57" task="Socket" opcode="Option" value="1018" level="win:Informational" message="$(string.Event.SocketGetOptions)" />
-<event symbol="SocketGetRemoteAddress" channel="zs" template="T_85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f" task="Socket" opcode="win:Info" value="1019" level="win:Informational" message="$(string.Event.SocketGetRemoteAddress)" />
-<event symbol="SocketListen" channel="zs" template="T_b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c" task="Socket" opcode="Listen" value="1020" level="win:Informational" message="$(string.Event.SocketListen)" />
-<event symbol="SocketOrphan" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Orphan" value="1021" level="win:Informational" message="$(string.Event.SocketOrphan)" />
-<event symbol="SocketReadReadyEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Event" value="1022" level="win:Verbose" message="$(string.Event.SocketReadReadyEvent)" />
-<event symbol="SocketReadReadyReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1023" level="win:Verbose" message="$(string.Event.SocketReadReadyReset)" />
-<event symbol="SocketRecv" channel="zs" template="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d" task="Socket" opcode="win:Receive" value="1024" level="win:Verbose" message="$(string.Event.SocketRecv)" />
-<event symbol="SocketRecvFrom" channel="zs" template="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183" task="Socket" opcode="win:Receive" value="1025" level="win:Verbose" message="$(string.Event.SocketRecvFrom)" />
-<event symbol="SocketSend" channel="zs" template="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d" task="Socket" opcode="win:Send" value="1026" level="win:Verbose" message="$(string.Event.SocketSend)" />
-<event symbol="SocketSendTo" channel="zs" template="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183" task="Socket" opcode="win:Send" value="1027" level="win:Verbose" message="$(string.Event.SocketSendTo)" />
-<event symbol="SocketSetOption" channel="zs" template="T_998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57" task="Socket" opcode="Option" value="1028" level="win:Informational" message="$(string.Event.SocketSetOption)" />
-<event symbol="SocketSetOptionFlag" channel="zs" template="T_4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a" task="Socket" opcode="Option" value="1029" level="win:Informational" message="$(string.Event.SocketSetOptionFlag)" />
-<event symbol="SocketShutdown" channel="zs" template="T_19848b028ec267f8fcfa92b936ca5134f5ec922320a66b0b3b8ad8fac4d531b4" task="Socket" opcode="Shutdown" value="1030" level="win:Informational" message="$(string.Event.SocketShutdown)" />
-<event symbol="SocketWouldBlock" channel="zs" template="T_83e21ae6db007b4ac38db27b55765fef4c0081a6db9153caaa181352a8eb48c4" task="Socket" opcode="win:Info" value="1031" level="win:Verbose" message="$(string.Event.SocketWouldBlock)" />
-<event symbol="SocketWriteReadyEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Event" value="1032" level="win:Verbose" message="$(string.Event.SocketWriteReadyEvent)" />
-<event symbol="SocketWriteReadyReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1033" level="win:Verbose" message="$(string.Event.SocketWriteReadyReset)" />
-<event symbol="TimerCreate" channel="zs" template="T_713a0591348fad63178940aa72cefc5eb9901bba27d6222f04900a95a5a56ad0" task="Timer" opcode="win:Start" value="1034" level="win:Verbose" message="$(string.Event.TimerCreate)" />
-<event symbol="TimerDestroy" channel="zs" template="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091" task="Timer" opcode="win:Stop" value="1035" level="win:Verbose" message="$(string.Event.TimerDestroy)" />
-<event symbol="TimerEvent" channel="zs" template="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091" task="Timer" opcode="Event" value="1036" level="win:Verbose" message="$(string.Event.TimerEvent)" />
+<event symbol="SettingApply" channel="zs" template="T_b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02" task="Settings" opcode="win:Info" value="1006" level="win:Informational" message="$(string.Event.SettingApply)" />
+<event symbol="SettingApplyDefaults" channel="zs" template="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091" task="Settings" opcode="win:Info" value="1007" level="win:Informational" message="$(string.Event.SettingApplyDefaults)" />
+<event symbol="SettingClear" channel="zs" template="T_93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16" task="Settings" opcode="win:Info" value="1008" level="win:Informational" message="$(string.Event.SettingClear)" />
+<event symbol="SettingClearAll" channel="zs" template="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091" task="Settings" opcode="win:Info" value="1009" level="win:Informational" message="$(string.Event.SettingClearAll)" />
+<event symbol="SettingGetBool" channel="zs" template="T_88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060" task="Settings" opcode="win:Info" value="1010" level="win:Informational" message="$(string.Event.SettingGetBool)" />
+<event symbol="SettingGetDouble" channel="zs" template="T_981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f" task="Settings" opcode="win:Info" value="1011" level="win:Informational" message="$(string.Event.SettingGetDouble)" />
+<event symbol="SettingGetFloat" channel="zs" template="T_cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc" task="Settings" opcode="win:Info" value="1012" level="win:Informational" message="$(string.Event.SettingGetFloat)" />
+<event symbol="SettingGetInt" channel="zs" template="T_4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a" task="Settings" opcode="win:Info" value="1013" level="win:Informational" message="$(string.Event.SettingGetInt)" />
+<event symbol="SettingGetString" channel="zs" template="T_40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453" task="Settings" opcode="win:Info" value="1014" level="win:Informational" message="$(string.Event.SettingGetString)" />
+<event symbol="SettingGetUInt" channel="zs" template="T_b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6" task="Settings" opcode="win:Info" value="1015" level="win:Informational" message="$(string.Event.SettingGetUInt)" />
+<event symbol="SettingSetBool" channel="zs" template="T_88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060" task="Settings" opcode="win:Info" value="1016" level="win:Informational" message="$(string.Event.SettingSetBool)" />
+<event symbol="SettingSetDouble" channel="zs" template="T_981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f" task="Settings" opcode="win:Info" value="1017" level="win:Informational" message="$(string.Event.SettingSetDouble)" />
+<event symbol="SettingSetFloat" channel="zs" template="T_cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc" task="Settings" opcode="win:Info" value="1018" level="win:Informational" message="$(string.Event.SettingSetFloat)" />
+<event symbol="SettingSetInt" channel="zs" template="T_4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a" task="Settings" opcode="win:Info" value="1019" level="win:Informational" message="$(string.Event.SettingSetInt)" />
+<event symbol="SettingSetString" channel="zs" template="T_40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453" task="Settings" opcode="win:Info" value="1020" level="win:Informational" message="$(string.Event.SettingSetString)" />
+<event symbol="SettingSetUInt" channel="zs" template="T_b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6" task="Settings" opcode="win:Info" value="1021" level="win:Informational" message="$(string.Event.SettingSetUInt)" />
+<event symbol="SettingVerifyExists" channel="zs" template="T_e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc" task="Settings" opcode="win:Info" value="1022" level="win:Informational" message="$(string.Event.SettingVerifyExists)" />
+<event symbol="SettingVerifyExistsFailed" channel="zs" template="T_e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc" task="Settings" opcode="win:Info" value="1023" level="win:Warning" message="$(string.Event.SettingVerifyExistsFailed)" />
+<event symbol="SocketAccept" channel="zs" template="T_6dcdbec0e73ed6429121b65eeafb04a7fde8fe65e0988f2a5803b0df177e8ee7" task="Socket" opcode="Accept" value="1024" level="win:Informational" message="$(string.Event.SocketAccept)" />
+<event symbol="SocketAdopt" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Adopt" value="1025" level="win:Informational" message="$(string.Event.SocketAdopt)" />
+<event symbol="SocketBind" channel="zs" template="T_85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f" task="Socket" opcode="win:Info" value="1026" level="win:Informational" message="$(string.Event.SocketBind)" />
+<event symbol="SocketClose" channel="zs" template="T_b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c" task="Socket" opcode="win:Stop" value="1027" level="win:Informational" message="$(string.Event.SocketClose)" />
+<event symbol="SocketConnect" channel="zs" template="T_f9b0e501ce10e328a98633deb51ae300bda1a9142c733c762129705d836cd065" task="Socket" opcode="Connect" value="1028" level="win:Informational" message="$(string.Event.SocketConnect)" />
+<event symbol="SocketCreate" channel="zs" template="T_dcf70147d00214d2954f7e4138c414e003003fe001bdfc057c1124f4f08b2b4d" task="Socket" opcode="win:Start" value="1029" level="win:Informational" message="$(string.Event.SocketCreate)" />
+<event symbol="SocketError" channel="zs" template="T_d3c2dd9028b5a16d66bec06a2ed83b232fc513a7b6481f75954063f1aff8e56b" task="Socket" opcode="Exception" value="1030" level="win:Error" message="$(string.Event.SocketError)" />
+<event symbol="SocketExceptionEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Exception" value="1031" level="win:Error" message="$(string.Event.SocketExceptionEvent)" />
+<event symbol="SocketExceptionReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1032" level="win:Error" message="$(string.Event.SocketExceptionReset)" />
+<event symbol="SocketGetLocalAddress" channel="zs" template="T_85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f" task="Socket" opcode="win:Info" value="1033" level="win:Informational" message="$(string.Event.SocketGetLocalAddress)" />
+<event symbol="SocketGetOptionFlag" channel="zs" template="T_c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47" task="Socket" opcode="Option" value="1034" level="win:Informational" message="$(string.Event.SocketGetOptionFlag)" />
+<event symbol="SocketGetOptionValue" channel="zs" template="T_c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47" task="Socket" opcode="Option" value="1035" level="win:Informational" message="$(string.Event.SocketGetOptionValue)" />
+<event symbol="SocketGetOptions" channel="zs" template="T_998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57" task="Socket" opcode="Option" value="1036" level="win:Informational" message="$(string.Event.SocketGetOptions)" />
+<event symbol="SocketGetRemoteAddress" channel="zs" template="T_85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f" task="Socket" opcode="win:Info" value="1037" level="win:Informational" message="$(string.Event.SocketGetRemoteAddress)" />
+<event symbol="SocketListen" channel="zs" template="T_b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c" task="Socket" opcode="Listen" value="1038" level="win:Informational" message="$(string.Event.SocketListen)" />
+<event symbol="SocketOrphan" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Orphan" value="1039" level="win:Informational" message="$(string.Event.SocketOrphan)" />
+<event symbol="SocketReadReadyEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Event" value="1040" level="win:Verbose" message="$(string.Event.SocketReadReadyEvent)" />
+<event symbol="SocketReadReadyReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1041" level="win:Verbose" message="$(string.Event.SocketReadReadyReset)" />
+<event symbol="SocketRecv" channel="zs" template="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d" task="Socket" opcode="win:Receive" value="1042" level="win:Verbose" message="$(string.Event.SocketRecv)" />
+<event symbol="SocketRecvFrom" channel="zs" template="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183" task="Socket" opcode="win:Receive" value="1043" level="win:Verbose" message="$(string.Event.SocketRecvFrom)" />
+<event symbol="SocketSend" channel="zs" template="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d" task="Socket" opcode="win:Send" value="1044" level="win:Verbose" message="$(string.Event.SocketSend)" />
+<event symbol="SocketSendTo" channel="zs" template="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183" task="Socket" opcode="win:Send" value="1045" level="win:Verbose" message="$(string.Event.SocketSendTo)" />
+<event symbol="SocketSetOption" channel="zs" template="T_998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57" task="Socket" opcode="Option" value="1046" level="win:Informational" message="$(string.Event.SocketSetOption)" />
+<event symbol="SocketSetOptionFlag" channel="zs" template="T_4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a" task="Socket" opcode="Option" value="1047" level="win:Informational" message="$(string.Event.SocketSetOptionFlag)" />
+<event symbol="SocketShutdown" channel="zs" template="T_19848b028ec267f8fcfa92b936ca5134f5ec922320a66b0b3b8ad8fac4d531b4" task="Socket" opcode="Shutdown" value="1048" level="win:Informational" message="$(string.Event.SocketShutdown)" />
+<event symbol="SocketWouldBlock" channel="zs" template="T_83e21ae6db007b4ac38db27b55765fef4c0081a6db9153caaa181352a8eb48c4" task="Socket" opcode="win:Info" value="1049" level="win:Verbose" message="$(string.Event.SocketWouldBlock)" />
+<event symbol="SocketWriteReadyEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Event" value="1050" level="win:Verbose" message="$(string.Event.SocketWriteReadyEvent)" />
+<event symbol="SocketWriteReadyReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1051" level="win:Verbose" message="$(string.Event.SocketWriteReadyReset)" />
+<event symbol="TimerCreate" channel="zs" template="T_713a0591348fad63178940aa72cefc5eb9901bba27d6222f04900a95a5a56ad0" task="Timer" opcode="win:Start" value="1052" level="win:Verbose" message="$(string.Event.TimerCreate)" />
+<event symbol="TimerDestroy" channel="zs" template="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091" task="Timer" opcode="win:Stop" value="1053" level="win:Verbose" message="$(string.Event.TimerDestroy)" />
+<event symbol="TimerEvent" channel="zs" template="T_5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091" task="Timer" opcode="Event" value="1054" level="win:Verbose" message="$(string.Event.TimerEvent)" />
 </events>
 </provider>
 </events>
@@ -249,6 +338,7 @@
 <string id="Task.Exception.OpCode.Exception" value="Exception" />
 <string id="Task.Exception" value="Exception" />
 <string id="Task.MessageQueue" value="MessageQueue" />
+<string id="Task.Settings" value="Settings" />
 <string id="Task.Socket.OpCode.Accept" value="Accept" />
 <string id="Task.Socket.OpCode.Adopt" value="Adopt" />
 <string id="Task.Socket.OpCode.Bind" value="Bind" />
@@ -268,6 +358,24 @@
 <string id="Event.MessageQueuePost" value="MessageQueuePost" />
 <string id="Event.MessageQueueProcess" value="MessageQueueProcess" />
 <string id="Event.MessageQueueTotalUnprocessedMessages" value="MessageQueueTotalUnprocessedMessages" />
+<string id="Event.SettingApply" value="SettingApply" />
+<string id="Event.SettingApplyDefaults" value="SettingApplyDefaults" />
+<string id="Event.SettingClear" value="SettingClear" />
+<string id="Event.SettingClearAll" value="SettingClearAll" />
+<string id="Event.SettingGetBool" value="SettingGetBool" />
+<string id="Event.SettingGetDouble" value="SettingGetDouble" />
+<string id="Event.SettingGetFloat" value="SettingGetFloat" />
+<string id="Event.SettingGetInt" value="SettingGetInt" />
+<string id="Event.SettingGetString" value="SettingGetString" />
+<string id="Event.SettingGetUInt" value="SettingGetUInt" />
+<string id="Event.SettingSetBool" value="SettingSetBool" />
+<string id="Event.SettingSetDouble" value="SettingSetDouble" />
+<string id="Event.SettingSetFloat" value="SettingSetFloat" />
+<string id="Event.SettingSetInt" value="SettingSetInt" />
+<string id="Event.SettingSetString" value="SettingSetString" />
+<string id="Event.SettingSetUInt" value="SettingSetUInt" />
+<string id="Event.SettingVerifyExists" value="SettingVerifyExists" />
+<string id="Event.SettingVerifyExistsFailed" value="SettingVerifyExistsFailed" />
 <string id="Event.SocketAccept" value="SocketAccept" />
 <string id="Event.SocketAdopt" value="SocketAdopt" />
 <string id="Event.SocketBind" value="SocketBind" />

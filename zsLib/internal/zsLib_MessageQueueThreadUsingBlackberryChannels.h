@@ -36,8 +36,8 @@
 #ifndef ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGBLACKBERRYCHANNELS_H_b359128a0bad4631bdaeab09d5b25847
 #define ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGBLACKBERRYCHANNELS_H_b359128a0bad4631bdaeab09d5b25847
 
-#include <zsLib/MessageQueue.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/internal/zsLib_MessageQueue.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
 #include <zsLib/Exception.h>
 
 namespace zsLib

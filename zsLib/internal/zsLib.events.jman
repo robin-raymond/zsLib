@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "f83fca598d856b5388287e80bf1305cbf23b393304ca1014ae2bf46e7515f140",
+  "uniqueHash" : "b9fe955dee055e8d81ae1d33aba301b6b80e22e81cdcabdd1449879085c86d86",
   "typedefs" : {
    "typedef" : [
     {
@@ -92,8 +92,12 @@
      "value" : 2
     },
     {
+     "name" : "Settings",
+     "value" : 3
+    },
+    {
      "name" : "Socket",
-     "value" : 3,
+     "value" : 4,
      "opCodes" : {
       "opCode" : [
        {
@@ -141,7 +145,7 @@
     },
     {
      "name" : "Timer",
-     "value" : 4,
+     "value" : 5,
      "opCodes" : {
       "opCode" : {
        "name" : "Event",
@@ -212,6 +216,186 @@
      "task" : "MessageQueue",
      "opCode" : "Info",
      "template" : "f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560"
+    },
+    {
+     "name" : "SettingApply",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02"
+    },
+    {
+     "name" : "SettingApplyDefaults",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091"
+    },
+    {
+     "name" : "SettingClear",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16"
+    },
+    {
+     "name" : "SettingClearAll",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091"
+    },
+    {
+     "name" : "SettingGetBool",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060"
+    },
+    {
+     "name" : "SettingGetDouble",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f"
+    },
+    {
+     "name" : "SettingGetFloat",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc"
+    },
+    {
+     "name" : "SettingGetInt",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a"
+    },
+    {
+     "name" : "SettingGetString",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453"
+    },
+    {
+     "name" : "SettingGetUInt",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6"
+    },
+    {
+     "name" : "SettingSetBool",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060"
+    },
+    {
+     "name" : "SettingSetDouble",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f"
+    },
+    {
+     "name" : "SettingSetFloat",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc"
+    },
+    {
+     "name" : "SettingSetInt",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a"
+    },
+    {
+     "name" : "SettingSetString",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453"
+    },
+    {
+     "name" : "SettingSetUInt",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6"
+    },
+    {
+     "name" : "SettingVerifyExists",
+     "subsytem" : "x",
+     "severity" : "Informational",
+     "level" : "Debug",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc"
+    },
+    {
+     "name" : "SettingVerifyExistsFailed",
+     "subsytem" : "x",
+     "severity" : "Warning",
+     "level" : "Basic",
+     "channel" : "zs",
+     "task" : "Settings",
+     "opCode" : "Info",
+     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc"
     },
     {
      "name" : "SocketAccept",
@@ -591,6 +775,24 @@
      "dataTypes" : {
       "dataType" : [
        {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "string"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
         "name" : "socket",
         "type" : "uint64"
        },
@@ -605,6 +807,24 @@
        {
         "name" : "enabled",
         "type" : "bool"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "long"
        }
       ]
      }
@@ -697,6 +917,56 @@
      "dataTypes" : {
       "dataType" : [
        {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "bool"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "double"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
         "name" : "socket",
         "type" : "uint64"
        },
@@ -733,6 +1003,38 @@
        {
         "name" : "result",
         "type" : "int"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "jsonSettings",
+        "type" : "string"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "ulong"
        }
       ]
      }
@@ -823,6 +1125,24 @@
      "dataTypes" : {
       "dataType" : [
        {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "float"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
         "name" : "socket",
         "type" : "uint64"
        },
@@ -855,6 +1175,24 @@
        {
         "name" : "protocol",
         "type" : "int64"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "ulong"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "exists",
+        "type" : "bool"
        }
       ]
      }

@@ -38,8 +38,8 @@
 
 #include <Windows.h>
 
-#include <zsLib/MessageQueue.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
+
 #include <zsLib/Exception.h>
 
 namespace zsLib

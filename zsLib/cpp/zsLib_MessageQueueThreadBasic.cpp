@@ -30,6 +30,8 @@
  */
 
 #include <zsLib/internal/zsLib_MessageQueueThreadBasic.h>
+#include <zsLib/internal/zsLib_MessageQueue.h>
+
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 
@@ -43,7 +45,7 @@ namespace zsLib
     MessageQueueThreadBasicPtr MessageQueueThreadBasic::create(const char *threadName, ThreadPriorities threadPriority)
     {
       MessageQueueThreadBasicPtr thread(new MessageQueueThreadBasic(threadName));
-      thread->mQueue = zsLib::MessageQueue::create(thread);
+      thread->mQueue = MessageQueue::create(thread);
       thread->mThreadPriority = threadPriority;
       thread->mThread = ThreadPtr(new std::thread(std::ref(*thread.get())));
 

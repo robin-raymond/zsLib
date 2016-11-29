@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_LOG_H_47d9d31085744072b865483d323d7b02
-#define ZSLIB_LOG_H_47d9d31085744072b865483d323d7b02
-
 #include <zsLib/internal/zsLib_Log.h>
 
 // forward declare a subsystem (for use in header files); wrap inside the namespace where it should be defined
@@ -118,14 +115,15 @@ namespace zsLib
     friend class internal::Log;
 
   public:
-    struct LogEventDescriptor {};
-    struct LogEventDataDescriptor {};
-
-    typedef LogEventDescriptor LOG_EVENT_DESCRIPTOR;
-    typedef LogEventDataDescriptor LOG_EVENT_DATA_DESCRIPTOR;
+    typedef InternalAtomIndex EventingAtomIndex;
+    typedef InternalAtomData EventingAtomData;
+    typedef EventingAtomData * EventingAtomDataArrray;
+    typedef InternalKeywordBitmaskType KeywordBitmaskType;
 
     typedef const LOG_EVENT_DESCRIPTOR * LOG_EVENT_DESCRIPTOR_HANDLE;
     typedef const LOG_EVENT_DATA_DESCRIPTOR * LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
+
+    typedef uintptr_t ProviderHandle;
 
   public:
     enum Severity
@@ -277,15 +275,20 @@ namespace zsLib
     static void addEventingListener(ILogEventingDelegatePtr delegate);
     static void removeEventingListener(ILogEventingDelegatePtr delegate);
 
-    static uintptr_t registerEventingWriter(
+    static void addEventingProviderListener(ILogEventingProviderDelegatePtr delegate);
+    static void removeEventingProviderListener(ILogEventingProviderDelegatePtr delegate);
+
+    static EventingAtomIndex registerEventingAtom(const char *atomNamespace); // a result of "0" is an error
+
+    static ProviderHandle registerEventingWriter(
                                             const UUID &providerID,
                                             const char *providerName,
                                             const char *uniqueProviderHash
                                             );
-    static void unregisterEventingWriter(uintptr_t handle);
+    static void unregisterEventingWriter(ProviderHandle providerHandle);
 
     static bool getEventingWriterInfo(
-                                      uintptr_t handle,
+                                      ProviderHandle handle,
                                       UUID &outProviderID,
                                       String &outProviderName,
                                       String &outUniqueProviderHash
@@ -297,13 +300,24 @@ namespace zsLib
                                        );
 
     static void writeEvent(
-                           uintptr_t handle,
+                           ProviderHandle handle,
                            Severity severity,
                            Level level,
                            LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
                            LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                            size_t dataDescriptorCount
                            );
+
+    static bool isEventingLogging(
+                                  ProviderHandle handle,
+                                  KeywordBitmaskType bitmask
+                                  )                                            { return (0 != handle) && (0 != (bitmask & (reinterpret_cast<EventingWriter *>(handle)->mKeywordsBitmask))); }
+    static void setEventingLogging(
+                                   ProviderHandle handle,
+                                   PUID enablingObjectID,
+                                   bool enabled,
+                                   KeywordBitmaskType bitmask = ZSLIB_LOG_PROVIDER_KEYWORDS_ALL
+                                   );
 
   public:
     Log(const make_private &);
@@ -319,25 +333,25 @@ namespace zsLib
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
   #pragma mark
-  #pragma mark ILogDelegate
+  #pragma mark ILogOutputDelegate
   #pragma mark
 
   interaction ILogOutputDelegate
   {
   public:
     // notification that a new subsystem exists
-    virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
+    virtual void notifyNewSubsystem(zsLib::Subsystem &inSubsystem) {}
 
     // notification of a log event
-    virtual void onLog(
-                       const zsLib::Subsystem &inSubsystem,
-                       zsLib::Log::Severity inSeverity,
-                       zsLib::Log::Level inLevel,
-                       zsLib::CSTR inFunction,
-                       zsLib::CSTR inFilePath,
-                       zsLib::ULONG inLineNumber,
-                       const zsLib::Log::Params &params
-                       ) {}
+    virtual void notifyLog(
+                           const zsLib::Subsystem &inSubsystem,
+                           zsLib::Log::Severity inSeverity,
+                           zsLib::Log::Level inLevel,
+                           zsLib::CSTR inFunction,
+                           zsLib::CSTR inFilePath,
+                           zsLib::ULONG inLineNumber,
+                           const zsLib::Log::Params &params
+                           ) {}
   };
 
   //---------------------------------------------------------------------------
@@ -345,29 +359,61 @@ namespace zsLib
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
   #pragma mark
-  #pragma mark ILogDelegate
+  #pragma mark ILogEventingProviderDelegate
+  #pragma mark
+
+  interaction ILogEventingProviderDelegate
+  {
+    typedef Log::EventingAtomDataArrray EventingAtomDataArrray;
+    typedef Log::ProviderHandle ProviderHandle;
+    typedef Log::EventingAtomData EventingAtomData;
+
+    // notification that a new subsystem exists
+    virtual void notifyNewSubsystem(zsLib::Subsystem &inSubsystem) {}
+
+    // notification of a log event
+    virtual void notifyEventingProviderRegistered(
+                                                  ProviderHandle handle,
+                                                  EventingAtomDataArrray eventingAtomDataArray
+                                                  ) {}
+    virtual void notifyEventingProviderUnregistered(
+                                                    ProviderHandle handle,
+                                                    EventingAtomDataArrray eventingAtomDataArray
+                                                    ) {}
+  };
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark ILogEventingDelegate
   #pragma mark
 
   interaction ILogEventingDelegate
   {
     typedef Log::LOG_EVENT_DESCRIPTOR_HANDLE LOG_EVENT_DESCRIPTOR_HANDLE;
     typedef Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
-    
+    typedef Log::EventingAtomDataArrray EventingAtomDataArrray;
+    typedef Log::ProviderHandle ProviderHandle;
+    typedef Log::EventingAtomData EventingAtomData;
+
     typedef Log::Severity Severity;
     typedef Log::Level Level;
 
     // notification that a new subsystem exists
-    virtual void onNewSubsystem(zsLib::Subsystem &inSubsystem) {}
+    virtual void notifyNewSubsystem(zsLib::Subsystem &inSubsystem) {}
 
     // notification of a log event
-    virtual void onWriteEvent(
-                              uintptr_t handle,
-                              Severity severity,
-                              Level level,
-                              LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
-                              LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
-                              size_t dataDescriptorCount
-                              ) {}
+    virtual void notifyWriteEvent(
+                                  ProviderHandle handle,
+                                  EventingAtomDataArrray eventingAtomDataArray,
+                                  Severity severity,
+                                  Level level,
+                                  LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                                  LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                                  size_t dataDescriptorCount
+                                  ) {}
   };
 
   //---------------------------------------------------------------------------
@@ -407,5 +453,3 @@ namespace zsLib
   };
 
 } // namespace zsLib
-
-#endif //ZSLIB_LOG_H_47d9d31085744072b865483d323d7b02

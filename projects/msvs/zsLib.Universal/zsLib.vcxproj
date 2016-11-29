@@ -46,15 +46,22 @@
     <ClInclude Include="..\..\..\zsLib\extras\uuid\uuidP.h" />
     <ClInclude Include="..\..\..\zsLib\extras\uuid\uuid_types.h" />
     <ClInclude Include="..\..\..\zsLib\helpers.h" />
+    <ClInclude Include="..\..\..\zsLib\IFactory.h" />
+    <ClInclude Include="..\..\..\zsLib\IHelper.h" />
+    <ClInclude Include="..\..\..\zsLib\IMessageQueueManager.h" />
+    <ClInclude Include="..\..\..\zsLib\IMessageQueueThread.h" />
+    <ClInclude Include="..\..\..\zsLib\IMessageQueueThreadPool.h" />
     <ClInclude Include="..\..\..\zsLib\internal\platform.h" />
     <ClInclude Include="..\..\..\zsLib\internal\types.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib.events.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib.events_win.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Event.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Exception.h" />
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_Helper.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_IPAddress.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Log.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_MessageQueue.h" />
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_MessageQueueManager.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_MessageQueueThread.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_MessageQueueThreadBasic.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_MessageQueueThreadPool.h" />
@@ -67,6 +74,7 @@
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Proxy.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_ProxyPack.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_ProxySubscriptions.h" />
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_Settings.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Singleton.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Socket.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_SocketMonitor.h" />
@@ -76,11 +84,12 @@
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_TimerMonitor.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_XML.h" />
     <ClInclude Include="..\..\..\zsLib\IPAddress.h" />
+    <ClInclude Include="..\..\..\zsLib\ISettings.h" />
+    <ClInclude Include="..\..\..\zsLib\ITimer.h" />
+    <ClInclude Include="..\..\..\zsLib\IWakeDelegate.h" />
     <ClInclude Include="..\..\..\zsLib\Log.h" />
-    <ClInclude Include="..\..\..\zsLib\MessageQueue.h" />
+    <ClInclude Include="..\..\..\zsLib\IMessageQueue.h" />
     <ClInclude Include="..\..\..\zsLib\MessageQueueAssociator.h" />
-    <ClInclude Include="..\..\..\zsLib\MessageQueueThread.h" />
-    <ClInclude Include="..\..\..\zsLib\MessageQueueThreadPool.h" />
     <ClInclude Include="..\..\..\zsLib\Numeric.h" />
     <ClInclude Include="..\..\..\zsLib\Promise.h" />
     <ClInclude Include="..\..\..\zsLib\Proxy.h" />
@@ -91,7 +100,6 @@
     <ClInclude Include="..\..\..\zsLib\String.h" />
     <ClInclude Include="..\..\..\zsLib\Stringize.h" />
     <ClInclude Include="..\..\..\zsLib\TearAway.h" />
-    <ClInclude Include="..\..\..\zsLib\Timer.h" />
     <ClInclude Include="..\..\..\zsLib\types.h" />
     <ClInclude Include="..\..\..\zsLib\WeightedMovingAverage.h" />
     <ClInclude Include="..\..\..\zsLib\XML.h" />
@@ -104,10 +112,12 @@
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Event.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Exception.cpp" />
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Helper.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_helpers.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_IPAddress.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Log.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueue.cpp" />
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueManager.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueThread.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueThreadBasic.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueThreadPool.cpp" />
@@ -118,6 +128,7 @@
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Numeric.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Promise.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Proxy.cpp" />
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Settings.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Singleton.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Socket.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_SocketMonitor.cpp" />
@@ -125,6 +136,7 @@
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Stringize.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Timer.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_TimerMonitor.cpp" />
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_WindowsEventProviderLogger.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_XML.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_XMLAttribute.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_XMLComment.cpp" />
@@ -244,6 +256,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\zsLib\cpp\zsLib.events.json" />
     <None Include="..\..\..\zsLib\internal\zsLib.events.jman" />
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.man" />
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" />

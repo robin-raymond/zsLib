@@ -31,11 +31,8 @@
 
 #pragma once
 
-#ifndef ZSLIB_MESSAGEQUEUEASSOCIATOR_H_b30d8a76e5e6d9d9602d98953384ac76
-#define ZSLIB_MESSAGEQUEUEASSOCIATOR_H_b30d8a76e5e6d9d9602d98953384ac76
-
 #include <zsLib/types.h>
-#include <zsLib/MessageQueue.h>
+#include <zsLib/IMessageQueue.h>
 
 namespace zsLib
 {
@@ -51,5 +48,3 @@ namespace zsLib
   };
 
 } // namespace zsLib
-
-#endif //ZSLIB_MESSAGEQUEUEASSOCIATOR_H_b30d8a76e5e6d9d9602d98953384ac76

@@ -39,11 +39,13 @@ namespace zsLib
 {
   namespace internal
   {
-    class Event : public noncopyable
+    class Event
     {
     public:
       Event();
       ~Event();
+
+      Event(const Event &) = delete;
 
     protected:
       static int NextEventId;

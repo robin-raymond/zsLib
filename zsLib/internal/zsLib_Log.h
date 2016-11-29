@@ -41,6 +41,10 @@
 #include <map>
 #include <set>
 
+#define ZSLIB_LOG_PROVIDER_ATOM_MAXIMUM (256)
+#define ZSLIB_LOG_PROVIDER_KEYWORDS_ALL (0xFFFFFFFFFFFFFFFFULL)
+#define ZSLIB_LOG_PROVIDER_KEYWORDS_NO_KEYWORD_DEFINED (0x8000000000000000ULL)
+
 namespace zsLib
 {
   class String;
@@ -54,55 +58,68 @@ namespace zsLib
     {
     protected:
       struct make_private {};
+      struct EventingWriter;
       typedef int LevelBaseType;
 
       typedef std::list<ILogOutputDelegatePtr> OutputListenerList;
       ZS_DECLARE_PTR(OutputListenerList);
       typedef std::list<ILogEventingDelegatePtr> EventingListenerList;
       ZS_DECLARE_PTR(EventingListenerList);
+      typedef std::list<ILogEventingProviderDelegatePtr> EventingProviderListenerList;
+      ZS_DECLARE_PTR(EventingProviderListenerList);
 
       typedef std::list<Subsystem *> SubsystemList;
 
       typedef String SubsystemName;
       typedef std::map<SubsystemName, LevelBaseType> SubsystemLevelMap;
 
-      struct EventingWriter
-      {
-        UUID mProviderID;
-        String mProviderName;
-        String mUniqueProviderHash;
-        bool mEnabled {false};
-        zsLib::Log *mLog {};
-      };
+      typedef uint64_t InternalKeywordBitmaskType;
+      typedef size_t InternalAtomIndex;
+      typedef uintptr_t InternalAtomData;
+      
+      typedef String AtomNamespace;
+      typedef std::map<AtomNamespace, InternalAtomIndex> AtomIndexMap;
+
+      struct LogEventDescriptor {};
+      struct LogEventDataDescriptor {};
+
+      typedef LogEventDescriptor LOG_EVENT_DESCRIPTOR;
+      typedef LogEventDataDescriptor LOG_EVENT_DATA_DESCRIPTOR;
 
       typedef std::set<EventingWriter *> EventWriterSet;
       typedef std::map<UUID, EventingWriter *> EventWriterMap;
 
+      typedef PUID ObjectID;
+      typedef std::map<ObjectID, InternalKeywordBitmaskType> ObjectIDBitmaskMap;
+
+      struct EventingWriter
+      {
+        volatile InternalKeywordBitmaskType mKeywordsBitmask {0};
+        UUID mProviderID {};
+        String mProviderName;
+        String mUniqueProviderHash;
+        zsLib::Log *mLog{};
+        InternalAtomData mAtomInfo[ZSLIB_LOG_PROVIDER_ATOM_MAXIMUM]{};
+        ObjectIDBitmaskMap mEnabledObjects;
+      };
+
     public:
       Log(const make_private &) :
         mOutputListeners(make_shared<OutputListenerList>()),
-        mEventingListeners(make_shared<EventingListenerList>()) {}
+        mEventingListeners(make_shared<EventingListenerList>()),
+        mEventingProviderListeners(make_shared<EventingProviderListenerList>())
+        {}
+
+      static void initSingleton();
 
       static String paramize(const char *name);
-
-#ifdef _WIN32
-      static void NTAPI EventWriterEnableCallback(
-                                                  _In_     LPCGUID                  SourceId,
-                                                  _In_     ULONG                    IsEnabled,
-                                                  _In_     UCHAR                    Level,
-                                                  _In_     ULONGLONG                MatchAnyKeyword,
-                                                  _In_     ULONGLONG                MatchAllKeywords,
-                                                  _In_opt_ PEVENT_FILTER_DESCRIPTOR FilterData,
-                                                  _In_opt_ PVOID                    CallbackContext
-                                                  );
-#endif //_WIN32
-
 
     protected:
       RecursiveLock mLock;
 
       OutputListenerListPtr mOutputListeners;
       EventingListenerListPtr mEventingListeners;
+      EventingProviderListenerListPtr mEventingProviderListeners;
 
       SubsystemList mSubsystems;
 
@@ -111,6 +128,8 @@ namespace zsLib
 
       EventWriterMap mEventWriters;
       EventWriterSet mCleanUpWriters;
+
+      AtomIndexMap mConsumedEventingAtoms;
     };
   }
 }
@@ -125,7 +144,7 @@ namespace zsLib
     return get##xSubsystem##Subsystem();                  \
   }
 
-#define ZS_INTERNAL_IMPLEMENT_SUBSYSTEM(xSubsystem) \
+#define ZS_INTERNAL_IMPLEMENT_SUBSYSTEM(xSubsystem)       \
   class xSubsystem##Subsystem : public ::zsLib::Subsystem \
   {                                                       \
   public:                                                 \

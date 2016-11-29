@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_STRING_H_8f1651797cde55890f27c67aa67d9976
-#define ZSLIB_STRING_H_8f1651797cde55890f27c67aa67d9976
-
 #include <string>
 
 #include <zsLib/types.h>
@@ -87,5 +84,3 @@ namespace zsLib
     void replaceAll(CSTR findStr, CSTR replaceStr, size_t totalOccurances = std::string::npos);
   };
 }
-
-#endif //ZSLIB_STRING_H_8f1651797cde55890f27c67aa67d9976

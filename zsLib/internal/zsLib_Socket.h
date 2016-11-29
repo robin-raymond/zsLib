@@ -119,7 +119,7 @@ namespace zsLib
   {
     ZS_DECLARE_CLASS_PTR(SocketMonitor)
 
-    class Socket : public noncopyable
+    class Socket
     {
     protected:
       Socket() :
@@ -127,6 +127,8 @@ namespace zsLib
         mMonitorWriteReady(true),
         mMonitorException(true)
       {}
+
+      Socket(const Socket &) = delete;
 
     public:
       ~Socket() {}

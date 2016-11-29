@@ -31,17 +31,27 @@
 
 #pragma once
 
-#include <zsLib/internal/zsLib_Event.h>
+#include <zsLib/types.h>
+#include <zsLib/IMessageQueueThread.h>
 
 namespace zsLib
 {
-  class Event : public internal::Event
+  interaction IMessageQueueThreadPool
   {
-  public:
-    static EventPtr create();
+    static IMessageQueueThreadPoolPtr create();
 
-    void reset();   // after an event has been notified, reset must be called to cause the wait to happen again
-    void wait();    // once an event is notified via "notify()", "wait()" will no longer wait until "reset()" is called
-    void notify();  // breaks the wait from executing until the reset is called
+    virtual void createThread(
+                              const char *threadName = NULL,
+                              ThreadPriorities threadPriority = ThreadPriority_NormalPriority
+                              ) = 0;
+
+    virtual void waitForShutdown() = 0;
+
+    virtual bool hasPendingMessages() = 0;
+
+    virtual IMessageQueuePtr createQueue() = 0;
+
+    virtual void setThreadPriority(ThreadPriorities threadPriority) = 0;
   };
-}
+
+} // namespace zsLib

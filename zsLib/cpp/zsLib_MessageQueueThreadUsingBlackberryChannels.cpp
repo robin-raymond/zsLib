@@ -32,6 +32,8 @@
 #ifdef __QNX__
 
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingBlackberryChannels.h>
+#include <zsLib/internal/zsLib_MessageQueue.h>
+
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
@@ -115,7 +117,7 @@ namespace zsLib
     MessageQueueThreadUsingBlackberryChannelsPtr MessageQueueThreadUsingBlackberryChannels::create()
     {
       MessageQueueThreadUsingBlackberryChannelsPtr thread(new MessageQueueThreadUsingBlackberryChannels);
-      thread->mQueue = zsLib::MessageQueue::create(thread);
+      thread->mQueue = MessageQueue::create(thread);
       return thread;
     }
 

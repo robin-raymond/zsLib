@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_XML_H_58e5a7d8cf6414da70cf4cc573d53693
-#define ZSLIB_XML_H_58e5a7d8cf6414da70cf4cc573d53693
-
 #include <zsLib/types.h>
 #include <zsLib/Exception.h>
 
@@ -858,5 +855,3 @@ namespace zsLib
 } // namespace zsLib
 
 #pragma warning(pop)
-
-#endif //ZSLIB_XML_H_58e5a7d8cf6414da70cf4cc573d53693

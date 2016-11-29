@@ -34,19 +34,51 @@
 #ifndef ZSLIB_INTERNAL_TIMER_H_1d1227118903c8b55faa0906dd0a99f8
 #define ZSLIB_INTERNAL_TIMER_H_1d1227118903c8b55faa0906dd0a99f8
 
-#include <zsLib/types.h>
-#include <zsLib/Proxy.h>
+#include <zsLib/ITimer.h>
 
 namespace zsLib
 {
   namespace internal
   {
-    class Timer
+    class Timer : public ITimer
     {
-      friend class zsLib::Timer;
+    protected:
+      struct make_private {};
+      friend interaction ITimer;
+      friend class TimerMonitor;
+
     public:
+      Timer(
+            const make_private &,
+            ITimerDelegatePtr delegate,
+            Microseconds timeout,
+            bool repeat,
+            size_t maxFiringTimerAtOnce
+            );
+
+      ~Timer();
+
+    public:
+      static TimerPtr create(
+                             ITimerDelegatePtr delegate,
+                             Microseconds timeout,
+                             bool repeat,
+                             size_t maxFiringTimerAtOnce
+                             );
+
+      static TimerPtr create(
+                             ITimerDelegatePtr delegate,
+                             Time timeout
+                             );
+
+      virtual PUID getID() const override { return mID; }
+
+      virtual void cancel() override;      // cancel a timer (it is no longer needed)
+
+      void background(bool background = true) override;  // background the timer (will run until timer is cancelled even if reference to object is forgotten)
+
+    protected:
       bool tick(const Time &time, Microseconds &sleepTime);  // returns true if should expire the timer
-      PUID getID() const {return mID;}
 
     protected:
       RecursiveLock mLock;
@@ -55,12 +87,13 @@ namespace zsLib
       TimerPtr mThisBackground;
       ITimerDelegatePtr mDelegate;
 
-      UINT mMaxFiringsAtOnce;
-      Time mFireNextAt;
+      size_t mMaxFiringsAtOnce {};
+      Time mFireNextAt {};
       Microseconds mTimeout {};
-      bool mOnceOnly;
-      bool mMonitored;
+      bool mOnceOnly {};
+      bool mMonitored {};
     };
+
   }
 }
 

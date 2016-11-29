@@ -40,10 +40,10 @@
 #include <zsLib/eventing/internal/zsLib_eventing_Log.h>
 
 
-#define ZS_EVENTING_GET_LOG_LEVEL()                                             ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()
-#define ZS_EVENTING_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                         ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
-#define ZS_EVENTING_IS_LOGGING(xHandleReference, xLevel)                        ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xLevel)
-#define ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)  ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xSubsystem, xLevel)
+#define ZS_EVENTING_GET_LOG_LEVEL()                                                                           ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()
+#define ZS_EVENTING_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                                                       ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
+#define ZS_EVENTING_IS_LOGGING(xHandleReference, xKeywordBitmask, xLevel)                                     ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xKeywordBitmask, xLevel)
+#define ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xHandleReference, xKeywordBitmask, xSubsystem, xLevel)               ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xKeywordBitmask, xSubsystem, xLevel)
 
 #define ZS_EVENTING_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)  ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)
 #define ZS_EVENTING_UNREGISTER_EVENT_WRITER(xHandleReference)                                                 ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)

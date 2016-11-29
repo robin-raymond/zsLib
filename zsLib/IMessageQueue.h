@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f
-#define ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f
-
 #include <zsLib/types.h>
 #include <zsLib/Exception.h>
 
@@ -63,35 +60,9 @@ namespace zsLib
 
     typedef size_t size_type;
 
-    virtual void post(IMessageQueueMessageUniPtr message) = 0;
+    static IMessageQueuePtr create(IMessageQueueNotifyPtr notify);
 
+    virtual void post(IMessageQueueMessageUniPtr message) = 0;
     virtual size_type getTotalUnprocessedMessages() const = 0;
   };
 }
-
-#include <zsLib/internal/zsLib_MessageQueue.h>
-
-namespace zsLib
-{
-  class MessageQueue : public internal::MessageQueue
-  {
-  public:
-    MessageQueue(
-                 const make_private &,
-                 IMessageQueueNotifyPtr notify
-                 );
-    ~MessageQueue();
-
-  public:
-    static MessageQueuePtr create(IMessageQueueNotifyPtr notify);
-
-    virtual void post(IMessageQueueMessageUniPtr message);
-
-    virtual size_type getTotalUnprocessedMessages() const;
-
-    void process();
-    void processOnlyOneMessage();
-  };
-}
-
-#endif //ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f

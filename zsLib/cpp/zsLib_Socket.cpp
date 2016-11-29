@@ -57,6 +57,18 @@ namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib_socket)}
 
 namespace zsLib
 {
+  ZS_EVENTING_TASK(Socket);
+  ZS_EVENTING_TASK_OPCODE(Socket, Exception);
+  ZS_EVENTING_TASK_OPCODE(Socket, Orphan);
+  ZS_EVENTING_TASK_OPCODE(Socket, Adopt);
+  ZS_EVENTING_TASK_OPCODE(Socket, Event);
+  ZS_EVENTING_TASK_OPCODE(Socket, Bind);
+  ZS_EVENTING_TASK_OPCODE(Socket, Listen);
+  ZS_EVENTING_TASK_OPCODE(Socket, Accept);
+  ZS_EVENTING_TASK_OPCODE(Socket, Connect);
+  ZS_EVENTING_TASK_OPCODE(Socket, Shutdown);
+  ZS_EVENTING_TASK_OPCODE(Socket, Option);
+
 #ifndef _WIN32
   typedef linger LINGER;
 
@@ -275,12 +287,6 @@ namespace zsLib
   void Socket::ignoreSIGPIPEOnThisThread()
   {
     internal::ignoreSigTermOnThread();
-  }
-
-  //---------------------------------------------------------------------------
-  void Socket::setMonitorPriority(ThreadPriorities priority)
-  {
-    internal::SocketMonitor::setPriority(priority);
   }
 
   //---------------------------------------------------------------------------

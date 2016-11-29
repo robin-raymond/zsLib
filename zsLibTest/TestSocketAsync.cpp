@@ -31,7 +31,7 @@
 
 #include <zsLib/Socket.h>
 #include <zsLib/IPAddress.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/IMessageQueueThread.h>
 
 
 #include "testing.h"
@@ -212,7 +212,7 @@ namespace async_socket
       srand(static_cast<signed int>(time(NULL)));
       zsLib::WORD port1 = (rand()%(65550-5000))+5000;
 
-      zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
+      zsLib::IMessageQueueThreadPtr thread(zsLib::IMessageQueueThread::createBasic());
 
       SocketServerPtr server(SocketServer::create(thread));
 
@@ -258,7 +258,7 @@ namespace async_socket
     {
       zsLib::WORD port1 = (rand() % (65550 - 5000)) + 5000;
 
-      zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
+      zsLib::IMessageQueueThreadPtr thread(zsLib::IMessageQueueThread::createBasic());
 
       ListenServerPtr server(ListenServer::create(thread));
 

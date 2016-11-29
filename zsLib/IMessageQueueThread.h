@@ -31,12 +31,11 @@
 
 #pragma once
 
-#ifndef ZSLIB_MESSAGEQUEUETHREAD_H_573a8d930ea451693ccd53632e481cb0
-#define ZSLIB_MESSAGEQUEUETHREAD_H_573a8d930ea451693ccd53632e481cb0
-
 #include <zsLib/types.h>
+#include <zsLib/IMessageQueue.h>
 
-namespace zsLib {
+namespace zsLib
+{
 
   enum ThreadPriorities
   {
@@ -54,26 +53,17 @@ namespace zsLib {
                          Thread &thread,
                          ThreadPriorities threadPriority
                          );
-} // namespace zsLib
 
-#include <zsLib/internal/zsLib_MessageQueueThread.h>
-
-namespace zsLib
-{
   interaction IMessageQueueThread : public IMessageQueue
   {
+    static IMessageQueueThreadPtr createBasic(const char *threadName = NULL, ThreadPriorities threadPriority = ThreadPriority_NormalPriority);
+    static IMessageQueueThreadPtr singletonUsingCurrentGUIThreadsMessageQueue();
+
     virtual void waitForShutdown() = 0;
 
     virtual void setThreadPriority(ThreadPriorities priority) = 0;
 
     virtual void processMessagesFromThread() = 0;
-  };
-
-  class MessageQueueThread : public IMessageQueueThread
-  {
-  public:
-    static MessageQueueThreadPtr createBasic(const char *threadName = NULL, ThreadPriorities threadPriority = ThreadPriority_NormalPriority);
-    static MessageQueueThreadPtr singletonUsingCurrentGUIThreadsMessageQueue();
   };
 
 #ifdef __QNX__
@@ -96,6 +86,4 @@ namespace zsLib
   };
 
 #endif // __QNX__
-}
-
-#endif //ZSLIB_MESSAGEQUEUETHREAD_H_573a8d930ea451693ccd53632e481cb0
+} // namespace zsLib

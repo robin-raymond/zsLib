@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2016, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,17 +31,18 @@
 
 #pragma once
 
-#include <zsLib/internal/zsLib_Event.h>
+#include <zsLib/Proxy.h>
 
 namespace zsLib
 {
-  class Event : public internal::Event
-  {
-  public:
-    static EventPtr create();
+  ZS_DECLARE_INTERACTION_PROXY(IWakeDelegate);
 
-    void reset();   // after an event has been notified, reset must be called to cause the wait to happen again
-    void wait();    // once an event is notified via "notify()", "wait()" will no longer wait until "reset()" is called
-    void notify();  // breaks the wait from executing until the reset is called
+  interaction IWakeDelegate
+  {
+    virtual void onWake() = 0;
   };
 }
+
+ZS_DECLARE_PROXY_BEGIN(zsLib::IWakeDelegate)
+ZS_DECLARE_PROXY_METHOD_0(onWake)
+ZS_DECLARE_PROXY_END()

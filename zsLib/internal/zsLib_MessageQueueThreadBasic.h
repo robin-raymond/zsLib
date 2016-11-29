@@ -34,8 +34,8 @@
 #ifndef ZSLIB_INTERNAL_MESSAGEQUEUETHREADBASIC_H_f615413ac754769243970b0fefce2e2e
 #define ZSLIB_INTERNAL_MESSAGEQUEUETHREADBASIC_H_f615413ac754769243970b0fefce2e2e
 
-#include <zsLib/MessageQueue.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
+
 #include <zsLib/Exception.h>
 #include <zsLib/Event.h>
 

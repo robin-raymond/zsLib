@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_STRINGIZE_H_aa15b3dce8688ace2fc3f0d12deaefb8
-#define ZSLIB_STRINGIZE_H_aa15b3dce8688ace2fc3f0d12deaefb8
-
 #include <zsLib/internal/zsLib_Stringize.h>
 
 namespace zsLib
@@ -69,5 +66,3 @@ namespace zsLib
 } // namespace zsLib
 
 #include <zsLib/internal/zsLib_Stringize.h>
-
-#endif //ZSLIB_STRINGIZE_H_aa15b3dce8688ace2fc3f0d12deaefb8

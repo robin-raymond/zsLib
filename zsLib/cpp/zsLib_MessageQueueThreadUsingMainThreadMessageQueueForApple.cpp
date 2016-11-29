@@ -32,6 +32,8 @@
 #ifdef __APPLE__
 
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.h>
+#include <zsLib/internal/zsLib_MessageQueue.h>
+
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
@@ -63,7 +65,7 @@ namespace zsLib
     MessageQueueThreadUsingMainThreadMessageQueueForApplePtr MessageQueueThreadUsingMainThreadMessageQueueForApple::create()
     {
       MessageQueueThreadUsingMainThreadMessageQueueForApplePtr thread(new MessageQueueThreadUsingMainThreadMessageQueueForApple);
-      thread->mQueue = zsLib::MessageQueue::create(thread);
+      thread->mQueue = MessageQueue::create(thread);
       thread->init();
       return thread;
     }

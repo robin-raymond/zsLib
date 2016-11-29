@@ -39,16 +39,7 @@
     <ClInclude Include="..\..\..\zsLib\Log.h">
       <Filter>zsLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\zsLib\MessageQueue.h">
-      <Filter>zsLib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\zsLib\MessageQueueAssociator.h">
-      <Filter>zsLib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\zsLib\MessageQueueThread.h">
-      <Filter>zsLib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\zsLib\MessageQueueThreadPool.h">
       <Filter>zsLib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\Numeric.h">
@@ -79,9 +70,6 @@
       <Filter>zsLib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\TearAway.h">
-      <Filter>zsLib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\zsLib\Timer.h">
       <Filter>zsLib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\types.h">
@@ -212,6 +200,42 @@
     </ClInclude>
     <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_Log.h">
       <Filter>zsLib\eventing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IMessageQueue.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IMessageQueueThread.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IMessageQueueThreadPool.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IWakeDelegate.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\ITimer.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_MessageQueueManager.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_Settings.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_Helper.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IHelper.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IFactory.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\IMessageQueueManager.h">
+      <Filter>zsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\ISettings.h">
+      <Filter>zsLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +394,18 @@
     <ClCompile Include="..\..\..\zsLib\extras\win32\strptime.cpp">
       <Filter>zsLib\extras\win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_WindowsEventProviderLogger.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueManager.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Settings.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Helper.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.wprp">
@@ -380,6 +416,9 @@
     </None>
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.man">
       <Filter>zsLib\internal</Filter>
+    </None>
+    <None Include="..\..\..\zsLib\cpp\zsLib.events.json">
+      <Filter>zsLib\cpp</Filter>
     </None>
   </ItemGroup>
 </Project>

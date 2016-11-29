@@ -29,7 +29,8 @@
  
  */
 
-#include <zsLib/Timer.h>
+#include <zsLib/internal/zsLib_Timer.h>
+
 #include <zsLib/Exception.h>
 #include <zsLib/internal/zsLib_TimerMonitor.h>
 #include <zsLib/helpers.h>
@@ -44,8 +45,108 @@ namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib)}
 
 namespace zsLib
 {
+  ZS_EVENTING_TASK(Timer);
+  ZS_EVENTING_TASK_OPCODE(Timer, Event);
+
   namespace internal
   {
+    //-------------------------------------------------------------------------
+    Timer::Timer(
+                 const make_private &,
+                 ITimerDelegatePtr delegate,
+                 Microseconds timeout,
+                 bool repeat,
+                 UINT maxFiringsAtOnce
+                 )
+    {
+      mDelegate = ITimerDelegateProxy::createWeak(delegate);
+      ZS_THROW_INVALID_USAGE_IF(!mDelegate);
+      ZS_THROW_INVALID_USAGE_IF(!ITimerDelegateProxy::isProxy(mDelegate)); // NOTE: the delegate passed in is not associated with a message queue
+
+      mOnceOnly = !repeat;
+      mMaxFiringsAtOnce = maxFiringsAtOnce;
+      mTimeout = timeout;
+      mID = createPUID();
+      mMonitored = false;
+      mFireNextAt = (std::chrono::system_clock::now() + timeout);
+
+      ZS_EVENTING_3(x, i, Trace, TimerCreate, zs, Timer, Start, puid, id, mID, bool, repeat, repeat, duration, timeoutInMicroseconds, timeout.count());
+    }
+
+    //---------------------------------------------------------------------------
+    Timer::~Timer()
+    {
+      mThisWeak.reset();
+      cancel();
+      ZS_EVENTING_1(x, i, Trace, TimerDestroy, zs, Timer, Stop, puid, id, mID);
+    }
+
+    //---------------------------------------------------------------------------
+    TimerPtr Timer::create(
+                           ITimerDelegatePtr delegate,
+                           Microseconds timeout,
+                           bool repeat,
+                           size_t maxFiringTimerAtOnce
+                           )
+    {
+      TimerPtr timer(make_shared<Timer>(make_private{}, delegate, timeout, repeat, maxFiringTimerAtOnce));
+      timer->mThisWeak = timer;
+
+      internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
+      if (singleton) {
+        singleton->monitorBegin(timer);
+      }
+      timer->mMonitored = true;
+      return timer;
+    }
+
+    //---------------------------------------------------------------------------
+    TimerPtr Timer::create(
+                           ITimerDelegatePtr delegate,
+                           Time timeout
+                           )
+    {
+      Time now = zsLib::now();
+      if (now > timeout) {
+        return create(delegate, Microseconds(0), false, 1);
+      }
+      Microseconds waitTime = std::chrono::duration_cast<Microseconds>(timeout - now);
+      return create(delegate, waitTime, false, 1);
+    }
+
+    //---------------------------------------------------------------------------
+    void Timer::cancel()
+    {
+      {
+        AutoRecursiveLock lock(mLock);
+        mThisBackground.reset();
+        if (!mMonitored)
+          return;
+      }
+
+      internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
+      if (singleton) {
+        singleton->monitorEnd(*this);
+      }
+
+      {
+        AutoRecursiveLock lock(mLock);
+        mThisBackground.reset();
+        mMonitored = false;
+      }
+    }
+
+    //---------------------------------------------------------------------------
+    void Timer::background(bool background)
+    {
+      AutoRecursiveLock lock(mLock);
+
+      if (!background)
+        mThisBackground.reset();
+      else
+        mThisBackground = mThisWeak.lock();
+    }
+
     //-------------------------------------------------------------------------
     bool Timer::tick(const Time &time, Microseconds &sleepTime)
     {
@@ -99,108 +200,26 @@ namespace zsLib
 
       return mOnceOnly;
     }
+  } // namespace internal
+
+  //---------------------------------------------------------------------------
+  ITimerPtr ITimer::create(
+                            ITimerDelegatePtr delegate,
+                            Microseconds timeout,
+                            bool repeat,
+                            size_t maxFiringTimerAtOnce
+                            )
+  {
+    return internal::Timer::create(delegate, timeout, repeat, maxFiringTimerAtOnce);
   }
 
   //---------------------------------------------------------------------------
-  Timer::Timer(
-               const make_private &,
-               ITimerDelegatePtr delegate,
-               Microseconds timeout,
-               bool repeat,
-               UINT maxFiringsAtOnce
-               )
+  ITimerPtr ITimer::create(
+                           ITimerDelegatePtr delegate,
+                           Time timeout
+                           )
   {
-    mDelegate = ITimerDelegateProxy::createWeak(delegate);
-    ZS_THROW_INVALID_USAGE_IF(!mDelegate)
-    ZS_THROW_INVALID_USAGE_IF(!Proxy<ITimerDelegate>::isProxy(mDelegate)) // NOTE: the delegate passed in is not associated with a message queue
-
-    mOnceOnly = !repeat;
-    mMaxFiringsAtOnce = maxFiringsAtOnce;
-    mTimeout = timeout;
-    mID = createPUID();
-    mMonitored = false;
-    mFireNextAt = (std::chrono::system_clock::now() + timeout);
-
-    ZS_EVENTING_3(x, i, Trace, TimerCreate, zs, Timer, Start, puid, id, mID, bool, repeat, repeat, duration, timeoutInMicroseconds, timeout.count());
+    return internal::Timer::create(delegate, timeout);
   }
 
-  //---------------------------------------------------------------------------
-  Timer::~Timer()
-  {
-    mThisWeak.reset();
-    cancel();
-    ZS_EVENTING_1(x, i, Trace, TimerDestroy, zs, Timer, Stop, puid, id, mID);
-  }
-
-  //---------------------------------------------------------------------------
-  void Timer::setMonitorPriority(ThreadPriorities priority)
-  {
-    internal::TimerMonitor::setPriority(priority);
-  }
-
-  //---------------------------------------------------------------------------
-  TimerPtr Timer::create(
-                         ITimerDelegatePtr delegate,
-                         Microseconds timeout,
-                         bool repeat,
-                         UINT maxFiringTimerAtOnce
-                         )
-  {
-    TimerPtr timer(make_shared<Timer>(make_private {}, delegate, timeout, repeat, maxFiringTimerAtOnce));
-    timer->mThisWeak = timer;
-
-    internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
-    if (singleton) {
-      singleton->monitorBegin(timer);
-    }
-    timer->mMonitored = true;
-    return timer;
-  }
-
-  //---------------------------------------------------------------------------
-  TimerPtr Timer::create(
-                         ITimerDelegatePtr delegate,
-                         Time timeout
-                         )
-  {
-    Time now = zsLib::now();
-    if (now > timeout) {
-      return create(delegate, Microseconds(0), false, 1);
-    }
-    Microseconds waitTime = std::chrono::duration_cast<Microseconds>(timeout - now);
-    return create(delegate, waitTime, false, 1);
-  }
-
-  //---------------------------------------------------------------------------
-  void Timer::cancel()
-  {
-    {
-      AutoRecursiveLock lock(mLock);
-      mThisBackground.reset();
-      if (!mMonitored)
-        return;
-    }
-
-    internal::TimerMonitorPtr singleton = internal::TimerMonitor::singleton();
-    if (singleton) {
-      singleton->monitorEnd(*this);
-    }
-
-    {
-      AutoRecursiveLock lock(mLock);
-      mThisBackground.reset();
-      mMonitored = false;
-    }
-  }
-
-  //---------------------------------------------------------------------------
-  void Timer::background(bool background)
-  {
-    AutoRecursiveLock lock(mLock);
-
-    if (!background)
-      mThisBackground.reset();
-    else
-      mThisBackground = mThisWeak.lock();
-  }
-}
+} // namespace zsLib
