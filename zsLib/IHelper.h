@@ -62,6 +62,78 @@ namespace zsLib
 
     static RecursiveLockPtr getGlobalLock();
 
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, bool &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, CHAR &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, UCHAR &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, SHORT &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, USHORT &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, LONG &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, ULONG &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, LONGLONG &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, ULONGLONG &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, INT &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, UINT &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, FLOAT &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, DOUBLE &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, String &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Time &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Milliseconds &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Microseconds &outValue);
+
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<bool> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<CHAR> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<UCHAR> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<SHORT> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<USHORT> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<LONG> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<ULONG> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<LONGLONG> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<ULONGLONG> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<INT> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<UINT> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<FLOAT> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<DOUBLE> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<String> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<Time> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<Milliseconds> &outValue);
+    static void getElementValue(ElementPtr elem, const char *logObjectName, const char *subElementName, Optional<Microseconds> &outValue);
+
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, bool value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, CHAR value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, UCHAR value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, SHORT value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, USHORT value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, LONG value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, ULONG value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, LONGLONG value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, ULONGLONG value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, INT value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, UINT value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, FLOAT value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, DOUBLE value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const String &value, bool adoptEmptyValue);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Time &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Milliseconds &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Microseconds &value);
+
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<bool> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<CHAR> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<UCHAR> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<SHORT> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<USHORT> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<LONG> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<ULONG> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<LONGLONG> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<ULONGLONG> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<INT> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<UINT> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<FLOAT> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<DOUBLE> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<String> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<Time> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<Milliseconds> &value);
+    static void adoptElementValue(ElementPtr elem, const char *subElementName, const Optional<Microseconds> &value);
+
     static void debugAppend(ElementPtr &parentEl, const char *name, const char *value);
     static void debugAppend(ElementPtr &parentEl, const char *name, const String &value);
     static void debugAppendNumber(ElementPtr &parentEl, const char *name, const String &value);

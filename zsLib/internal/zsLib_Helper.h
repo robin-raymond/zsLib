@@ -52,6 +52,10 @@ namespace zsLib
       ZS_DECLARE_TYPEDEF_PTR(zsLib::Log::Params, Params);
 
       static Params slog(const char *message);
+      static Params slog(
+                         const char *logObjectName,
+                         const char *message
+                         );
     };
   } // namespace internal
 } // namespace zsLib
