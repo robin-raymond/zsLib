@@ -56,7 +56,7 @@ namespace zsLib
                  ITimerDelegatePtr delegate,
                  Microseconds timeout,
                  bool repeat,
-                 UINT maxFiringsAtOnce
+                 size_t maxFiringsAtOnce
                  )
     {
       mDelegate = ITimerDelegateProxy::createWeak(delegate);

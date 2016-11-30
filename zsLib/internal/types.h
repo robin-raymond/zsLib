@@ -49,12 +49,12 @@
 #undef WINRT
 #define WINRT
 #endif //__cplusplus_winrt
-#endif //_WIN32
 
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <rpc.h>
 #include <stdint.h>
+#endif //_WIN32
 
 #include <atomic>
 #include <limits.h>

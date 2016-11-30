@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0086661F1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0086661E1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp */; };
+		008666211DEE6A0200CBA4FD /* zsLib_Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008666201DEE6A0200CBA4FD /* zsLib_Settings.cpp */; };
+		008666231DEE6A1B00CBA4FD /* zsLib_Helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008666221DEE6A1B00CBA4FD /* zsLib_Helper.cpp */; };
 		00FF08F21D9C1B6700462998 /* zsLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF087F1D9C1B6700462998 /* zsLib.cpp */; };
 		00FF08F31D9C1B6700462998 /* zsLib_Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08801D9C1B6700462998 /* zsLib_Event.cpp */; };
 		00FF08F41D9C1B6700462998 /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */; };
@@ -48,6 +51,19 @@
 
 /* Begin PBXFileReference section */
 		001AD3921DE7E9E800103DA3 /* zsLib.events.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = zsLib.events.json; sourceTree = "<group>"; };
+		008666151DEE697B00CBA4FD /* IMessageQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueue.h; sourceTree = "<group>"; };
+		008666161DEE697B00CBA4FD /* IMessageQueueManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueueManager.h; sourceTree = "<group>"; };
+		008666171DEE697B00CBA4FD /* IMessageQueueThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueueThread.h; sourceTree = "<group>"; };
+		008666181DEE697B00CBA4FD /* IMessageQueueThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueueThreadPool.h; sourceTree = "<group>"; };
+		008666191DEE699800CBA4FD /* IFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IFactory.h; sourceTree = "<group>"; };
+		0086661A1DEE699800CBA4FD /* IHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IHelper.h; sourceTree = "<group>"; };
+		0086661B1DEE69B700CBA4FD /* ISettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ISettings.h; sourceTree = "<group>"; };
+		0086661C1DEE69B700CBA4FD /* ITimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ITimer.h; sourceTree = "<group>"; };
+		0086661D1DEE69B700CBA4FD /* IWakeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IWakeDelegate.h; sourceTree = "<group>"; };
+		0086661E1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_MessageQueueManager.cpp; sourceTree = "<group>"; };
+		008666201DEE6A0200CBA4FD /* zsLib_Settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Settings.cpp; sourceTree = "<group>"; };
+		008666221DEE6A1B00CBA4FD /* zsLib_Helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Helper.cpp; sourceTree = "<group>"; };
+		0086665F1DEE6FAC00CBA4FD /* zsLib_MessageQueueManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_MessageQueueManager.h; sourceTree = "<group>"; };
 		0086972D1DE3DD7E009D669C /* zsLib_eventing_Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_eventing_Log.h; sourceTree = "<group>"; };
 		0086972E1DE3DD7E009D669C /* Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
 		0086972F1DE3DD7E009D669C /* noop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = noop.h; sourceTree = "<group>"; };
@@ -146,10 +162,7 @@
 		00FF08DC1D9C1B6700462998 /* IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPAddress.h; sourceTree = "<group>"; };
 		00FF08DD1D9C1B6700462998 /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
 		00FF08DE1D9C1B6700462998 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
-		00FF08DF1D9C1B6700462998 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueue.h; sourceTree = "<group>"; };
 		00FF08E01D9C1B6700462998 /* MessageQueueAssociator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueueAssociator.h; sourceTree = "<group>"; };
-		00FF08E11D9C1B6700462998 /* MessageQueueThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueueThread.h; sourceTree = "<group>"; };
-		00FF08E21D9C1B6700462998 /* MessageQueueThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueueThreadPool.h; sourceTree = "<group>"; };
 		00FF08E31D9C1B6700462998 /* Numeric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Numeric.h; sourceTree = "<group>"; };
 		00FF08E41D9C1B6700462998 /* Promise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Promise.h; sourceTree = "<group>"; };
 		00FF08E51D9C1B6700462998 /* Proxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Proxy.h; sourceTree = "<group>"; };
@@ -160,7 +173,6 @@
 		00FF08EA1D9C1B6700462998 /* String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = String.h; sourceTree = "<group>"; };
 		00FF08EB1D9C1B6700462998 /* Stringize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stringize.h; sourceTree = "<group>"; };
 		00FF08EC1D9C1B6700462998 /* TearAway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TearAway.h; sourceTree = "<group>"; };
-		00FF08ED1D9C1B6700462998 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		00FF08EE1D9C1B6700462998 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		00FF08EF1D9C1B6700462998 /* WeightedMovingAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeightedMovingAverage.h; sourceTree = "<group>"; };
 		00FF08F01D9C1B6700462998 /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
@@ -223,13 +235,19 @@
 				00FF08A51D9C1B6700462998 /* Event.h */,
 				00FF08A61D9C1B6700462998 /* Exception.h */,
 				00FF08BC1D9C1B6700462998 /* helpers.h */,
+				008666191DEE699800CBA4FD /* IFactory.h */,
+				0086661A1DEE699800CBA4FD /* IHelper.h */,
+				008666151DEE697B00CBA4FD /* IMessageQueue.h */,
+				008666161DEE697B00CBA4FD /* IMessageQueueManager.h */,
+				008666171DEE697B00CBA4FD /* IMessageQueueThread.h */,
+				008666181DEE697B00CBA4FD /* IMessageQueueThreadPool.h */,
 				00FF08DC1D9C1B6700462998 /* IPAddress.h */,
+				0086661B1DEE69B700CBA4FD /* ISettings.h */,
+				0086661C1DEE69B700CBA4FD /* ITimer.h */,
+				0086661D1DEE69B700CBA4FD /* IWakeDelegate.h */,
 				00FF08DD1D9C1B6700462998 /* license.txt */,
 				00FF08DE1D9C1B6700462998 /* Log.h */,
-				00FF08DF1D9C1B6700462998 /* MessageQueue.h */,
 				00FF08E01D9C1B6700462998 /* MessageQueueAssociator.h */,
-				00FF08E11D9C1B6700462998 /* MessageQueueThread.h */,
-				00FF08E21D9C1B6700462998 /* MessageQueueThreadPool.h */,
 				00FF08E31D9C1B6700462998 /* Numeric.h */,
 				00FF08E41D9C1B6700462998 /* Promise.h */,
 				00FF08E51D9C1B6700462998 /* Proxy.h */,
@@ -240,7 +258,6 @@
 				00FF08EA1D9C1B6700462998 /* String.h */,
 				00FF08EB1D9C1B6700462998 /* Stringize.h */,
 				00FF08EC1D9C1B6700462998 /* TearAway.h */,
-				00FF08ED1D9C1B6700462998 /* Timer.h */,
 				00FF08EE1D9C1B6700462998 /* types.h */,
 				00FF08EF1D9C1B6700462998 /* WeightedMovingAverage.h */,
 				00FF08F01D9C1B6700462998 /* XML.h */,
@@ -258,9 +275,11 @@
 				00FF08801D9C1B6700462998 /* zsLib_Event.cpp */,
 				00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */,
 				00FF08821D9C1B6700462998 /* zsLib_helpers.cpp */,
+				008666221DEE6A1B00CBA4FD /* zsLib_Helper.cpp */,
 				00FF08831D9C1B6700462998 /* zsLib_IPAddress.cpp */,
 				00FF08841D9C1B6700462998 /* zsLib_Log.cpp */,
 				00FF08851D9C1B6700462998 /* zsLib_MessageQueue.cpp */,
+				0086661E1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp */,
 				00FF08861D9C1B6700462998 /* zsLib_MessageQueueThread.cpp */,
 				00FF08871D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp */,
 				00FF08881D9C1B6700462998 /* zsLib_MessageQueueThreadPool.cpp */,
@@ -271,6 +290,7 @@
 				00FF088D1D9C1B6700462998 /* zsLib_Numeric.cpp */,
 				00FF088E1D9C1B6700462998 /* zsLib_Promise.cpp */,
 				00FF088F1D9C1B6700462998 /* zsLib_Proxy.cpp */,
+				008666201DEE6A0200CBA4FD /* zsLib_Settings.cpp */,
 				00FF08901D9C1B6700462998 /* zsLib_Singleton.cpp */,
 				00FF08911D9C1B6700462998 /* zsLib_Socket.cpp */,
 				00FF08921D9C1B6700462998 /* zsLib_SocketMonitor.cpp */,
@@ -346,6 +366,7 @@
 				00FF08C41D9C1B6700462998 /* zsLib_IPAddress.h */,
 				00FF08C51D9C1B6700462998 /* zsLib_Log.h */,
 				00FF08C61D9C1B6700462998 /* zsLib_MessageQueue.h */,
+				0086665F1DEE6FAC00CBA4FD /* zsLib_MessageQueueManager.h */,
 				00FF08C71D9C1B6700462998 /* zsLib_MessageQueueThread.h */,
 				00FF08C81D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.h */,
 				00FF08C91D9C1B6700462998 /* zsLib_MessageQueueThreadPool.h */,
@@ -411,7 +432,7 @@
 		00FF08671D9C1B2300462998 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Robin Raymond";
 				TargetAttributes = {
 					00FF086E1D9C1B2300462998 = {
@@ -450,6 +471,7 @@
 				00FF09141D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp in Sources */,
 				00FF09051D9C1B6700462998 /* zsLib_SocketMonitor.cpp in Sources */,
 				00FF08FC1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */,
+				0086661F1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp in Sources */,
 				00FF09101D9C1B6700462998 /* zsLib_XMLGenerator.cpp in Sources */,
 				00FF090C1D9C1B6700462998 /* zsLib_XMLComment.cpp in Sources */,
 				00FF08F51D9C1B6700462998 /* zsLib_helpers.cpp in Sources */,
@@ -461,12 +483,14 @@
 				00FF09071D9C1B6700462998 /* zsLib_Stringize.cpp in Sources */,
 				00FF09091D9C1B6700462998 /* zsLib_TimerMonitor.cpp in Sources */,
 				00FF08FE1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.cpp in Sources */,
+				008666231DEE6A1B00CBA4FD /* zsLib_Helper.cpp in Sources */,
 				00FF090F1D9C1B6700462998 /* zsLib_XMLElement.cpp in Sources */,
 				00FF08F81D9C1B6700462998 /* zsLib_MessageQueue.cpp in Sources */,
 				00FF08F41D9C1B6700462998 /* zsLib_Exception.cpp in Sources */,
 				00FF08FD1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.cpp in Sources */,
 				00FF09151D9C1B6700462998 /* zsLib_XMLText.cpp in Sources */,
 				00FF09001D9C1B6700462998 /* zsLib_Numeric.cpp in Sources */,
+				008666211DEE6A0200CBA4FD /* zsLib_Settings.cpp in Sources */,
 				00FF08FF1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingMainThreadMessageQueueForApple.cpp in Sources */,
 				00FF09161D9C1B6700462998 /* zsLib_XMLUnknown.cpp in Sources */,
 				00FF08FA1D9C1B6700462998 /* zsLib_MessageQueueThreadBasic.cpp in Sources */,
@@ -503,6 +527,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -550,6 +575,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

@@ -670,8 +670,6 @@ namespace zsLib
 
       EventingProviderListenerListPtr replaceList(make_shared<EventingProviderListenerList>());
 
-      size_t originalSize = refThis.mEventingProviderListeners->size();
-
       (*replaceList) = (*refThis.mEventingProviderListeners);
 
       replaceList->push_back(delegate);

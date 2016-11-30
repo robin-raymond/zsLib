@@ -374,7 +374,7 @@ namespace zsLib                                                                 
       return IMessageQueuePtr();                                                                              \
     }                                                                                                         \
                                                                                                               \
-    void throwDelegateGone() const                                                                            \
+    void throwDelegateGone() const override                                                                   \
     {                                                                                                         \
       throw Exceptions::DelegateGone(ZS_GET_OTHER_SUBSYSTEM(::zsLib, zsLib), ::zsLib::Log::Params("proxy points to destroyed delegate", getInterfaceName()), __FUNCTION__, __FILE__, __LINE__); \
     }                                                                                                         \

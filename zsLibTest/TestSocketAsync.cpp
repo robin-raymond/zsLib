@@ -37,6 +37,8 @@
 #include "testing.h"
 #include "main.h"
 
+#include <vector>
+
 using zsLib::BYTE;
 using zsLib::ULONG;
 using zsLib::IMessageQueue;

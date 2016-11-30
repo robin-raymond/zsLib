@@ -32,6 +32,7 @@
 #pragma once
 
 #include <zsLib/types.h>
+#include <zsLib/Singleton.h>
 
 namespace zsLib
 {
@@ -47,8 +48,8 @@ namespace zsLib
   interaction IFactory : public XFACTORYINTERFACE
   {
   public:
-    ZS_DECLARE_TYPEDEF_PTR(XFACTORYINTERFACE, UseFactoryInterface)
-    ZS_DECLARE_TYPEDEF_PTR(IFactory, UseFactory)
+    ZS_DECLARE_TYPEDEF_PTR(XFACTORYINTERFACE, UseFactoryInterface);
+    ZS_DECLARE_TYPEDEF_PTR(IFactory, UseFactory);
 
   public:
     static void override(UseFactoryInterfacePtr override)
