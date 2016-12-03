@@ -31,14 +31,42 @@
 
 #pragma once
 
-#ifndef ZSLIB_EVENTING_NOOP
-
-#ifndef ZSLIB_EVENTING_LOG_H_018218a1084f40d301941b196789c11839beb7ed
-#define ZSLIB_EVENTING_LOG_H_018218a1084f40d301941b196789c11839beb7ed
-
 #include <zsLib/Log.h>
+
+
+namespace zsLib
+{
+  namespace eventing
+  {
+    enum EventParameterTypes
+    {
+      EventParameterType_Boolean = 1,
+      EventParameterType_UnsignedInteger = 2,
+      EventParameterType_SignedInteger = 2 | 4,
+      EventParameterType_FloatingPoint = 8,
+      EventParameterType_Pointer = 16,
+      EventParameterType_Binary = 16 | 32,
+      EventParameterType_AString = 16 | 64,
+      EventParameterType_WString = 16 | 128,
+    };
+  } // namespace eventing
+} // namespace zsLib
+
 #include <zsLib/eventing/internal/zsLib_eventing_Log.h>
 
+namespace zsLib
+{
+  namespace eventing
+  {
+    typedef zsLib::eventing::internal::USE_EVENT_DATA_DESCRIPTOR USE_EVENT_DATA_DESCRIPTOR;
+    typedef zsLib::eventing::internal::USE_EVENT_DESCRIPTOR USE_EVENT_DESCRIPTOR;
+    typedef zsLib::eventing::internal::USE_EVENT_PARAMETER_DESCRIPTOR USE_EVENT_PARAMETER_DESCRIPTOR;
+    
+    typedef int USE_EVENT_DATA_BOOL_TYPE;
+  }
+}
+
+#ifndef ZSLIB_EVENTING_NOOP
 
 #define ZS_EVENTING_GET_LOG_LEVEL()                                                                           ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()
 #define ZS_EVENTING_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                                                       ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)
@@ -48,7 +76,7 @@
 #define ZS_EVENTING_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)  ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)
 #define ZS_EVENTING_UNREGISTER_EVENT_WRITER(xHandleReference)                                                 ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
-#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount)
+#define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventParameterDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventParameterDescriptor, xEventDataDescriptor, xEventDataDescriptorCount)
 
 #define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize)  ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize)
 #define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                    ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)
@@ -370,18 +398,5 @@
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
 #define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
-
-namespace zsLib
-{
-  namespace eventing
-  {
-    typedef zsLib::eventing::internal::USE_EVENT_DATA_DESCRIPTOR USE_EVENT_DATA_DESCRIPTOR;
-    typedef zsLib::eventing::internal::USE_EVENT_DESCRIPTOR USE_EVENT_DESCRIPTOR;
-    
-    typedef int USE_EVENT_DATA_BOOL_TYPE;
-  }
-}
-
-#endif //ZSLIB_EVENTING_LOG_H_018218a1084f40d301941b196789c11839beb7ed
 
 #endif //ndef ZSLIB_EVENTING_NOOP

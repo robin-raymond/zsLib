@@ -10,6 +10,7 @@
 		0086661F1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0086661E1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp */; };
 		008666211DEE6A0200CBA4FD /* zsLib_Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008666201DEE6A0200CBA4FD /* zsLib_Settings.cpp */; };
 		008666231DEE6A1B00CBA4FD /* zsLib_Helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008666221DEE6A1B00CBA4FD /* zsLib_Helper.cpp */; };
+		009CEEDF1DF1C28A000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009CEEDE1DF1C28A000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp */; };
 		00FF08F21D9C1B6700462998 /* zsLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF087F1D9C1B6700462998 /* zsLib.cpp */; };
 		00FF08F31D9C1B6700462998 /* zsLib_Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08801D9C1B6700462998 /* zsLib_Event.cpp */; };
 		00FF08F41D9C1B6700462998 /* zsLib_Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF08811D9C1B6700462998 /* zsLib_Exception.cpp */; };
@@ -72,6 +73,12 @@
 		008697371DE3DDB8009D669C /* zsLib.events_win.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events_win.h; sourceTree = "<group>"; };
 		008697381DE3DDB8009D669C /* zsLib.events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events.h; sourceTree = "<group>"; };
 		008697391DE3DDB8009D669C /* zsLib.events.jman */ = {isa = PBXFileReference; lastKnownFileType = text; path = zsLib.events.jman; sourceTree = "<group>"; };
+		009CEED71DF1297C000FF4D2 /* zsLib.events_win_etw.man */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = zsLib.events_win_etw.man; path = internal/zsLib.events_win_etw.man; sourceTree = "<group>"; };
+		009CEED81DF1297C000FF4D2 /* zsLib.events_win_etw.wprp */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = zsLib.events_win_etw.wprp; path = internal/zsLib.events_win_etw.wprp; sourceTree = "<group>"; };
+		009CEED91DF1297C000FF4D2 /* zsLib.events_win.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = zsLib.events_win.h; path = internal/zsLib.events_win.h; sourceTree = "<group>"; };
+		009CEEDA1DF1297C000FF4D2 /* zsLib.events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = zsLib.events.h; path = internal/zsLib.events.h; sourceTree = "<group>"; };
+		009CEEDB1DF1297C000FF4D2 /* zsLib.events.jman */ = {isa = PBXFileReference; lastKnownFileType = text; name = zsLib.events.jman; path = internal/zsLib.events.jman; sourceTree = "<group>"; };
+		009CEEDE1DF1C28A000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_WindowsEventProviderLogger.cpp; sourceTree = "<group>"; };
 		00FF086F1D9C1B2300462998 /* libzsLib-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libzsLib-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00FF087F1D9C1B6700462998 /* zsLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib.cpp; sourceTree = "<group>"; };
 		00FF08801D9C1B6700462998 /* zsLib_Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_Event.cpp; sourceTree = "<group>"; };
@@ -262,6 +269,11 @@
 				00FF08EF1D9C1B6700462998 /* WeightedMovingAverage.h */,
 				00FF08F01D9C1B6700462998 /* XML.h */,
 				00FF08F11D9C1B6700462998 /* zsLib.h */,
+				009CEED71DF1297C000FF4D2 /* zsLib.events_win_etw.man */,
+				009CEED81DF1297C000FF4D2 /* zsLib.events_win_etw.wprp */,
+				009CEED91DF1297C000FF4D2 /* zsLib.events_win.h */,
+				009CEEDA1DF1297C000FF4D2 /* zsLib.events.h */,
+				009CEEDB1DF1297C000FF4D2 /* zsLib.events.jman */,
 			);
 			name = zsLib;
 			path = ../../../zsLib;
@@ -298,6 +310,7 @@
 				00FF08941D9C1B6700462998 /* zsLib_Stringize.cpp */,
 				00FF08951D9C1B6700462998 /* zsLib_Timer.cpp */,
 				00FF08961D9C1B6700462998 /* zsLib_TimerMonitor.cpp */,
+				009CEEDE1DF1C28A000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp */,
 				00FF08971D9C1B6700462998 /* zsLib_XML.cpp */,
 				00FF08981D9C1B6700462998 /* zsLib_XMLAttribute.cpp */,
 				00FF08991D9C1B6700462998 /* zsLib_XMLComment.cpp */,
@@ -469,6 +482,7 @@
 				00FF090B1D9C1B6700462998 /* zsLib_XMLAttribute.cpp in Sources */,
 				00FF08F61D9C1B6700462998 /* zsLib_IPAddress.cpp in Sources */,
 				00FF09141D9C1B6700462998 /* zsLib_XMLParserWarningTypes.cpp in Sources */,
+				009CEEDF1DF1C28A000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp in Sources */,
 				00FF09051D9C1B6700462998 /* zsLib_SocketMonitor.cpp in Sources */,
 				00FF08FC1D9C1B6700462998 /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */,
 				0086661F1DEE69ED00CBA4FD /* zsLib_MessageQueueManager.cpp in Sources */,

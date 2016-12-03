@@ -47,6 +47,7 @@
 		0086663F1DEE6DC600CBA4FD /* zsLib_Helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0086663E1DEE6DC600CBA4FD /* zsLib_Helper.cpp */; };
 		008666411DEE6DD100CBA4FD /* zsLib_Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008666401DEE6DD100CBA4FD /* zsLib_Settings.cpp */; };
 		008666451DEE6E2F00CBA4FD /* zsLib_MessageQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008666441DEE6E2F00CBA4FD /* zsLib_MessageQueueManager.cpp */; };
+		009CEEE11DF1C29C000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009CEEE01DF1C29C000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -189,6 +190,7 @@
 		0086973C1DE3DDE2009D669C /* zsLib.events_win.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events_win.h; sourceTree = "<group>"; };
 		0086973D1DE3DDE2009D669C /* zsLib.events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib.events.h; sourceTree = "<group>"; };
 		0086973E1DE3DDE2009D669C /* zsLib.events.jman */ = {isa = PBXFileReference; lastKnownFileType = text; path = zsLib.events.jman; sourceTree = "<group>"; };
+		009CEEE01DF1C29C000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zsLib_WindowsEventProviderLogger.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +293,7 @@
 				0067EE381D9C5BA4003BE1AC /* zsLib_Stringize.cpp */,
 				0067EE391D9C5BA4003BE1AC /* zsLib_Timer.cpp */,
 				0067EE3A1D9C5BA4003BE1AC /* zsLib_TimerMonitor.cpp */,
+				009CEEE01DF1C29C000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp */,
 				0067EE3B1D9C5BA4003BE1AC /* zsLib_XML.cpp */,
 				0067EE3C1D9C5BA4003BE1AC /* zsLib_XMLAttribute.cpp */,
 				0067EE3D1D9C5BA4003BE1AC /* zsLib_XMLComment.cpp */,
@@ -471,6 +474,7 @@
 				0067EEAF1D9C5BA4003BE1AC /* zsLib_XMLAttribute.cpp in Sources */,
 				0067EE9A1D9C5BA4003BE1AC /* zsLib_IPAddress.cpp in Sources */,
 				0067EEB81D9C5BA4003BE1AC /* zsLib_XMLParserWarningTypes.cpp in Sources */,
+				009CEEE11DF1C29C000FF4D2 /* zsLib_WindowsEventProviderLogger.cpp in Sources */,
 				0067EEA91D9C5BA4003BE1AC /* zsLib_SocketMonitor.cpp in Sources */,
 				0067EEA01D9C5BA4003BE1AC /* zsLib_MessageQueueThreadUsingBlackberryChannels.cpp in Sources */,
 				0067EEB41D9C5BA4003BE1AC /* zsLib_XMLGenerator.cpp in Sources */,

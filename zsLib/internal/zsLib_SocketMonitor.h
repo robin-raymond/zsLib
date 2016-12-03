@@ -47,7 +47,7 @@
 typedef size_t nfds_t;
 #endif //ndef _WIN32
 
-#define ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY "zsLib/socket-monitor-thread-priority"
+#define ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY "zsLib/socket-monitor/thread-priority"
 
 namespace zsLib
 {

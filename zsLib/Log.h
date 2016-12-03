@@ -117,26 +117,27 @@ namespace zsLib
   public:
     typedef InternalAtomIndex EventingAtomIndex;
     typedef InternalAtomData EventingAtomData;
-    typedef EventingAtomData * EventingAtomDataArrray;
+    typedef EventingAtomData * EventingAtomDataArray;
     typedef InternalKeywordBitmaskType KeywordBitmaskType;
 
     typedef const LOG_EVENT_DESCRIPTOR * LOG_EVENT_DESCRIPTOR_HANDLE;
     typedef const LOG_EVENT_DATA_DESCRIPTOR * LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
+    typedef const LOG_EVENT_PARAMETER_DESCRIPTOR * LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE;
 
     typedef uintptr_t ProviderHandle;
 
   public:
     enum Severity
     {
-      Severity_First,
+      Severity_First      = 0,
 
-      Informational = Severity_First,
-      Info = Informational,
-      Warning,
-      Error,
-      Fatal,
+      Informational       = Severity_First,
+      Info                = Informational,
+      Warning             = 1,
+      Error               = 2,
+      Fatal               = 3,
 
-      Severity_Last = Fatal
+      Severity_Last       = Fatal
     };
 
     static const char *toString(Severity severity);
@@ -144,16 +145,16 @@ namespace zsLib
 
     enum Level : LevelBaseType
     {
-      Level_First,
+      Level_First         = 0,
 
-      None = Level_First,
-      Basic,
-      Detail,
-      Debug,
-      Trace,
-      Insane,
+      None                = Level_First,
+      Basic               = 1,
+      Detail              = 2,
+      Debug               = 3,
+      Trace               = 4,
+      Insane              = 5,
 
-      Level_Last = Insane,
+      Level_Last          = Insane,
     };
 
     static const char *toString(Level level);
@@ -281,19 +282,20 @@ namespace zsLib
     static EventingAtomIndex registerEventingAtom(const char *atomNamespace); // a result of "0" is an error
 
     static ProviderHandle registerEventingWriter(
-                                            const UUID &providerID,
-                                            const char *providerName,
-                                            const char *uniqueProviderHash
-                                            );
+                                                 const UUID &providerID,
+                                                 const char *providerName,
+                                                 const char *uniqueProviderHash
+                                                 );
     static void unregisterEventingWriter(ProviderHandle providerHandle);
 
     static bool getEventingWriterInfo(
                                       ProviderHandle handle,
                                       UUID &outProviderID,
                                       String &outProviderName,
-                                      String &outUniqueProviderHash
+                                      String &outUniqueProviderHash,
+                                      EventingAtomDataArray *outArray = NULL
                                       );
-
+    
     static void setEventingLevelByName(
                                        const char *subsystemName,
                                        Level level
@@ -304,6 +306,7 @@ namespace zsLib
                            Severity severity,
                            Level level,
                            LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                           LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
                            LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                            size_t dataDescriptorCount
                            );
@@ -364,9 +367,10 @@ namespace zsLib
 
   interaction ILogEventingProviderDelegate
   {
-    typedef Log::EventingAtomDataArrray EventingAtomDataArrray;
+    typedef Log::EventingAtomDataArray EventingAtomDataArray;
     typedef Log::ProviderHandle ProviderHandle;
     typedef Log::EventingAtomData EventingAtomData;
+    typedef Log::KeywordBitmaskType KeywordBitmaskType;
 
     // notification that a new subsystem exists
     virtual void notifyNewSubsystem(zsLib::Subsystem &inSubsystem) {}
@@ -374,12 +378,18 @@ namespace zsLib
     // notification of a log event
     virtual void notifyEventingProviderRegistered(
                                                   ProviderHandle handle,
-                                                  EventingAtomDataArrray eventingAtomDataArray
+                                                  EventingAtomDataArray eventingAtomDataArray
                                                   ) {}
     virtual void notifyEventingProviderUnregistered(
                                                     ProviderHandle handle,
-                                                    EventingAtomDataArrray eventingAtomDataArray
+                                                    EventingAtomDataArray eventingAtomDataArray
                                                     ) {}
+    
+    virtual void notifyEventingProviderLoggingStateChanged(
+                                                           ProviderHandle handle,
+                                                           EventingAtomDataArray eventingAtomDataArray,
+                                                           KeywordBitmaskType keywords
+                                                           ) {}
   };
 
   //---------------------------------------------------------------------------
@@ -393,8 +403,9 @@ namespace zsLib
   interaction ILogEventingDelegate
   {
     typedef Log::LOG_EVENT_DESCRIPTOR_HANDLE LOG_EVENT_DESCRIPTOR_HANDLE;
+    typedef Log::LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE;
     typedef Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
-    typedef Log::EventingAtomDataArrray EventingAtomDataArrray;
+    typedef Log::EventingAtomDataArray EventingAtomDataArray;
     typedef Log::ProviderHandle ProviderHandle;
     typedef Log::EventingAtomData EventingAtomData;
 
@@ -407,10 +418,11 @@ namespace zsLib
     // notification of a log event
     virtual void notifyWriteEvent(
                                   ProviderHandle handle,
-                                  EventingAtomDataArrray eventingAtomDataArray,
+                                  EventingAtomDataArray eventingAtomDataArray,
                                   Severity severity,
                                   Level level,
                                   LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                                  LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
                                   LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                                   size_t dataDescriptorCount
                                   ) {}

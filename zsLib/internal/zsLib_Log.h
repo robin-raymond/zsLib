@@ -81,10 +81,12 @@ namespace zsLib
       typedef std::map<AtomNamespace, InternalAtomIndex> AtomIndexMap;
 
       struct LogEventDescriptor {};
+      struct LogEventParameterDescriptor {};
       struct LogEventDataDescriptor {};
 
       typedef LogEventDescriptor LOG_EVENT_DESCRIPTOR;
       typedef LogEventDataDescriptor LOG_EVENT_DATA_DESCRIPTOR;
+      typedef LogEventParameterDescriptor LOG_EVENT_PARAMETER_DESCRIPTOR;
 
       typedef std::set<EventingWriter *> EventWriterSet;
       typedef std::map<UUID, EventingWriter *> EventWriterMap;

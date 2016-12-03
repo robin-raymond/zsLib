@@ -31,60 +31,9 @@
 
 #pragma once
 
-#ifndef ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
-#define ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
-
 #ifdef _WIN32
 #include <Evntprov.h>
 #endif //_WIN32
-
-#define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                                                ((ZS_GET_SUBSYSTEM()).getEventingLevel())
-#define ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                                            ((xSubsystem).getEventingLevel())
-#define ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xKeywordBitmask, xLevel)                          ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel))
-#define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xHandleReference, xKeywordBitmask, xLevelValue)               ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue)))
-#define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xKeywordBitmask, xSubsystem, xLevel)    ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel))
-
-#define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
-#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
-
-#define ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) \
-  {                                                                                                                                     \
-    ::zsLib::Log::writeEvent(                                                                                                           \
-                             (xHandle),                                                                                                 \
-                             ::zsLib::Log::xSeverity,                                                                                   \
-                             ::zsLib::Log::xLevel,                                                                                      \
-                             (::zsLib::Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),                                             \
-                             (::zsLib::Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),                                    \
-                             (xEventDataDescriptorCount)                                                                                \
-                             );                                                                                                         \
-  }
-
-#ifdef _WIN32
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL(xInDescriptor, xPtrValue, xValueSize) \
-  { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
-#else
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL(xInDescriptor, xPtrValue, xValueSize) \
-  { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
-#endif //_WIN32
-
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xValue)                      (xValue)
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xValue)                      (xValue)
-
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        (((const char *)(xValue)) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        (((const wchar_t *)(xValue)) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
-
-#ifdef _WIN32
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr)); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr)); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { EventDataDescCreate((xInDescriptor), (xPtr), (xSize)); }
-#else
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { (xInDescriptor)->Ptr = (xPtr); (xInDescriptor)->Size = (xSize); }
-#endif //_WIN32
-
 
 namespace zsLib
 {
@@ -117,8 +66,65 @@ namespace zsLib
       typedef EventDataDescriptor USE_EVENT_DATA_DESCRIPTOR;
       typedef EventDescriptor USE_EVENT_DESCRIPTOR;
 #endif //_WIN32
+      
+      struct EventParameterDescriptor
+      {
+        EventParameterTypes Type;
+      };
+      
+      typedef EventParameterDescriptor USE_EVENT_PARAMETER_DESCRIPTOR;
     }
   }
 }
 
-#endif //ZSLIB_EVENTING_INTERNAL_LOG_H_b7e3d951af94efd0359c51a8776f025e0562dd4e
+#ifndef ZSLIB_EVENTING_NOOP
+
+#define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                                                ((ZS_GET_SUBSYSTEM()).getEventingLevel())
+#define ZS_EVENTING_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                                            ((xSubsystem).getEventingLevel())
+#define ZS_EVENTING_INTERNAL_IS_LOGGING(xHandleReference, xKeywordBitmask, xLevel)                          ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= ::zsLib::Log::xLevel))
+#define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xHandleReference, xKeywordBitmask, xLevelValue)               ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue)))
+#define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xKeywordBitmask, xSubsystem, xLevel)    ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel))
+
+#define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
+#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
+
+#define ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventParameterDescriptor, xEventDataDescriptor, xEventDataDescriptorCount)  \
+  {                                                                                                                                                                 \
+    ::zsLib::Log::writeEvent(                                                                                                                                       \
+                             (xHandle),                                                                                                                             \
+                             ::zsLib::Log::xSeverity,                                                                                                               \
+                             ::zsLib::Log::xLevel,                                                                                                                  \
+                             (::zsLib::Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),                                                                         \
+                             (::zsLib::Log::LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE)(xEventParameterDescriptor),                                                      \
+                             (::zsLib::Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),                                                                \
+                             (xEventDataDescriptorCount)                                                                                                            \
+                             );                                                                                                                                     \
+  }
+
+#ifdef _WIN32
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL(xInDescriptor, xPtrValue, xValueSize) \
+  { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
+#else
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL(xInDescriptor, xPtrValue, xValueSize) \
+  { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
+#endif //_WIN32
+
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xValue)                      (xValue)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xValue)                      (xValue)
+
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        (((const char *)(xValue)) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        (((const wchar_t *)(xValue)) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
+
+#ifdef _WIN32
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { EventDataDescCreate((xInDescriptor), (xPtr), (xSize)); }
+#else
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { (xInDescriptor)->Ptr = (xPtr); (xInDescriptor)->Size = (xSize); }
+#endif //_WIN32
+
+#endif //ndef ZSLIB_EVENTING_NOOP

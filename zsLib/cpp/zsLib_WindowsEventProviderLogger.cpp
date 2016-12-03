@@ -248,23 +248,29 @@ namespace zsLib
 
         auto pThis = singleton();
         if (!pThis) return;
+        
+        {
+          AutoRecursiveLock lock(*pThis);
 
-        AutoRecursiveLock lock(*pThis);
-
-        if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
-          ++(pThis->mTotalEnabled);
-          if (1 == pThis->mTotalEnabled) {
-            zsLib::Log::addEventingListener(pThis);
+          if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
+            ++(pThis->mTotalEnabled);
+            if (1 == pThis->mTotalEnabled) {
+              addEventingListener = true;
+            }
+          } else if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
+            if (pThis->mTotalEnabled > 0) {
+              --(pThis->mTotalEnabled);
+              if (0 == pThis->mTotalEnabled) {
+                zsLib::Log::removeEventingListener(pThis);
+              }
+            }
           }
+        }
+        
+        if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
           zsLib::Log::setEventingLogging(provider->mEventingHandle, pThis->mID, true, static_cast<zsLib::Log::KeywordBitmaskType>(MatchAnyKeyword));
         } else if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
           zsLib::Log::setEventingLogging(provider->mEventingHandle, pThis->mID, false);
-          if (pThis->mTotalEnabled > 0) {
-            --(pThis->mTotalEnabled);
-            if (0 == pThis->mTotalEnabled) {
-              zsLib::Log::removeEventingListener(pThis);
-            }
-          }
         }
       }
 

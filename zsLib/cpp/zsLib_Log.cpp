@@ -836,7 +836,8 @@ namespace zsLib
                                   ProviderHandle handle,
                                   UUID &outProviderID,
                                   String &outProviderName,
-                                  String &outUniqueProviderHash
+                                  String &outUniqueProviderHash,
+                                  EventingAtomDataArray *outArray
                                   )
   {
     if (0 == handle) return false;
@@ -846,6 +847,9 @@ namespace zsLib
     outProviderID = writer->mProviderID;
     outProviderName = writer->mProviderName;
     outUniqueProviderHash = writer->mUniqueProviderHash;
+    if (outArray) {
+      (*outArray) = &(writer->mAtomInfo[0]);
+    }
     return true;
   }
 
@@ -896,6 +900,7 @@ namespace zsLib
                        Severity severity,
                        Level level,
                        LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                       LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
                        LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                        size_t dataDescriptorCount
                        )
@@ -917,7 +922,7 @@ namespace zsLib
 
     for (auto iter = useList.begin(); iter != useList.end(); ++iter)
     {
-      (*iter)->notifyWriteEvent(handle, &(writer->mAtomInfo[0]), severity, level, descriptor, dataDescriptor, dataDescriptorCount);
+      (*iter)->notifyWriteEvent(handle, &(writer->mAtomInfo[0]), severity, level, descriptor, paramDescriptor, dataDescriptor, dataDescriptorCount);
     }
   }
 
@@ -935,6 +940,10 @@ namespace zsLib
 
     Log *log = writer->mLog;
 
+    EventingProviderListenerListPtr notifyList;
+
+    KeywordBitmaskType keywords = 0;
+    
     {
       AutoRecursiveLock lock(log->mLock);
       if (!enabled) {
@@ -945,11 +954,19 @@ namespace zsLib
       }
 
       // re-assemble the enabled keyword bitmask
-      KeywordBitmaskType keywords = 0;
       for (auto iter = writer->mEnabledObjects.begin(); iter != writer->mEnabledObjects.end(); ++iter) {
         keywords = keywords | writer->mKeywordsBitmask;
       }
       writer->mKeywordsBitmask = keywords;
+      
+      notifyList = log->mEventingProviderListeners;
+    }
+
+    auto &useList = *notifyList;
+
+    for (auto iter = useList.begin(); iter != useList.end(); ++iter)
+    {
+      (*iter)->notifyEventingProviderLoggingStateChanged(handle, &(writer->mAtomInfo[0]), keywords);
     }
   }
 

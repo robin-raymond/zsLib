@@ -37,7 +37,7 @@
 
 #include <zsLib/Log.h>
 
-#define ZSLIB_SETTING_MESSAGE_QUEUE_MANAGER_PROCESS_APPLICATION_MESSAGE_QUEUE_ON_QUIT "zsLib/process-application-message-queue-on-quit"
+#define ZSLIB_SETTING_MESSAGE_QUEUE_MANAGER_PROCESS_APPLICATION_MESSAGE_QUEUE_ON_QUIT "zsLib/message-queue-manager/process-application-message-queue-on-quit"
 
 namespace zsLib
 {

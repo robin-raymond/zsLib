@@ -46,7 +46,7 @@
 #endif //__QNX__
 
 
-#define ZSLIB_SETTING_TIMER_MONITOR_THREAD_PRIORITY  "zsLib/timer-monitor-thread-priority"
+#define ZSLIB_SETTING_TIMER_MONITOR_THREAD_PRIORITY  "zsLib/timer-monitor/thread-priority"
 
 namespace zsLib
 {
