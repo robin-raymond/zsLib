@@ -427,8 +427,7 @@ namespace zsLib
         auto found = refThis.mDefaultEventingSubsystemLevels.find(String(inSubsystem->getName()));
         if (found != refThis.mDefaultEventingSubsystemLevels.end()) {
           inSubsystem->setEventingLevel(static_cast<Level>((*found).second));
-        }
-        else {
+        } else {
           auto foundDefault = refThis.mDefaultEventingSubsystemLevels.find(String());
           if (foundDefault != refThis.mDefaultEventingSubsystemLevels.end()) {
             inSubsystem->setEventingLevel(static_cast<Level>((*foundDefault).second));

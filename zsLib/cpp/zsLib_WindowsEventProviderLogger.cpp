@@ -30,11 +30,6 @@
  */
 
 #include <zsLib/Log.h>
-//#include <zsLib/eventing/Log.h>
-//#include <zsLib/helpers.h>
-//#include <zsLib/Exception.h>
-//#include <zsLib/XML.h>
-//#include <zsLib/String.h>
 #include <zsLib/Singleton.h>
 
 #ifdef _WIN32
