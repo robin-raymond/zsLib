@@ -32,39 +32,8 @@
 #pragma once
 
 #include <zsLib/Log.h>
-
-
-namespace zsLib
-{
-  namespace eventing
-  {
-    enum EventParameterTypes
-    {
-      EventParameterType_Boolean = 1,
-      EventParameterType_UnsignedInteger = 2,
-      EventParameterType_SignedInteger = 2 | 4,
-      EventParameterType_FloatingPoint = 8,
-      EventParameterType_Pointer = 16,
-      EventParameterType_Binary = 16 | 32,
-      EventParameterType_AString = 16 | 64,
-      EventParameterType_WString = 16 | 128,
-    };
-  } // namespace eventing
-} // namespace zsLib
-
+#include <zsLib/eventing/EventTypes.h>
 #include <zsLib/eventing/internal/zsLib_eventing_Log.h>
-
-namespace zsLib
-{
-  namespace eventing
-  {
-    typedef zsLib::eventing::internal::USE_EVENT_DATA_DESCRIPTOR USE_EVENT_DATA_DESCRIPTOR;
-    typedef zsLib::eventing::internal::USE_EVENT_DESCRIPTOR USE_EVENT_DESCRIPTOR;
-    typedef zsLib::eventing::internal::USE_EVENT_PARAMETER_DESCRIPTOR USE_EVENT_PARAMETER_DESCRIPTOR;
-    
-    typedef int USE_EVENT_DATA_BOOL_TYPE;
-  }
-}
 
 #ifndef ZSLIB_EVENTING_NOOP
 

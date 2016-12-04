@@ -899,9 +899,9 @@ namespace zsLib
                        ProviderHandle handle,
                        Severity severity,
                        Level level,
-                       LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
-                       LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
-                       LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                       EVENT_DESCRIPTOR_HANDLE descriptor,
+                       EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
+                       EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                        size_t dataDescriptorCount
                        )
   {

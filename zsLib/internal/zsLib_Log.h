@@ -31,11 +31,9 @@
 
 #pragma once
 
-#if !defined(ZSLIB_INTERNAL_LOG_H_bae05c798f0d8589029db417219553a9)
-#define ZSLIB_INTERNAL_LOG_H_bae05c798f0d8589029db417219553a9
-
 #include <zsLib/types.h>
 #include <zsLib/Stringize.h>
+#include <zsLib/eventing/EventTypes.h>
 
 #include <list>
 #include <map>
@@ -79,14 +77,6 @@ namespace zsLib
       
       typedef String AtomNamespace;
       typedef std::map<AtomNamespace, InternalAtomIndex> AtomIndexMap;
-
-      struct LogEventDescriptor {};
-      struct LogEventParameterDescriptor {};
-      struct LogEventDataDescriptor {};
-
-      typedef LogEventDescriptor LOG_EVENT_DESCRIPTOR;
-      typedef LogEventDataDescriptor LOG_EVENT_DATA_DESCRIPTOR;
-      typedef LogEventParameterDescriptor LOG_EVENT_PARAMETER_DESCRIPTOR;
 
       typedef std::set<EventingWriter *> EventWriterSet;
       typedef std::map<UUID, EventingWriter *> EventWriterMap;
@@ -208,6 +198,4 @@ namespace zsLib
 #define ZS_INTERNAL_LOG_WARNING_IF(xCond, xLevel, xMsg)                   if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_WARNING(xLevel, xMsg)}
 #define ZS_INTERNAL_LOG_ERROR_IF(xCond, xLevel, xMsg)                     if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_ERROR(xLevel, xMsg)}
 #define ZS_INTERNAL_LOG_FATAL_IF(xCond, xLevel, xMsg)                     if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_FATAL(xLevel, xMsg)}
-
-#endif //ZS_INTERNAL_LOG_H_bae05c798f0d8589029db417219553a9
 

@@ -134,9 +134,9 @@ namespace zsLib
                                     EventingAtomDataArray eventingAtomDataArray,
                                     Severity severity,
                                     Level level,
-                                    LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
-                                    LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
-                                    LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                                    EVENT_DESCRIPTOR_HANDLE descriptor,
+                                    EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
+                                    EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                                     size_t dataDescriptorCount
                                     ) override
       {
@@ -146,7 +146,7 @@ namespace zsLib
         ProviderInfo *provider = reinterpret_cast<ProviderInfo *>(eventingAtomDataArray[index]);
         if (!provider) return;
 
-        auto result = EventWrite(provider->mRegistrationHandle, reinterpret_cast<PCEVENT_DESCRIPTOR>(descriptor), dataDescriptorCount, (PEVENT_DATA_DESCRIPTOR)((PVOID)(dataDescriptor)));
+        auto result = EventWrite(provider->mRegistrationHandle, descriptor, dataDescriptorCount, const_cast<PEVENT_DATA_DESCRIPTOR>(dataDescriptor));
         (void)result;
       }
 

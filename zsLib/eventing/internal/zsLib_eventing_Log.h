@@ -31,52 +31,6 @@
 
 #pragma once
 
-#ifdef _WIN32
-#include <Evntprov.h>
-#endif //_WIN32
-
-namespace zsLib
-{
-  namespace eventing
-  {
-    namespace internal
-    {
-#ifdef _WIN32
-      typedef EVENT_DATA_DESCRIPTOR USE_EVENT_DATA_DESCRIPTOR;
-      typedef EVENT_DESCRIPTOR USE_EVENT_DESCRIPTOR;
-#else
-      struct EventDataDescriptor
-      {
-        uintptr_t Ptr;
-        size_t Size;
-        size_t Type;
-      };
-      
-      struct EventDescriptor
-      {
-        uint16_t Id;
-        uint8_t Version;
-        uint8_t Channel;
-        uint8_t Level;
-        uint8_t Opcode;
-        uint16_t Task;
-        uint64_t Keyword;
-      };
-      
-      typedef EventDataDescriptor USE_EVENT_DATA_DESCRIPTOR;
-      typedef EventDescriptor USE_EVENT_DESCRIPTOR;
-#endif //_WIN32
-      
-      struct EventParameterDescriptor
-      {
-        EventParameterTypes Type;
-      };
-      
-      typedef EventParameterDescriptor USE_EVENT_PARAMETER_DESCRIPTOR;
-    }
-  }
-}
-
 #ifndef ZSLIB_EVENTING_NOOP
 
 #define ZS_EVENTING_INTERNAL_GET_LOG_LEVEL()                                                                ((ZS_GET_SUBSYSTEM()).getEventingLevel())
@@ -97,9 +51,9 @@ namespace zsLib
                              (xHandle),                                                                                                                             \
                              ::zsLib::Log::xSeverity,                                                                                                               \
                              ::zsLib::Log::xLevel,                                                                                                                  \
-                             (::zsLib::Log::LOG_EVENT_DESCRIPTOR_HANDLE)(xEventDescriptor),                                                                         \
-                             (::zsLib::Log::LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE)(xEventParameterDescriptor),                                                      \
-                             (::zsLib::Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE)(xEventDataDescriptor),                                                                \
+                             (xEventDescriptor),                                                                         \
+                             (xEventParameterDescriptor),                                                      \
+                             (xEventDataDescriptor),                                                                \
                              (xEventDataDescriptorCount)                                                                                                            \
                              );                                                                                                                                     \
   }

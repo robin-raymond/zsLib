@@ -120,9 +120,9 @@ namespace zsLib
     typedef EventingAtomData * EventingAtomDataArray;
     typedef InternalKeywordBitmaskType KeywordBitmaskType;
 
-    typedef const LOG_EVENT_DESCRIPTOR * LOG_EVENT_DESCRIPTOR_HANDLE;
-    typedef const LOG_EVENT_DATA_DESCRIPTOR * LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
-    typedef const LOG_EVENT_PARAMETER_DESCRIPTOR * LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE;
+    typedef const zsLib::eventing::USE_EVENT_DESCRIPTOR * EVENT_DESCRIPTOR_HANDLE;
+    typedef const zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR * EVENT_DATA_DESCRIPTOR_HANDLE;
+    typedef const zsLib::eventing::USE_EVENT_PARAMETER_DESCRIPTOR * EVENT_PARAMETER_DESCRIPTOR_HANDLE;
 
     typedef uint64_t ProviderHandle;
 
@@ -305,9 +305,9 @@ namespace zsLib
                            ProviderHandle handle,
                            Severity severity,
                            Level level,
-                           LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
-                           LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
-                           LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                           EVENT_DESCRIPTOR_HANDLE descriptor,
+                           EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
+                           EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                            size_t dataDescriptorCount
                            );
 
@@ -402,9 +402,9 @@ namespace zsLib
 
   interaction ILogEventingDelegate
   {
-    typedef Log::LOG_EVENT_DESCRIPTOR_HANDLE LOG_EVENT_DESCRIPTOR_HANDLE;
-    typedef Log::LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE;
-    typedef Log::LOG_EVENT_DATA_DESCRIPTOR_HANDLE LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
+    typedef Log::EVENT_DESCRIPTOR_HANDLE EVENT_DESCRIPTOR_HANDLE;
+    typedef Log::EVENT_PARAMETER_DESCRIPTOR_HANDLE EVENT_PARAMETER_DESCRIPTOR_HANDLE;
+    typedef Log::EVENT_DATA_DESCRIPTOR_HANDLE EVENT_DATA_DESCRIPTOR_HANDLE;
     typedef Log::EventingAtomDataArray EventingAtomDataArray;
     typedef Log::ProviderHandle ProviderHandle;
     typedef Log::EventingAtomData EventingAtomData;
@@ -421,9 +421,9 @@ namespace zsLib
                                   EventingAtomDataArray eventingAtomDataArray,
                                   Severity severity,
                                   Level level,
-                                  LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
-                                  LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
-                                  LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                                  EVENT_DESCRIPTOR_HANDLE descriptor,
+                                  EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
+                                  EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                                   size_t dataDescriptorCount
                                   ) {}
   };

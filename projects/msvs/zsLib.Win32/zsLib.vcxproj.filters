@@ -237,6 +237,12 @@
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Helper.h">
       <Filter>zsLib\internal</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\EventTypes.h">
+      <Filter>zsLib\eventing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_EventTypes.h">
+      <Filter>zsLib\eventing\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\zsLib\license.txt">
