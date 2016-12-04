@@ -52,6 +52,8 @@
 
 /* Begin PBXFileReference section */
 		001AD3921DE7E9E800103DA3 /* zsLib.events.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = zsLib.events.json; sourceTree = "<group>"; };
+		00836BC11DF4AA2900E03A5A /* EventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventTypes.h; sourceTree = "<group>"; };
+		00836BC21DF4AA3C00E03A5A /* zsLib_eventing_EventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_eventing_EventTypes.h; sourceTree = "<group>"; };
 		008666151DEE697B00CBA4FD /* IMessageQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueue.h; sourceTree = "<group>"; };
 		008666161DEE697B00CBA4FD /* IMessageQueueManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueueManager.h; sourceTree = "<group>"; };
 		008666171DEE697B00CBA4FD /* IMessageQueueThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueueThread.h; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				0086972C1DE3DD7E009D669C /* internal */,
+				00836BC11DF4AA2900E03A5A /* EventTypes.h */,
 				0086972E1DE3DD7E009D669C /* Log.h */,
 				0086972F1DE3DD7E009D669C /* noop.h */,
 			);
@@ -210,6 +213,7 @@
 		0086972C1DE3DD7E009D669C /* internal */ = {
 			isa = PBXGroup;
 			children = (
+				00836BC21DF4AA3C00E03A5A /* zsLib_eventing_EventTypes.h */,
 				0086972D1DE3DD7E009D669C /* zsLib_eventing_Log.h */,
 			);
 			path = internal;

@@ -168,6 +168,8 @@
 		0067EE931D9C5BA4003BE1AC /* WeightedMovingAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeightedMovingAverage.h; sourceTree = "<group>"; };
 		0067EE941D9C5BA4003BE1AC /* XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XML.h; sourceTree = "<group>"; };
 		0067EE951D9C5BA4003BE1AC /* zsLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zsLib.h; sourceTree = "<group>"; };
+		00836BC31DF4AA5400E03A5A /* EventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventTypes.h; sourceTree = "<group>"; };
+		00836BC41DF4AA5E00E03A5A /* zsLib_eventing_EventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zsLib_eventing_EventTypes.h; sourceTree = "<group>"; };
 		008666331DEE6D7D00CBA4FD /* IFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IFactory.h; sourceTree = "<group>"; };
 		008666341DEE6D7D00CBA4FD /* IHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IHelper.h; sourceTree = "<group>"; };
 		008666351DEE6D7D00CBA4FD /* IMessageQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMessageQueue.h; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 			isa = PBXGroup;
 			children = (
 				008697311DE3DD92009D669C /* internal */,
+				00836BC31DF4AA5400E03A5A /* EventTypes.h */,
 				008697331DE3DD92009D669C /* Log.h */,
 				008697341DE3DD92009D669C /* noop.h */,
 			);
@@ -406,6 +409,7 @@
 		008697311DE3DD92009D669C /* internal */ = {
 			isa = PBXGroup;
 			children = (
+				00836BC41DF4AA5E00E03A5A /* zsLib_eventing_EventTypes.h */,
 				008697321DE3DD92009D669C /* zsLib_eventing_Log.h */,
 			);
 			path = internal;
