@@ -35,6 +35,7 @@
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
 #define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
+#define ZS_EVENTING_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)
 #endif /* ZS_EVENTING_EXCLUSIVE */
 
 #ifndef _WIN32

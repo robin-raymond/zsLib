@@ -1230,6 +1230,18 @@
      }
     }
    ]
+  },
+  "subsystems" : {
+   "subsystem" : [
+    {
+     "name" : "zsLib",
+     "level" : "Debug"
+    },
+    {
+     "name" : "zsLib_socket",
+     "level" : "Debug"
+    }
+   ]
   }
  }
 }
