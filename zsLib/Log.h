@@ -124,7 +124,7 @@ namespace zsLib
     typedef const LOG_EVENT_DATA_DESCRIPTOR * LOG_EVENT_DATA_DESCRIPTOR_HANDLE;
     typedef const LOG_EVENT_PARAMETER_DESCRIPTOR * LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE;
 
-    typedef uintptr_t ProviderHandle;
+    typedef uint64_t ProviderHandle;
 
   public:
     enum Severity
