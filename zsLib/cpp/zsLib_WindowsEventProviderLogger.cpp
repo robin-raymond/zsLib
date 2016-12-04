@@ -64,7 +64,7 @@ namespace zsLib
       struct make_private {};
       struct ProviderInfo;
 
-      typedef zsLib::Log::EventingAtomDataArrray EventingAtomDataArrray;
+      typedef zsLib::Log::EventingAtomDataArray EventingAtomDataArray;
       typedef std::set<ProviderInfo *> ProviderSet;
 
       typedef ::zsLib::Log::ProviderHandle ProviderHandle;
@@ -131,10 +131,11 @@ namespace zsLib
       //-----------------------------------------------------------------------
       virtual void notifyWriteEvent(
                                     ProviderHandle handle,
-                                    EventingAtomDataArrray eventingAtomDataArray,
+                                    EventingAtomDataArray eventingAtomDataArray,
                                     Severity severity,
                                     Level level,
                                     LOG_EVENT_DESCRIPTOR_HANDLE descriptor,
+                                    LOG_EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
                                     LOG_EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
                                     size_t dataDescriptorCount
                                     ) override
@@ -160,7 +161,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       virtual void notifyEventingProviderRegistered(
                                                     ProviderHandle handle,
-                                                    EventingAtomDataArrray eventingAtomDataArray
+                                                    EventingAtomDataArray eventingAtomDataArray
                                                     )
       {
         if (0 == mAtomIndex) {
@@ -197,7 +198,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       virtual void notifyEventingProviderUnregistered(
                                                       ProviderHandle handle,
-                                                      EventingAtomDataArrray eventingAtomDataArray
+                                                      EventingAtomDataArray eventingAtomDataArray
                                                       )
       {
         //mCleanupList
@@ -255,7 +256,7 @@ namespace zsLib
           if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
             ++(pThis->mTotalEnabled);
             if (1 == pThis->mTotalEnabled) {
-              addEventingListener = true;
+              zsLib::Log::addEventingListener(pThis);
             }
           } else if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
             if (pThis->mTotalEnabled > 0) {

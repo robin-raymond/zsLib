@@ -47,7 +47,7 @@ namespace zsLib
 #else
       struct EventDataDescriptor
       {
-        const void *Ptr;
+        uintptr_t Ptr;
         size_t Size;
         size_t Type;
       };
