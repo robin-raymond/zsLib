@@ -18,7 +18,7 @@ namespace zsLib {
 
 #define ZS_INTERNAL_REGISTER_EVENTING_zsLib() \
     { \
-      ZS_EVENTING_REGISTER_EVENT_WRITER(::zsLib::eventing::getEventHandle_zsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "b9fe955dee055e8d81ae1d33aba301b6b80e22e81cdcabdd1449879085c86d86"); \
+      ZS_EVENTING_REGISTER_EVENT_WRITER(::zsLib::eventing::getEventHandle_zsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "d9b845c9ba0ffd1cc58c48d9a3c1afc8f2d7c432f1f67f7241d07f53603dcb21"); \
       ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(zsLib, Debug); \
       ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(zsLib_socket, Debug); \
     }

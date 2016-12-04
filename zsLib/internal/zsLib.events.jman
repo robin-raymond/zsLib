@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "b9fe955dee055e8d81ae1d33aba301b6b80e22e81cdcabdd1449879085c86d86",
+  "uniqueHash" : "d9b845c9ba0ffd1cc58c48d9a3c1afc8f2d7c432f1f67f7241d07f53603dcb21",
   "typedefs" : {
    "typedef" : [
     {
