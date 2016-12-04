@@ -88,6 +88,9 @@ namespace zsLib
 #define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
 #define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
+#define ZS_EVENTING_INTERNAL_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)                       {zsLib::Log::setEventingLevelByName(#xSubsystemName, zsLib::Log::Level);}
+
+
 #define ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventParameterDescriptor, xEventDataDescriptor, xEventDataDescriptorCount)  \
   {                                                                                                                                                                 \
     ::zsLib::Log::writeEvent(                                                                                                                                       \

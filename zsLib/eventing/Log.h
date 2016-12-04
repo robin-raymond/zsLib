@@ -76,6 +76,8 @@ namespace zsLib
 #define ZS_EVENTING_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)  ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash)
 #define ZS_EVENTING_UNREGISTER_EVENT_WRITER(xHandleReference)                                                 ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
 
+#define ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)                                  ZS_EVENTING_INTERNAL_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)
+
 #define ZS_EVENTING_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventParameterDescriptor, xEventDataDescriptor, xEventDataDescriptorCount) ZS_EVENTING_INTERNAL_WRITE_EVENT(xHandle, xSeverity, xLevel, xEventDescriptor, xEventParameterDescriptor, xEventDataDescriptor, xEventDataDescriptorCount)
 
 #define ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize)  ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize)
@@ -398,5 +400,6 @@ namespace zsLib
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
 #define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
+#define ZS_EVENTING_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)
 
 #endif //ndef ZSLIB_EVENTING_NOOP
