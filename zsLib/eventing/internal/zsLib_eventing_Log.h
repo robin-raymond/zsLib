@@ -39,8 +39,11 @@
 #define ZS_EVENTING_INTERNAL_IS_LOGGING_VALUE(xHandleReference, xKeywordBitmask, xLevelValue)               ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((ZS_GET_SUBSYSTEM()).getEventingLevel()) >= (xLevelValue)))
 #define ZS_EVENTING_INTERNAL_IS_SUBSYSTEM_LOGGING(xHandleReference, xKeywordBitmask, xSubsystem, xLevel)    ((::zsLib::Log::isEventingLogging((xHandleReference), (xKeywordBitmask))) && (((xSubsystem).getEventingLevel()) >= ::zsLib::Log::xLevel))
 
-#define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) 
-#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)
+#define ZS_EVENTING_INTERNAL_REGISTER_EVENT_WRITER(xHandleReference, xProviderID, xProviderName, xUniqueProviderHash) \
+  { (xHandleReference) = zsLib::Log::registerEventingWriter((xProviderID), (xProviderName), (xUniqueProviderHash)); }
+
+#define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)                                                \
+  { zsLib::Log::ProviderHandle _handle = (xHandleReference); (xHandleReference) = NULL; zsLib::Log::unregisterEventingWriter(_handle); }
 
 #define ZS_EVENTING_INTERNAL_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)                       {zsLib::Log::setEventingLevelByName(#xSubsystemName, zsLib::Log::xLevel);}
 

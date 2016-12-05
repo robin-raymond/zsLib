@@ -282,6 +282,11 @@ namespace zsLib
     static EventingAtomIndex registerEventingAtom(const char *atomNamespace); // a result of "0" is an error
 
     static ProviderHandle registerEventingWriter(
+                                                 const char *providerID,
+                                                 const char *providerName,
+                                                 const char *uniqueProviderHash
+                                                 );
+    static ProviderHandle registerEventingWriter(
                                                  const UUID &providerID,
                                                  const char *providerName,
                                                  const char *uniqueProviderHash
