@@ -957,7 +957,8 @@ namespace zsLib
 
       // re-assemble the enabled keyword bitmask
       for (auto iter = writer->mEnabledObjects.begin(); iter != writer->mEnabledObjects.end(); ++iter) {
-        keywords = keywords | writer->mKeywordsBitmask;
+        auto enabledBitmask = (*iter).second;
+        keywords = keywords | enabledBitmask;
       }
       writer->mKeywordsBitmask = keywords;
       
