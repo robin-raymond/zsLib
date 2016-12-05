@@ -34,8 +34,9 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
-#include <zsLib/String.h>
+#include <zsLib/Numeric.h>
 #include <zsLib/Singleton.h>
+#include <zsLib/String.h>
 
 #ifdef _WIN32
 #include <Evntprov.h>
@@ -743,6 +744,22 @@ namespace zsLib
 
     refThis.mConsumedEventingAtoms[atomNamespaceStr] = nextIndex;
     return nextIndex;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::ProviderHandle Log::registerEventingWriter(
+                                                  const char *providerID,
+                                                  const char *providerName,
+                                                  const char *uniqueProviderHash
+                                                  )
+  {
+    try {
+      UUID tempProviderID = Numeric<UUID>(providerID);
+      return registerEventingWriter(tempProviderID, providerName, uniqueProviderHash);
+    } catch (const Numeric<UUID>::ValueOutOfRange &) {
+    }
+
+    return 0;
   }
 
   //---------------------------------------------------------------------------
