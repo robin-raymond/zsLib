@@ -271,6 +271,7 @@ namespace zsLib
     for (auto iter = mCleanUpWriters.begin(); iter != mCleanUpWriters.end(); ++iter)
     {
       auto writer = (*iter);
+      writer->mInitValue = 0;
       delete writer;
     }
   }
@@ -597,8 +598,7 @@ namespace zsLib
           if (found != refThis.mDefaultEventingSubsystemLevels.end()) {
             auto level = static_cast<Level>((*found).second);
             subsystem->setEventingLevel(level);
-          }
-          else if (defaultLevel.hasValue()) {
+          } else if (defaultLevel.hasValue()) {
             subsystem->setEventingLevel(defaultLevel.value());
           }
         }
@@ -842,6 +842,7 @@ namespace zsLib
     if (0 == handle) return false;
 
     EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+    if (ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE != writer->mInitValue) return false;
 
     outProviderID = writer->mProviderID;
     outProviderName = writer->mProviderName;
@@ -907,6 +908,7 @@ namespace zsLib
     if (0 == handle) return;
 
     EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+    if (ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE != writer->mInitValue) return;
 
     Log *log = writer->mLog;
 
@@ -936,6 +938,7 @@ namespace zsLib
     if (0 == handle) return;
 
     EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+    if (ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE != writer->mInitValue) return;
 
     Log *log = writer->mLog;
 

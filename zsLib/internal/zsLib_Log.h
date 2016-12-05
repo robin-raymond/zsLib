@@ -43,6 +43,8 @@
 #define ZSLIB_LOG_PROVIDER_KEYWORDS_ALL (0xFFFFFFFFFFFFFFFFULL)
 #define ZSLIB_LOG_PROVIDER_KEYWORDS_NO_KEYWORD_DEFINED (0x8000000000000000ULL)
 
+#define ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE (0xABCDEF98)
+
 namespace zsLib
 {
   class String;
@@ -87,6 +89,7 @@ namespace zsLib
       struct EventingWriter
       {
         volatile InternalKeywordBitmaskType mKeywordsBitmask {0};
+        volatile uint32_t mInitValue {ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE};
         UUID mProviderID {};
         String mProviderName;
         String mUniqueProviderHash;
