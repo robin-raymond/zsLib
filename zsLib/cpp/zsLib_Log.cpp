@@ -802,10 +802,20 @@ namespace zsLib
 
     uintptr_t result(reinterpret_cast<uintptr_t>(writer));
 
+    KeywordBitmaskType keywords = writer->mKeywordsBitmask;
+
     for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       auto delegate = (*iter);
       delegate->notifyEventingProviderRegistered(result, &(writer->mAtomInfo[0]));
+    }
+
+    if (writer->mKeywordsBitmask != keywords) {
+      for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+      {
+        auto delegate = (*iter);
+        delegate->notifyEventingProviderLoggingStateChanged(result, &(writer->mAtomInfo[0]), keywords);
+      }
     }
 
     return reinterpret_cast<uintptr_t>(writer);
