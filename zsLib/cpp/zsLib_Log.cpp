@@ -814,7 +814,7 @@ namespace zsLib
       for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
       {
         auto delegate = (*iter);
-        delegate->notifyEventingProviderLoggingStateChanged(result, &(writer->mAtomInfo[0]), keywords);
+        delegate->notifyEventingProviderLoggingStateChanged(result, &(writer->mAtomInfo[0]), writer->mKeywordsBitmask);
       }
     }
 
