@@ -214,10 +214,10 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     IMessageQueuePtr MessageQueueManager::getThreadPoolQueue(
-                                                              const char *assignedThreadPoolQueueName,
-                                                              const char *registeredQueueName,
-                                                              size_t minThreadsRequired
-                                                              )
+                                                             const char *assignedThreadPoolQueueName,
+                                                             const char *registeredQueueName,
+                                                             size_t minThreadsRequired
+                                                             )
     {
       String poolName(assignedThreadPoolQueueName);
       String name(registeredQueueName);
