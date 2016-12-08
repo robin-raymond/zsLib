@@ -69,11 +69,11 @@
   { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
 #endif //_WIN32
 
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xValue)                      (xValue)
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xValue)                      (xValue)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xValue)                      static_cast<const char *>(xValue)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xValue)                      static_cast<const wchar_t *>(xValue)
 
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        (((const char *)(xValue)) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        (((const wchar_t *)(xValue)) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        ((static_cast<const char *>(xValue)) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        ((static_cast<const wchar_t *>(xValue)) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
 
 #ifdef _WIN32
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
@@ -81,10 +81,10 @@
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr)); }
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { EventDataDescCreate((xInDescriptor), (xPtr), (xSize)); }
 #else
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { (xInDescriptor)->Ptr = (xPtrValue); (xInDescriptor)->Size = (xValueSize); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { (xInDescriptor)->Ptr = (xPtr); (xInDescriptor)->Size = (xSize); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { (xInDescriptor)->Ptr = reinterpret_cast<uintptr_t>(xPtrValue); (xInDescriptor)->Size = (xValueSize); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = reinterpret_cast<uintptr_t>(ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr)); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = reinterpret_cast<uintptr_t>(ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr)); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { (xInDescriptor)->Ptr = reinterpret_cast<uintptr_t>(xPtr); (xInDescriptor)->Size = (xSize); }
 #endif //_WIN32
 
 #endif //ndef ZSLIB_EVENTING_NOOP
