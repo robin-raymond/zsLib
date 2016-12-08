@@ -165,7 +165,8 @@
      "channel" : "zs",
      "task" : "Exception",
      "opcode" : "Exception",
-     "template" : "18ab4d9cbf44b3793a322ea183d5a8223cd8fc8f6cf1c8ceb5a3a8defea962d7"
+     "template" : "18ab4d9cbf44b3793a322ea183d5a8223cd8fc8f6cf1c8ceb5a3a8defea962d7",
+     "value" : 1000
     },
     {
      "name" : "MessageQueueCreate",
@@ -175,7 +176,8 @@
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Start",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1001
     },
     {
      "name" : "MessageQueueDestroy",
@@ -185,7 +187,8 @@
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Stop",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1002
     },
     {
      "name" : "MessageQueuePost",
@@ -195,7 +198,8 @@
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Send",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1003
     },
     {
      "name" : "MessageQueueProcess",
@@ -205,7 +209,8 @@
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Receive",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1004
     },
     {
      "name" : "MessageQueueTotalUnprocessedMessages",
@@ -215,7 +220,8 @@
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Info",
-     "template" : "f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560"
+     "template" : "f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560",
+     "value" : 1005
     },
     {
      "name" : "SettingApply",
@@ -225,7 +231,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02"
+     "template" : "b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02",
+     "value" : 1006
     },
     {
      "name" : "SettingApplyDefaults",
@@ -235,7 +242,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091"
+     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "value" : 1007
     },
     {
      "name" : "SettingClear",
@@ -245,7 +253,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16"
+     "template" : "93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16",
+     "value" : 1008
     },
     {
      "name" : "SettingClearAll",
@@ -255,7 +264,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091"
+     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "value" : 1009
     },
     {
      "name" : "SettingGetBool",
@@ -265,7 +275,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060"
+     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060",
+     "value" : 1010
     },
     {
      "name" : "SettingGetDouble",
@@ -275,7 +286,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f"
+     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f",
+     "value" : 1011
     },
     {
      "name" : "SettingGetFloat",
@@ -285,7 +297,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc"
+     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc",
+     "value" : 1012
     },
     {
      "name" : "SettingGetInt",
@@ -295,7 +308,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a"
+     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a",
+     "value" : 1013
     },
     {
      "name" : "SettingGetString",
@@ -305,7 +319,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453"
+     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453",
+     "value" : 1014
     },
     {
      "name" : "SettingGetUInt",
@@ -315,7 +330,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6"
+     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6",
+     "value" : 1015
     },
     {
      "name" : "SettingSetBool",
@@ -325,7 +341,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060"
+     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060",
+     "value" : 1016
     },
     {
      "name" : "SettingSetDouble",
@@ -335,7 +352,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f"
+     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f",
+     "value" : 1017
     },
     {
      "name" : "SettingSetFloat",
@@ -345,7 +363,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc"
+     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc",
+     "value" : 1018
     },
     {
      "name" : "SettingSetInt",
@@ -355,7 +374,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a"
+     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a",
+     "value" : 1019
     },
     {
      "name" : "SettingSetString",
@@ -365,7 +385,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453"
+     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453",
+     "value" : 1020
     },
     {
      "name" : "SettingSetUInt",
@@ -375,7 +396,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6"
+     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6",
+     "value" : 1021
     },
     {
      "name" : "SettingVerifyExists",
@@ -385,7 +407,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc"
+     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc",
+     "value" : 1022
     },
     {
      "name" : "SettingVerifyExistsFailed",
@@ -395,7 +418,8 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc"
+     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc",
+     "value" : 1023
     },
     {
      "name" : "SocketAccept",
@@ -405,7 +429,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Accept",
-     "template" : "6dcdbec0e73ed6429121b65eeafb04a7fde8fe65e0988f2a5803b0df177e8ee7"
+     "template" : "6dcdbec0e73ed6429121b65eeafb04a7fde8fe65e0988f2a5803b0df177e8ee7",
+     "value" : 1024
     },
     {
      "name" : "SocketAdopt",
@@ -415,7 +440,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Adopt",
-     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d"
+     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d",
+     "value" : 1025
     },
     {
      "name" : "SocketBind",
@@ -425,7 +451,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Info",
-     "template" : "85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f"
+     "template" : "85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f",
+     "value" : 1026
     },
     {
      "name" : "SocketClose",
@@ -435,7 +462,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Stop",
-     "template" : "b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c"
+     "template" : "b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c",
+     "value" : 1027
     },
     {
      "name" : "SocketConnect",
@@ -445,7 +473,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Connect",
-     "template" : "f9b0e501ce10e328a98633deb51ae300bda1a9142c733c762129705d836cd065"
+     "template" : "f9b0e501ce10e328a98633deb51ae300bda1a9142c733c762129705d836cd065",
+     "value" : 1028
     },
     {
      "name" : "SocketCreate",
@@ -455,7 +484,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Start",
-     "template" : "dcf70147d00214d2954f7e4138c414e003003fe001bdfc057c1124f4f08b2b4d"
+     "template" : "dcf70147d00214d2954f7e4138c414e003003fe001bdfc057c1124f4f08b2b4d",
+     "value" : 1029
     },
     {
      "name" : "SocketError",
@@ -465,7 +495,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Exception",
-     "template" : "d3c2dd9028b5a16d66bec06a2ed83b232fc513a7b6481f75954063f1aff8e56b"
+     "template" : "d3c2dd9028b5a16d66bec06a2ed83b232fc513a7b6481f75954063f1aff8e56b",
+     "value" : 1030
     },
     {
      "name" : "SocketExceptionEvent",
@@ -475,7 +506,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Exception",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1031
     },
     {
      "name" : "SocketExceptionReset",
@@ -485,7 +517,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Event",
-     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d"
+     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d",
+     "value" : 1032
     },
     {
      "name" : "SocketGetLocalAddress",
@@ -495,7 +528,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Info",
-     "template" : "85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f"
+     "template" : "85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f",
+     "value" : 1033
     },
     {
      "name" : "SocketGetOptionFlag",
@@ -505,7 +539,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Option",
-     "template" : "c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47"
+     "template" : "c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47",
+     "value" : 1034
     },
     {
      "name" : "SocketGetOptionValue",
@@ -515,7 +550,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Option",
-     "template" : "c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47"
+     "template" : "c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47",
+     "value" : 1035
     },
     {
      "name" : "SocketGetOptions",
@@ -525,7 +561,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Option",
-     "template" : "998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57"
+     "template" : "998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57",
+     "value" : 1036
     },
     {
      "name" : "SocketGetRemoteAddress",
@@ -535,7 +572,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Info",
-     "template" : "85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f"
+     "template" : "85304a48a1363e01b8a6b170d56303bffc7e802fa71a66e8ceb1ca9b7837b52f",
+     "value" : 1037
     },
     {
      "name" : "SocketListen",
@@ -545,7 +583,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Listen",
-     "template" : "b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c"
+     "template" : "b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c",
+     "value" : 1038
     },
     {
      "name" : "SocketOrphan",
@@ -555,7 +594,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Orphan",
-     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d"
+     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d",
+     "value" : 1039
     },
     {
      "name" : "SocketReadReadyEvent",
@@ -565,7 +605,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Event",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1040
     },
     {
      "name" : "SocketReadReadyReset",
@@ -575,7 +616,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Event",
-     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d"
+     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d",
+     "value" : 1041
     },
     {
      "name" : "SocketRecv",
@@ -585,7 +627,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Receive",
-     "template" : "c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d"
+     "template" : "c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d",
+     "value" : 1042
     },
     {
      "name" : "SocketRecvFrom",
@@ -595,7 +638,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Receive",
-     "template" : "cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183"
+     "template" : "cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183",
+     "value" : 1043
     },
     {
      "name" : "SocketSend",
@@ -605,7 +649,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Send",
-     "template" : "c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d"
+     "template" : "c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d",
+     "value" : 1044
     },
     {
      "name" : "SocketSendTo",
@@ -615,7 +660,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Send",
-     "template" : "cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183"
+     "template" : "cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183",
+     "value" : 1045
     },
     {
      "name" : "SocketSetOption",
@@ -625,7 +671,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Option",
-     "template" : "998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57"
+     "template" : "998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57",
+     "value" : 1046
     },
     {
      "name" : "SocketSetOptionFlag",
@@ -635,7 +682,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Option",
-     "template" : "4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a"
+     "template" : "4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a",
+     "value" : 1047
     },
     {
      "name" : "SocketShutdown",
@@ -645,7 +693,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Shutdown",
-     "template" : "19848b028ec267f8fcfa92b936ca5134f5ec922320a66b0b3b8ad8fac4d531b4"
+     "template" : "19848b028ec267f8fcfa92b936ca5134f5ec922320a66b0b3b8ad8fac4d531b4",
+     "value" : 1048
     },
     {
      "name" : "SocketWouldBlock",
@@ -655,7 +704,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Info",
-     "template" : "83e21ae6db007b4ac38db27b55765fef4c0081a6db9153caaa181352a8eb48c4"
+     "template" : "83e21ae6db007b4ac38db27b55765fef4c0081a6db9153caaa181352a8eb48c4",
+     "value" : 1049
     },
     {
      "name" : "SocketWriteReadyEvent",
@@ -665,7 +715,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Event",
-     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329"
+     "template" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "value" : 1050
     },
     {
      "name" : "SocketWriteReadyReset",
@@ -675,7 +726,8 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Event",
-     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d"
+     "template" : "1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d",
+     "value" : 1051
     },
     {
      "name" : "TimerCreate",
@@ -685,7 +737,8 @@
      "channel" : "zs",
      "task" : "Timer",
      "opcode" : "Start",
-     "template" : "713a0591348fad63178940aa72cefc5eb9901bba27d6222f04900a95a5a56ad0"
+     "template" : "713a0591348fad63178940aa72cefc5eb9901bba27d6222f04900a95a5a56ad0",
+     "value" : 1052
     },
     {
      "name" : "TimerDestroy",
@@ -695,7 +748,8 @@
      "channel" : "zs",
      "task" : "Timer",
      "opcode" : "Stop",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091"
+     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "value" : 1053
     },
     {
      "name" : "TimerEvent",
@@ -705,7 +759,8 @@
      "channel" : "zs",
      "task" : "Timer",
      "opcode" : "Event",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091"
+     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "value" : 1054
     }
    ]
   },
