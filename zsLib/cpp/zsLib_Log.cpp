@@ -848,6 +848,7 @@ namespace zsLib
       }
 
       refThis.mCleanUpWriters.insert(writer);
+      notifyList = refThis.mEventingProviderListeners;
     }
 
     for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
