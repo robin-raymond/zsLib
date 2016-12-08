@@ -54,13 +54,13 @@ namespace zsLib
                                ) :
       mNotify(notify)
     {
-      ZS_EVENTING_1(x, i, Detail, MessageQueueCreate, zs, MessageQueue, Start, this, this, this);
+      ZS_EVENTING_1(x, i, Trace, MessageQueueCreate, zs, MessageQueue, Start, this, this, this);
     }
 
     //-------------------------------------------------------------------------
     MessageQueue::~MessageQueue()
     {
-      ZS_EVENTING_1(x, i, Detail, MessageQueueDestroy, zs, MessageQueue, Stop, this, this, this);
+      ZS_EVENTING_1(x, i, Trace, MessageQueueDestroy, zs, MessageQueue, Stop, this, this, this);
     }
 
     //-------------------------------------------------------------------------

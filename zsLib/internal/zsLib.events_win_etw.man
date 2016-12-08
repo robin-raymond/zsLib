@@ -274,8 +274,8 @@
 </templates>
 <events>
 <event symbol="ExceptionEvent" channel="zs" template="T_18ab4d9cbf44b3793a322ea183d5a8223cd8fc8f6cf1c8ceb5a3a8defea962d7" task="Exception" opcode="Exception" value="1000" level="win:Error" message="$(string.Event.ExceptionEvent)" />
-<event symbol="MessageQueueCreate" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Start" value="1001" level="win:Informational" message="$(string.Event.MessageQueueCreate)" />
-<event symbol="MessageQueueDestroy" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Stop" value="1002" level="win:Informational" message="$(string.Event.MessageQueueDestroy)" />
+<event symbol="MessageQueueCreate" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Start" value="1001" level="win:Verbose" message="$(string.Event.MessageQueueCreate)" />
+<event symbol="MessageQueueDestroy" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Stop" value="1002" level="win:Verbose" message="$(string.Event.MessageQueueDestroy)" />
 <event symbol="MessageQueuePost" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Send" value="1003" level="win:Verbose" message="$(string.Event.MessageQueuePost)" />
 <event symbol="MessageQueueProcess" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="MessageQueue" opcode="win:Receive" value="1004" level="win:Verbose" message="$(string.Event.MessageQueueProcess)" />
 <event symbol="MessageQueueTotalUnprocessedMessages" channel="zs" template="T_f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560" task="MessageQueue" opcode="win:Info" value="1005" level="win:Verbose" message="$(string.Event.MessageQueueTotalUnprocessedMessages)" />

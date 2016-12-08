@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "d9b845c9ba0ffd1cc58c48d9a3c1afc8f2d7c432f1f67f7241d07f53603dcb21",
+  "uniqueHash" : "5adb43e3be4a9ce6684408ab9a705cff5bf27c6dec9ae7e6d312e030a9cfd7c3",
   "typedefs" : {
    "typedef" : [
     {
@@ -172,7 +172,7 @@
      "name" : "MessageQueueCreate",
      "subsytem" : "x",
      "severity" : "Informational",
-     "level" : "Detail",
+     "level" : "Trace",
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Start",
@@ -183,7 +183,7 @@
      "name" : "MessageQueueDestroy",
      "subsytem" : "x",
      "severity" : "Informational",
-     "level" : "Detail",
+     "level" : "Trace",
      "channel" : "zs",
      "task" : "MessageQueue",
      "opcode" : "Stop",
