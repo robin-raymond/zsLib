@@ -57,12 +57,16 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
     \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[3]), (xValue1)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), (xValue3)); \
+    auto xxVal3 = (xValue1); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[3]), xxVal3); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    auto xxVal5 = (xValue3); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), xxVal5); \
     uint64_t xxVal6{(xValue4)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[7]), (xValue5)); \
+    auto xxVal7 = (xValue5); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[7]), xxVal7); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Error, Basic, ::zsLib::eventing::getEventDescriptor_ExceptionEvent(), ::zsLib::eventing::getEventParameterDescriptor_ExceptionEvent(), &(xxDescriptors[0]), 8); \
   }
 
@@ -259,7 +263,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingApply(), ::zsLib::eventing::getEventParameterDescriptor_SettingApply(), &(xxDescriptors[0]), 5); \
   }
 
@@ -325,7 +330,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingClear(), ::zsLib::eventing::getEventParameterDescriptor_SettingClear(), &(xxDescriptors[0]), 5); \
   }
 
@@ -392,7 +398,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetBool(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetBool(), &(xxDescriptors[0]), 6); \
@@ -429,7 +436,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     double xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetDouble(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetDouble(), &(xxDescriptors[0]), 6); \
@@ -466,7 +474,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     float xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetFloat(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetFloat(), &(xxDescriptors[0]), 6); \
@@ -503,7 +512,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     int64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetInt(), &(xxDescriptors[0]), 6); \
@@ -540,8 +550,10 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), (xValue3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    auto xxVal5 = (xValue3); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), xxVal5); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetString(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetString(), &(xxDescriptors[0]), 6); \
   }
 
@@ -576,7 +588,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetUInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetUInt(), &(xxDescriptors[0]), 6); \
@@ -613,7 +626,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetBool(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetBool(), &(xxDescriptors[0]), 6); \
@@ -650,7 +664,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     double xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetDouble(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetDouble(), &(xxDescriptors[0]), 6); \
@@ -687,7 +702,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     float xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetFloat(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetFloat(), &(xxDescriptors[0]), 6); \
@@ -724,7 +740,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     int64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetInt(), &(xxDescriptors[0]), 6); \
@@ -761,8 +778,10 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), (xValue3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    auto xxVal5 = (xValue3); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), xxVal5); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetString(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetString(), &(xxDescriptors[0]), 6); \
   }
 
@@ -797,7 +816,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetUInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetUInt(), &(xxDescriptors[0]), 6); \
@@ -834,7 +854,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingVerifyExists(), ::zsLib::eventing::getEventParameterDescriptor_SettingVerifyExists(), &(xxDescriptors[0]), 6); \
@@ -871,7 +892,8 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), (xValue2)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
     ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Warning, Basic, ::zsLib::eventing::getEventDescriptor_SettingVerifyExistsFailed(), ::zsLib::eventing::getEventParameterDescriptor_SettingVerifyExistsFailed(), &(xxDescriptors[0]), 6); \
@@ -910,7 +932,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
     uint64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), (xValue3), (xValue4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), xxVal5, xxVal6); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketAccept(), ::zsLib::eventing::getEventParameterDescriptor_SocketAccept(), &(xxDescriptors[0]), 6); \
   }
 
@@ -979,7 +1003,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
     int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), (xValue3), (xValue4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), xxVal5, xxVal6); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketBind(), ::zsLib::eventing::getEventParameterDescriptor_SocketBind(), &(xxDescriptors[0]), 6); \
   }
 
@@ -1048,7 +1074,9 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[4]), (xValue2), (xValue3)); \
+    auto xxVal4 = (xValue2); \
+    size_t xxVal5 {(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[4]), xxVal4, xxVal5); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketConnect(), ::zsLib::eventing::getEventParameterDescriptor_SocketConnect(), &(xxDescriptors[0]), 5); \
   }
 
@@ -1228,7 +1256,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
     int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), (xValue3), (xValue4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), xxVal5, xxVal6); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetLocalAddress(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetLocalAddress(), &(xxDescriptors[0]), 6); \
   }
 
@@ -1353,7 +1383,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     int64_t xxVal6{(xValue4)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), (xValue5), (xValue6)); \
+    auto xxVal7 = (xValue5); \
+    size_t xxVal8 {(xValue6)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), xxVal7, xxVal8); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetOptions(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetOptions(), &(xxDescriptors[0]), 8); \
   }
 
@@ -1390,7 +1422,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
     int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), (xValue3), (xValue4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), xxVal5, xxVal6); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetRemoteAddress(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetRemoteAddress(), &(xxDescriptors[0]), 6); \
   }
 
@@ -1561,7 +1595,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), (xValue4), (xValue5)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal6, xxVal7); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketRecv(), ::zsLib::eventing::getEventParameterDescriptor_SocketRecv(), &(xxDescriptors[0]), 7); \
   }
 
@@ -1602,8 +1638,12 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), (xValue4), (xValue5)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), (xValue6), (xValue7)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal6, xxVal7); \
+    auto xxVal8 = (xValue6); \
+    size_t xxVal9 {(xValue7)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[8]), xxVal8, xxVal9); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketRecvFrom(), ::zsLib::eventing::getEventParameterDescriptor_SocketRecvFrom(), &(xxDescriptors[0]), 8); \
   }
 
@@ -1643,7 +1683,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), (xValue4), (xValue5)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal6, xxVal7); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketSend(), ::zsLib::eventing::getEventParameterDescriptor_SocketSend(), &(xxDescriptors[0]), 7); \
   }
 
@@ -1684,8 +1726,12 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), (xValue4), (xValue5)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), (xValue6), (xValue7)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal6, xxVal7); \
+    auto xxVal8 = (xValue6); \
+    size_t xxVal9 {(xValue7)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[8]), xxVal8, xxVal9); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketSendTo(), ::zsLib::eventing::getEventParameterDescriptor_SocketSendTo(), &(xxDescriptors[0]), 8); \
   }
 
@@ -1728,7 +1774,9 @@ namespace zsLib {
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
     int64_t xxVal6{(xValue4)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
-    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), (xValue5), (xValue6)); \
+    auto xxVal7 = (xValue5); \
+    size_t xxVal8 {(xValue6)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), xxVal7, xxVal8); \
     ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketSetOption(), ::zsLib::eventing::getEventParameterDescriptor_SocketSetOption(), &(xxDescriptors[0]), 8); \
   }
 
