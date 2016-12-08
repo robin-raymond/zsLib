@@ -54,9 +54,9 @@
                              (xHandle),                                                                                                                             \
                              ::zsLib::Log::xSeverity,                                                                                                               \
                              ::zsLib::Log::xLevel,                                                                                                                  \
-                             (xEventDescriptor),                                                                         \
-                             (xEventParameterDescriptor),                                                      \
-                             (xEventDataDescriptor),                                                                \
+                             (xEventDescriptor),                                                                                                                    \
+                             (xEventParameterDescriptor),                                                                                                           \
+                             (xEventDataDescriptor),                                                                                                                \
                              (xEventDataDescriptorCount)                                                                                                            \
                              );                                                                                                                                     \
   }

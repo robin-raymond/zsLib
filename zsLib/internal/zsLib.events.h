@@ -10,9 +10,9 @@ namespace zsLib {
   namespace eventing {
 
 
-    inline uintptr_t &getEventHandle_zsLib()
+    inline zsLib::Log::ProviderHandle &getEventHandle_zsLib()
     {
-      static uintptr_t gHandle {};
+      static zsLib::Log::ProviderHandle gHandle {};
       return gHandle;
     }
 
