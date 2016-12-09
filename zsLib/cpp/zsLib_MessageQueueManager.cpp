@@ -141,7 +141,7 @@ namespace zsLib
       static SingletonLazySharedPtr<MessageQueueManager> singleton(create());
       MessageQueueManagerPtr result = singleton.singleton();
 
-      static zsLib::SingletonManager::Register registerSingleton("zsLib::MessageQueueManager", result);
+      static zsLib::SingletonManager::Register registerSingleton("org.zsLib.MessageQueueManager", result);
 
       if (!result) {
         ZS_LOG_WARNING(Detail, slog("singleton gone"))

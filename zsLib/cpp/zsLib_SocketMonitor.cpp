@@ -669,7 +669,7 @@ namespace zsLib
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
       }
 
-      static zsLib::SingletonManager::Register registerSingleton("zsLib::SocketMonitor", result);
+      static zsLib::SingletonManager::Register registerSingleton("org.zsLib.SocketMonitor", result);
 
       SocketMonitorHolder::singleton(result);
       return result;

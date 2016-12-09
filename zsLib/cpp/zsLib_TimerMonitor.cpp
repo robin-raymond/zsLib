@@ -135,7 +135,7 @@ namespace zsLib
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
       }
 
-      static zsLib::SingletonManager::Register registerSingleton("zsLib::TimerMonitor", result);
+      static zsLib::SingletonManager::Register registerSingleton("org.zsLib.TimerMonitor", result);
       return result;
     }
 

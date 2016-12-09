@@ -53,7 +53,8 @@ namespace zsLib
 
     class WindowsEventProviderLogger : public RecursiveLock,
                                        public ILogEventingDelegate,
-                                       public ILogEventingProviderDelegate
+                                       public ILogEventingProviderDelegate,
+                                       public ISingletonManagerDelegate
     {
     protected:
       struct make_private {};
@@ -86,6 +87,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       void init()
       {
+        zsLib::Log::addEventingProviderListener(mThisWeak.lock());
       }
 
     public:
@@ -112,6 +114,7 @@ namespace zsLib
       static WindowsEventProviderLoggerPtr singleton()
       {
         static SingletonLazySharedPtr<WindowsEventProviderLogger> singleton(create());
+        static zsLib::SingletonManager::Register registerSingleton("org.zsLib.WindowsEventProviderLogger", singleton.singleton());
         return singleton.singleton();
       }
 
@@ -142,6 +145,7 @@ namespace zsLib
         if (!provider) return;
 
         auto result = EventWrite(provider->mRegistrationHandle, descriptor, dataDescriptorCount, const_cast<PEVENT_DATA_DESCRIPTOR>(dataDescriptor));
+        if (!result) result = 1;
         (void)result;
       }
 
@@ -157,10 +161,10 @@ namespace zsLib
       virtual void notifyEventingProviderRegistered(
                                                     ProviderHandle handle,
                                                     EventingAtomDataArray eventingAtomDataArray
-                                                    )
+                                                    ) override
       {
         if (0 == mAtomIndex) {
-          mAtomIndex = zsLib::Log::registerEventingAtom("zsLib.WindowsEventProviderLogger");
+          mAtomIndex = zsLib::Log::registerEventingAtom("org.zsLib.WindowsEventProviderLogger");
           if (0 == mAtomIndex) return;
         }
 
@@ -194,7 +198,7 @@ namespace zsLib
       virtual void notifyEventingProviderUnregistered(
                                                       ProviderHandle handle,
                                                       EventingAtomDataArray eventingAtomDataArray
-                                                      )
+                                                      ) override
       {
         //mCleanupList
         EventingAtomIndex index = mAtomIndex;
@@ -209,6 +213,20 @@ namespace zsLib
         (void)result;
         provider->mRegistrationHandle = NULL;
         mCleanupList.insert(provider);
+      }
+
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark WindowsEventProviderLogger => ISingletonManagerDelegate
+      #pragma mark
+
+      //-----------------------------------------------------------------------
+      virtual void notifySingletonCleanup() override
+      {
+        zsLib::Log::removeEventingProviderListener(mThisWeak.lock());
       }
 
     protected:
@@ -248,7 +266,7 @@ namespace zsLib
         {
           AutoRecursiveLock lock(*pThis);
 
-          if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
+          if (EVENT_CONTROL_CODE_ENABLE_PROVIDER == IsEnabled) {
             ++(pThis->mTotalEnabled);
             if (1 == pThis->mTotalEnabled) {
               zsLib::Log::addEventingListener(pThis);
@@ -263,7 +281,7 @@ namespace zsLib
           }
         }
         
-        if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
+        if (EVENT_CONTROL_CODE_ENABLE_PROVIDER == IsEnabled) {
           zsLib::Log::setEventingLogging(provider->mEventingHandle, pThis->mID, true, static_cast<zsLib::Log::KeywordBitmaskType>(MatchAnyKeyword));
         } else if (EVENT_CONTROL_CODE_DISABLE_PROVIDER == IsEnabled) {
           zsLib::Log::setEventingLogging(provider->mEventingHandle, pThis->mID, false);
