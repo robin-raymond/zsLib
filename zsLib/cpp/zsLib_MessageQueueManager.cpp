@@ -370,6 +370,7 @@ namespace zsLib
 
       do
       {
+        totalRemaining = 0;
 
         for (MessageQueueMap::iterator iter = queues.begin(); iter != queues.end(); ++iter)
         {
