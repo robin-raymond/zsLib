@@ -109,6 +109,9 @@ namespace zsLib
 
       static String paramize(const char *name);
 
+      static bool returnFalse() { return false; }
+      static bool returnTrue() { return false; }
+
     protected:
       RecursiveLock mLock;
 
@@ -161,6 +164,52 @@ namespace zsLib
 
 #define ZS_INTERNAL_GET_LOG_LEVEL()                                       ((ZS_GET_SUBSYSTEM()).getOutputLevel())
 #define ZS_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                   ((xSubsystem).getOutputLevel())
+
+#ifdef ZSLIB_LOGGING_NOOP
+
+#define ZS_INTERNAL_IS_LOGGING(xLevel)                                    (::zsLib::internal::Log::returnFalse())
+#define ZS_INTERNAL_IS_LOGGING_VALUE(xLevelValue)                         (::zsLib::internal::Log::returnFalse())
+#define ZS_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)              (::zsLib::internal::Log::returnFalse())
+
+#define ZS_INTERNAL_LOG_SUBSYSTEM_BASIC(xSubsystem, xMsg)                 ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_DETAIL(xSubsystem, xMsg)                ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_DEBUG(xSubsystem, xMsg)                 ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_TRACE(xSubsystem, xMsg)                 ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_INSANE(xSubsystem, xMsg)                ;
+
+#define ZS_INTERNAL_LOG_FORCED(xSeverity, xLevel, xMsg)                   ;
+
+#define ZS_INTERNAL_LOG_BASIC(xMsg)                                       ;
+#define ZS_INTERNAL_LOG_DETAIL(xMsg)                                      ;
+#define ZS_INTERNAL_LOG_DEBUG(xMsg)                                       ;
+#define ZS_INTERNAL_LOG_TRACE(xMsg)                                       ;
+#define ZS_INTERNAL_LOG_INSANE(xMsg)                                      ;
+
+#define ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverityValue, xLevelValue, xMsg)  ;
+
+#define ZS_INTERNAL_LOG_BASIC_WITH_SEVERITY(xSeverityValue, xMsg)         ;
+#define ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverityValue, xMsg)        ;
+#define ZS_INTERNAL_LOG_DEBUG_WITH_SEVERITY(xSeverityValue, xMsg)         ;
+#define ZS_INTERNAL_LOG_TRACE_WITH_SEVERITY(xSeverityValue, xMsg)         ;
+#define ZS_INTERNAL_LOG_INSANE_WITH_SEVERITY(xSeverityValue, xMsg)        ;
+
+#define ZS_INTERNAL_LOG_SUBSYSTEM(xSubsystem, xLevel, xMsg)               ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_WARNING(xSubsystem, xLevel, xMsg)       ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_ERROR(xSubsystem, xLevel, xMsg)         ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_FATAL(xSubsystem, xLevel, xMsg)         ;
+
+#define ZS_INTERNAL_LOG(xLevel, xMsg)                                     ;
+#define ZS_INTERNAL_LOG_WARNING(xLevel, xMsg)                             ;
+#define ZS_INTERNAL_LOG_ERROR(xLevel, xMsg)                               ;
+#define ZS_INTERNAL_LOG_FATAL(xLevel, xMsg)                               ;
+
+#define ZS_INTERNAL_LOG_IF(xCond, xLevel, xMsg)                           ;
+#define ZS_INTERNAL_LOG_WARNING_IF(xCond, xLevel, xMsg)                   ;
+#define ZS_INTERNAL_LOG_ERROR_IF(xCond, xLevel, xMsg)                     ;
+#define ZS_INTERNAL_LOG_FATAL_IF(xCond, xLevel, xMsg)                     ;
+
+#else /* ZSLIB_LOGGING_NOOP */
+
 #define ZS_INTERNAL_IS_LOGGING(xLevel)                                    (((ZS_GET_SUBSYSTEM()).getOutputLevel()) >= ::zsLib::Log::xLevel)
 #define ZS_INTERNAL_IS_LOGGING_VALUE(xLevelValue)                         (((ZS_GET_SUBSYSTEM()).getOutputLevel()) >= (xLevelValue))
 #define ZS_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)              (((xSubsystem).getOutputLevel()) >= ::zsLib::Log::xLevel)
@@ -202,3 +251,4 @@ namespace zsLib
 #define ZS_INTERNAL_LOG_ERROR_IF(xCond, xLevel, xMsg)                     if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_ERROR(xLevel, xMsg)}
 #define ZS_INTERNAL_LOG_FATAL_IF(xCond, xLevel, xMsg)                     if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_FATAL(xLevel, xMsg)}
 
+#endif /* ZSLIB_LOGGING_NOOP */
