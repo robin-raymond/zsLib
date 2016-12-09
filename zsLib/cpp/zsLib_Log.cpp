@@ -854,7 +854,7 @@ namespace zsLib
     for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
       auto delegate = (*iter);
-      delegate->notifyEventingProviderRegistered(handle, &(writer->mAtomInfo[0]));
+      delegate->notifyEventingProviderUnregistered(handle, &(writer->mAtomInfo[0]));
     }
   }
 
