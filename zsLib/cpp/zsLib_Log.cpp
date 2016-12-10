@@ -694,6 +694,14 @@ namespace zsLib
       auto writer = (*iter);
       delegate->notifyEventingProviderRegistered(reinterpret_cast<uintptr_t>(writer), &(writer->mAtomInfo[0]));
     }
+
+    for (auto iter = eventWriterList.begin(); iter != eventWriterList.end(); ++iter)
+    {
+      auto writer = (*iter);
+      if (0 != writer->mKeywordsBitmask) {
+        delegate->notifyEventingProviderLoggingStateChanged(reinterpret_cast<uintptr_t>(writer), &(writer->mAtomInfo[0]), writer->mKeywordsBitmask);
+      }
+    }
   }
 
   //---------------------------------------------------------------------------
