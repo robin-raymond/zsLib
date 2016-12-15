@@ -38,6 +38,16 @@
 #include <sstream>
 #include <iomanip>
 
+#define ZSLIB_HAVE_STD_GETTIME 1
+
+#ifdef __unix__
+#ifdef __GNUC__
+#if __GNUC__ < 5
+#undef ZSLIB_HAVE_STD_GETTIME
+#endif //__GNUC__ < 5
+#endif //__GNUC__
+#endif //__unix__
+
 #ifdef _WIN32
 #include <objbase.h>
 #endif //_WIN32
@@ -383,7 +393,7 @@ namespace zsLib
 
       BYTE digit = 0;
       if (positive) {
-        while ((digit = gDigitToValue[*str]) < base) {
+        while ((digit = gDigitToValue[static_cast<uint8_t>(*str)]) < base) {
           LONGLONG lastResult = result;
 
           result *= base;
@@ -395,7 +405,7 @@ namespace zsLib
         if (result > gMaxLongLongs[size-1])
           return false;
       } else {
-        while ((digit = gDigitToValue[*str]) < base) {
+        while ((digit = gDigitToValue[static_cast<uint8_t>(*str)]) < base) {
           LONGLONG lastResult = result;
 
           result *= base;
@@ -438,7 +448,7 @@ namespace zsLib
       ULONGLONG result = 0;
 
       BYTE digit = 0;
-      while ((digit = gDigitToValue[*str]) < base) {
+      while ((digit = gDigitToValue[static_cast<uint8_t>(*str)]) < base) {
         ULONGLONG lastResult = result;
 
         result *= base;
@@ -550,19 +560,19 @@ namespace zsLib
 
       if (std::string::npos != temp.find(':')) {
         std::tm ttm{};
+
+#ifdef ZSLIB_HAVE_STD_GETTIME
         std::istringstream ss(temp);
-
+        
         ss >> std::get_time(&ttm, "%Y-%m-%d %H:%M:%S");
-
         if (ss.fail()) {
           return false;
         }
-
-#if 0
+#else
         // if need to use strptime instead
         const char *parsed = strptime(temp.c_str(), "%Y-%m-%d %H:%M:%S", &ttm);
         if (NULL == parsed) return false;
-#endif //0
+#endif //ZSLIB_HAVE_STD_GETTIME
 
 #ifdef _WIN32
         time_t ttime_t = _mkgmtime(&ttm);

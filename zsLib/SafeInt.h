@@ -108,6 +108,7 @@ Please read the leading comments before using the class.
 #if SAFEINT_COMPILER == GCC_COMPILER
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#pragma GCC diagnostic ignored "-Wattributes"
 #endif
 
 #include <stdint.h>

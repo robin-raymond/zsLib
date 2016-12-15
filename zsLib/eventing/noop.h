@@ -33,9 +33,6 @@
 
 #ifdef ZSLIB_EVENTING_NOOP
 
-#ifndef ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
-#define ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
-
 #include <zsLib/types.h>
 
 #define ZS_EVENTING_0(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode)
@@ -162,7 +159,5 @@ namespace zsLib
   {
   }
 }
-
-#endif //ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
 
 #endif //ZSLIB_EVENTING_NOOP

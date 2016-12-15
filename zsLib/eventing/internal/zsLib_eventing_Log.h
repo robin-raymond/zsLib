@@ -43,7 +43,7 @@
   { (xHandleReference) = zsLib::Log::registerEventingWriter((xProviderID), (xProviderName), (xUniqueProviderHash)); }
 
 #define ZS_EVENTING_INTERNAL_UNREGISTER_EVENT_WRITER(xHandleReference)                                                \
-  { zsLib::Log::ProviderHandle _handle = (xHandleReference); (xHandleReference) = NULL; zsLib::Log::unregisterEventingWriter(_handle); }
+  { zsLib::Log::ProviderHandle _handle = (xHandleReference); (xHandleReference) = 0; zsLib::Log::unregisterEventingWriter(_handle); }
 
 #define ZS_EVENTING_INTERNAL_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)                       {zsLib::Log::setEventingLevelByName(#xSubsystemName, zsLib::Log::xLevel);}
 
@@ -72,8 +72,8 @@
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xValue)                      static_cast<const char *>(xValue)
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xValue)                      static_cast<const wchar_t *>(xValue)
 
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        ((static_cast<const char *>(xValue)) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        ((static_cast<const wchar_t *>(xValue)) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xValue)                        ((NULL != (static_cast<const char *>(xValue))) ? ((strlen(xValue)+1)*sizeof(char)) : 0)
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        ((NULL != (static_cast<const wchar_t *>(xValue))) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
 
 #ifdef _WIN32
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }

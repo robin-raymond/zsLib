@@ -375,6 +375,7 @@ namespace zsLib
           String port(inString.substr(colonPos+1));
           port.trim();
           bogusPort = (WORD)(Numeric<WORD>(port));
+          (void)bogusPort;
         }
         ipv6 = inString.substr(openBracketPos+1, (closeBracketPos-(openBracketPos+1)));
       } else {
@@ -946,8 +947,7 @@ namespace zsLib
     WORD port = getPort();
     if (!inIncludePort) port = 0;
 
-    char buffer[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")+1];
-    memset(&(buffer[0]), 0, sizeof(buffer));
+    char buffer[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")+1] {};
     const char *result = internal::inet_ntop6((BYTE *)&(mIPAddress), &(buffer[0]), sizeof(buffer));
     if (result) {
       String temp((CSTR)(&(buffer[0])));
@@ -1208,14 +1208,14 @@ namespace zsLib
        * Keep this in mind if you think this function should have been coded
        * to use pointer overlays.  All the world's not a VAX.
        */
-      char  tmp[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")+1];
-      char *tp;
+      char  tmp[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")+1] {};
+      char *tp {};
       struct {
-        long base;
-        long len;
+        long base {};
+        long len {};
       } best, cur;
-      u_long words [IN6ADDRSZ / INT16SZ];
-      int    i;
+      u_long words [IN6ADDRSZ / INT16SZ] {};
+      int    i {};
 
       /* Preprocess:
        *  Copy the input (bytewise) array into a wordwise array.

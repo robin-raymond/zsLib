@@ -130,10 +130,10 @@ namespace zsLib
 
     //-------------------------------------------------------------------------
     ParserPos::ParserPos(const ParserPos &inPos) :
+      internal::ParserPos(inPos),
       mRow(inPos.mRow),
       mColumn(inPos.mColumn),
-      mPos(inPos.mPos),
-      internal::ParserPos(inPos)
+      mPos(inPos.mPos)
     {
     }
 

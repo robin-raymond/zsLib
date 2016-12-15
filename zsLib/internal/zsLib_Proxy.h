@@ -61,9 +61,9 @@ namespace zsLib
       ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, Delegate)
 
     public:
-      Proxy(IMessageQueuePtr queue, DelegatePtr delegate, int line, const char *fileName) : mQueue(queue), mDelegate(delegate), mNoop(false), mIgnoreMethodCall(false), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
-      Proxy(IMessageQueuePtr queue, DelegateWeakPtr delegateWeakPtr, int line, const char *fileName) : mQueue(queue), mWeakDelegate(delegateWeakPtr), mNoop(false), mIgnoreMethodCall(false), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
-      Proxy(IMessageQueuePtr queue, bool throwsDelegateGone, int line, const char *fileName) : mQueue(queue), mNoop(true), mIgnoreMethodCall(!throwsDelegateGone), mLine(line), mFileName(fileName) {proxyCountIncrement(mLine, mFileName);}
+      Proxy(IMessageQueuePtr queue, DelegatePtr delegate, int line, const char *fileName) : mQueue(queue), mDelegate(delegate), mLine(line), mFileName(fileName), mNoop(false), mIgnoreMethodCall(false) {proxyCountIncrement(mLine, mFileName);}
+      Proxy(IMessageQueuePtr queue, DelegateWeakPtr delegateWeakPtr, int line, const char *fileName) : mQueue(queue), mWeakDelegate(delegateWeakPtr), mLine(line), mFileName(fileName), mNoop(false), mIgnoreMethodCall(false) {proxyCountIncrement(mLine, mFileName);}
+      Proxy(IMessageQueuePtr queue, bool throwsDelegateGone, int line, const char *fileName) : mQueue(queue), mLine(line), mFileName(fileName), mNoop(true), mIgnoreMethodCall(!throwsDelegateGone) {proxyCountIncrement(mLine, mFileName);}
       ~Proxy() {proxyCountDecrement(mLine, mFileName);}
 
       DelegatePtr getDelegate() const

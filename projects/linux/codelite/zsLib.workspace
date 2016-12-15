@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="zsLib" Database="">
+  <Project Name="zsLib" Path="zsLib/zsLib.project" Active="No"/>
+  <Project Name="zsLibTest" Path="zsLibTest/zsLibTest.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="zsLib" ConfigName="Debug"/>
+      <Project Name="zsLibTest" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="no">
+      <Environment/>
+      <Project Name="zsLib" ConfigName="Release"/>
+      <Project Name="zsLibTest" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

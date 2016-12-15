@@ -187,6 +187,18 @@
 <data inType="win:AnsiString" name="key" />
 <data inType="win:UInt64" name="value" />
 </template>
+<template tid="T_b942a0e5d5df6a6c111b692b642dcb0d87ad2fcd1af27777bd5172ae2a22f0cf">
+<data inType="win:AnsiString" name="_subsystem" />
+<data inType="win:AnsiString" name="_function" />
+<data inType="win:UInt32" name="_line" />
+<data inType="win:UInt64" name="socket" />
+<data inType="win:Int64" name="result" />
+<data inType="win:UInt64" name="flags" />
+<data inType="win:UInt32" name="size" />
+<data inType="win:Binary" name="buffer" length="size" />
+<data inType="win:UInt32" name="addressSize" />
+<data inType="win:Binary" name="address" length="addressSize" />
+</template>
 <template tid="T_c5df64fd2227b66b742fa12378502a59da803c993e87aa1f175e2e68534dba47">
 <data inType="win:AnsiString" name="_subsystem" />
 <data inType="win:AnsiString" name="_function" />
@@ -196,27 +208,15 @@
 <data inType="win:Int64" name="option" />
 <data inType="win:Int64" name="value" />
 </template>
-<template tid="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d">
+<template tid="T_cb9166794e5e8c9e14f1337094f563de12c019d347183c457c940e913ac15ada">
 <data inType="win:AnsiString" name="_subsystem" />
 <data inType="win:AnsiString" name="_function" />
 <data inType="win:UInt32" name="_line" />
 <data inType="win:UInt64" name="socket" />
-<data inType="win:UInt64" name="result" />
+<data inType="win:Int64" name="result" />
 <data inType="win:UInt64" name="flags" />
 <data inType="win:UInt32" name="size" />
 <data inType="win:Binary" name="buffer" length="size" />
-</template>
-<template tid="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183">
-<data inType="win:AnsiString" name="_subsystem" />
-<data inType="win:AnsiString" name="_function" />
-<data inType="win:UInt32" name="_line" />
-<data inType="win:UInt64" name="socket" />
-<data inType="win:UInt64" name="result" />
-<data inType="win:UInt64" name="flags" />
-<data inType="win:UInt32" name="size" />
-<data inType="win:Binary" name="buffer" length="size" />
-<data inType="win:UInt32" name="addressSize" />
-<data inType="win:Binary" name="address" length="addressSize" />
 </template>
 <template tid="T_cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc">
 <data inType="win:AnsiString" name="_subsystem" />
@@ -315,10 +315,10 @@
 <event symbol="SocketOrphan" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Orphan" value="1039" level="win:Informational" message="$(string.Event.SocketOrphan)" />
 <event symbol="SocketReadReadyEvent" channel="zs" template="T_3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329" task="Socket" opcode="Event" value="1040" level="win:Verbose" message="$(string.Event.SocketReadReadyEvent)" />
 <event symbol="SocketReadReadyReset" channel="zs" template="T_1e60bbae0a18cb058a2abe8be0918b564c483f968610dd9d255985b914ab566d" task="Socket" opcode="Event" value="1041" level="win:Verbose" message="$(string.Event.SocketReadReadyReset)" />
-<event symbol="SocketRecv" channel="zs" template="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d" task="Socket" opcode="win:Receive" value="1042" level="win:Verbose" message="$(string.Event.SocketRecv)" />
-<event symbol="SocketRecvFrom" channel="zs" template="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183" task="Socket" opcode="win:Receive" value="1043" level="win:Verbose" message="$(string.Event.SocketRecvFrom)" />
-<event symbol="SocketSend" channel="zs" template="T_c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d" task="Socket" opcode="win:Send" value="1044" level="win:Verbose" message="$(string.Event.SocketSend)" />
-<event symbol="SocketSendTo" channel="zs" template="T_cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183" task="Socket" opcode="win:Send" value="1045" level="win:Verbose" message="$(string.Event.SocketSendTo)" />
+<event symbol="SocketRecv" channel="zs" template="T_cb9166794e5e8c9e14f1337094f563de12c019d347183c457c940e913ac15ada" task="Socket" opcode="win:Receive" value="1042" level="win:Verbose" message="$(string.Event.SocketRecv)" />
+<event symbol="SocketRecvFrom" channel="zs" template="T_b942a0e5d5df6a6c111b692b642dcb0d87ad2fcd1af27777bd5172ae2a22f0cf" task="Socket" opcode="win:Receive" value="1043" level="win:Verbose" message="$(string.Event.SocketRecvFrom)" />
+<event symbol="SocketSend" channel="zs" template="T_cb9166794e5e8c9e14f1337094f563de12c019d347183c457c940e913ac15ada" task="Socket" opcode="win:Send" value="1044" level="win:Verbose" message="$(string.Event.SocketSend)" />
+<event symbol="SocketSendTo" channel="zs" template="T_b942a0e5d5df6a6c111b692b642dcb0d87ad2fcd1af27777bd5172ae2a22f0cf" task="Socket" opcode="win:Send" value="1045" level="win:Verbose" message="$(string.Event.SocketSendTo)" />
 <event symbol="SocketSetOption" channel="zs" template="T_998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57" task="Socket" opcode="Option" value="1046" level="win:Informational" message="$(string.Event.SocketSetOption)" />
 <event symbol="SocketSetOptionFlag" channel="zs" template="T_4aa1e2e744a9902c6c7ad218013c6b6807efd100b6b46dfba2b9d1f200c4022a" task="Socket" opcode="Option" value="1047" level="win:Informational" message="$(string.Event.SocketSetOptionFlag)" />
 <event symbol="SocketShutdown" channel="zs" template="T_19848b028ec267f8fcfa92b936ca5134f5ec922320a66b0b3b8ad8fac4d531b4" task="Socket" opcode="Shutdown" value="1048" level="win:Informational" message="$(string.Event.SocketShutdown)" />

@@ -849,7 +849,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    size_t result = 0;
+    ssize_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -873,7 +873,7 @@ namespace zsLib
                       SafeInt<ULONG>(inFlags)
                       );
 
-      ZS_EVENTING_5(x, i, Trace, SocketRecv, zs, Socket, Receive, socket, socket, static_cast<uint64_t>(mSocket), size_t, result, result, ulong, flags, inFlags, buffer, buffer, ioBuffer, size, size, inBufferLengthInBytes);
+      ZS_EVENTING_5(x, i, Trace, SocketRecv, zs, Socket, Receive, socket, socket, static_cast<uint64_t>(mSocket), ssize_t, result, result, ulong, flags, inFlags, buffer, buffer, ioBuffer, size, size, inBufferLengthInBytes);
 
       if (SOCKET_ERROR == result)
       {
@@ -911,7 +911,7 @@ namespace zsLib
     if (mMonitorReadReady)
       mMonitor->monitorRead(*this);
 
-    return result;
+    return static_cast<size_t>(result);
   }
 
   //---------------------------------------------------------------------------
@@ -934,7 +934,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    size_t result = 0;
+    ssize_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -959,7 +959,7 @@ namespace zsLib
                         &size
                         );
 
-      ZS_EVENTING_7(x, i, Trace, SocketRecvFrom, zs, Socket, Receive, socket, socket, static_cast<uint64_t>(mSocket), size_t, result, result, ulong, flags, inFlags, buffer, buffer, ioBuffer, size, size, inBufferLengthInBytes, binary, address, &address, size, addressSize, size);
+      ZS_EVENTING_7(x, i, Trace, SocketRecvFrom, zs, Socket, Receive, socket, socket, static_cast<uint64_t>(mSocket), ssize_t, result, result, ulong, flags, inFlags, buffer, buffer, ioBuffer, size, size, inBufferLengthInBytes, binary, address, &address, size, addressSize, size);
 
       if (SOCKET_ERROR == result)
       {
@@ -1002,7 +1002,7 @@ namespace zsLib
     if (mMonitorReadReady)
       mMonitor->monitorRead(*this);
 
-    return result;
+    return static_cast<size_t>(result);
   }
 
   //---------------------------------------------------------------------------
@@ -1026,7 +1026,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    size_t result = 0;
+    ssize_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -1045,7 +1045,7 @@ namespace zsLib
                       static_cast<int>(inFlags)
                       );
 
-      ZS_EVENTING_5(x, i, Trace, SocketSend, zs, Socket, Send, socket, socket, static_cast<uint64_t>(mSocket), size_t, result, result, ulong, flags, inFlags, buffer, buffer, inBuffer, size, size, inBufferLengthInBytes);
+      ZS_EVENTING_5(x, i, Trace, SocketSend, zs, Socket, Send, socket, socket, static_cast<uint64_t>(mSocket), ssize_t, result, result, ulong, flags, inFlags, buffer, buffer, inBuffer, size, size, inBufferLengthInBytes);
 
       if (SOCKET_ERROR == result)
       {
@@ -1083,7 +1083,7 @@ namespace zsLib
     if (mMonitorWriteReady)
       mMonitor->monitorWrite(*this);
 
-    return result;
+    return static_cast<size_t>(result);
   }
 
   //---------------------------------------------------------------------------
@@ -1109,7 +1109,7 @@ namespace zsLib
   {
     internal::ignoreSigTermOnThread();
 
-    size_t result = 0;
+    ssize_t result = 0;
     if (outNoThrowErrorResult)
       *outNoThrowErrorResult = 0;
 
@@ -1136,7 +1136,7 @@ namespace zsLib
                         SafeInt<int>(size)
                         );
 
-      ZS_EVENTING_7(x, i, Trace, SocketSendTo, zs, Socket, Send, socket, socket, static_cast<uint64_t>(mSocket), size_t, result, result, ulong, flags, inFlags, buffer, buffer, inBuffer, size, size, inBufferLengthInBytes, binary, address, address, size, addressSize, size);
+      ZS_EVENTING_7(x, i, Trace, SocketSendTo, zs, Socket, Send, socket, socket, static_cast<uint64_t>(mSocket), ssize_t, result, result, ulong, flags, inFlags, buffer, buffer, inBuffer, size, size, inBufferLengthInBytes, binary, address, address, size, addressSize, size);
 
       if (SOCKET_ERROR == result)
       {
@@ -1175,7 +1175,7 @@ namespace zsLib
     if (mMonitorWriteReady)
       mMonitor->monitorWrite(*this);
 
-    return result;
+    return static_cast<size_t>(result);
   }
 
   //---------------------------------------------------------------------------

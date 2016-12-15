@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "5adb43e3be4a9ce6684408ab9a705cff5bf27c6dec9ae7e6d312e030a9cfd7c3",
+  "uniqueHash" : "d3347b1057f3b971e9cb7dc8156c5fa89c91601b2e9c154f6e465f67bb65a4b5",
   "typedefs" : {
    "typedef" : [
     {
@@ -36,6 +36,10 @@
     {
      "name" : "socket",
      "type" : "uint64"
+    },
+    {
+     "name" : "ssize_t",
+     "type" : "int64"
     },
     {
      "name" : "this",
@@ -627,7 +631,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Receive",
-     "template" : "c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d",
+     "template" : "cb9166794e5e8c9e14f1337094f563de12c019d347183c457c940e913ac15ada",
      "value" : 1042
     },
     {
@@ -638,7 +642,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Receive",
-     "template" : "cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183",
+     "template" : "b942a0e5d5df6a6c111b692b642dcb0d87ad2fcd1af27777bd5172ae2a22f0cf",
      "value" : 1043
     },
     {
@@ -649,7 +653,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Send",
-     "template" : "c8cd3981cf0d0b7e71567dc6045f92b6c596c69be19a633c7b028129601d5d4d",
+     "template" : "cb9166794e5e8c9e14f1337094f563de12c019d347183c457c940e913ac15ada",
      "value" : 1044
     },
     {
@@ -660,7 +664,7 @@
      "channel" : "zs",
      "task" : "Socket",
      "opcode" : "Send",
-     "template" : "cd50f26eddff45278e46bede2a6203eedcb7476cfcff3190bb7d59d91a04d183",
+     "template" : "b942a0e5d5df6a6c111b692b642dcb0d87ad2fcd1af27777bd5172ae2a22f0cf",
      "value" : 1045
     },
     {
@@ -1103,6 +1107,40 @@
        },
        {
         "name" : "result",
+        "type" : "int64"
+       },
+       {
+        "name" : "flags",
+        "type" : "ulong"
+       },
+       {
+        "name" : "buffer",
+        "type" : "binary"
+       },
+       {
+        "name" : "size",
+        "type" : "size"
+       },
+       {
+        "name" : "address",
+        "type" : "binary"
+       },
+       {
+        "name" : "addressSize",
+        "type" : "size"
+       }
+      ]
+     }
+    },
+    {
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "socket",
+        "type" : "uint64"
+       },
+       {
+        "name" : "result",
         "type" : "int"
        },
        {
@@ -1125,7 +1163,7 @@
        },
        {
         "name" : "result",
-        "type" : "uint64"
+        "type" : "int64"
        },
        {
         "name" : "flags",
@@ -1137,40 +1175,6 @@
        },
        {
         "name" : "size",
-        "type" : "size"
-       }
-      ]
-     }
-    },
-    {
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "socket",
-        "type" : "uint64"
-       },
-       {
-        "name" : "result",
-        "type" : "uint64"
-       },
-       {
-        "name" : "flags",
-        "type" : "ulong"
-       },
-       {
-        "name" : "buffer",
-        "type" : "binary"
-       },
-       {
-        "name" : "size",
-        "type" : "size"
-       },
-       {
-        "name" : "address",
-        "type" : "binary"
-       },
-       {
-        "name" : "addressSize",
         "type" : "size"
        }
       ]

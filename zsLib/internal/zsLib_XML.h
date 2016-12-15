@@ -623,7 +623,7 @@ namespace zsLib
       protected:
         GeneratorWeakPtr mThis;
 
-        UINT mWriteFlags;
+        UINT mWriteFlags {};
         GeneratorModes mGeneratorMode;
 
         String mJSONForcedText;
@@ -631,8 +631,8 @@ namespace zsLib
 
         mutable NodePtr mGeneratorRoot;
 
-        mutable bool mCaseSensitive;
-        mutable ULONG mDepth;
+        mutable bool mCaseSensitive {true};
+        mutable ULONG mDepth {};
         JSONStrs &mStrs;
       };
 

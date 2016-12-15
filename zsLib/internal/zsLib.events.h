@@ -18,7 +18,7 @@ namespace zsLib {
 
 #define ZS_INTERNAL_REGISTER_EVENTING_zsLib() \
     { \
-      ZS_EVENTING_REGISTER_EVENT_WRITER(::zsLib::eventing::getEventHandle_zsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "5adb43e3be4a9ce6684408ab9a705cff5bf27c6dec9ae7e6d312e030a9cfd7c3"); \
+      ZS_EVENTING_REGISTER_EVENT_WRITER(::zsLib::eventing::getEventHandle_zsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "d3347b1057f3b971e9cb7dc8156c5fa89c91601b2e9c154f6e465f67bb65a4b5"); \
       ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(zsLib, Debug); \
       ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(zsLib_socket, Debug); \
     }
@@ -1585,7 +1585,7 @@ namespace zsLib {
         {EventParameterType_AString},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
-        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_Binary}
@@ -1604,7 +1604,7 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    uint64_t xxVal4{(xValue2)}; \
+    int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
@@ -1629,7 +1629,7 @@ namespace zsLib {
         {EventParameterType_AString},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
-        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_Binary},
@@ -1650,7 +1650,7 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    uint64_t xxVal4{(xValue2)}; \
+    int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
@@ -1679,7 +1679,7 @@ namespace zsLib {
         {EventParameterType_AString},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
-        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_Binary}
@@ -1698,7 +1698,7 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    uint64_t xxVal4{(xValue2)}; \
+    int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
@@ -1723,7 +1723,7 @@ namespace zsLib {
         {EventParameterType_AString},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
-        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_UnsignedInteger},
         {EventParameterType_Binary},
@@ -1744,7 +1744,7 @@ namespace zsLib {
     \
     uint64_t xxVal3{(xValue1)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
-    uint64_t xxVal4{(xValue2)}; \
+    int64_t xxVal4{(xValue2)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
     uint64_t xxVal5{(xValue3)}; \
     ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \

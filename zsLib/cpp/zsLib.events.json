@@ -40,6 +40,10 @@
           "type": "uint64"
         },
         {
+          "name": "ssize_t",
+          "type": "int64"
+        },
+        {
           "name": "this",
           "type": "pointer"
         },

@@ -62,6 +62,7 @@
 #include <thread>
 #include <mutex>
 #ifndef _WIN32
+#include <cstring>
 #include <uuid/uuid.h>
 #endif //_WIN32
 
@@ -152,6 +153,8 @@ namespace zsLib
   using ::WORD;
   using ::DWORD;
   using ::QWORD;
+  
+  typedef SSIZE_T ssize_t;
 
 #else
   typedef char CHAR;

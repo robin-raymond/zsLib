@@ -69,7 +69,7 @@ namespace zsLib
         class Walker : public WalkSink
         {
         public:
-          Walker(size_t &outResult, const GeneratorPtr &inGenerator) : mResult(outResult), mGenerator(inGenerator) {}
+          Walker(size_t &outResult, const GeneratorPtr &inGenerator) : mGenerator(inGenerator), mResult(outResult) {}
 
           virtual bool onElementEnter(ElementPtr inNode)
           {

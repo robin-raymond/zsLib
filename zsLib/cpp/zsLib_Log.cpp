@@ -1229,39 +1229,39 @@ namespace zsLib
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const char *message, XML::ElementPtr object) :
-    mMessage(message),
-    mObject(object)
+    mObject(object),
+    mMessage(message)
   {
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const String &message, XML::ElementPtr object) :
-    mMessage(message),
-    mObject(object)
+    mObject(object),
+    mMessage(message)
   {
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const char *message, const char *staticObjectName) :
-    mMessage(message),
-    mObject(XML::Element::create(staticObjectName))
+    mObject(XML::Element::create(staticObjectName)),
+    mMessage(message)
   {
     ZS_THROW_INVALID_ARGUMENT_IF(!staticObjectName)
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const String &message, const char *staticObjectName) :
-    mMessage(message),
-    mObject(XML::Element::create(staticObjectName))
+    mObject(XML::Element::create(staticObjectName)),
+    mMessage(message)
   {
     ZS_THROW_INVALID_ARGUMENT_IF(!staticObjectName)
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const Params &params) :
-    mMessage(params.mMessage),
     mObject(params.mObject),
-    mParams(params.mParams)
+    mParams(params.mParams),
+    mMessage(params.mMessage)
   {
   }
 
