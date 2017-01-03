@@ -45,6 +45,18 @@ namespace zsLib
 
     virtual ~IMessageQueueMessage() {}
   };
+  
+  template <class Closure>
+  interaction IMessageQueueMessageClosure : public IMessageQueueMessage
+  {
+    explicit IMessageQueueMessageClosure(const Closure &closure) : mClosure(closure) {}
+
+    virtual const char *getDelegateName() const {return __func__;}
+    virtual const char *getMethodName() const {return __func__;}
+    virtual void processMessage() {mClosure();}
+
+    Closure mClosure;
+  };
 
   interaction IMessageQueueNotify
   {
@@ -63,6 +75,10 @@ namespace zsLib
     static IMessageQueuePtr create(IMessageQueueNotifyPtr notify);
 
     virtual void post(IMessageQueueMessageUniPtr message) = 0;
+
+    template <class Closure>
+    void postClosure(const Closure &closure) {post(IMessageQueueMessageUniPtr(new IMessageQueueMessageClosure<Closure>(closure)));}
+
     virtual size_type getTotalUnprocessedMessages() const = 0;
   };
 }
