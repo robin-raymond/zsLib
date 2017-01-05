@@ -1418,6 +1418,20 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
+  ElementPtr IHelper::toXML(const char *str)
+  {
+    if (!str) return ElementPtr();
+
+    DocumentPtr doc = Document::createFromParsedXML(str);
+
+    ElementPtr childEl = doc->getFirstChildElement();
+    if (!childEl) return ElementPtr();
+
+    childEl->orphan();
+    return childEl;
+  }
+
+  //---------------------------------------------------------------------------
   String IHelper::getAttributeID(ElementPtr el)
   {
     return IHelper::getAttribute(el, "id");

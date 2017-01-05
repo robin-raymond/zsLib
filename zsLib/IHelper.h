@@ -186,6 +186,7 @@ namespace zsLib
 
     static String toString(ElementPtr el);
     static ElementPtr toJSON(const char *str);
+    static ElementPtr toXML(const char *str);
 
     static String getAttributeID(ElementPtr el);
     static void setAttributeIDWithText(ElementPtr el, const String &value);
