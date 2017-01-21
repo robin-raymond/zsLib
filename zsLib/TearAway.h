@@ -43,8 +43,9 @@ namespace zsLib
   {
   public:
 
-    ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, TearAwayInterface)
-    ZS_DECLARE_TYPEDEF_PTR(XDATATYPE, TearAwayData)
+    ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, TearAwayInterface);
+    ZS_DECLARE_TYPEDEF_PTR(XDATATYPE, TearAwayData);
+    ZS_DECLARE_TYPEDEF_PTR(TearAway, TearAwayType);
 
   public:
     //------------------------------------------------------------------------
@@ -54,6 +55,21 @@ namespace zsLib
                                        TearAwayInterfacePtr original,
                                        TearAwayDataPtr data = TearAwayDataPtr()
                                        )                                                                                                                      {return original->tear_away_implementation_for_this_interface_is_not_defined();}
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Get the tear away interface associated to the tear away
+    //          instance. Functionally identical to static original(...)
+    //          method.
+    TearAwayInterfacePtr getDelegate() const                                                                                                                  { return TearAwayInterfacePtr()->tear_away_implementation_for_this_interface_is_not_defined(); }
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Set the tear away interface associated to the tear away
+    //          instance.
+    void setDelegate(TearAwayInterfacePtr original)                                                                                                           { original->tear_away_implementation_for_this_interface_is_not_defined(); }
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Gets the data associated with the tear away instance.
+    TearAwayDataPtr getData() const                                                                                                                           { TearAwayDataPtr()->tear_away_implementation_for_this_interface_is_not_defined(); }
 
     //------------------------------------------------------------------------
     // PURPOSE: Returns true if the interface passed in is a tear away
@@ -69,6 +85,11 @@ namespace zsLib
     // PURPOSE: Returns pointer to data structure if the interface passed
     //          in is a tear away otherwise returns TearAwayDataPtr()
     static TearAwayDataPtr data(TearAwayInterfacePtr tearAway)                                                                                                {return tearAway->tear_away_implementation_for_this_interface_is_not_defined();}
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Returns the tear away inteface from an interface type (or if
+    //          the object is not a tear away then returns a nullptr).
+    static TearAwayTypePtr tearAway(TearAwayInterfacePtr tearAway)                                                                                            { return tearAway->tear_away_implementation_for_this_interface_is_not_defined(); }
   };
 }
 
