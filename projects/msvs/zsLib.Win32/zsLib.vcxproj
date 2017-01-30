@@ -274,6 +274,22 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(SolutionDir)Build\Intermediate\Win32\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Build\Output\Win32\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(SolutionDir)Build\Intermediate\Win32\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Build\Output\Win32\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(SolutionDir)Build\Intermediate\Win32_x64\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Build\Output\Win32_x64\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)Build\Intermediate\Win32_x64\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Build\Output\Win32_x64\$(Configuration)\$(MSBuildProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CustomBuildBeforeTargets>PreBuildEvent</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
