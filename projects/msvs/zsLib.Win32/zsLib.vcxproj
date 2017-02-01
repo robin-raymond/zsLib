@@ -316,39 +316,16 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <CustomBuildStep>
-      <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man"
-echo Create resource file...
-rc.exe $(IntermediateOutputPath)zsLib.events_win_etw.rc
-echo Create manifest resource dll...
-echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib.events_win_etw.dll /target:library /win32res:$(IntermediateOutputPath)zsLib.events_win_etw.res
-link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib.events_win_etw.dll $(IntermediateOutputPath)zsLib.events_win_etw.res
-echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib.events_win_etw.dll "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man" "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" "$(OutDir)"
-icacls "$(OutDir)zsLib.events_win_etw.dll" /grant Users:RX
-echo.
-echo Steps to register manifest file with for Windows Performance Recorder...
-echo.
-echo 1) Run a command prompt as administrator
-echo.
-echo 2) Change into the output directory, type:
-echo cd "$(OutDir)"
-echo.
-echo 3) To register the manifest, type:
-echo wevtutil.exe im zsLib.events_win_etw.man /rf:"$(OutDir)zsLib.events_win_etw.dll" /mf:"$(OutDir)zsLib.events_win_etw.dll"
-echo.
-echo 4) To unregister the manifest, type:
-echo wevtutil.exe um zsLib.events_win_etw.man
-echo.
-</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.h;$(IntermediateOutputPath)zsLib.events_win_etw.rc;$(IntermediateOutputPath)zsLib.events_win_etw.res;$(IntermediateOutputPath)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.man;$(OutDir)zsLib.events_win_etw.wprp;%(Outputs)</Outputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Inputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man;$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp;%(Inputs)</Inputs>
+      <Inputs>
+      </Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -366,39 +343,16 @@ echo.
       <SubSystem>Windows</SubSystem>
     </Link>
     <CustomBuildStep>
-      <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man"
-echo Create resource file...
-rc.exe $(IntermediateOutputPath)zsLib.events_win_etw.rc
-echo Create manifest resource dll...
-echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib.events_win_etw.dll /target:library /win32res:$(IntermediateOutputPath)zsLib.events_win_etw.res
-link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib.events_win_etw.dll $(IntermediateOutputPath)zsLib.events_win_etw.res
-echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib.events_win_etw.dll "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man" "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" "$(OutDir)"
-icacls "$(OutDir)zsLib.events_win_etw.dll" /grant Users:RX
-echo.
-echo Steps to register manifest file with for Windows Performance Recorder...
-echo.
-echo 1) Run a command prompt as administrator
-echo.
-echo 2) Change into the output directory, type:
-echo cd "$(OutDir)"
-echo.
-echo 3) To register the manifest, type:
-echo wevtutil.exe im zsLib.events_win_etw.man /rf:"$(OutDir)zsLib.events_win_etw.dll" /mf:"$(OutDir)zsLib.events_win_etw.dll"
-echo.
-echo 4) To unregister the manifest, type:
-echo wevtutil.exe um zsLib.events_win_etw.man
-echo.
-</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.h;$(IntermediateOutputPath)zsLib.events_win_etw.rc;$(IntermediateOutputPath)zsLib.events_win_etw.res;$(IntermediateOutputPath)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.man;$(OutDir)zsLib.events_win_etw.wprp;%(Outputs)</Outputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Inputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man;$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp;%(Inputs)</Inputs>
+      <Inputs>
+      </Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -420,39 +374,16 @@ echo.
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuildStep>
-      <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man"
-echo Create resource file...
-rc.exe $(IntermediateOutputPath)zsLib.events_win_etw.rc
-echo Create manifest resource dll...
-echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib.events_win_etw.dll /target:library /win32res:$(IntermediateOutputPath)zsLib.events_win_etw.res
-link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib.events_win_etw.dll $(IntermediateOutputPath)zsLib.events_win_etw.res
-echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib.events_win_etw.dll "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man" "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" "$(OutDir)"
-icacls "$(OutDir)zsLib.events_win_etw.dll" /grant Users:RX
-echo.
-echo Steps to register manifest file with for Windows Performance Recorder...
-echo.
-echo 1) Run a command prompt as administrator
-echo.
-echo 2) Change into the output directory, type:
-echo cd "$(OutDir)"
-echo.
-echo 3) To register the manifest, type:
-echo wevtutil.exe im zsLib.events_win_etw.man /rf:"$(OutDir)zsLib.events_win_etw.dll" /mf:"$(OutDir)zsLib.events_win_etw.dll"
-echo.
-echo 4) To unregister the manifest, type:
-echo wevtutil.exe um zsLib.events_win_etw.man
-echo.
-</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.h;$(IntermediateOutputPath)zsLib.events_win_etw.rc;$(IntermediateOutputPath)zsLib.events_win_etw.res;$(IntermediateOutputPath)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.man;$(OutDir)zsLib.events_win_etw.wprp;%(Outputs)</Outputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Inputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man;$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp;%(Inputs)</Inputs>
+      <Inputs>
+      </Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -474,39 +405,16 @@ echo.
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuildStep>
-      <Command>echo Create manifest header file...
-mc.exe -um -r $(IntermediateOutputPath) -h "$(ProjectDir)..\..\..\zsLib\internal" "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man"
-echo Create resource file...
-rc.exe $(IntermediateOutputPath)zsLib.events_win_etw.rc
-echo Create manifest resource dll...
-echo If compiling to managed code resource DLL use: csc.exe /out:$(IntermediateOutputPath)zsLib.events_win_etw.dll /target:library /win32res:$(IntermediateOutputPath)zsLib.events_win_etw.res
-link -dll -noentry /MACHINE:$(PlatformTarget) -out:$(IntermediateOutputPath)zsLib.events_win_etw.dll $(IntermediateOutputPath)zsLib.events_win_etw.res
-echo Copy files to output directory...
-copy $(IntermediateOutputPath)zsLib.events_win_etw.dll "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man" "$(OutDir)"
-copy "$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" "$(OutDir)"
-icacls "$(OutDir)zsLib.events_win_etw.dll" /grant Users:RX
-echo.
-echo Steps to register manifest file with for Windows Performance Recorder...
-echo.
-echo 1) Run a command prompt as administrator
-echo.
-echo 2) Change into the output directory, type:
-echo cd "$(OutDir)"
-echo.
-echo 3) To register the manifest, type:
-echo wevtutil.exe im zsLib.events_win_etw.man /rf:"$(OutDir)zsLib.events_win_etw.dll" /mf:"$(OutDir)zsLib.events_win_etw.dll"
-echo.
-echo 4) To unregister the manifest, type:
-echo wevtutil.exe um zsLib.events_win_etw.man
-echo.
-</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.h;$(IntermediateOutputPath)zsLib.events_win_etw.rc;$(IntermediateOutputPath)zsLib.events_win_etw.res;$(IntermediateOutputPath)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.dll;$(OutDir)zsLib.events_win_etw.man;$(OutDir)zsLib.events_win_etw.wprp;%(Outputs)</Outputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Inputs>$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.man;$(ProjectDir)..\..\..\zsLib\internal\zsLib.events_win_etw.wprp;%(Inputs)</Inputs>
+      <Inputs>
+      </Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
