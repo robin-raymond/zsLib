@@ -6,7 +6,7 @@
   "symbol" : "zsLib",
   "description" : "Cross platform asychronous threading, socket, and timer API",
   "resourceName" : "zsLib.events",
-  "uniqueHash" : "d3347b1057f3b971e9cb7dc8156c5fa89c91601b2e9c154f6e465f67bb65a4b5",
+  "uniqueHash" : "66e397c6fde76e25daaf01988bc436d51e86b4f815f9688b83225d35e130dc15",
   "typedefs" : {
    "typedef" : [
     {
@@ -27,7 +27,7 @@
     },
     {
      "name" : "puid",
-     "type" : "ulong"
+     "type" : "uint64"
     },
     {
      "name" : "size_t",
@@ -235,7 +235,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02",
+     "template" : "2afcef1a922f19e24ecd5c2d57f7836aa03b08dceaf5340be670d08edb5cddcd",
      "value" : 1006
     },
     {
@@ -246,7 +246,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "template" : "d6e9d19d647b1cf31797a5c55aba188694db30b00b0141cca3969a88b0e9a69f",
      "value" : 1007
     },
     {
@@ -257,7 +257,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16",
+     "template" : "18dca32f80ce1a1d2df7ec7c51aaec0afbfff57f7680782c2944fa17255a119b",
      "value" : 1008
     },
     {
@@ -268,7 +268,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "template" : "d6e9d19d647b1cf31797a5c55aba188694db30b00b0141cca3969a88b0e9a69f",
      "value" : 1009
     },
     {
@@ -279,7 +279,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060",
+     "template" : "9fb5345ac843049803bf4ebf604b28c6705be3f00abccf954e0aebfa73ec6697",
      "value" : 1010
     },
     {
@@ -290,7 +290,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f",
+     "template" : "4f213152351f398041d309d028150a8417833494e5ee65abe312f0641eafdae0",
      "value" : 1011
     },
     {
@@ -301,7 +301,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc",
+     "template" : "1375ea5f438a1e3c40a6ddadc979cc50c0e3f2bbca54b06b4971644653c47037",
      "value" : 1012
     },
     {
@@ -312,7 +312,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a",
+     "template" : "0dd3b3bb207b612f9a1460f2d0f866a3014f9a0e7ecdf4b60c356800423509b9",
      "value" : 1013
     },
     {
@@ -323,7 +323,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453",
+     "template" : "5905782b04bb6fff890615105097526fa7ac8545b26df9138a4b0b06cefa1b49",
      "value" : 1014
     },
     {
@@ -334,7 +334,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6",
+     "template" : "2a499d84c30c6cbd2469c2a409dd89d815888ab66b6acbf206305647112b4375",
      "value" : 1015
     },
     {
@@ -345,7 +345,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060",
+     "template" : "9fb5345ac843049803bf4ebf604b28c6705be3f00abccf954e0aebfa73ec6697",
      "value" : 1016
     },
     {
@@ -356,7 +356,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f",
+     "template" : "4f213152351f398041d309d028150a8417833494e5ee65abe312f0641eafdae0",
      "value" : 1017
     },
     {
@@ -367,7 +367,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc",
+     "template" : "1375ea5f438a1e3c40a6ddadc979cc50c0e3f2bbca54b06b4971644653c47037",
      "value" : 1018
     },
     {
@@ -378,7 +378,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a",
+     "template" : "0dd3b3bb207b612f9a1460f2d0f866a3014f9a0e7ecdf4b60c356800423509b9",
      "value" : 1019
     },
     {
@@ -389,7 +389,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453",
+     "template" : "5905782b04bb6fff890615105097526fa7ac8545b26df9138a4b0b06cefa1b49",
      "value" : 1020
     },
     {
@@ -400,7 +400,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6",
+     "template" : "2a499d84c30c6cbd2469c2a409dd89d815888ab66b6acbf206305647112b4375",
      "value" : 1021
     },
     {
@@ -411,7 +411,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc",
+     "template" : "f4b22b18df8c448c5ac02ba6d1d1a231fe3a5ff4d64d094bf16277fbfa12c0de",
      "value" : 1022
     },
     {
@@ -422,7 +422,7 @@
      "channel" : "zs",
      "task" : "Settings",
      "opcode" : "Info",
-     "template" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc",
+     "template" : "f4b22b18df8c448c5ac02ba6d1d1a231fe3a5ff4d64d094bf16277fbfa12c0de",
      "value" : 1023
     },
     {
@@ -741,7 +741,7 @@
      "channel" : "zs",
      "task" : "Timer",
      "opcode" : "Start",
-     "template" : "713a0591348fad63178940aa72cefc5eb9901bba27d6222f04900a95a5a56ad0",
+     "template" : "c35cb3518ad6fb80f76bbe0defd68c16f079e60771c860b87a1da049226a26ba",
      "value" : 1052
     },
     {
@@ -752,7 +752,7 @@
      "channel" : "zs",
      "task" : "Timer",
      "opcode" : "Stop",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "template" : "d6e9d19d647b1cf31797a5c55aba188694db30b00b0141cca3969a88b0e9a69f",
      "value" : 1053
     },
     {
@@ -763,13 +763,51 @@
      "channel" : "zs",
      "task" : "Timer",
      "opcode" : "Event",
-     "template" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "template" : "d6e9d19d647b1cf31797a5c55aba188694db30b00b0141cca3969a88b0e9a69f",
      "value" : 1054
     }
    ]
   },
   "templates" : {
    "template" : [
+    {
+     "id" : "0dd3b3bb207b612f9a1460f2d0f866a3014f9a0e7ecdf4b60c356800423509b9",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "long"
+       }
+      ]
+     }
+    },
+    {
+     "id" : "1375ea5f438a1e3c40a6ddadc979cc50c0e3f2bbca54b06b4971644653c47037",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "float"
+       }
+      ]
+     }
+    },
     {
      "id" : "18ab4d9cbf44b3793a322ea183d5a8223cd8fc8f6cf1c8ceb5a3a8defea962d7",
      "dataTypes" : {
@@ -792,6 +830,21 @@
        },
        {
         "name" : "expression",
+        "type" : "string"
+       }
+      ]
+     }
+    },
+    {
+     "id" : "18dca32f80ce1a1d2df7ec7c51aaec0afbfff57f7680782c2944fa17255a119b",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "key",
         "type" : "string"
        }
       ]
@@ -826,21 +879,12 @@
      }
     },
     {
-     "id" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
-     "dataTypes" : {
-      "dataType" : {
-       "name" : "this",
-       "type" : "pointer"
-      }
-     }
-    },
-    {
-     "id" : "40226ac82c5038476bcd47616d69a8f6ed1a628cce8e975c74a4b82afd868453",
+     "id" : "2a499d84c30c6cbd2469c2a409dd89d815888ab66b6acbf206305647112b4375",
      "dataTypes" : {
       "dataType" : [
        {
         "name" : "id",
-        "type" : "ulong"
+        "type" : "uint64"
        },
        {
         "name" : "key",
@@ -848,9 +892,33 @@
        },
        {
         "name" : "value",
+        "type" : "ulong"
+       }
+      ]
+     }
+    },
+    {
+     "id" : "2afcef1a922f19e24ecd5c2d57f7836aa03b08dceaf5340be670d08edb5cddcd",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "jsonSettings",
         "type" : "string"
        }
       ]
+     }
+    },
+    {
+     "id" : "3188be8c0ec391881b8ed8cfb772b410af1f87c3e04952d50373524b81c22329",
+     "dataTypes" : {
+      "dataType" : {
+       "name" : "this",
+       "type" : "pointer"
+      }
      }
     },
     {
@@ -877,12 +945,12 @@
      }
     },
     {
-     "id" : "4c603182a4ab935ef514fbd2174a6cd1094ad99dc92bf2996b4d4c639523119a",
+     "id" : "4f213152351f398041d309d028150a8417833494e5ee65abe312f0641eafdae0",
      "dataTypes" : {
       "dataType" : [
        {
         "name" : "id",
-        "type" : "ulong"
+        "type" : "uint64"
        },
        {
         "name" : "key",
@@ -890,18 +958,28 @@
        },
        {
         "name" : "value",
-        "type" : "long"
+        "type" : "double"
        }
       ]
      }
     },
     {
-     "id" : "5a40fbac9010d8884956b9ad96d3dcee5e81129d073b8c1c10c3f523fd00f091",
+     "id" : "5905782b04bb6fff890615105097526fa7ac8545b26df9138a4b0b06cefa1b49",
      "dataTypes" : {
-      "dataType" : {
-       "name" : "id",
-       "type" : "ulong"
-      }
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "string"
+       }
+      ]
      }
     },
     {
@@ -923,25 +1001,6 @@
        {
         "name" : "size",
         "type" : "size"
-       }
-      ]
-     }
-    },
-    {
-     "id" : "713a0591348fad63178940aa72cefc5eb9901bba27d6222f04900a95a5a56ad0",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "repeat",
-        "type" : "bool"
-       },
-       {
-        "name" : "timeoutInMicroseconds",
-        "type" : "longlong"
        }
       ]
      }
@@ -985,59 +1044,6 @@
      }
     },
     {
-     "id" : "88be67f589acbf11f14fac41cf326754bc99941a2ca09ead8b19340ac6684060",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "key",
-        "type" : "string"
-       },
-       {
-        "name" : "value",
-        "type" : "bool"
-       }
-      ]
-     }
-    },
-    {
-     "id" : "93fbcae6d467f2c3f19b5dd4a9a9966b7cb50dfa92013551c3dca22341e64b16",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "key",
-        "type" : "string"
-       }
-      ]
-     }
-    },
-    {
-     "id" : "981b544a8dbf0bf878928274b7233d16b0debb82d23e686bb4599fd3f09dcc8f",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "key",
-        "type" : "string"
-       },
-       {
-        "name" : "value",
-        "type" : "double"
-       }
-      ]
-     }
-    },
-    {
      "id" : "998dfa17137f14503a4d6d94ad1f7b93024c0c3ec52564471a165aa4deaa9d57",
      "dataTypes" : {
       "dataType" : [
@@ -1069,6 +1075,25 @@
      }
     },
     {
+     "id" : "9fb5345ac843049803bf4ebf604b28c6705be3f00abccf954e0aebfa73ec6697",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "value",
+        "type" : "bool"
+       }
+      ]
+     }
+    },
+    {
      "id" : "b0ed8c314bf0ecb6f7132adce7af650910d9bade9dd785f74954f69c4c02279c",
      "dataTypes" : {
       "dataType" : [
@@ -1079,40 +1104,6 @@
        {
         "name" : "result",
         "type" : "int"
-       }
-      ]
-     }
-    },
-    {
-     "id" : "b287d6814143aa7f42c660ec894cad52d20a2042f6ce88ca816b2e138c0c5b02",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "jsonSettings",
-        "type" : "string"
-       }
-      ]
-     }
-    },
-    {
-     "id" : "b44512fdfb5ae698e11ae13f9309aa23f332a8cf789d0336c2967514e49088b6",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "key",
-        "type" : "string"
-       },
-       {
-        "name" : "value",
-        "type" : "ulong"
        }
       ]
      }
@@ -1148,6 +1139,25 @@
        {
         "name" : "addressSize",
         "type" : "size"
+       }
+      ]
+     }
+    },
+    {
+     "id" : "c35cb3518ad6fb80f76bbe0defd68c16f079e60771c860b87a1da049226a26ba",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "repeat",
+        "type" : "bool"
+       },
+       {
+        "name" : "timeoutInMicroseconds",
+        "type" : "longlong"
        }
       ]
      }
@@ -1203,25 +1213,6 @@
      }
     },
     {
-     "id" : "cd7a028493987a1d652f1287dfefd2041cba1e6c72677946347abbc6d1ed07cc",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "key",
-        "type" : "string"
-       },
-       {
-        "name" : "value",
-        "type" : "float"
-       }
-      ]
-     }
-    },
-    {
      "id" : "d3c2dd9028b5a16d66bec06a2ed83b232fc513a7b6481f75954063f1aff8e56b",
      "dataTypes" : {
       "dataType" : [
@@ -1234,6 +1225,15 @@
         "type" : "int"
        }
       ]
+     }
+    },
+    {
+     "id" : "d6e9d19d647b1cf31797a5c55aba188694db30b00b0141cca3969a88b0e9a69f",
+     "dataTypes" : {
+      "dataType" : {
+       "name" : "id",
+       "type" : "uint64"
+      }
      }
     },
     {
@@ -1264,25 +1264,6 @@
      }
     },
     {
-     "id" : "e643ef8ac7a0958b9456c9753f3316a4d195bda1307c9d5900fdf3f48ba419dc",
-     "dataTypes" : {
-      "dataType" : [
-       {
-        "name" : "id",
-        "type" : "ulong"
-       },
-       {
-        "name" : "key",
-        "type" : "string"
-       },
-       {
-        "name" : "exists",
-        "type" : "bool"
-       }
-      ]
-     }
-    },
-    {
      "id" : "f30a320a8df40570172dab989826d547e0d6b51e35569e3f2691dacb6b89e560",
      "dataTypes" : {
       "dataType" : [
@@ -1293,6 +1274,25 @@
        {
         "name" : "messages",
         "type" : "uint64"
+       }
+      ]
+     }
+    },
+    {
+     "id" : "f4b22b18df8c448c5ac02ba6d1d1a231fe3a5ff4d64d094bf16277fbfa12c0de",
+     "dataTypes" : {
+      "dataType" : [
+       {
+        "name" : "id",
+        "type" : "uint64"
+       },
+       {
+        "name" : "key",
+        "type" : "string"
+       },
+       {
+        "name" : "exists",
+        "type" : "bool"
        }
       ]
      }
