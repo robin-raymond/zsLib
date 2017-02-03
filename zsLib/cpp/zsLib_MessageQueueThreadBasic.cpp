@@ -85,6 +85,11 @@ namespace zsLib
       } while(!shouldShutdown);
 
       mIsShutdown = true;
+
+      {
+        AutoLock lock(mLock);
+        mQueue.reset();
+      }
     }
 
     //-------------------------------------------------------------------------
@@ -100,6 +105,7 @@ namespace zsLib
     IMessageQueue::size_type MessageQueueThreadBasic::getTotalUnprocessedMessages() const
     {
       AutoLock lock(mLock);
+      if (!mQueue) return 0;
       return mQueue->getTotalUnprocessedMessages();
     }
 
@@ -148,6 +154,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void MessageQueueThreadBasic::processMessagesFromThread()
     {
+      if (mIsShutdown) return;
       mQueue->process();
     }
   }
