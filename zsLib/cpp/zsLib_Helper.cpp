@@ -1896,7 +1896,7 @@ namespace zsLib
 
       if (end == String::npos) {
         // there is no more splits left so copy from start / to end
-        outResult[index] = input.substr(start+1);
+        outResult[index] = input.substr(start+splitStr.length());
         ++index;
         break;
       }

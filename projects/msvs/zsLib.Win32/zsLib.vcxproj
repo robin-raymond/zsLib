@@ -218,9 +218,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\zsLib\cpp\zsLib.events.json" />
+    <None Include="..\..\..\zsLib\idl\config.json" />
     <None Include="..\..\..\zsLib\internal\zsLib.events.jman" />
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.man" />
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\..\..\zsLib\idl\std.idl" />
+    <Midl Include="..\..\..\zsLib\idl\zsLib.idl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{80306FBE-B1DF-4741-AE97-9BE65C8C4CAE}</ProjectGuid>
