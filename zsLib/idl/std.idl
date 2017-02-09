@@ -31,13 +31,21 @@
 
 namespace std
 {
+  [special]
   template <valueType>
   struct list
   {
   };
 
+  [special]
   template <nameType, valueType>
   struct map
+  {
+  };
+
+  [special]
+  template <valueType>
+  struct set
   {
   };
 

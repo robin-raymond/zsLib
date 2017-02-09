@@ -437,5 +437,8 @@
     <Midl Include="..\..\..\zsLib\idl\zsLib.idl">
       <Filter>zsLib\idl</Filter>
     </Midl>
+    <Midl Include="..\..\..\zsLib\idl\std.idl">
+      <Filter>zsLib\idl</Filter>
+    </Midl>
   </ItemGroup>
 </Project>

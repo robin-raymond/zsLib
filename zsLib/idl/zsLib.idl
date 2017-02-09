@@ -31,16 +31,121 @@
 
 namespace zs
 {
-  struct MessageQueue {};
+  typedef uint64 puid;
+  typedef std::list<string> StringList;
 
-  [struct]
+  typedef uint64 size_t;
+
+  interface MessageQueue {};
+
+  interface Json
+  {
+    [getter, setter]
+    string value;
+  };
+
+  interface Any
+  {
+  };
+
+  [dictionary]
   struct Milliseconds
   {
-    [constructor]
-    Milliseconds Milliseconds(uint64 count);
+    [constructor, default]
+    void Milliseconds();
+
+    [constructor, altname(MillisecondsWithValue)]
+    void Milliseconds(uint64 count);
 
     uint64 count;
   };
+
+  [dictionary]
+  struct Microseconds
+  {
+    [constructor, default]
+    void Microseconds();
+
+    [constructor, altname(MicrosecondsWithValue)]
+    void Microseconds(uint64 count);
+
+    uint64 count;
+  };
+
+  [dictionary]
+  struct Time
+  {
+    [constructor]
+    void Time();
+
+    [constructor]
+    void Time(uint64 millisecondsSinceEpoch);
+
+    [static]
+    Time now();
+
+    Milliseconds timeSinceEpoch();
+  }
+
+  [special]
+  interface Promise
+  {
+    [getter]
+    Any value;
+
+    [getter]
+    Any reason;
+
+    [getter]
+    Any userData;
+  };
+
+  [special]
+  template <resultType, reasonType = void>
+  interface PromiseWith
+  {
+    [getter]
+    resultType value;
+
+    [getter]
+    reasonType reason;
+
+    [getter]
+    Any userData;
+  };
+
+  namespace exceptions
+  {
+    [special, exception]
+    struct Exception : Any
+    {
+    };
+
+    [special, exception]
+    struct InvalidParameters : Exception
+    {
+    };
+
+    [special, exception]
+    struct InvalidState : Exception
+    {
+    };
+
+    [special, exception]
+    struct NotImplemented : Exception
+    {
+    };
+
+    [special, exception]
+    struct NotSupported : Exception
+    {
+    };
+
+    [special, exception]
+    struct Unexpected : Exception
+    {
+    };
+  }
 
   namespace Log
   {
@@ -53,6 +158,6 @@ namespace zs
       Trace,
       Insane
     };
-  };
+  }
 
 } // namespace zsLib
