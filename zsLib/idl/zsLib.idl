@@ -147,7 +147,7 @@ namespace zs
     };
   }
 
-  namespace Log
+  namespace log
   {
     enum Level
     {

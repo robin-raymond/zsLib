@@ -29,6 +29,7 @@
  
  */
 
+[special]
 namespace std
 {
   [special]
