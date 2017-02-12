@@ -43,6 +43,37 @@ namespace zsLib
     virtual void onPromiseResolved(PromisePtr promise) = 0;
     virtual void onPromiseRejected(PromisePtr promise) = 0;
   };
+
+  template <class Closure>
+  interaction IPromiseClosureDelegate : public IPromiseDelegate
+  {
+    explicit IPromiseClosureDelegate(const Closure &closure) : mClosure(closure) {}
+
+    virtual void onPromiseSettled(PromisePtr promise) { mClosure(); }
+    virtual void onPromiseResolved(PromisePtr promise) {}
+    virtual void onPromiseRejected(PromisePtr promise) {}
+
+    Closure mClosure;
+  };
+
+  template <class ClosureResolve, class ClosureReject>
+  interaction IPromiseClosureResolveAndRejectDelegate : public IPromiseDelegate
+  {
+    explicit IPromiseClosureResolveAndRejectDelegate(
+                                                     const ClosureResolve &closureResolve,
+                                                     const ClosureResolve &closureReject
+                                                     ) :
+      mClosureResolve(closureResolve),
+      mClosureReject(closureReject)
+    {}
+
+    virtual void onPromiseSettled(PromisePtr promise) {}
+    virtual void onPromiseResolved(PromisePtr promise) { mClosureResolve(); }
+    virtual void onPromiseRejected(PromisePtr promise) { mClosureReject(); }
+
+    ClosureResolve mClosureResolve;
+    ClosureReject mClosureReject;
+  };
 }
 
 #include <zsLib/internal/zsLib_Promise.h>
@@ -126,6 +157,13 @@ namespace zsLib
 
     void then(IPromiseDelegatePtr delegate);
     void thenWeak(IPromiseDelegatePtr delegate);
+    template <class Closure>
+    void thenClosure(const Closure &closure)  { then(std::make_shared< IPromiseClosureDelegate<Closure> >(closure)); }
+    template <class ClosureResolve, class ClosureReject>
+    void thenClosures(
+                      const ClosureResolve &closureResolve,
+                      const ClosureReject &closureReject
+                      )                       { then(std::make_shared< IPromiseClosureResolveAndRejectDelegate<ClosureResolve, ClosureReject> >(closureResolve, closureReject)); }
 
     bool isSettled() const;
     bool isResolved() const;
