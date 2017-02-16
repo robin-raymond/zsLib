@@ -41,50 +41,46 @@ namespace zs
   interface Json
   {
     [getter, setter]
-    string value;
+    string toString();
   };
 
   interface Any
   {
   };
 
-  [dictionary]
+  [special, dictionary]
+  struct Hours
+  {
+  };
+
+  [special, dictionary]
+  struct Minutes
+  {
+  };
+
+  [special, dictionary]
+  struct Seconds
+  {
+  };
+
+  [special, dictionary]
   struct Milliseconds
   {
-    [constructor, default]
-    void Milliseconds();
-
-    [constructor, altname(MillisecondsWithValue)]
-    void Milliseconds(uint64 count);
-
-    uint64 count;
   };
 
-  [dictionary]
+  [special, dictionary]
   struct Microseconds
   {
-    [constructor, default]
-    void Microseconds();
-
-    [constructor, altname(MicrosecondsWithValue)]
-    void Microseconds(uint64 count);
-
-    uint64 count;
   };
 
-  [dictionary]
+  [special, dictionary]
+  struct Nanoseconds
+  {
+  };
+
+  [special, dictionary]
   struct Time
   {
-    [constructor]
-    void Time();
-
-    [constructor]
-    void Time(uint64 millisecondsSinceEpoch);
-
-    [static]
-    Time now();
-
-    Milliseconds timeSinceEpoch();
   }
 
   [special]
@@ -95,23 +91,25 @@ namespace zs
 
     [getter]
     Any reason;
-
-    [getter]
-    Any userData;
   };
 
   [special]
-  template <resultType, reasonType = void>
+  template <resultType, rejectionReasonType = void>
   interface PromiseWith
   {
     [getter]
     resultType value;
 
     [getter]
-    reasonType reason;
+    rejectionReasonType reason;
+  };
 
+  [special]
+  template <reasonType>
+  interface PromiseRejectionReason
+  {
     [getter]
-    Any userData;
+    reasonType reason;
   };
 
   namespace exceptions
