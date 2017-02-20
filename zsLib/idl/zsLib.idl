@@ -36,16 +36,28 @@ namespace zs
 
   typedef uint64 size_t;
 
-  interface MessageQueue {};
+  [special]
+  interface Any
+  {
+  };
+
+  [special]
+  interface MessageQueue
+  {
+    [constructor, delete]
+    void MessageQueue();
+
+    [static]
+    MessageQueue getDefaultForUi();
+
+    [getter]
+    Any queue;
+  };
 
   interface Json
   {
     [getter, setter]
     string toString();
-  };
-
-  interface Any
-  {
   };
 
   [special, dictionary]
@@ -115,17 +127,17 @@ namespace zs
   namespace exceptions
   {
     [special, exception]
-    struct Exception : Any
+    struct Exception
     {
     };
 
     [special, exception]
-    struct InvalidParameters : Exception
+    struct InvalidArgument : Exception
     {
     };
 
     [special, exception]
-    struct InvalidState : Exception
+    struct BadState : Exception
     {
     };
 
@@ -140,21 +152,8 @@ namespace zs
     };
 
     [special, exception]
-    struct Unexpected : Exception
+    struct UnexpectedError : Exception
     {
-    };
-  }
-
-  namespace log
-  {
-    enum Level
-    {
-      None,
-      Basic,
-      Detail,
-      Debug,
-      Trace,
-      Insane
     };
   }
 

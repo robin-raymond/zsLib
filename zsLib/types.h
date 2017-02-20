@@ -147,10 +147,10 @@ namespace zsLib
   };
 
   template <typename type>
-  struct AnyHolder
+  struct AnyHolder : public Any
   {
     typedef type UseType;
-    UseType mValue;
+    UseType value_;
   };
 
   struct Noop

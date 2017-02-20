@@ -1393,11 +1393,21 @@ namespace zsLib
   }
 
   //---------------------------------------------------------------------------
-  String IHelper::toString(ElementPtr element)
+  String IHelper::toString(
+                           ElementPtr element,
+                           bool formatAsJson
+                           )
   {
     if (!element) return String();
 
-    GeneratorPtr generator = Generator::createJSONGenerator();
+    if (formatAsJson) {
+      GeneratorPtr generator = Generator::createJSONGenerator();
+      std::unique_ptr<char[]> output = generator->write(element);
+
+      return output.get();
+    }
+
+    GeneratorPtr generator = Generator::createXMLGenerator();
     std::unique_ptr<char[]> output = generator->write(element);
 
     return output.get();
