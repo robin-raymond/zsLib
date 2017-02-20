@@ -41,25 +41,6 @@ namespace zs
   {
   };
 
-  [special]
-  interface MessageQueue
-  {
-    [constructor, delete]
-    void MessageQueue();
-
-    [static]
-    MessageQueue getDefaultForUi();
-
-    [getter]
-    Any queue;
-  };
-
-  interface Json
-  {
-    [getter, setter]
-    string toString();
-  };
-
   [special, dictionary]
   struct Hours
   {
