@@ -306,7 +306,7 @@ namespace zsLib
 
   public:
     static PromiseWithTypePtr create(IMessageQueuePtr queue = IMessageQueuePtr()) {
-      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       return pThis;
     }
@@ -317,7 +317,7 @@ namespace zsLib
       PromiseList promises;
       promises.push_back(genericPromise);
       IMessageQueuePtr queue = genericPromise->getAssociatedMessageQueue();
-      PromiseWithTypePtr pThis(make_shared<PromiseWithType>(make_private{}, promises, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, promises, queue));
       pThis->mThisWeak = pThis;
       genericPromise->thenWeak(pThis);
       return pThis;
@@ -328,7 +328,7 @@ namespace zsLib
                                              UseDataTypePtr value = UseDataTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->resolve(value);
       return pThis;
@@ -338,15 +338,15 @@ namespace zsLib
                                              UseReasonTypePtr reason = UseReasonTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->reject(reason);
       return pThis;
     }
 
-    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = make_shared< AnyHolderUseDataType >(); result->value_ = value; resolve(result); }
-    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = make_shared< AnyHolderUseReasonType >(); result->value_ = value; reject(result); }
-    void setUserData(UseUserTypePtr userData) { auto value = make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; setUserData(value); }
+    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = std::make_shared< AnyHolderUseDataType >(); result->value_ = value; resolve(result); }
+    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = std::make_shared< AnyHolderUseReasonType >(); result->value_ = value; reject(result); }
+    void setUserData(UseUserTypePtr userData) { auto value = std::make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; setUserData(value); }
 
     UseDataTypePtr value() const { auto result = Promise::value<AnyHolderUseDataType>(); if (result) return result->value_; return UseDataTypePtr(); }
     UseReasonTypePtr reason() const { auto result = Promise::reason<AnyHolderUseReasonType>(); if (result) return result->value_; return UseReasonTypePtr(); }
@@ -388,7 +388,7 @@ namespace zsLib
 
   public:
     static PromiseWithTypePtr create(IMessageQueuePtr queue = IMessageQueuePtr()) {
-      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       return pThis;
     }
@@ -399,7 +399,7 @@ namespace zsLib
       PromiseList promises;
       promises.push_back(genericPromise);
       IMessageQueuePtr queue = genericPromise->getAssociatedMessageQueue();
-      PromiseWithTypePtr pThis(make_shared<PromiseWithType>(make_private{}, promises, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, promises, queue));
       pThis->mThisWeak = pThis;
       genericPromise->thenWeak(pThis);
       return pThis;
@@ -410,7 +410,7 @@ namespace zsLib
                                              UseDataTypePtr value = UseDataTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->resolve(value);
       return pThis;
@@ -420,15 +420,15 @@ namespace zsLib
                                              UseReasonTypePtr reason = UseReasonTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->reject(reason);
       return pThis;
     }
 
-    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = make_shared< AnyHolderUseDataType >(); result->value_ = value; resolve(result); }
-    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = make_shared< AnyHolderUseReasonType >(); result->value_ = value; reject(result); }
-    void setUserData(UseUserTypePtr userData) { auto value = make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; setUserData(value); }
+    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = std::make_shared< AnyHolderUseDataType >(); result->value_ = value; Promise::resolve(result); }
+    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = std::make_shared< AnyHolderUseReasonType >(); result->value_ = reason; Promise::reject(result); }
+    void setUserData(UseUserTypePtr userData) { auto value = std::make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; Promise::setUserData(value); }
 
     UseDataTypePtr value() const { auto result = Promise::value<AnyHolderUseDataType>(); if (result) return result->value_; return UseDataTypePtr(); }
     UseReasonTypePtr reason() const { auto result = Promise::reason<AnyHolderUseReasonType>(); if (result) return result->value_; return UseReasonTypePtr(); }
