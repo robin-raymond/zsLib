@@ -252,9 +252,9 @@ namespace zsLib
     }
     static PromiseWithTypePtr createRejected(IMessageQueuePtr queue) {return PromiseWithType::createRejected(UseReasonTypePtr(), queue);}
     static PromiseWithTypePtr createRejected(
-                                     UseReasonTypePtr reason = UseReasonTypePtr(),
-                                     IMessageQueuePtr queue = IMessageQueuePtr()
-                                     ) {
+                                             UseReasonTypePtr reason = UseReasonTypePtr(),
+                                             IMessageQueuePtr queue = IMessageQueuePtr()
+                                             ) {
       PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->reject(reason);
@@ -265,6 +265,176 @@ namespace zsLib
     UseReasonTypePtr reason() const {return Promise::reason<UseReasonType>();}
     UseUserTypePtr userData() const {return Promise::userData<UseUserType>();}
   };
+
+  template <typename DataType, typename ReasonType = zsLib::Any, typename UserType = zsLib::Any>
+  class PromiseWithHolder : public Promise
+  {
+  public:
+    typedef DataType UseDataType;
+    typedef std::shared_ptr<UseDataType> UseDataTypePtr;
+    typedef std::weak_ptr<UseDataType> UseDataTypeWeakPtr;
+
+    typedef AnyHolder<UseDataTypePtr> AnyHolderUseDataType;
+    typedef std::shared_ptr<AnyHolderUseDataType> AnyHolderUseDataTypePtr;
+    typedef std::weak_ptr<AnyHolderUseDataType> AnyHolderUseDataTypeWeakPtr;
+
+    typedef ReasonType UseReasonType;
+    typedef std::shared_ptr<UseReasonType> UseReasonTypePtr;
+    typedef std::weak_ptr<UseReasonType> UseReasonTypeWeakPtr;
+
+    typedef AnyHolder<UseReasonTypePtr> AnyHolderUseReasonType;
+    typedef std::shared_ptr<AnyHolderUseReasonType> AnyHolderUseReasonTypePtr;
+    typedef std::weak_ptr<AnyHolderUseReasonType> AnyHolderUseReasonTypeWeakPtr;
+
+    typedef UserType UseUserType;
+    typedef std::shared_ptr<UseUserType> UseUserTypePtr;
+    typedef std::weak_ptr<UseUserType> UseUserTypeWeakPtr;
+
+    typedef AnyHolder<UseUserTypePtr> AnyHolderUseUserType;
+    typedef std::shared_ptr<AnyHolderUseUserType> AnyHolderUseUserTypePtr;
+    typedef std::weak_ptr<AnyHolderUseUserType> AnyHolderUseUserTypeWeakPtr;
+
+    typedef PromiseWithHolder<DataType, ReasonType, UserType> PromiseWithType;
+    typedef std::shared_ptr<PromiseWithType> PromiseWithTypePtr;
+    typedef std::weak_ptr<PromiseWithType> PromiseWithTypeWeakPtr;
+
+  public:
+    PromiseWithHolder(
+                      const make_private &,
+                      IMessageQueuePtr queue = IMessageQueuePtr()
+                      ) : Promise(make_private {}, queue) {}
+
+  public:
+    static PromiseWithTypePtr create(IMessageQueuePtr queue = IMessageQueuePtr()) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      pThis->mThisWeak = pThis;
+      return pThis;
+    }
+
+    static PromiseWithTypePtr createFrom(PromisePtr genericPromise) {
+      if (!genericPromise) return PromiseWithTypePtr();
+
+      PromiseList promises;
+      promises.push_back(genericPromise);
+      IMessageQueuePtr queue = genericPromise->getAssociatedMessageQueue();
+      PromiseWithTypePtr pThis(make_shared<PromiseWithType>(make_private{}, promises, queue));
+      pThis->mThisWeak = pThis;
+      genericPromise->thenWeak(pThis);
+      return pThis;
+    }
+
+    static PromiseWithTypePtr createResolved(IMessageQueuePtr queue) {return PromiseWithType::createResolved(UseDataTypePtr(), queue);}
+    static PromiseWithTypePtr createResolved(
+                                             UseDataTypePtr value = UseDataTypePtr(),
+                                             IMessageQueuePtr queue = IMessageQueuePtr()
+                                             ) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      pThis->mThisWeak = pThis;
+      pThis->resolve(value);
+      return pThis;
+    }
+    static PromiseWithTypePtr createRejected(IMessageQueuePtr queue) {return PromiseWithType::createRejected(UseReasonTypePtr(), queue);}
+    static PromiseWithTypePtr createRejected(
+                                             UseReasonTypePtr reason = UseReasonTypePtr(),
+                                             IMessageQueuePtr queue = IMessageQueuePtr()
+                                             ) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      pThis->mThisWeak = pThis;
+      pThis->reject(reason);
+      return pThis;
+    }
+
+    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = make_shared< AnyHolderUseDataType >(); result->value_ = value; resolve(result); }
+    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = make_shared< AnyHolderUseReasonType >(); result->value_ = value; reject(result); }
+    void setUserData(UseUserTypePtr userData) { auto value = make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; setUserData(value); }
+
+    UseDataTypePtr value() const { auto result = Promise::value<AnyHolderUseDataType>(); if (result) return result->value_; return UseDataTypePtr(); }
+    UseReasonTypePtr reason() const { auto result = Promise::reason<AnyHolderUseReasonType>(); if (result) return result->value_; return UseReasonTypePtr(); }
+    UseUserTypePtr userData() const { auto result = Promise::userData<AnyHolderUseUserType>(); if (result) return result->value_; return UseUserTypePtr(); }
+  };
+
+
+  template <typename DataTypePtr, typename ReasonTypePtr = zsLib::AnyPtr, typename UserTypePtr = zsLib::AnyPtr>
+  class PromiseWithHolderPtr : public Promise
+  {
+  public:
+    typedef DataTypePtr UseDataTypePtr;
+
+    typedef AnyHolder<UseDataTypePtr> AnyHolderUseDataType;
+    typedef std::shared_ptr<AnyHolderUseDataType> AnyHolderUseDataTypePtr;
+    typedef std::weak_ptr<AnyHolderUseDataType> AnyHolderUseDataTypeWeakPtr;
+
+    typedef ReasonTypePtr UseReasonTypePtr;
+
+    typedef AnyHolder<UseReasonTypePtr> AnyHolderUseReasonType;
+    typedef std::shared_ptr<AnyHolderUseReasonType> AnyHolderUseReasonTypePtr;
+    typedef std::weak_ptr<AnyHolderUseReasonType> AnyHolderUseReasonTypeWeakPtr;
+
+    typedef UserTypePtr UseUserTypePtr;
+
+    typedef AnyHolder<UseUserTypePtr> AnyHolderUseUserType;
+    typedef std::shared_ptr<AnyHolderUseUserType> AnyHolderUseUserTypePtr;
+    typedef std::weak_ptr<AnyHolderUseUserType> AnyHolderUseUserTypeWeakPtr;
+
+    typedef PromiseWithHolderPtr<DataTypePtr, ReasonTypePtr, UserTypePtr> PromiseWithType;
+    typedef std::shared_ptr<PromiseWithType> PromiseWithTypePtr;
+    typedef std::weak_ptr<PromiseWithType> PromiseWithTypeWeakPtr;
+
+  public:
+    PromiseWithHolderPtr(
+                         const make_private &,
+                         IMessageQueuePtr queue = IMessageQueuePtr()
+                         ) : Promise(make_private {}, queue) {}
+
+  public:
+    static PromiseWithTypePtr create(IMessageQueuePtr queue = IMessageQueuePtr()) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      pThis->mThisWeak = pThis;
+      return pThis;
+    }
+
+    static PromiseWithTypePtr createFrom(PromisePtr genericPromise) {
+      if (!genericPromise) return PromiseWithTypePtr();
+
+      PromiseList promises;
+      promises.push_back(genericPromise);
+      IMessageQueuePtr queue = genericPromise->getAssociatedMessageQueue();
+      PromiseWithTypePtr pThis(make_shared<PromiseWithType>(make_private{}, promises, queue));
+      pThis->mThisWeak = pThis;
+      genericPromise->thenWeak(pThis);
+      return pThis;
+    }
+
+    static PromiseWithTypePtr createResolved(IMessageQueuePtr queue) {return PromiseWithType::createResolved(UseDataTypePtr(), queue);}
+    static PromiseWithTypePtr createResolved(
+                                             UseDataTypePtr value = UseDataTypePtr(),
+                                             IMessageQueuePtr queue = IMessageQueuePtr()
+                                             ) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      pThis->mThisWeak = pThis;
+      pThis->resolve(value);
+      return pThis;
+    }
+    static PromiseWithTypePtr createRejected(IMessageQueuePtr queue) {return PromiseWithType::createRejected(UseReasonTypePtr(), queue);}
+    static PromiseWithTypePtr createRejected(
+                                             UseReasonTypePtr reason = UseReasonTypePtr(),
+                                             IMessageQueuePtr queue = IMessageQueuePtr()
+                                             ) {
+      PromiseWithTypePtr pThis(make_shared<PromiseWith>(make_private{}, queue));
+      pThis->mThisWeak = pThis;
+      pThis->reject(reason);
+      return pThis;
+    }
+
+    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = make_shared< AnyHolderUseDataType >(); result->value_ = value; resolve(result); }
+    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = make_shared< AnyHolderUseReasonType >(); result->value_ = value; reject(result); }
+    void setUserData(UseUserTypePtr userData) { auto value = make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; setUserData(value); }
+
+    UseDataTypePtr value() const { auto result = Promise::value<AnyHolderUseDataType>(); if (result) return result->value_; return UseDataTypePtr(); }
+    UseReasonTypePtr reason() const { auto result = Promise::reason<AnyHolderUseReasonType>(); if (result) return result->value_; return UseReasonTypePtr(); }
+    UseUserTypePtr userData() const { auto result = Promise::userData<AnyHolderUseUserType>(); if (result) return result->value_; return UseUserTypePtr(); }
+  };
+
 
   interaction IPromiseSettledDelegate : public IPromiseDelegate
   {
