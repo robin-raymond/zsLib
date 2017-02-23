@@ -344,9 +344,9 @@ namespace zsLib
       return pThis;
     }
 
-    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = std::make_shared< AnyHolderUseDataType >(); result->value_ = value; resolve(result); }
-    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = std::make_shared< AnyHolderUseReasonType >(); result->value_ = value; reject(result); }
-    void setUserData(UseUserTypePtr userData) { auto value = std::make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; setUserData(value); }
+    void resolve(UseDataTypePtr value = UseDataTypePtr()) { auto result = std::make_shared< AnyHolderUseDataType >(); result->value_ = value; Promise::resolve(result); }
+    void reject(UseReasonTypePtr reason = UseReasonTypePtr()) { auto result = std::make_shared< AnyHolderUseReasonType >(); result->value_ = reason; Promise::reject(result); }
+    void setUserData(UseUserTypePtr userData) { auto value = std::make_shared< AnyHolderUseUserTypePtr>(); value->_value = userData; Promise::setUserData(value); }
 
     UseDataTypePtr value() const { auto result = Promise::value<AnyHolderUseDataType>(); if (result) return result->value_; return UseDataTypePtr(); }
     UseReasonTypePtr reason() const { auto result = Promise::reason<AnyHolderUseReasonType>(); if (result) return result->value_; return UseReasonTypePtr(); }
