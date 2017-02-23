@@ -328,7 +328,7 @@ namespace zsLib
                                              UseDataTypePtr value = UseDataTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->resolve(value);
       return pThis;
@@ -338,7 +338,7 @@ namespace zsLib
                                              UseReasonTypePtr reason = UseReasonTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->reject(reason);
       return pThis;
@@ -410,7 +410,7 @@ namespace zsLib
                                              UseDataTypePtr value = UseDataTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->resolve(value);
       return pThis;
@@ -420,7 +420,7 @@ namespace zsLib
                                              UseReasonTypePtr reason = UseReasonTypePtr(),
                                              IMessageQueuePtr queue = IMessageQueuePtr()
                                              ) {
-      PromiseWithTypePtr pThis(std::make_shared<PromiseWith>(make_private{}, queue));
+      PromiseWithTypePtr pThis(std::make_shared<PromiseWithType>(make_private{}, queue));
       pThis->mThisWeak = pThis;
       pThis->reject(reason);
       return pThis;
