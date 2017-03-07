@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2017, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,56 +29,25 @@
  
  */
 
-#pragma once
-
-#include <zsLib/types.h>
-#include <zsLib/Exception.h>
-
-namespace zsLib
+[special]
+namespace std
 {
-  interaction IMessageQueueMessage
+  [special]
+  template <valueType>
+  struct list
   {
-    virtual const char *getDelegateName() const = 0;
-    virtual const char *getMethodName() const = 0;
-
-    virtual void processMessage() = 0;
-
-    virtual ~IMessageQueueMessage() {}
-  };
-  
-  template <class Closure>
-  interaction IMessageQueueMessageClosure : public IMessageQueueMessage
-  {
-    explicit IMessageQueueMessageClosure(const Closure &closure) : mClosure(closure) {}
-
-    virtual const char *getDelegateName() const {return __func__;}
-    virtual const char *getMethodName() const {return __func__;}
-    virtual void processMessage() {mClosure();}
-
-    Closure mClosure;
   };
 
-  interaction IMessageQueueNotify
+  [special]
+  template <nameType, valueType>
+  struct map
   {
-    virtual void notifyMessagePosted() = 0;
   };
 
-  interaction IMessageQueue
+  [special]
+  template <valueType>
+  struct set
   {
-    struct Exceptions
-    {
-      ZS_DECLARE_CUSTOM_EXCEPTION(MessageQueueGone)
-    };
-
-    typedef size_t size_type;
-
-    static IMessageQueuePtr create(IMessageQueueNotifyPtr notify);
-
-    virtual void post(IMessageQueueMessageUniPtr message) = 0;
-
-    template <class Closure>
-    void postClosure(const Closure &closure) {post(IMessageQueueMessageUniPtr(new IMessageQueueMessageClosure<Closure>(closure)));}
-
-    virtual size_type getTotalUnprocessedMessages() const = 0;
   };
-}
+
+} // namespace zsLib

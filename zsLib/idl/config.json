@@ -1,0 +1,24 @@
+{
+  "project": {
+    "name": "zsLib",
+    "aliases": {
+      "alias": [
+        {
+          "in": "bogus_zsLib_test_alias",
+          "out": "bogus"
+        }
+      ]
+    },
+    "exclusives": {
+      "exclusive": [
+        "xplatform"
+      ]
+    },
+    "sources": {
+      "source": [
+        "std.idl",
+        "zsLib.idl"
+      ]
+    }
+  }
+}

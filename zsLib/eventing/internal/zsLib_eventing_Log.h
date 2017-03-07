@@ -76,10 +76,10 @@
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xValue)                        ((NULL != (static_cast<const wchar_t *>(xValue))) ? ((wcslen(xValue)+1)*sizeof(wchar_t)) : 0)
 
 #ifdef _WIN32
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), (xValueSize)); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr)); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr)); }
-#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { EventDataDescCreate((xInDescriptor), (xPtr), (xSize)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { EventDataDescCreate((xInDescriptor), (xPtrValue), static_cast<ULONG>(xValueSize)); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr), static_cast<ULONG>(ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr))); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_WSTR(xInDescriptor, xStr)                   { EventDataDescCreate((xInDescriptor), ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_VALUE(xStr), static_cast<ULONG>(ZS_EVENTING_INTERNAL_EVENT_DATA_WSTR_LEN(xStr))); }
+#define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(xInDescriptor, xPtr, xSize)          { EventDataDescCreate((xInDescriptor), (xPtr), static_cast<ULONG>(xSize)); }
 #else
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_VALUE(xInDescriptor, xPtrValue, xValueSize) { (xInDescriptor)->Ptr = reinterpret_cast<uintptr_t>(xPtrValue); (xInDescriptor)->Size = (xValueSize); }
 #define ZS_EVENTING_INTERNAL_EVENT_DATA_DESCRIPTOR_FILL_ASTR(xInDescriptor, xStr)                   { (xInDescriptor)->Ptr = reinterpret_cast<uintptr_t>(ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_VALUE(xStr)); (xInDescriptor)->Size = ZS_EVENTING_INTERNAL_EVENT_DATA_ASTR_LEN(xStr); }

@@ -47,8 +47,9 @@ namespace zsLib
     class TearAway : public XINTERFACE
     {
     public:
-      ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, TearAwayInterface)
-      ZS_DECLARE_TYPEDEF_PTR(XDATATYPE, TearAwayData)
+      ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, TearAwayInterface);
+      ZS_DECLARE_TYPEDEF_PTR(XDATATYPE, TearAwayData);
+      ZS_DECLARE_TYPEDEF_PTR(TearAway, TearAwayType);
 
     public:
       TearAway(
@@ -59,13 +60,14 @@ namespace zsLib
         mData(data)
       {}
 
-      ~TearAway() {}
+      virtual ~TearAway() {}
 
+      void setDelegate(TearAwayInterfacePtr original) {mOriginal = original;}
       TearAwayInterfacePtr getDelegate() const {return mOriginal;}
 
       bool ignoreMethodCall() const {return false;}
 
-      TearAwayDataPtr getData() {return mData;}
+      TearAwayDataPtr getData() const {return mData;}
 
     protected:
       TearAwayInterfacePtr mOriginal;
@@ -150,6 +152,11 @@ namespace zsLib                                                                 
         return wrapper->getData();                                                                            \
       }                                                                                                       \
       return TearAwayDataPtr();                                                                               \
+    }                                                                                                         \
+                                                                                                              \
+    static TearAwayTypePtr tearAway(TearAwayInterfacePtr tearAwayInterface)                                   \
+    {                                                                                                         \
+      return ZS_DYNAMIC_PTR_CAST(TearAwayType, tearAwayInterface);                                            \
     }
 
 #define ZS_INTERNAL_DECLARE_TEAR_AWAY_END()                                                                   \

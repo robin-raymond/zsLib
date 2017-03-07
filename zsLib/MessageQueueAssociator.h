@@ -43,6 +43,9 @@ namespace zsLib
 
     IMessageQueuePtr getAssociatedMessageQueue() const {return mQueue;}
 
+    template <class Closure>
+    void postClosure(const Closure &closure) {mQueue->post(IMessageQueueMessageUniPtr(new IMessageQueueMessageClosure<Closure>(closure)));}
+
   private:
     IMessageQueuePtr mQueue;
   };
