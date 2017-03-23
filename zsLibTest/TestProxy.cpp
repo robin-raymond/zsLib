@@ -31,7 +31,7 @@
 
 #include <zsLib/Proxy.h>
 #include <zsLib/ProxySubscriptions.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/IMessageQueueThread.h>
 #include <zsLib/Stringize.h>
 #include <iostream>
 
@@ -178,8 +178,8 @@ namespace testing
   public:
     TestProxy()
     {
-      mThread = zsLib::MessageQueueThread::createBasic();
-      mThreadNeverCalled = zsLib::MessageQueueThread::createBasic();
+      mThread = zsLib::IMessageQueueThread::createBasic();
+      mThreadNeverCalled = zsLib::IMessageQueueThread::createBasic();
 
       TestProxyCallbackPtr testObject = TestProxyCallback::create(mThread);
 
@@ -242,8 +242,8 @@ namespace testing
       TESTING_CHECK(getCheck().mDestroyedTestProxyCallback);
     }
 
-    zsLib::MessageQueueThreadPtr mThread;
-    zsLib::MessageQueueThreadPtr mThreadNeverCalled;
+    zsLib::IMessageQueueThreadPtr mThread;
+    zsLib::IMessageQueueThreadPtr mThreadNeverCalled;
   };
 
 }

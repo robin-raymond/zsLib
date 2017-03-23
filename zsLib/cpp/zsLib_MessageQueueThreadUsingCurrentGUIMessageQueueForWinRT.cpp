@@ -36,6 +36,7 @@
 
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadBasic.h>
+#include <zsLib/internal/zsLib_MessageQueue.h>
 #include <zsLib/Log.h>
 #include <zsLib/helpers.h>
 #include <zsLib/Stringize.h>
@@ -85,7 +86,7 @@ namespace zsLib
     {
       MessageQueueThreadUsingCurrentGUIMessageQueueForWindowsPtr thread(new MessageQueueThreadUsingCurrentGUIMessageQueueForWindows);
       thread->mThisWeak = thread;
-      thread->mQueue = zsLib::MessageQueue::create(thread);
+      thread->mQueue = MessageQueue::create(thread);
       thread->mDispatcher = dispatcher;
       assert(thread->mDispatcher);
       return thread;

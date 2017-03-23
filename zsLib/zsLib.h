@@ -31,19 +31,22 @@
 
 #pragma once
 
-#ifndef ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a
-#define ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a
-
 #include <zsLib/date.h>
 #include <zsLib/Event.h>
 #include <zsLib/Exception.h>
 #include <zsLib/helpers.h>
+#include <zsLib/IFactory.h>
+#include <zsLib/IHelper.h>
+#include <zsLib/IMessageQueue.h>
+#include <zsLib/IMessageQueueThread.h>
+#include <zsLib/IMessageQueueThreadPool.h>
+#include <zsLib/IMessageQueueManager.h>
 #include <zsLib/IPAddress.h>
+#include <zsLib/ISettings.h>
+#include <zsLib/ITimer.h>
+#include <zsLib/IWakeDelegate.h>
 #include <zsLib/Log.h>
-#include <zsLib/MessageQueue.h>
 #include <zsLib/MessageQueueAssociator.h>
-#include <zsLib/MessageQueueThread.h>
-#include <zsLib/MessageQueueThreadPool.h>
 #include <zsLib/Numeric.h>
 #include <zsLib/Promise.h>
 #include <zsLib/Proxy.h>
@@ -53,12 +56,9 @@
 #include <zsLib/String.h>
 #include <zsLib/Stringize.h>
 #include <zsLib/TearAway.h>
-#include <zsLib/Timer.h>
 #include <zsLib/WeightedMovingAverage.h>
 #include <zsLib/XML.h>
 //#include <zsLib/zsLib.h>
 #include <zsLib/types.h>
 
 #include <zsLib/SafeInt.h>
-
-#endif // ZSLIB_ZSLIB_H_ba2ac12d494be731cbd83b31b1d36a5a

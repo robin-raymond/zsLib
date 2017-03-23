@@ -3,460 +3,2089 @@
 #pragma once
 
 #include <zsLib/eventing/noop.h>
-#ifdef _WIN32
-
-#include "zsLib.events_win.h"
-
-#else
-
 #include <zsLib/eventing/Log.h>
 #include <stdint.h>
 
 namespace zsLib {
   namespace eventing {
 
-    template <typename TWriteType>
-    void eventWriteBuffer(BYTE * &p, TWriteType value)
-    {
-      memcpy(&p, &value, sizeof(value));
-      p += sizeof(value);
-    }
-    inline void eventWriteBuffer(BYTE ** &p, const BYTE *buffer, size_t * &bufferSizes, size_t size)
-    {
-      (*p) = const_cast<BYTE *>(buffer);
-      (*bufferSizes) = size;
-      ++p;
-      ++bufferSizes;
-    }
-    inline void eventWriteBuffer(BYTE ** &p, const char *str, size_t * &bufferSizes)
-    {
-      (*p) = const_cast<BYTE *>(reinterpret_cast<const BYTE *>(str));
-      (*bufferSizes) = (NULL == str ? 0 : strlen(str)) * sizeof(char);
-      ++p;
-      ++bufferSizes;
-    }
-    inline void eventWriteBuffer(const BYTE ** &p, const wchar_t *str, size_t * &bufferSizes)
-    {
-      (*p) = reinterpret_cast<const BYTE *>(str);
-      (*bufferSizes) = (NULL == str ? 0 : wcslen(str)) * sizeof(wchar_t);
-      ++p;
-      ++bufferSizes;
-    }
 
-
-    inline uintptr_t &getEventHandlezsLib()
+    inline zsLib::Log::ProviderHandle &getEventHandle_zsLib()
     {
-      static uintptr_t gHandle {};
+      static zsLib::Log::ProviderHandle gHandle {};
       return gHandle;
     }
 
-#define ZS_INTERNAL_REGISTER_EVENTING_zsLib() ZS_EVENTING_REGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "5b6e505401fea52757ce75cbcd88e915e18df25994d17b24efe11e090c47f92d")
-#define ZS_INTERNAL_UNREGISTER_EVENTING_zsLib() ZS_EVENTING_UNREGISTER_EVENT_WRITER(zsLib::eventing::getEventHandlezsLib())
+#define ZS_INTERNAL_REGISTER_EVENTING_zsLib() \
+    { \
+      ZS_EVENTING_REGISTER_EVENT_WRITER(::zsLib::eventing::getEventHandle_zsLib(), "180fc32e-8acd-43ff-82e7-ea06d0c5eb7f", "zsLib", "66e397c6fde76e25daaf01988bc436d51e86b4f815f9688b83225d35e130dc15"); \
+      ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(zsLib, Debug); \
+      ZS_EVENTING_REGISTER_SUBSYSTEM_DEFAULT_LEVEL(zsLib_socket, Debug); \
+    }
 
+#define ZS_INTERNAL_UNREGISTER_EVENTING_zsLib() ZS_EVENTING_UNREGISTER_EVENT_WRITER(::zsLib::eventing::getEventHandle_zsLib())
+
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_ExceptionEvent()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1000, 0, 0, 2, 10, 1, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_ExceptionEvent()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_ExceptionEvent(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
-  if (ZS_EVENTING_IS_SUBSYSTEM_LOGGING(xSubsystem, Basic)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[4]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[4]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue1), xxPIndirectSize); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue2), xxPIndirectSize); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue3), xxPIndirectSize); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, (xValue5), xxPIndirectSize); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Error, Basic, (xSubsystem).getName(), __func__, __LINE__, 1000, &(xxOutputBuffer[0]), 8, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 4); \
+  if (ZS_EVENTING_IS_SUBSYSTEM_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), xSubsystem, Basic)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[8]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (xSubsystem).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    auto xxVal3 = (xValue1); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[3]), xxVal3); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    auto xxVal5 = (xValue3); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), xxVal5); \
+    uint64_t xxVal6{(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    auto xxVal7 = (xValue5); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[7]), xxVal7); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Error, Basic, ::zsLib::eventing::getEventDescriptor_ExceptionEvent(), ::zsLib::eventing::getEventParameterDescriptor_ExceptionEvent(), &(xxDescriptors[0]), 8); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_MessageQueueCreate()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1001, 0, 0, 5, 1, 2, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_MessageQueueCreate()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueCreate(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Detail)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1001, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_MessageQueueCreate(), ::zsLib::eventing::getEventParameterDescriptor_MessageQueueCreate(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_MessageQueueDestroy()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1002, 0, 0, 5, 2, 2, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_MessageQueueDestroy()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueDestroy(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Detail)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1002, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_MessageQueueDestroy(), ::zsLib::eventing::getEventParameterDescriptor_MessageQueueDestroy(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_MessageQueuePost()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1003, 0, 0, 5, 9, 2, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_MessageQueuePost()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueuePost(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1003, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_MessageQueuePost(), ::zsLib::eventing::getEventParameterDescriptor_MessageQueuePost(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_MessageQueueProcess()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1004, 0, 0, 5, 240, 2, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_MessageQueueProcess()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueProcess(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1004, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_MessageQueueProcess(), ::zsLib::eventing::getEventParameterDescriptor_MessageQueueProcess(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_MessageQueueTotalUnprocessedMessages()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1005, 0, 0, 5, 0, 2, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_MessageQueueTotalUnprocessedMessages()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_MessageQueueTotalUnprocessedMessages(xSubsystem, xValue1, xValue2) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[16]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1005, &(xxOutputBuffer[0]), 16); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    uint64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_MessageQueueTotalUnprocessedMessages(), ::zsLib::eventing::getEventParameterDescriptor_MessageQueueTotalUnprocessedMessages(), &(xxDescriptors[0]), 5); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingApply()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1006, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingApply()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingApply(xSubsystem, xValue1, xValue2) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingApply(), ::zsLib::eventing::getEventParameterDescriptor_SettingApply(), &(xxDescriptors[0]), 5); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingApplyDefaults()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1007, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingApplyDefaults()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingApplyDefaults(xSubsystem, xValue1) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingApplyDefaults(), ::zsLib::eventing::getEventParameterDescriptor_SettingApplyDefaults(), &(xxDescriptors[0]), 4); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingClear()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1008, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingClear()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingClear(xSubsystem, xValue1, xValue2) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingClear(), ::zsLib::eventing::getEventParameterDescriptor_SettingClear(), &(xxDescriptors[0]), 5); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingClearAll()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1009, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingClearAll()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingClearAll(xSubsystem, xValue1) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingClearAll(), ::zsLib::eventing::getEventParameterDescriptor_SettingClearAll(), &(xxDescriptors[0]), 4); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingGetBool()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1010, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingGetBool()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_Boolean}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingGetBool(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetBool(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetBool(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingGetDouble()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1011, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingGetDouble()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_FloatingPoint}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingGetDouble(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    double xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetDouble(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetDouble(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingGetFloat()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1012, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingGetFloat()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_FloatingPoint}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingGetFloat(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    float xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetFloat(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetFloat(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingGetInt()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1013, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingGetInt()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingGetInt(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetInt(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingGetString()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1014, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingGetString()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_AString}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingGetString(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    auto xxVal5 = (xValue3); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), xxVal5); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetString(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetString(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingGetUInt()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1015, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingGetUInt()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingGetUInt(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    uint64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingGetUInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingGetUInt(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingSetBool()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1016, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingSetBool()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_Boolean}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingSetBool(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetBool(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetBool(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingSetDouble()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1017, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingSetDouble()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_FloatingPoint}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingSetDouble(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    double xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetDouble(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetDouble(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingSetFloat()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1018, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingSetFloat()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_FloatingPoint}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingSetFloat(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    float xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetFloat(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetFloat(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingSetInt()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1019, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingSetInt()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingSetInt(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetInt(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingSetString()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1020, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingSetString()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_AString}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingSetString(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    auto xxVal5 = (xValue3); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[5]), xxVal5); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetString(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetString(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingSetUInt()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1021, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingSetUInt()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingSetUInt(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    uint64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingSetUInt(), ::zsLib::eventing::getEventParameterDescriptor_SettingSetUInt(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingVerifyExists()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1022, 0, 0, 4, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingVerifyExists()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_Boolean}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingVerifyExists(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SettingVerifyExists(), ::zsLib::eventing::getEventParameterDescriptor_SettingVerifyExists(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SettingVerifyExistsFailed()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1023, 0, 0, 3, 0, 3, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SettingVerifyExistsFailed()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_AString},
+        {EventParameterType_Boolean}
+      };
+      return &(descriptions[0]);
+    }
+
+#define ZS_INTERNAL_EVENTING_EVENT_SettingVerifyExistsFailed(xSubsystem, xValue1, xValue2, xValue3) \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Basic)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[4]), xxVal4); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal5 {(xValue3) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Warning, Basic, ::zsLib::eventing::getEventDescriptor_SettingVerifyExistsFailed(), ::zsLib::eventing::getEventParameterDescriptor_SettingVerifyExistsFailed(), &(xxDescriptors[0]), 6); \
+  }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketAccept()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1024, 0, 0, 4, 10, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketAccept()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketAccept(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[16]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1006, &(xxOutputBuffer[0]), 16, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    uint64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {static_cast<size_t>(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal5, xxVal6); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketAccept(), ::zsLib::eventing::getEventParameterDescriptor_SocketAccept(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketAdopt()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1025, 0, 0, 4, 11, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketAdopt()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketAdopt(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1007, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketAdopt(), ::zsLib::eventing::getEventParameterDescriptor_SocketAdopt(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketBind()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1026, 0, 0, 4, 0, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketBind()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketBind(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[12]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1008, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {static_cast<size_t>(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal5, xxVal6); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketBind(), ::zsLib::eventing::getEventParameterDescriptor_SocketBind(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketClose()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1027, 0, 0, 4, 2, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketClose()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketClose(xSubsystem, xValue1, xValue2) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[12]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1009, &(xxOutputBuffer[0]), 12); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketClose(), ::zsLib::eventing::getEventParameterDescriptor_SocketClose(), &(xxDescriptors[0]), 5); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketConnect()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1028, 0, 0, 4, 13, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketConnect()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketConnect(xSubsystem, xValue1, xValue2, xValue3) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue2), xxPIndirectSize, (xValue3)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1010, &(xxOutputBuffer[0]), 8, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    auto xxVal4 = (xValue2); \
+    size_t xxVal5 {static_cast<size_t>(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[5]), xxVal4, xxVal5); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketConnect(), ::zsLib::eventing::getEventParameterDescriptor_SocketConnect(), &(xxDescriptors[0]), 6); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketCreate()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1029, 0, 0, 4, 1, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketCreate()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketCreate(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
-  if (ZS_EVENTING_IS_LOGGING(Detail)) { \
-    BYTE xxOutputBuffer[40]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue5)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1011, &(xxOutputBuffer[0]), 40); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Detail)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[8]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    uint64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    int64_t xxVal6{(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    int64_t xxVal7{(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[7]), &(xxVal7), sizeof(xxVal7)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Detail, ::zsLib::eventing::getEventDescriptor_SocketCreate(), ::zsLib::eventing::getEventParameterDescriptor_SocketCreate(), &(xxDescriptors[0]), 8); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketError()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1030, 0, 0, 2, 15, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketError()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketError(xSubsystem, xValue1, xValue2) \
-  if (ZS_EVENTING_IS_LOGGING(Detail)) { \
-    BYTE xxOutputBuffer[12]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1012, &(xxOutputBuffer[0]), 12); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Detail)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Error, Detail, ::zsLib::eventing::getEventDescriptor_SocketError(), ::zsLib::eventing::getEventParameterDescriptor_SocketError(), &(xxDescriptors[0]), 5); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketExceptionEvent()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1031, 0, 0, 2, 15, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketExceptionEvent()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketExceptionEvent(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1013, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Error, Insane, ::zsLib::eventing::getEventDescriptor_SocketExceptionEvent(), ::zsLib::eventing::getEventParameterDescriptor_SocketExceptionEvent(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketExceptionReset()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1032, 0, 0, 2, 14, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketExceptionReset()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketExceptionReset(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Error, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1014, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Error, Insane, ::zsLib::eventing::getEventDescriptor_SocketExceptionReset(), ::zsLib::eventing::getEventParameterDescriptor_SocketExceptionReset(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketGetLocalAddress()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1033, 0, 0, 4, 0, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketGetLocalAddress()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetLocalAddress(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[12]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1015, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {static_cast<size_t>(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal5, xxVal6); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetLocalAddress(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetLocalAddress(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketGetOptionFlag()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1034, 0, 0, 4, 17, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketGetOptionFlag()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetOptionFlag(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[24]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1016, &(xxOutputBuffer[0]), 24); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    int64_t xxVal6{(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetOptionFlag(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetOptionFlag(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketGetOptionValue()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1035, 0, 0, 4, 17, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketGetOptionValue()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetOptionValue(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[24]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1017, &(xxOutputBuffer[0]), 24); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    int64_t xxVal6{(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetOptionValue(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetOptionValue(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketGetOptions()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1036, 0, 0, 4, 17, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketGetOptions()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetOptions(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[20]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue5), xxPIndirectSize, (xValue6)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1018, &(xxOutputBuffer[0]), 20, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[9]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    int64_t xxVal6{(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    auto xxVal7 = (xValue5); \
+    size_t xxVal8 {static_cast<size_t>(xValue6)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[7]), &(xxVal8), sizeof(xxVal8)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[8]), xxVal7, xxVal8); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetOptions(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetOptions(), &(xxDescriptors[0]), 9); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketGetRemoteAddress()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1037, 0, 0, 4, 0, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketGetRemoteAddress()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketGetRemoteAddress(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[12]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue3), xxPIndirectSize, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1019, &(xxOutputBuffer[0]), 12, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    auto xxVal5 = (xValue3); \
+    size_t xxVal6 {static_cast<size_t>(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[6]), xxVal5, xxVal6); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketGetRemoteAddress(), ::zsLib::eventing::getEventParameterDescriptor_SocketGetRemoteAddress(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketListen()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1038, 0, 0, 4, 16, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketListen()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketListen(xSubsystem, xValue1, xValue2) \
-  if (ZS_EVENTING_IS_LOGGING(Detail)) { \
-    BYTE xxOutputBuffer[12]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Detail, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1020, &(xxOutputBuffer[0]), 12); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Detail)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Detail, ::zsLib::eventing::getEventDescriptor_SocketListen(), ::zsLib::eventing::getEventParameterDescriptor_SocketListen(), &(xxDescriptors[0]), 5); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketOrphan()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1039, 0, 0, 4, 18, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketOrphan()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketOrphan(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1021, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketOrphan(), ::zsLib::eventing::getEventParameterDescriptor_SocketOrphan(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketReadReadyEvent()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1040, 0, 0, 5, 14, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketReadReadyEvent()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketReadReadyEvent(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1022, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_SocketReadReadyEvent(), ::zsLib::eventing::getEventParameterDescriptor_SocketReadReadyEvent(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketReadReadyReset()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1041, 0, 0, 5, 14, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketReadReadyReset()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketReadReadyReset(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1023, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_SocketReadReadyReset(), ::zsLib::eventing::getEventParameterDescriptor_SocketReadReadyReset(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketRecv()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1042, 0, 0, 5, 240, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketRecv()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketRecv(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[24]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1024, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[8]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    uint64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {static_cast<size_t>(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal7), sizeof(xxVal7)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), xxVal6, xxVal7); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketRecv(), ::zsLib::eventing::getEventParameterDescriptor_SocketRecv(), &(xxDescriptors[0]), 8); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketRecvFrom()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1043, 0, 0, 5, 240, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketRecvFrom()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketRecvFrom(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6, xValue7) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[24]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[2]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[2]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue6), xxPIndirectSize, (xValue7)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1025, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 2); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[10]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    uint64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {static_cast<size_t>(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal7), sizeof(xxVal7)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), xxVal6, xxVal7); \
+    auto xxVal8 = (xValue6); \
+    size_t xxVal9 {static_cast<size_t>(xValue7)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[8]), &(xxVal9), sizeof(xxVal9)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[9]), xxVal8, xxVal9); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketRecvFrom(), ::zsLib::eventing::getEventParameterDescriptor_SocketRecvFrom(), &(xxDescriptors[0]), 10); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketSend()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1044, 0, 0, 5, 9, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketSend()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSend(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[24]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1026, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[8]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    uint64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {static_cast<size_t>(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal7), sizeof(xxVal7)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), xxVal6, xxVal7); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketSend(), ::zsLib::eventing::getEventParameterDescriptor_SocketSend(), &(xxDescriptors[0]), 8); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketSendTo()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1045, 0, 0, 5, 9, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketSendTo()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSendTo(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6, xValue7) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[24]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[2]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[2]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue4), xxPIndirectSize, (xValue5)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue6), xxPIndirectSize, (xValue7)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1027, &(xxOutputBuffer[0]), 24, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 2); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[10]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    uint64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    auto xxVal6 = (xValue4); \
+    size_t xxVal7 {static_cast<size_t>(xValue5)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal7), sizeof(xxVal7)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[7]), xxVal6, xxVal7); \
+    auto xxVal8 = (xValue6); \
+    size_t xxVal9 {static_cast<size_t>(xValue7)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[8]), &(xxVal9), sizeof(xxVal9)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[9]), xxVal8, xxVal9); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketSendTo(), ::zsLib::eventing::getEventParameterDescriptor_SocketSendTo(), &(xxDescriptors[0]), 10); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketSetOption()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1046, 0, 0, 4, 17, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketSetOption()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Binary}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSetOption(xSubsystem, xValue1, xValue2, xValue3, xValue4, xValue5, xValue6) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[20]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    BYTE *xxIndirectBuffer[1]; \
-    BYTE **xxPIndirectBuffer = &(xxIndirectBuffer[0]); \
-    size_t xxIndirectSize[1]; \
-    size_t *xxPIndirectSize = &(xxIndirectSize[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue4)); \
-    zsLib::eventing::eventWriteBuffer(xxPIndirectBuffer, reinterpret_cast<const BYTE *>(xValue5), xxPIndirectSize, (xValue6)); \
-    ZS_EVENTING_WRITE_EVENT_WITH_BUFFERS(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1028, &(xxOutputBuffer[0]), 20, &(xxIndirectBuffer[0]), &(xxIndirectSize[0]), 1); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[9]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    int64_t xxVal6{(xValue4)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    auto xxVal7 = (xValue5); \
+    size_t xxVal8 {static_cast<size_t>(xValue6)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[7]), &(xxVal8), sizeof(xxVal8)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_BUFFER(&(xxDescriptors[8]), xxVal7, xxVal8); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketSetOption(), ::zsLib::eventing::getEventParameterDescriptor_SocketSetOption(), &(xxDescriptors[0]), 9); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketSetOptionFlag()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1047, 0, 0, 4, 17, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketSetOptionFlag()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_Boolean}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketSetOptionFlag(xSubsystem, xValue1, xValue2, xValue3, xValue4) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[21]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    zsLib::eventing::eventWriteBuffer<bool>(xxPOutputBuffer, (xValue4)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1029, &(xxOutputBuffer[0]), 21); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[7]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal6 {(xValue4) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[6]), &(xxVal6), sizeof(xxVal6)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketSetOptionFlag(), ::zsLib::eventing::getEventParameterDescriptor_SocketSetOptionFlag(), &(xxDescriptors[0]), 7); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketShutdown()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1048, 0, 0, 4, 19, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketShutdown()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_SignedInteger},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketShutdown(xSubsystem, xValue1, xValue2, xValue3) \
-  if (ZS_EVENTING_IS_LOGGING(Debug)) { \
-    BYTE xxOutputBuffer[20]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<int32_t>(xxPOutputBuffer, static_cast<int32_t>(xValue2)); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue3)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Debug, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1030, &(xxOutputBuffer[0]), 20); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Debug)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    int64_t xxVal4{(xValue2)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Debug, ::zsLib::eventing::getEventDescriptor_SocketShutdown(), ::zsLib::eventing::getEventParameterDescriptor_SocketShutdown(), &(xxDescriptors[0]), 6); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketWouldBlock()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1049, 0, 0, 5, 0, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketWouldBlock()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Boolean}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketWouldBlock(xSubsystem, xValue1, xValue2) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[9]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<bool>(xxPOutputBuffer, (xValue2)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1031, &(xxOutputBuffer[0]), 9); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[5]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal4 {(xValue2) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_SocketWouldBlock(), ::zsLib::eventing::getEventParameterDescriptor_SocketWouldBlock(), &(xxDescriptors[0]), 5); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketWriteReadyEvent()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1050, 0, 0, 5, 14, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketWriteReadyEvent()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Pointer}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketWriteReadyEvent(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uintptr_t>(xxPOutputBuffer, reinterpret_cast<uintptr_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1032, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uintptr_t xxVal3 = reinterpret_cast<uintptr_t>((xValue1)); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_SocketWriteReadyEvent(), ::zsLib::eventing::getEventParameterDescriptor_SocketWriteReadyEvent(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_SocketWriteReadyReset()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1051, 0, 0, 5, 14, 4, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_SocketWriteReadyReset()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_SocketWriteReadyReset(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1033, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_SocketWriteReadyReset(), ::zsLib::eventing::getEventParameterDescriptor_SocketWriteReadyReset(), &(xxDescriptors[0]), 4); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_TimerCreate()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1052, 0, 0, 5, 1, 5, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_TimerCreate()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_Boolean},
+        {EventParameterType_SignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_TimerCreate(xSubsystem, xValue1, xValue2, xValue3) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[17]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    zsLib::eventing::eventWriteBuffer<bool>(xxPOutputBuffer, (xValue2)); \
-    zsLib::eventing::eventWriteBuffer<int64_t>(xxPOutputBuffer, static_cast<int64_t>(xValue3)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1034, &(xxOutputBuffer[0]), 17); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[6]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ::zsLib::eventing::USE_EVENT_DATA_BOOL_TYPE xxVal4 {(xValue2) ? 1 : 0}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[4]), &(xxVal4), sizeof(xxVal4)); \
+    int64_t xxVal5{(xValue3)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[5]), &(xxVal5), sizeof(xxVal5)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_TimerCreate(), ::zsLib::eventing::getEventParameterDescriptor_TimerCreate(), &(xxDescriptors[0]), 6); \
   }
+
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_TimerDestroy()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1053, 0, 0, 5, 2, 5, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_TimerDestroy()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
 
 #define ZS_INTERNAL_EVENTING_EVENT_TimerDestroy(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Trace)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Trace, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1035, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Trace)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Trace, ::zsLib::eventing::getEventDescriptor_TimerDestroy(), ::zsLib::eventing::getEventParameterDescriptor_TimerDestroy(), &(xxDescriptors[0]), 4); \
   }
 
+    inline const USE_EVENT_DESCRIPTOR *getEventDescriptor_TimerEvent()
+    {
+      static const USE_EVENT_DESCRIPTOR description {1054, 0, 0, 5, 10, 5, (0x8000000000000000ULL)};
+      return &description;
+    }
+
+    inline const USE_EVENT_PARAMETER_DESCRIPTOR *getEventParameterDescriptor_TimerEvent()
+    {
+      static const USE_EVENT_PARAMETER_DESCRIPTOR descriptions [] =
+      {
+        {EventParameterType_AString},
+        {EventParameterType_AString},
+        {EventParameterType_UnsignedInteger},
+        {EventParameterType_UnsignedInteger}
+      };
+      return &(descriptions[0]);
+    }
+
 #define ZS_INTERNAL_EVENTING_EVENT_TimerEvent(xSubsystem, xValue1) \
-  if (ZS_EVENTING_IS_LOGGING(Insane)) { \
-    BYTE xxOutputBuffer[8]; \
-    BYTE *xxPOutputBuffer = &(xxOutputBuffer[0]); \
-    zsLib::eventing::eventWriteBuffer<uint64_t>(xxPOutputBuffer, static_cast<uint64_t>(xValue1)); \
-    ZS_EVENTING_WRITE_EVENT(zsLib::eventing::getEventHandlezsLib(), Informational, Insane, (ZS_GET_SUBSYSTEM()).getName(), __func__, __LINE__, 1036, &(xxOutputBuffer[0]), 8); \
+  if (ZS_EVENTING_IS_LOGGING(::zsLib::eventing::getEventHandle_zsLib(), (0x8000000000000000ULL), Insane)) { \
+    ::zsLib::eventing::USE_EVENT_DATA_DESCRIPTOR xxDescriptors[4]; \
+    size_t xxLineNumber = __LINE__; \
+    \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[0]), (ZS_GET_SUBSYSTEM()).getName()); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_ASTR(&(xxDescriptors[1]), __func__); \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[2]), &xxLineNumber, sizeof(xxLineNumber)); \
+    \
+    uint64_t xxVal3{(xValue1)}; \
+    ZS_EVENTING_EVENT_DATA_DESCRIPTOR_FILL_VALUE(&(xxDescriptors[3]), &(xxVal3), sizeof(xxVal3)); \
+    ZS_EVENTING_WRITE_EVENT(::zsLib::eventing::getEventHandle_zsLib(), Informational, Insane, ::zsLib::eventing::getEventDescriptor_TimerEvent(), ::zsLib::eventing::getEventParameterDescriptor_TimerEvent(), &(xxDescriptors[0]), 4); \
   }
 
   } // namespace eventing
 } // namespace zsLib
-
-#endif // _WIN32
 

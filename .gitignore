@@ -1,22 +1,37 @@
 .DS_Store
-projects/xcode/zsLib/zsLib.xcodeproj/xcuserdata
-projects/xcode/zsLib_ios/zsLib_ios.xcodeproj/xcuserdata
-projects/xcode/zsLibTest/zsLibTest.xcodeproj/xcuserdata
-projects/xcode/zsLibTest_ios/zsLibTest_ios.xcodeproj/xcuserdata
 projects/android/libs
 projects/android/obj
 [Dd]ebug/
 [Rr]elease/
+*.user
+
+# Windows 
 *.sdf
 *.pfx
 ipch/
 *.opensdf
-zsLib/internal/zsLib.events_win_etw.h
+Generated Files/
 *.opendb
 *.db
 .vs/
-Generated Files/
-*.user
+zsLib/internal/zsLib.events_win_etw.h
+
+
+# Apple / Xcode
 *.xcuserstate
 *.xcuserdatad
 xcshareddata/
+projects/xcode/zsLib/zsLib.xcodeproj/xcuserdata
+projects/xcode/zsLib_ios/zsLib_ios.xcodeproj/xcuserdata
+projects/xcode/zsLibTest/zsLibTest.xcodeproj/xcuserdata
+projects/xcode/zsLibTest_ios/zsLibTest_ios.xcodeproj/xcuserdata
+
+# linux / codelite
+.codelite/
+.build-debug/
+.build-release/
+projects/linux/codelite/Makefile
+projects/linux/codelite/zsLib/*.mk
+projects/linux/codelite/zsLib/*.txt
+projects/linux/codelite/zsLibTest/*.mk
+projects/linux/codelite/zsLibTest/*.txt

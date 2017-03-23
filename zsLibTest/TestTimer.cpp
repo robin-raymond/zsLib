@@ -29,8 +29,8 @@
  
  */
 
-#include <zsLib/Timer.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/ITimer.h>
+#include <zsLib/IMessageQueueThread.h>
 
 #include "testing.h"
 #include "main.h"
@@ -53,7 +53,7 @@ public:
     return TestTimerCallbackPtr(new TestTimerCallback(queue));
   }
 
-  virtual void onTimer(zsLib::TimerPtr timer)
+  virtual void onTimer(zsLib::ITimerPtr timer)
   {
     ++mCount;
     TESTING_STDOUT() << "ONTIMER:      " << ((zsLib::PTRNUMBER)timer.get()) << "\n";
@@ -72,17 +72,17 @@ void testTimer()
 {
   if (!ZSLIB_TEST_TIMER) return;
 
-  zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
+  auto thread(zsLib::IMessageQueueThread::createBasic());
 
   TestTimerCallbackPtr testObject = TestTimerCallback::create(thread);
   TestTimerCallbackPtr testObject2 = TestTimerCallback::create(thread);
   TestTimerCallbackPtr testObject3 = TestTimerCallback::create(thread);
   TestTimerCallbackPtr testObject4 = TestTimerCallback::create(thread);
 
-  zsLib::TimerPtr timer1(zsLib::Timer::create(testObject, zsLib::Seconds(3)));
-  zsLib::TimerPtr timer2(zsLib::Timer::create(testObject2, zsLib::Seconds(1), false));
-  zsLib::TimerPtr timer3(zsLib::Timer::create(testObject3, zsLib::Seconds(4), false));
-  zsLib::TimerPtr timer4(zsLib::Timer::create(testObject4, zsLib::Seconds(4), false));
+  zsLib::ITimerPtr timer1(zsLib::ITimer::create(testObject, zsLib::Seconds(3)));
+  zsLib::ITimerPtr timer2(zsLib::ITimer::create(testObject2, zsLib::Seconds(1), false));
+  zsLib::ITimerPtr timer3(zsLib::ITimer::create(testObject3, zsLib::Seconds(4), false));
+  zsLib::ITimerPtr timer4(zsLib::ITimer::create(testObject4, zsLib::Seconds(4), false));
 
   timer3.reset();         // this should cause the timer to be cancelled as if it fell out of scope before it has a chance to fire
   timer4->background();   // this should cause the timer to not be cancelled (but it will cancel itself after being fired)

@@ -45,6 +45,9 @@
 
 namespace zsLib
 {
+  ZS_EVENTING_TASK(Exception);
+  ZS_EVENTING_TASK_OPCODE(Exception, Exception);
+
   namespace internal
   {
   }

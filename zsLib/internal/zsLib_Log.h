@@ -31,15 +31,19 @@
 
 #pragma once
 
-#if !defined(ZSLIB_INTERNAL_LOG_H_bae05c798f0d8589029db417219553a9)
-#define ZSLIB_INTERNAL_LOG_H_bae05c798f0d8589029db417219553a9
-
 #include <zsLib/types.h>
 #include <zsLib/Stringize.h>
+#include <zsLib/eventing/EventTypes.h>
 
 #include <list>
 #include <map>
 #include <set>
+
+#define ZSLIB_LOG_PROVIDER_ATOM_MAXIMUM (256)
+#define ZSLIB_LOG_PROVIDER_KEYWORDS_ALL (0xFFFFFFFFFFFFFFFFULL)
+#define ZSLIB_LOG_PROVIDER_KEYWORDS_NO_KEYWORD_DEFINED (0x8000000000000000ULL)
+
+#define ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE (0xABCDEF98)
 
 namespace zsLib
 {
@@ -54,41 +58,66 @@ namespace zsLib
     {
     protected:
       struct make_private {};
+      struct EventingWriter;
       typedef int LevelBaseType;
 
       typedef std::list<ILogOutputDelegatePtr> OutputListenerList;
       ZS_DECLARE_PTR(OutputListenerList);
       typedef std::list<ILogEventingDelegatePtr> EventingListenerList;
       ZS_DECLARE_PTR(EventingListenerList);
+      typedef std::list<ILogEventingProviderDelegatePtr> EventingProviderListenerList;
+      ZS_DECLARE_PTR(EventingProviderListenerList);
 
       typedef std::list<Subsystem *> SubsystemList;
 
       typedef String SubsystemName;
       typedef std::map<SubsystemName, LevelBaseType> SubsystemLevelMap;
 
-      struct EventingWriter
-      {
-        UUID mProviderID;
-        String mProviderName;
-        String mUniqueProviderHash;
-        zsLib::Log *mLog {};
-      };
+      typedef uint64_t InternalKeywordBitmaskType;
+      typedef size_t InternalAtomIndex;
+      typedef uintptr_t InternalAtomData;
+      
+      typedef String AtomNamespace;
+      typedef std::map<AtomNamespace, InternalAtomIndex> AtomIndexMap;
 
       typedef std::set<EventingWriter *> EventWriterSet;
       typedef std::map<UUID, EventingWriter *> EventWriterMap;
 
+      typedef PUID ObjectID;
+      typedef std::map<ObjectID, InternalKeywordBitmaskType> ObjectIDBitmaskMap;
+
+      struct EventingWriter
+      {
+        volatile InternalKeywordBitmaskType mKeywordsBitmask {0};
+        volatile uint32_t mInitValue {ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE};
+        UUID mProviderID {};
+        String mProviderName;
+        String mUniqueProviderHash;
+        zsLib::Log *mLog{};
+        InternalAtomData mAtomInfo[ZSLIB_LOG_PROVIDER_ATOM_MAXIMUM]{};
+        ObjectIDBitmaskMap mEnabledObjects;
+      };
+
     public:
       Log(const make_private &) :
         mOutputListeners(make_shared<OutputListenerList>()),
-        mEventingListeners(make_shared<EventingListenerList>()) {}
+        mEventingListeners(make_shared<EventingListenerList>()),
+        mEventingProviderListeners(make_shared<EventingProviderListenerList>())
+        {}
+
+      static void initSingleton();
 
       static String paramize(const char *name);
+
+      static bool returnFalse() { return false; }
+      static bool returnTrue() { return false; }
 
     protected:
       RecursiveLock mLock;
 
       OutputListenerListPtr mOutputListeners;
       EventingListenerListPtr mEventingListeners;
+      EventingProviderListenerListPtr mEventingProviderListeners;
 
       SubsystemList mSubsystems;
 
@@ -97,6 +126,8 @@ namespace zsLib
 
       EventWriterMap mEventWriters;
       EventWriterSet mCleanUpWriters;
+
+      AtomIndexMap mConsumedEventingAtoms;
     };
   }
 }
@@ -111,7 +142,7 @@ namespace zsLib
     return get##xSubsystem##Subsystem();                  \
   }
 
-#define ZS_INTERNAL_IMPLEMENT_SUBSYSTEM(xSubsystem) \
+#define ZS_INTERNAL_IMPLEMENT_SUBSYSTEM(xSubsystem)       \
   class xSubsystem##Subsystem : public ::zsLib::Subsystem \
   {                                                       \
   public:                                                 \
@@ -133,6 +164,52 @@ namespace zsLib
 
 #define ZS_INTERNAL_GET_LOG_LEVEL()                                       ((ZS_GET_SUBSYSTEM()).getOutputLevel())
 #define ZS_INTERNAL_GET_SUBSYSTEM_LOG_LEVEL(xSubsystem)                   ((xSubsystem).getOutputLevel())
+
+#ifdef ZSLIB_LOGGING_NOOP
+
+#define ZS_INTERNAL_IS_LOGGING(xLevel)                                    (::zsLib::internal::Log::returnFalse())
+#define ZS_INTERNAL_IS_LOGGING_VALUE(xLevelValue)                         (::zsLib::internal::Log::returnFalse())
+#define ZS_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)              (::zsLib::internal::Log::returnFalse())
+
+#define ZS_INTERNAL_LOG_SUBSYSTEM_BASIC(xSubsystem, xMsg)                 ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_DETAIL(xSubsystem, xMsg)                ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_DEBUG(xSubsystem, xMsg)                 ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_TRACE(xSubsystem, xMsg)                 ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_INSANE(xSubsystem, xMsg)                ;
+
+#define ZS_INTERNAL_LOG_FORCED(xSeverity, xLevel, xMsg)                   ;
+
+#define ZS_INTERNAL_LOG_BASIC(xMsg)                                       ;
+#define ZS_INTERNAL_LOG_DETAIL(xMsg)                                      ;
+#define ZS_INTERNAL_LOG_DEBUG(xMsg)                                       ;
+#define ZS_INTERNAL_LOG_TRACE(xMsg)                                       ;
+#define ZS_INTERNAL_LOG_INSANE(xMsg)                                      ;
+
+#define ZS_INTERNAL_LOG_WITH_SEVERITY(xSeverityValue, xLevelValue, xMsg)  ;
+
+#define ZS_INTERNAL_LOG_BASIC_WITH_SEVERITY(xSeverityValue, xMsg)         ;
+#define ZS_INTERNAL_LOG_DETAIL_WITH_SEVERITY(xSeverityValue, xMsg)        ;
+#define ZS_INTERNAL_LOG_DEBUG_WITH_SEVERITY(xSeverityValue, xMsg)         ;
+#define ZS_INTERNAL_LOG_TRACE_WITH_SEVERITY(xSeverityValue, xMsg)         ;
+#define ZS_INTERNAL_LOG_INSANE_WITH_SEVERITY(xSeverityValue, xMsg)        ;
+
+#define ZS_INTERNAL_LOG_SUBSYSTEM(xSubsystem, xLevel, xMsg)               ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_WARNING(xSubsystem, xLevel, xMsg)       ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_ERROR(xSubsystem, xLevel, xMsg)         ;
+#define ZS_INTERNAL_LOG_SUBSYSTEM_FATAL(xSubsystem, xLevel, xMsg)         ;
+
+#define ZS_INTERNAL_LOG(xLevel, xMsg)                                     ;
+#define ZS_INTERNAL_LOG_WARNING(xLevel, xMsg)                             ;
+#define ZS_INTERNAL_LOG_ERROR(xLevel, xMsg)                               ;
+#define ZS_INTERNAL_LOG_FATAL(xLevel, xMsg)                               ;
+
+#define ZS_INTERNAL_LOG_IF(xCond, xLevel, xMsg)                           ;
+#define ZS_INTERNAL_LOG_WARNING_IF(xCond, xLevel, xMsg)                   ;
+#define ZS_INTERNAL_LOG_ERROR_IF(xCond, xLevel, xMsg)                     ;
+#define ZS_INTERNAL_LOG_FATAL_IF(xCond, xLevel, xMsg)                     ;
+
+#else /* ZSLIB_LOGGING_NOOP */
+
 #define ZS_INTERNAL_IS_LOGGING(xLevel)                                    (((ZS_GET_SUBSYSTEM()).getOutputLevel()) >= ::zsLib::Log::xLevel)
 #define ZS_INTERNAL_IS_LOGGING_VALUE(xLevelValue)                         (((ZS_GET_SUBSYSTEM()).getOutputLevel()) >= (xLevelValue))
 #define ZS_INTERNAL_IS_SUBSYSTEM_LOGGING(xSubsystem, xLevel)              (((xSubsystem).getOutputLevel()) >= ::zsLib::Log::xLevel)
@@ -174,5 +251,4 @@ namespace zsLib
 #define ZS_INTERNAL_LOG_ERROR_IF(xCond, xLevel, xMsg)                     if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_ERROR(xLevel, xMsg)}
 #define ZS_INTERNAL_LOG_FATAL_IF(xCond, xLevel, xMsg)                     if ((xCond) && (ZS_INTERNAL_IS_LOGGING(xLevel))) {ZS_INTERNAL_LOG_FATAL(xLevel, xMsg)}
 
-#endif //ZS_INTERNAL_LOG_H_bae05c798f0d8589029db417219553a9
-
+#endif /* ZSLIB_LOGGING_NOOP */

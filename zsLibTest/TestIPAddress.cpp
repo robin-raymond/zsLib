@@ -30,6 +30,7 @@
  */
 
 #include <zsLib/IPAddress.h>
+#include <zsLib/IHelper.h>
 #ifndef _WIN32
 #include <arpa/inet.h>
 #endif //_WIN32
@@ -117,7 +118,7 @@ public:
     }
     {
       BYTE address[4] = {192,168,1,17};
-      DWORD value = ntohl(*((DWORD *)&(address[0])));
+      DWORD value = zsLib::IHelper::getBE32(&(address[0]));
       zsLib::IPAddress ipOriginal(value);
       zsLib::IPAddress ip(ipOriginal);
       TESTING_CHECK(!ip.isEmpty())
@@ -133,7 +134,7 @@ public:
     }
     {
       BYTE address[4] = {192,168,1,17};
-      DWORD value = ntohl(*((DWORD *)&(address[0])));
+      DWORD value = zsLib::IHelper::getBE32(&(address[0]));
       zsLib::IPAddress ipOriginal(value, 5060);
       zsLib::IPAddress ip(ipOriginal);
       TESTING_CHECK(!ip.isEmpty())
@@ -205,7 +206,7 @@ public:
       TESTING_CHECK(ip == ipOriginal)
     }
     {
-	  sockaddr_in6 address{};
+      sockaddr_in6 address {};
       address.sin6_family = AF_INET6;
 #ifdef _WIN32
       address.sin6_addr.u.Word[0] = htons(0x1020);
@@ -217,14 +218,14 @@ public:
       address.sin6_addr.u.Word[6] = htons(0xe6f6);
       address.sin6_addr.u.Word[7] = htons(0xa7f7);
 #elif defined __linux__
-      address.sin6_addr.s6_addr[0] = htons(0x1020);
-      address.sin6_addr.s6_addr[1] = htons(0xa1b1);
-      address.sin6_addr.s6_addr[2] = htons(0xc2d2);
-      address.sin6_addr.s6_addr[3] = htons(0xe3f3);
-      address.sin6_addr.s6_addr[4] = htons(0xa4b4);
-      address.sin6_addr.s6_addr[5] = htons(0xc5d5);
-      address.sin6_addr.s6_addr[6] = htons(0xe6f6);
-      address.sin6_addr.s6_addr[7] = htons(0xa7f7);
+      address.sin6_addr.s6_addr16[0] = htons(0x1020);
+      address.sin6_addr.s6_addr16[1] = htons(0xa1b1);
+      address.sin6_addr.s6_addr16[2] = htons(0xc2d2);
+      address.sin6_addr.s6_addr16[3] = htons(0xe3f3);
+      address.sin6_addr.s6_addr16[4] = htons(0xa4b4);
+      address.sin6_addr.s6_addr16[5] = htons(0xc5d5);
+      address.sin6_addr.s6_addr16[6] = htons(0xe6f6);
+      address.sin6_addr.s6_addr16[7] = htons(0xa7f7);
 #else
       address.sin6_addr.__u6_addr.__u6_addr16[0] = htons(0x1020);
       address.sin6_addr.__u6_addr.__u6_addr16[1] = htons(0xa1b1);
@@ -743,14 +744,14 @@ public:
       TESTING_CHECK(raw6.sin6_addr.u.Word[6] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.u.Word[7] == htons(0xabcd))
 #elif defined __linux__
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[0] == htons(0xfe80))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[1] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[2] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[3] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[4] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[5] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[6] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[7] == htons(0xabcd))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[0] == htons(0xfe80))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[1] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[2] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[3] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[4] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[5] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[6] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[7] == htons(0xabcd))
 #else
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[0] == htons(0xfe80))
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[1] == htons(0))
@@ -784,14 +785,14 @@ public:
       TESTING_CHECK(raw6.sin6_addr.u.Word[6] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.u.Word[7] == htons(0xabcd))
 #elif defined __linux__
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[0] == htons(0xfec0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[1] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[2] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[3] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[4] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[5] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[6] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[7] == htons(0xabcd))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[0] == htons(0xfec0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[1] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[2] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[3] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[4] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[5] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[6] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[7] == htons(0xabcd))
 #else
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[0] == htons(0xfec0))
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[1] == htons(0))
@@ -825,14 +826,14 @@ public:
       TESTING_CHECK(raw6.sin6_addr.u.Word[6] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.u.Word[7] == htons(0xabcd))
 #elif defined __linux__
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[0] == htons(0xfc00))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[1] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[2] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[3] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[4] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[5] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[6] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[7] == htons(0xabcd))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[0] == htons(0xfc00))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[1] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[2] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[3] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[4] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[5] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[6] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[7] == htons(0xabcd))
 #else
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[0] == htons(0xfc00))
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[1] == htons(0))
@@ -866,14 +867,14 @@ public:
       TESTING_CHECK(raw6.sin6_addr.u.Word[6] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.u.Word[7] == htons(0xabcd))
 #elif defined __linux__
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[0] == htons(0xfe00))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[1] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[2] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[3] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[4] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[5] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[6] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[7] == htons(0xabcd))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[0] == htons(0xfe00))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[1] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[2] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[3] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[4] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[5] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[6] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[7] == htons(0xabcd))
 #else
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[0] == htons(0xfe00))
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[1] == htons(0))
@@ -907,14 +908,14 @@ public:
       TESTING_CHECK(raw6.sin6_addr.u.Word[6] == htons(0x7F00))
       TESTING_CHECK(raw6.sin6_addr.u.Word[7] == htons(0x0001))
 #elif defined __linux__
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[0] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[1] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[2] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[3] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[4] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[5] == htons(0xFFFF))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[6] == htons(0x7F00))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[7] == htons(0x0001))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[0] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[1] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[2] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[3] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[4] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[5] == htons(0xFFFF))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[6] == htons(0x7F00))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[7] == htons(0x0001))
 #else
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[0] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[1] == htons(0))
@@ -947,14 +948,14 @@ public:
       TESTING_CHECK(raw6.sin6_addr.u.Word[6] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.u.Word[7] == htons(0x0001))
 #elif defined __linux__
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[0] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[1] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[2] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[3] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[4] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[5] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[6] == htons(0))
-      TESTING_CHECK(raw6.sin6_addr.s6_addr[7] == htons(0x0001))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[0] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[1] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[2] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[3] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[4] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[5] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[6] == htons(0))
+      TESTING_CHECK(raw6.sin6_addr.s6_addr16[7] == htons(0x0001))
 #else
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[0] == htons(0))
       TESTING_CHECK(raw6.sin6_addr.__u6_addr.__u6_addr16[1] == htons(0))
@@ -1046,13 +1047,13 @@ public:
       TESTING_CHECK(0 == ipv6.sin6_addr.u.Word[7])
       TESTING_CHECK(0 == memcmp(&(ipv6.sin6_addr.u.Word[1]), &(byteIP[0]), sizeof(byteIP)))
 #elif defined __linux__
-      TESTING_CHECK(0x2002 == ntohs(ipv6.sin6_addr.s6_addr[0]))
-      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr[3])
-      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr[4])
-      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr[5])
-      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr[6])
-      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr[7])
-      TESTING_CHECK(0 == memcmp(&(ipv6.sin6_addr.s6_addr[1]), &(byteIP[0]), sizeof(byteIP)))
+      TESTING_CHECK(0x2002 == ntohs(ipv6.sin6_addr.s6_addr16[0]))
+      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr16[3])
+      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr16[4])
+      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr16[5])
+      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr16[6])
+      TESTING_CHECK(0 == ipv6.sin6_addr.s6_addr16[7])
+      TESTING_CHECK(0 == memcmp(&(ipv6.sin6_addr.s6_addr16[1]), &(byteIP[0]), sizeof(byteIP)))
 #else
       TESTING_CHECK(0x2002 == ntohs(ipv6.sin6_addr.__u6_addr.__u6_addr16[0]))
       TESTING_CHECK(0 == ipv6.sin6_addr.__u6_addr.__u6_addr16[3])

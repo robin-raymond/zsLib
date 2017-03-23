@@ -34,8 +34,13 @@
 #include <zsLib/helpers.h>
 #include <zsLib/Exception.h>
 #include <zsLib/XML.h>
-#include <zsLib/String.h>
+#include <zsLib/Numeric.h>
 #include <zsLib/Singleton.h>
+#include <zsLib/String.h>
+
+#ifdef _WIN32
+#include <Evntprov.h>
+#endif //_WIN32
 
 namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
@@ -91,16 +96,31 @@ namespace zsLib
     return mEventingLevel;
   }
 
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-  #pragma mark
-  #pragma mark Log
-  #pragma mark
-
   namespace internal
   {
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark (helpers)
+    #pragma mark
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Log
+    #pragma mark
+
+    //-------------------------------------------------------------------------
+    void Log::initSingleton()
+    {
+      zsLib::Log::singleton();
+    }
+
+    //-------------------------------------------------------------------------
     String Log::paramize(const char *name)
     {
       if (!name) return String();
@@ -252,6 +272,7 @@ namespace zsLib
     for (auto iter = mCleanUpWriters.begin(); iter != mCleanUpWriters.end(); ++iter)
     {
       auto writer = (*iter);
+      writer->mInitValue = 0;
       delete writer;
     }
   }
@@ -329,7 +350,7 @@ namespace zsLib
 
     for (SubsystemList::iterator iter = notifyList.begin(); iter != notifyList.end(); ++iter)
     {
-      delegate->onNewSubsystem(*(*iter));
+      delegate->notifyNewSubsystem(*(*iter));
     }
   }
 
@@ -380,13 +401,17 @@ namespace zsLib
 
     Log &refThis = (*log);
 
-    OutputListenerListPtr notifyList;
+    OutputListenerListPtr notify1List;
+    EventingListenerListPtr notify2List;
+    EventingProviderListenerListPtr notify3List;
 
     // scope: remember the subsystem
     {
       AutoRecursiveLock lock(refThis.mLock);
       refThis.mSubsystems.push_back(inSubsystem);
-      notifyList = refThis.mOutputListeners;
+      notify1List = refThis.mOutputListeners;
+      notify2List = refThis.mEventingListeners;
+      notify3List = refThis.mEventingProviderListeners;
 
       {
         auto found = refThis.mDefaultOutputSubsystemLevels.find(String(inSubsystem->getName()));
@@ -399,11 +424,31 @@ namespace zsLib
           }
         }
       }
+
+      {
+        auto found = refThis.mDefaultEventingSubsystemLevels.find(String(inSubsystem->getName()));
+        if (found != refThis.mDefaultEventingSubsystemLevels.end()) {
+          inSubsystem->setEventingLevel(static_cast<Level>((*found).second));
+        } else {
+          auto foundDefault = refThis.mDefaultEventingSubsystemLevels.find(String());
+          if (foundDefault != refThis.mDefaultEventingSubsystemLevels.end()) {
+            inSubsystem->setEventingLevel(static_cast<Level>((*foundDefault).second));
+          }
+        }
+      }
     }
 
-    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    for (auto iter = notify1List->begin(); iter != notify1List->end(); ++iter)
     {
-      (*iter)->onNewSubsystem(*inSubsystem);
+      (*iter)->notifyNewSubsystem(*inSubsystem);
+    }
+    for (auto iter = notify2List->begin(); iter != notify2List->end(); ++iter)
+    {
+      (*iter)->notifyNewSubsystem(*inSubsystem);
+    }
+    for (auto iter = notify3List->begin(); iter != notify3List->end(); ++iter)
+    {
+      (*iter)->notifyNewSubsystem(*inSubsystem);
     }
   }
 
@@ -490,15 +535,15 @@ namespace zsLib
 
     for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
     {
-      (*iter)->onLog(
-                     inSubsystem,
-                     inSeverity,
-                     inLevel,
-                     inFunction,
-                     inFilePath,
-                     inLineNumber,
-                     inParams
-                     );
+      (*iter)->notifyLog(
+                         inSubsystem,
+                         inSeverity,
+                         inLevel,
+                         inFunction,
+                         inFilePath,
+                         inLineNumber,
+                         inParams
+                         );
     }
   }
 
@@ -554,17 +599,16 @@ namespace zsLib
           if (found != refThis.mDefaultEventingSubsystemLevels.end()) {
             auto level = static_cast<Level>((*found).second);
             subsystem->setEventingLevel(level);
-          }
-          else if (defaultLevel.hasValue()) {
+          } else if (defaultLevel.hasValue()) {
             subsystem->setEventingLevel(defaultLevel.value());
           }
         }
       }
     }
 
-    for (SubsystemList::iterator iter = notifyList.begin(); iter != notifyList.end(); ++iter)
+    for (auto iter = notifyList.begin(); iter != notifyList.end(); ++iter)
     {
-      delegate->onNewSubsystem(*(*iter));
+      delegate->notifyNewSubsystem(*(*iter));
     }
   }
 
@@ -584,7 +628,7 @@ namespace zsLib
 
     (*replaceList) = (*refThis.mEventingListeners);
 
-    for (EventingListenerList::iterator iter = replaceList->begin(); iter != replaceList->end(); ++iter)
+    for (auto iter = replaceList->begin(); iter != replaceList->end(); ++iter)
     {
       if (delegate.get() == (*iter).get())
       {
@@ -603,16 +647,135 @@ namespace zsLib
         return;
       }
     }
-
-    ZS_THROW_INVALID_ARGUMENT("cound not remove log listener as it was not found");
   }
 
   //---------------------------------------------------------------------------
-  uintptr_t Log::registerEventingWriter(
-                                        const UUID &providerID,
-                                        const char *providerName,
-                                        const char *uniqueProviderHash
-                                        )
+  void Log::addEventingProviderListener(ILogEventingProviderDelegatePtr delegate)
+  {
+    typedef std::list<EventingWriter *> EventWriterList;
+
+    if (!delegate) return;
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    SubsystemList notifyList;
+    EventWriterList eventWriterList;
+
+    // copy the list but notify without the lock
+    {
+      AutoRecursiveLock lock(refThis.mLock);
+
+      EventingProviderListenerListPtr replaceList(make_shared<EventingProviderListenerList>());
+
+      (*replaceList) = (*refThis.mEventingProviderListeners);
+
+      replaceList->push_back(delegate);
+
+      refThis.mEventingProviderListeners = replaceList;
+
+      notifyList = refThis.mSubsystems;
+
+      for (auto iter = refThis.mEventWriters.begin(); iter != refThis.mEventWriters.end(); ++iter)
+      {
+        eventWriterList.push_back((*iter).second);
+      }
+    }
+
+    for (auto iter = notifyList.begin(); iter != notifyList.end(); ++iter)
+    {
+      delegate->notifyNewSubsystem(*(*iter));
+    }
+
+    for (auto iter = eventWriterList.begin(); iter != eventWriterList.end(); ++iter)
+    {
+      auto writer = (*iter);
+      delegate->notifyEventingProviderRegistered(reinterpret_cast<uintptr_t>(writer), &(writer->mAtomInfo[0]));
+    }
+
+    for (auto iter = eventWriterList.begin(); iter != eventWriterList.end(); ++iter)
+    {
+      auto writer = (*iter);
+      if (0 != writer->mKeywordsBitmask) {
+        delegate->notifyEventingProviderLoggingStateChanged(reinterpret_cast<uintptr_t>(writer), &(writer->mAtomInfo[0]), writer->mKeywordsBitmask);
+      }
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::removeEventingProviderListener(ILogEventingProviderDelegatePtr delegate)
+  {
+    if (!delegate) return;
+
+    LogPtr log = Log::singleton();
+    if (!log) return;
+
+    Log &refThis = (*log);
+
+    AutoRecursiveLock lock(refThis.mLock);
+
+    EventingProviderListenerListPtr replaceList(make_shared<EventingProviderListenerList>());
+
+    (*replaceList) = (*refThis.mEventingProviderListeners);
+
+    for (auto iter = replaceList->begin(); iter != replaceList->end(); ++iter)
+    {
+      if (delegate.get() == (*iter).get())
+      {
+        replaceList->erase(iter);
+        refThis.mEventingProviderListeners = replaceList;
+        return;
+      }
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  Log::EventingAtomIndex Log::registerEventingAtom(const char *atomNamespace)
+  {
+    String atomNamespaceStr(atomNamespace);
+
+    LogPtr log = Log::singleton();
+    if (!log) return 0;
+
+    Log &refThis = (*log);
+
+    AutoRecursiveLock lock(refThis.mLock);
+
+    auto found = refThis.mConsumedEventingAtoms.find(atomNamespaceStr);
+    if (found != refThis.mConsumedEventingAtoms.end()) return (*found).second;
+
+    auto nextIndex = static_cast<EventingAtomIndex>(refThis.mConsumedEventingAtoms.size() + 1);
+
+    if (nextIndex >= ZSLIB_LOG_PROVIDER_ATOM_MAXIMUM) return 0;
+
+    refThis.mConsumedEventingAtoms[atomNamespaceStr] = nextIndex;
+    return nextIndex;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::ProviderHandle Log::registerEventingWriter(
+                                                  const char *providerID,
+                                                  const char *providerName,
+                                                  const char *uniqueProviderHash
+                                                  )
+  {
+    try {
+      UUID tempProviderID = Numeric<UUID>(providerID);
+      return registerEventingWriter(tempProviderID, providerName, uniqueProviderHash);
+    } catch (const Numeric<UUID>::ValueOutOfRange &) {
+    }
+
+    return 0;
+  }
+
+  //---------------------------------------------------------------------------
+  Log::ProviderHandle Log::registerEventingWriter(
+                                                  const UUID &providerID,
+                                                  const char *providerName,
+                                                  const char *uniqueProviderHash
+                                                  )
   {
     LogPtr log = Log::singleton();
     if (!log) return 0;
@@ -620,6 +783,8 @@ namespace zsLib
     Log &refThis = (*log);
 
     EventingWriter *writer = NULL;
+
+    EventingProviderListenerListPtr notifyList;
 
     {
       AutoRecursiveLock lock(refThis.mLock);
@@ -639,13 +804,33 @@ namespace zsLib
       writer->mLog = log.get();
 
       refThis.mEventWriters[providerID] = writer;
+
+      notifyList = refThis.mEventingProviderListeners;
+    }
+
+    uintptr_t result(reinterpret_cast<uintptr_t>(writer));
+
+    KeywordBitmaskType keywords = writer->mKeywordsBitmask;
+
+    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    {
+      auto delegate = (*iter);
+      delegate->notifyEventingProviderRegistered(result, &(writer->mAtomInfo[0]));
+    }
+
+    if (writer->mKeywordsBitmask != keywords) {
+      for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+      {
+        auto delegate = (*iter);
+        delegate->notifyEventingProviderLoggingStateChanged(result, &(writer->mAtomInfo[0]), writer->mKeywordsBitmask);
+      }
     }
 
     return reinterpret_cast<uintptr_t>(writer);
   }
 
   //---------------------------------------------------------------------------
-  void Log::unregisterEventingWriter(uintptr_t handle)
+  void Log::unregisterEventingWriter(ProviderHandle handle)
   {
     if (0 == handle) return;
 
@@ -654,11 +839,13 @@ namespace zsLib
 
     Log &refThis = (*log);
 
+    EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+
+    EventingProviderListenerListPtr notifyList;
+
     {
       AutoRecursiveLock lock(refThis.mLock);
 
-      EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
-      
       for (auto iter = refThis.mEventWriters.begin(); iter != refThis.mEventWriters.end(); ++iter)
       {
         uintptr_t found = reinterpret_cast<uintptr_t>((*iter).second);
@@ -669,25 +856,36 @@ namespace zsLib
       }
 
       refThis.mCleanUpWriters.insert(writer);
+      notifyList = refThis.mEventingProviderListeners;
     }
 
+    for (auto iter = notifyList->begin(); iter != notifyList->end(); ++iter)
+    {
+      auto delegate = (*iter);
+      delegate->notifyEventingProviderUnregistered(handle, &(writer->mAtomInfo[0]));
+    }
   }
 
   //---------------------------------------------------------------------------
   bool Log::getEventingWriterInfo(
-                                  uintptr_t handle,
+                                  ProviderHandle handle,
                                   UUID &outProviderID,
                                   String &outProviderName,
-                                  String &outUniqueProviderHash
+                                  String &outUniqueProviderHash,
+                                  EventingAtomDataArray *outArray
                                   )
   {
     if (0 == handle) return false;
 
     EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+    if (ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE != writer->mInitValue) return false;
 
     outProviderID = writer->mProviderID;
     outProviderName = writer->mProviderName;
     outUniqueProviderHash = writer->mUniqueProviderHash;
+    if (outArray) {
+      (*outArray) = &(writer->mAtomInfo[0]);
+    }
     return true;
   }
 
@@ -734,23 +932,19 @@ namespace zsLib
 
   //---------------------------------------------------------------------------
   void Log::writeEvent(
-                       uintptr_t handle,
+                       ProviderHandle handle,
                        Severity severity,
                        Level level,
-                       const char *subsystemName,
-                       const char *functionName,
-                       ULONG lineNumber,
-                       size_t mValue,
-                       const BYTE *buffer,
-                       size_t bufferSize,
-                       const BYTE * const* buffers,
-                       const size_t *buffersSizes,
-                       size_t totalBuffers
+                       EVENT_DESCRIPTOR_HANDLE descriptor,
+                       EVENT_PARAMETER_DESCRIPTOR_HANDLE paramDescriptor,
+                       EVENT_DATA_DESCRIPTOR_HANDLE dataDescriptor,
+                       size_t dataDescriptorCount
                        )
   {
     if (0 == handle) return;
 
     EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+    if (ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE != writer->mInitValue) return;
 
     Log *log = writer->mLog;
 
@@ -765,7 +959,53 @@ namespace zsLib
 
     for (auto iter = useList.begin(); iter != useList.end(); ++iter)
     {
-      (*iter)->onWriteEvent(handle, severity, level, subsystemName, functionName, lineNumber, mValue, buffer, bufferSize, buffers, buffersSizes, totalBuffers);
+      (*iter)->notifyWriteEvent(handle, &(writer->mAtomInfo[0]), severity, level, descriptor, paramDescriptor, dataDescriptor, dataDescriptorCount);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  void Log::setEventingLogging(
+                               ProviderHandle handle,
+                               PUID enablingObjectID,
+                               bool enabled,
+                               KeywordBitmaskType bitmask
+                               )
+  {
+    if (0 == handle) return;
+
+    EventingWriter *writer = reinterpret_cast<EventingWriter *>(handle);
+    if (ZSLIB_INTERNAL_LOG_EVENT_WRITER_INIT_VALUE != writer->mInitValue) return;
+
+    Log *log = writer->mLog;
+
+    EventingProviderListenerListPtr notifyList;
+
+    KeywordBitmaskType keywords = 0;
+    
+    {
+      AutoRecursiveLock lock(log->mLock);
+      if (!enabled) {
+        auto found = writer->mEnabledObjects.find(enablingObjectID);
+        if (found != writer->mEnabledObjects.end()) writer->mEnabledObjects.erase(found);
+      } else {
+        writer->mEnabledObjects[enablingObjectID] = bitmask;
+      }
+
+      // re-assemble the enabled keyword bitmask
+      for (auto iter = writer->mEnabledObjects.begin(); iter != writer->mEnabledObjects.end(); ++iter) {
+        auto enabledBitmask = (*iter).second;
+        keywords = keywords | enabledBitmask;
+      }
+      writer->mKeywordsBitmask = keywords;
+      
+      notifyList = log->mEventingProviderListeners;
+    }
+
+    auto &useList = *notifyList;
+
+    for (auto iter = useList.begin(); iter != useList.end(); ++iter)
+    {
+      (*iter)->notifyEventingProviderLoggingStateChanged(handle, &(writer->mAtomInfo[0]), keywords);
     }
   }
 
@@ -989,39 +1229,39 @@ namespace zsLib
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const char *message, XML::ElementPtr object) :
-    mMessage(message),
-    mObject(object)
+    mObject(object),
+    mMessage(message)
   {
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const String &message, XML::ElementPtr object) :
-    mMessage(message),
-    mObject(object)
+    mObject(object),
+    mMessage(message)
   {
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const char *message, const char *staticObjectName) :
-    mMessage(message),
-    mObject(XML::Element::create(staticObjectName))
+    mObject(XML::Element::create(staticObjectName)),
+    mMessage(message)
   {
     ZS_THROW_INVALID_ARGUMENT_IF(!staticObjectName)
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const String &message, const char *staticObjectName) :
-    mMessage(message),
-    mObject(XML::Element::create(staticObjectName))
+    mObject(XML::Element::create(staticObjectName)),
+    mMessage(message)
   {
     ZS_THROW_INVALID_ARGUMENT_IF(!staticObjectName)
   }
 
   //---------------------------------------------------------------------------
   Log::Params::Params(const Params &params) :
-    mMessage(params.mMessage),
     mObject(params.mObject),
-    mParams(params.mParams)
+    mParams(params.mParams),
+    mMessage(params.mMessage)
   {
   }
 

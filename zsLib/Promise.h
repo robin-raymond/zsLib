@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_PROMISE_H_8c2fd8442fc659def2cfdc350e4e6ec4f68f0b1e
-#define ZSLIB_PROMISE_H_8c2fd8442fc659def2cfdc350e4e6ec4f68f0b1e
-
 #include <zsLib/Proxy.h>
 
 namespace zsLib
@@ -258,5 +255,3 @@ ZS_DECLARE_PROXY_METHOD_1(onPromiseSettled, zsLib::PromisePtr)
 ZS_DECLARE_PROXY_METHOD_1(onPromiseResolved, zsLib::PromisePtr)
 ZS_DECLARE_PROXY_METHOD_1(onPromiseRejected, zsLib::PromisePtr)
 ZS_DECLARE_PROXY_END()
-
-#endif //ZSLIB_PROMISE_H_8c2fd8442fc659def2cfdc350e4e6ec4f68f0b1e

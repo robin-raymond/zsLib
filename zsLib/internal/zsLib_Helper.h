@@ -31,67 +31,31 @@
 
 #pragma once
 
-#ifndef ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f
-#define ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f
-
-#include <zsLib/types.h>
-#include <zsLib/Exception.h>
+#include <zsLib/IHelper.h>
+#include <zsLib/Log.h>
 
 namespace zsLib
 {
-  interaction IMessageQueueMessage
+  namespace internal
   {
-    virtual const char *getDelegateName() const = 0;
-    virtual const char *getMethodName() const = 0;
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark Helper
+    #pragma mark
 
-    virtual void processMessage() = 0;
-
-    virtual ~IMessageQueueMessage() {}
-  };
-
-  interaction IMessageQueueNotify
-  {
-    virtual void notifyMessagePosted() = 0;
-  };
-
-  interaction IMessageQueue
-  {
-    struct Exceptions
+    class Helper : public IHelper
     {
-      ZS_DECLARE_CUSTOM_EXCEPTION(MessageQueueGone)
+    public:
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::Log::Params, Params);
+
+      static Params slog(const char *message);
+      static Params slog(
+                         const char *logObjectName,
+                         const char *message
+                         );
     };
-
-    typedef size_t size_type;
-
-    virtual void post(IMessageQueueMessageUniPtr message) = 0;
-
-    virtual size_type getTotalUnprocessedMessages() const = 0;
-  };
-}
-
-#include <zsLib/internal/zsLib_MessageQueue.h>
-
-namespace zsLib
-{
-  class MessageQueue : public internal::MessageQueue
-  {
-  public:
-    MessageQueue(
-                 const make_private &,
-                 IMessageQueueNotifyPtr notify
-                 );
-    ~MessageQueue();
-
-  public:
-    static MessageQueuePtr create(IMessageQueueNotifyPtr notify);
-
-    virtual void post(IMessageQueueMessageUniPtr message);
-
-    virtual size_type getTotalUnprocessedMessages() const;
-
-    void process();
-    void processOnlyOneMessage();
-  };
-}
-
-#endif //ZSLIB_MESSAGEQUEUE_H_3b3e04ed0435a1db72915c7519694f0f
+  } // namespace internal
+} // namespace zsLib

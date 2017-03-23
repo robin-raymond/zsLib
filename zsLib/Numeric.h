@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_NUMERIC_H_505af97f61feb236ca87601e6bf58e58
-#define ZSLIB_NUMERIC_H_505af97f61feb236ca87601e6bf58e58
-
 #include <zsLib/internal/zsLib_Numeric.h>
 
 #pragma warning(push)
@@ -76,5 +73,3 @@ namespace zsLib
 #pragma warning(pop)
 
 #include <zsLib/internal/zsLib_Numeric.h>
-
-#endif // ZSLIB_NUMERIC_H_505af97f61feb236ca87601e6bf58e58

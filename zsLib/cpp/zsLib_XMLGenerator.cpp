@@ -197,8 +197,6 @@ namespace zsLib
 
       //-----------------------------------------------------------------------
       Generator::Generator(UINT writeFlags) :
-        mCaseSensitive(true),
-        mDepth(0),
         mWriteFlags(writeFlags),
         mJSONForcedText(ZS_JSON_DEFAULT_FORCED_TEXT),
         mJSONAttributePrefix(ZS_JSON_DEFAULT_ATTRIBUTE_PREFIX),

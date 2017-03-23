@@ -30,6 +30,9 @@
  */
 
 #include <zsLib/internal/zsLib_SocketMonitor.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
+
+#include <zsLib/ISettings.h>
 #include <zsLib/Stringize.h>
 #include <zsLib/helpers.h>
 #include <zsLib/XML.h>
@@ -46,6 +49,8 @@ namespace zsLib
 {
   namespace internal
   {
+    ZS_DECLARE_CLASS_PTR(SocketMonitorSettingsDefaults);
+
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -86,13 +91,6 @@ namespace zsLib
       return String((CSTR)(&(positions[0])));
     }
 
-    //-------------------------------------------------------------------------
-    static MonitorPriorityHelper &getSocketMonitorPrioritySingleton()
-    {
-      static Singleton<MonitorPriorityHelper, false> singleton;
-      return singleton.singleton();
-    }
-
     //-----------------------------------------------------------------------
 #ifdef _WIN32
     static zsLib::Log::Params slog(const char *message, const char *object)
@@ -100,6 +98,52 @@ namespace zsLib
       return zsLib::Log::Params(message, object);
     }
 #endif //_WIN32
+
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark SocketMonitorSettingsDefaults
+    #pragma mark
+
+    class SocketMonitorSettingsDefaults : public ISettingsApplyDefaultsDelegate
+    {
+    public:
+      //-----------------------------------------------------------------------
+      ~SocketMonitorSettingsDefaults()
+      {
+        ISettings::removeDefaults(*this);
+      }
+
+      //-----------------------------------------------------------------------
+      static SocketMonitorSettingsDefaultsPtr singleton()
+      {
+        static SingletonLazySharedPtr<SocketMonitorSettingsDefaults> singleton(create());
+        return singleton.singleton();
+      }
+
+      //-----------------------------------------------------------------------
+      static SocketMonitorSettingsDefaultsPtr create()
+      {
+        auto pThis(make_shared<SocketMonitorSettingsDefaults>());
+        ISettings::installDefaults(pThis);
+        return pThis;
+      }
+
+      //-----------------------------------------------------------------------
+      virtual void notifySettingsApplyDefaults() override
+      {
+        ISettings::setString(ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY, "normal");
+      }
+    };
+
+    //-------------------------------------------------------------------------
+    void installSocketMonitorSettingsDefaults()
+    {
+      SocketMonitorSettingsDefaults::singleton();
+    }
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -625,12 +669,7 @@ namespace zsLib
         ZS_LOG_WARNING(Detail, slog("singleton gone"))
       }
 
-      static zsLib::SingletonManager::Register registerSingleton("zsLib::SocketMonitor", result);
-
-      class Once {
-      public: Once() {getSocketMonitorPrioritySingleton().notify();}
-      };
-      static Once once;
+      static zsLib::SingletonManager::Register registerSingleton("org.zsLib.SocketMonitor", result);
 
       SocketMonitorHolder::singleton(result);
       return result;
@@ -648,25 +687,6 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void SocketMonitor::setPriority(ThreadPriorities priority)
-    {
-      MonitorPriorityHelper &prioritySingleton = getSocketMonitorPrioritySingleton();
-
-      bool changed = prioritySingleton.setPriority(priority);
-      if (!changed) return;
-
-      if (!prioritySingleton.wasNotified()) return;
-
-      SocketMonitorPtr singleton = SocketMonitor::singleton();
-      if (!singleton) return;
-
-      AutoRecursiveLock lock(singleton->mLock);
-      if (!singleton->mThread) return;
-
-      setThreadPriority(*singleton->mThread, priority);
-    }
-
-    //-------------------------------------------------------------------------
     void SocketMonitor::monitorBegin(
                                      SocketPtr socket,
                                      bool monitorRead,
@@ -680,7 +700,7 @@ namespace zsLib
 
         if (!mThread) {
           mThread = ThreadPtr(new std::thread(std::ref(*(singleton().get()))));
-          setThreadPriority(mThread->native_handle(), getSocketMonitorPrioritySingleton().getPriority());
+          setThreadPriority(mThread->native_handle(), zsLib::threadPriorityFromString(ISettings::getString(ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY)));
         }
 
         SOCKET socketHandle = socket->getSocket();
@@ -817,7 +837,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void SocketMonitor::operator()()
     {
-      debugSetCurrentThreadName("com.zslib.socketMonitor");
+      debugSetCurrentThreadName("org.zsLib.socketMonitor");
 
       srand(static_cast<unsigned int>(time(NULL)));
 

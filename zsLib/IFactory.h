@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2016, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,33 +31,47 @@
 
 #pragma once
 
-#ifndef ZSLIB_MESSAGEQUEUETHREADPOOL_H_e140ea49aaff413fed9a0487ce58baa64fba5a51
-#define ZSLIB_MESSAGEQUEUETHREADPOOL_H_e140ea49aaff413fed9a0487ce58baa64fba5a51
-
 #include <zsLib/types.h>
-#include <zsLib/internal/zsLib_MessageQueueThreadPool.h>
+#include <zsLib/Singleton.h>
 
 namespace zsLib
 {
-  class MessageQueueThreadPool : public internal::MessageQueueThreadPool
+  //-------------------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark IFactory<XFACTORYINTERFACE>
+  #pragma mark
+
+  template<typename XFACTORYINTERFACE>
+  interaction IFactory : public XFACTORYINTERFACE
   {
   public:
-    static MessageQueueThreadPoolPtr create();
+    ZS_DECLARE_TYPEDEF_PTR(XFACTORYINTERFACE, UseFactoryInterface);
+    ZS_DECLARE_TYPEDEF_PTR(IFactory, UseFactory);
 
-    virtual void createThread(
-                              const char *threadName = NULL,
-                              ThreadPriorities threadPriority = ThreadPriority_NormalPriority
-                              );
+  public:
+    static void override(UseFactoryInterfacePtr override)
+    {
+      singletonFactory().mOverride = override;
+    }
 
-    virtual void waitForShutdown();
+    static UseFactoryInterface &singleton()
+    {
+      UseFactory &factory = singletonFactory();
+      if (factory.mOverride) return (*factory.mOverride);
+      return factory;
+    }
 
-    virtual bool hasPendingMessages();
+  private:
+    static UseFactory &singletonFactory()
+    {
+      static Singleton<UseFactory, false> factory;
+      return factory.singleton();
+    }
 
-    virtual IMessageQueuePtr createQueue();
-
-    virtual void setThreadPriority(ThreadPriorities threadPriority);
+    UseFactoryInterfacePtr mOverride;
   };
 
-}
-
-#endif //ZSLIB_MESSAGEQUEUETHREADPOOL_H_e140ea49aaff413fed9a0487ce58baa64fba5a51
+} // namespace zsLib

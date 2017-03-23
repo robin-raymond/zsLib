@@ -35,7 +35,6 @@
 #define ZSLIB_INTERNAL_PROXYPACK_H_3d1989252cf7499ccb86cef6b9c76857
 
 #include <zsLib/types.h>
-#include <zsLib/MessageQueue.h>
 #include <zsLib/String.h>
 
 namespace zsLib

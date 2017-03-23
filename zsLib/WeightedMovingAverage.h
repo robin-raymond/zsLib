@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_WEIGHTEDMOVINGAVERAGE_H_c3aaa8932f0df6e22595d901e593c3c58bdd031c
-#define ZSLIB_WEIGHTEDMOVINGAVERAGE_H_c3aaa8932f0df6e22595d901e593c3c58bdd031c
-
 #include <zsLib/types.h>
 
 namespace zsLib
@@ -133,5 +130,3 @@ namespace zsLib
   typedef WeightedMovingAverageUsingTotal<double> WeightedMovingAverageUsingTotalDouble;
 
 } // namespace zsLib
-
-#endif //ZSLIB_WEIGHTEDMOVINGAVERAGE_H_c3aaa8932f0df6e22595d901e593c3c58bdd031c

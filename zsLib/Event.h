@@ -29,8 +29,7 @@
  
  */
 
-#ifndef ZSLIB_EVENT_H_46ff6e637b2164767297dd635614b60e
-#define ZSLIB_EVENT_H_46ff6e637b2164767297dd635614b60e
+#pragma once
 
 #include <zsLib/internal/zsLib_Event.h>
 
@@ -46,5 +45,3 @@ namespace zsLib
     void notify();  // breaks the wait from executing until the reset is called
   };
 }
-
-#endif //ZSLIB_EVENT_H_46ff6e637b2164767297dd635614b60e

@@ -74,7 +74,7 @@ namespace zsLib
     SO_DONTLINGER = -1,
     SO_MAX_MSG_SIZE = -1,
     SO_PORT_SCALABILITY = -1,
-#if (defined _ANDROID || defined __QNX__ || defined _LINUX)
+#if (defined _ANDROID || defined __QNX__ || defined _LINUX || defined __unix__)
     SO_NOSIGPIPE = -1,
 #endif //(defined _ANDROID || defined __QNX__ || defined _LINUX)
 
@@ -119,7 +119,7 @@ namespace zsLib
   {
     ZS_DECLARE_CLASS_PTR(SocketMonitor)
 
-    class Socket : public noncopyable
+    class Socket
     {
     protected:
       Socket() :
@@ -127,6 +127,8 @@ namespace zsLib
         mMonitorWriteReady(true),
         mMonitorException(true)
       {}
+
+      Socket(const Socket &) = delete;
 
     public:
       ~Socket() {}

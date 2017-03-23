@@ -29,14 +29,13 @@
  
  */
 
-#include <zsLib/MessageQueueThreadPool.h>
+#include <zsLib/internal/zsLib_MessageQueueThreadPool.h>
+#include <zsLib/internal/zsLib_MessageQueue.h>
+
 #include <zsLib/Event.h>
 #include <zsLib/Log.h>
 
 //namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
-
-ZS_DECLARE_USING_PTR(zsLib::internal, MessageQueueThreadPoolDispatcherThread)
-ZS_DECLARE_USING_PTR(zsLib::internal, MessageQueueThreadPoolQueueNotifier)
 
 namespace zsLib
 {
@@ -58,9 +57,9 @@ namespace zsLib
     protected:
       //-----------------------------------------------------------------------
       MessageQueueThreadPoolDispatcherThread(
-                                             const make_private &,
-                                             const char *threadName
-                                             ) :
+        const make_private &,
+        const char *threadName
+      ) :
         mThreadName(threadName)
       {
       }
@@ -68,10 +67,10 @@ namespace zsLib
     public:
       //-----------------------------------------------------------------------
       static MessageQueueThreadPoolDispatcherThreadPtr create(
-                                                              MessageQueueThreadPoolPtr pool,
-                                                              const char *threadName = NULL,
-                                                              ThreadPriorities threadPriority = ThreadPriority_NormalPriority
-                                                              )
+        MessageQueueThreadPoolPtr pool,
+        const char *threadName = NULL,
+        ThreadPriorities threadPriority = ThreadPriority_NormalPriority
+      )
       {
         MessageQueueThreadPoolDispatcherThreadPtr pThis(new MessageQueueThreadPoolDispatcherThread(make_private{}, threadName));
         pThis->mThisWeak = pThis;
@@ -111,7 +110,7 @@ namespace zsLib
 
           if (mMustShutdown) goto done;
 
-        } while(!mMustShutdown);
+        } while (!mMustShutdown);
 
       done:
         {
@@ -154,7 +153,7 @@ namespace zsLib
 
         zsLib::setThreadPriority(*mThread, threadPriority);
       }
-      
+
       //-----------------------------------------------------------------------
       void notify()
       {
@@ -170,10 +169,10 @@ namespace zsLib
       mutable zsLib::Event mEvent;
 
       mutable Lock mLock;
-      std::atomic_bool mMustShutdown {};
-      ThreadPriorities mThreadPriority {ThreadPriority_NormalPriority};
+      std::atomic_bool mMustShutdown{};
+      ThreadPriorities mThreadPriority{ ThreadPriority_NormalPriority };
 
-      std::atomic_bool mIsShutdown {};
+      std::atomic_bool mIsShutdown{};
 
       MessageQueueThreadPoolWeakPtr mPool;
     };
@@ -194,9 +193,9 @@ namespace zsLib
     public:
       //-----------------------------------------------------------------------
       MessageQueueThreadPoolQueueNotifier(
-                                          const make_private &,
-                                          MessageQueueThreadPoolPtr pool
-                                          ) :
+        const make_private &,
+        MessageQueueThreadPoolPtr pool
+      ) :
         mPool(pool)
       {
       }
@@ -215,7 +214,7 @@ namespace zsLib
       }
 
       //-----------------------------------------------------------------------
-      MessageQueuePtr getMessageQueue()
+      IMessageQueuePtr getMessageQueue()
       {
         auto queue = mQueue;
         mQueue.reset();
@@ -242,7 +241,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       void init()
       {
-        mQueue = zsLib::MessageQueue::create(mThisWeak.lock());
+        mQueue = MessageQueue::create(mThisWeak.lock());
         mQueueWeak = mQueue;
       }
 
@@ -268,9 +267,9 @@ namespace zsLib
 
       MessageQueueThreadPoolPtr mPool;
 
-      std::atomic<bool> mPosted {false};
+      std::atomic<bool> mPosted{ false };
     };
-    
+
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -337,40 +336,59 @@ namespace zsLib
 
       notifier->processQueue();
     }
-  }
 
-  //---------------------------------------------------------------------------
-  MessageQueueThreadPoolPtr MessageQueueThreadPool::create()
-  {
-    MessageQueueThreadPoolPtr pThis(make_shared<MessageQueueThreadPool>());
-    pThis->mThisWeak = pThis;
-    pThis->init();
-    return pThis;
-  }
+    //-------------------------------------------------------------------------
+    MessageQueueThreadPoolPtr MessageQueueThreadPool::create()
+    {
+      MessageQueueThreadPoolPtr pThis(make_shared<MessageQueueThreadPool>(make_private{}));
+      pThis->mThisWeak = pThis;
+      pThis->init();
+      return pThis;
+    }
 
-  //---------------------------------------------------------------------------
-  void MessageQueueThreadPool::createThread(
-                                            const char *threadName,
-                                            ThreadPriorities threadPriority
-                                            )
-  {
-    MessageQueueThreadPoolDispatcherThreadPtr dispatcher = MessageQueueThreadPoolDispatcherThread::create(mThisWeak.lock(), threadName, threadPriority);
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadPool::createThread(
+      const char *threadName,
+      ThreadPriorities threadPriority
+    )
+    {
+      MessageQueueThreadPoolDispatcherThreadPtr dispatcher = MessageQueueThreadPoolDispatcherThread::create(mThisWeak.lock(), threadName, threadPriority);
 
-    AutoLock lock(mLock);
-    mThreads.push_back(dispatcher);
-  }
+      AutoLock lock(mLock);
+      mThreads.push_back(dispatcher);
+    }
 
-  //---------------------------------------------------------------------------
-  void MessageQueueThreadPool::waitForShutdown()
-  {
-    while (true)
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadPool::waitForShutdown()
+    {
+      while (true)
+      {
+        DispatcherThreadList threads;
+
+        {
+          AutoLock lock(mLock);
+          threads = mThreads;
+          mThreads.clear();
+        }
+
+        if (threads.size() < 1) return;
+
+        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+          auto thread = (*iter);
+
+          thread->waitForShutdown();
+        }
+      }
+    }
+
+    //-------------------------------------------------------------------------
+    void MessageQueueThreadPool::setThreadPriority(ThreadPriorities threadPriority)
     {
       DispatcherThreadList threads;
 
       {
         AutoLock lock(mLock);
         threads = mThreads;
-        mThreads.clear();
       }
 
       if (threads.size() < 1) return;
@@ -378,41 +396,31 @@ namespace zsLib
       for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
         auto thread = (*iter);
 
-        thread->waitForShutdown();
+        thread->setThreadPriority(threadPriority);
       }
     }
-  }
 
-  //---------------------------------------------------------------------------
-  void MessageQueueThreadPool::setThreadPriority(ThreadPriorities threadPriority)
-  {
-    DispatcherThreadList threads;
-
+    //-------------------------------------------------------------------------
+    bool MessageQueueThreadPool::hasPendingMessages()
     {
       AutoLock lock(mLock);
-      threads = mThreads;
+      return mPendingQueues.size() > 0;
     }
 
-    if (threads.size() < 1) return;
-
-    for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-      auto thread = (*iter);
-
-      thread->setThreadPriority(threadPriority);
+    //-------------------------------------------------------------------------
+    IMessageQueuePtr MessageQueueThreadPool::createQueue()
+    {
+      MessageQueueThreadPoolQueueNotifierPtr notifier = MessageQueueThreadPoolQueueNotifier::create(mThisWeak.lock());
+      return notifier->getMessageQueue();
     }
-  }
-  
-  //---------------------------------------------------------------------------
-  bool MessageQueueThreadPool::hasPendingMessages()
-  {
-    AutoLock lock(mLock);
-    return mPendingQueues.size() > 0;
-  }
+
+  } // namespace internal
 
   //---------------------------------------------------------------------------
-  IMessageQueuePtr MessageQueueThreadPool::createQueue()
+  IMessageQueueThreadPoolPtr IMessageQueueThreadPool::create()
   {
-    MessageQueueThreadPoolQueueNotifierPtr notifier = MessageQueueThreadPoolQueueNotifier::create(mThisWeak.lock());
-    return notifier->getMessageQueue();
+    return internal::MessageQueueThreadPool::create();
   }
-}
+
+} // namespace zsLib
+

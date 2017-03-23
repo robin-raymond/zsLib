@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17
-#define ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17
-
 #ifdef __cplusplus_winrt
 #include <Windows.h>
 #endif //__cplusplus_winrt
@@ -43,11 +40,6 @@
 
 namespace zsLib
 {
-  void setup();
-#ifdef WINRT
-  void setup(Windows::UI::Core::CoreDispatcher ^dispatcher);
-#endif //WINRT
-
   //---------------------------------------------------------------------------
   PUID createPUID();
   UUID createUUID();
@@ -121,5 +113,3 @@ namespace zsLib
   inline Nanoseconds toNanoseconds(const Nanoseconds &v) {return v;}
 
 } // namespace zsLib
-
-#endif //ZSLIB_ZSHELPERS_H_f77ff525153521711e8350b22b766d17

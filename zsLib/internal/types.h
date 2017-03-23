@@ -29,8 +29,7 @@
  
  */
 
-#ifndef ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
-#define ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de
+#pragma once
 
 #ifdef DEBUG
 #ifndef _DEBUG
@@ -45,15 +44,16 @@
 #endif //_DEBUG
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
-#include <rpc.h>
-#include <stdint.h>
 
 #ifdef __cplusplus_winrt
 #undef WINRT
 #define WINRT
 #endif //__cplusplus_winrt
+
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#include <rpc.h>
+#include <stdint.h>
 #endif //_WIN32
 
 #include <atomic>
@@ -62,6 +62,7 @@
 #include <thread>
 #include <mutex>
 #ifndef _WIN32
+#include <cstring>
 #include <uuid/uuid.h>
 #endif //_WIN32
 
@@ -152,6 +153,8 @@ namespace zsLib
   using ::WORD;
   using ::DWORD;
   using ::QWORD;
+  
+  typedef SSIZE_T ssize_t;
 
 #else
   typedef char CHAR;
@@ -213,47 +216,57 @@ namespace zsLib
 
   namespace internal
   {
-    struct uuid_wrapper {
-		typedef UCHAR * iterator;
-		typedef UCHAR const* const_iterator;
+    struct uuid_wrapper
+    {
+		  typedef UCHAR * iterator;
+		  typedef UCHAR const* const_iterator;
 
 #ifndef _WIN32
-    typedef uuid_t raw_uuid_type;
-	  raw_uuid_type mUUID{};
+      typedef uuid_t raw_uuid_type;
+	    raw_uuid_type mUUID{};
 
-	  iterator begin() { return mUUID; }
-	  const_iterator begin() const { return mUUID; }
-	  iterator end() { return mUUID + sizeof(raw_uuid_type); }
-	  const_iterator end() const { return mUUID + sizeof(raw_uuid_type); }
+	    iterator begin() { return mUUID; }
+	    const_iterator begin() const { return mUUID; }
+	    iterator end() { return mUUID + sizeof(raw_uuid_type); }
+	    const_iterator end() const { return mUUID + sizeof(raw_uuid_type); }
+      size_t size() const { return sizeof(raw_uuid_type); }
 #else
-	  typedef GUID raw_uuid_type;
-	  raw_uuid_type mUUID {};
+	    typedef GUID raw_uuid_type;
+	    raw_uuid_type mUUID {};
 
-	  iterator begin() { return (iterator) (&mUUID); }
-	  const_iterator begin() const { return (iterator)(&mUUID); }
-	  iterator end() { return begin() + sizeof(raw_uuid_type); }
-	  const_iterator end() const { return begin() + sizeof(raw_uuid_type); }
+	    iterator begin() { return (iterator) (&mUUID); }
+	    const_iterator begin() const { return (iterator)(&mUUID); }
+	    iterator end() { return begin() + sizeof(raw_uuid_type); }
+	    const_iterator end() const { return begin() + sizeof(raw_uuid_type); }
+      size_t size() const { return sizeof(raw_uuid_type); }
 
-	  static void uuid_clear(raw_uuid_type &uuid) {
-		  memset(&uuid, 0, sizeof(uuid));
-	  }
-	  static void uuid_copy(raw_uuid_type &dest, const raw_uuid_type &source) {
-		  memcpy(&dest, &source, sizeof(dest));
-	  }
-	  static int uuid_compare(const raw_uuid_type &op1, const raw_uuid_type &op2) {
-		  return memcmp(&op1, &op2, sizeof(op1));
-	  }
-	  static bool uuid_is_null(const raw_uuid_type &op) {
-      struct ClearUUID
+	    static void uuid_clear(raw_uuid_type &uuid)
       {
-        ClearUUID() {uuid_clear(mEmpty);}
+		    memset(&uuid, 0, sizeof(uuid));
+	    }
+
+	    static void uuid_copy(raw_uuid_type &dest, const raw_uuid_type &source)
+      {
+		    memcpy(&dest, &source, sizeof(dest));
+	    }
+
+	    static int uuid_compare(const raw_uuid_type &op1, const raw_uuid_type &op2)
+      {
+		    return memcmp(&op1, &op2, sizeof(op1));
+	    }
+
+	    static bool uuid_is_null(const raw_uuid_type &op)
+      {
+        struct ClearUUID
+        {
+          ClearUUID() {uuid_clear(mEmpty);}
         
-        const raw_uuid_type &value() const {return mEmpty;}
-        raw_uuid_type mEmpty;
-      };
-      static ClearUUID emptyUUID;
-		  return 0 == memcmp(&op, &(emptyUUID.value()), sizeof(op));
-	  }
+          const raw_uuid_type &value() const {return mEmpty;}
+          raw_uuid_type mEmpty;
+        };
+        static ClearUUID emptyUUID;
+		    return 0 == memcmp(&op, &(emptyUUID.value()), sizeof(op));
+	    }
 #endif //ndef _WIN32
 
       uuid_wrapper() {
@@ -361,19 +374,12 @@ namespace zsLib
 
   namespace internal
   {
-    class noncopyable {
-    private:
-      noncopyable(const noncopyable &) = delete;
-      noncopyable &operator=(const noncopyable &) = delete;
-    protected:
-      noncopyable() {}
-    public:
-      ~noncopyable() {}
-    };
+    ZS_INTERNAL_DECLARE_CLASS_PTR(Settings);
+    ZS_INTERNAL_DECLARE_CLASS_PTR(Timer);
+    ZS_INTERNAL_DECLARE_CLASS_PTR(MessageQueue);
+    ZS_INTERNAL_DECLARE_CLASS_PTR(MessageQueueThread);
+    ZS_INTERNAL_DECLARE_CLASS_PTR(MessageQueueThreadPool);
+    ZS_INTERNAL_DECLARE_CLASS_PTR(MessageQueueManager);
   }
 
-  typedef internal::noncopyable noncopyable;
-
 }
-
-#endif //ZSLIB_INTERNAL_ZSTYPES_H_b6763c4cc75e565b376883f85c0186de

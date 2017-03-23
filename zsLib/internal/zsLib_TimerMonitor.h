@@ -31,14 +31,11 @@
 
 #pragma once
 
-#ifndef ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
-#define ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
-
 #include <condition_variable>
 
 #include <zsLib/types.h>
 #include <zsLib/Log.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/IMessageQueueThread.h>
 #include <zsLib/Singleton.h>
 
 #include <map>
@@ -49,16 +46,15 @@
 #endif //__QNX__
 
 
+#define ZSLIB_SETTING_TIMER_MONITOR_THREAD_PRIORITY  "zsLib/timer-monitor/thread-priority"
+
 namespace zsLib
 {
-  ZS_DECLARE_CLASS_PTR(Timer)
-
   namespace internal
   {
     ZS_DECLARE_CLASS_PTR(TimerMonitor)
 
-    class TimerMonitor : public noncopyable,
-                         public ISingletonManagerDelegate
+    class TimerMonitor : public ISingletonManagerDelegate
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
@@ -66,6 +62,7 @@ namespace zsLib
 
     protected:
       TimerMonitor();
+      TimerMonitor(const TimerMonitor &) = delete;
 
       void init();
 
@@ -75,10 +72,8 @@ namespace zsLib
       static TimerMonitorPtr singleton();
       static TimerMonitorPtr create();
 
-      static void setPriority(ThreadPriorities priority);
-
       void monitorBegin(TimerPtr timer);
-      void monitorEnd(zsLib::Timer &timer);
+      void monitorEnd(Timer &timer);
 
       void operator()();
 
@@ -122,5 +117,3 @@ namespace zsLib
     };
   }
 }
-
-#endif //ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546

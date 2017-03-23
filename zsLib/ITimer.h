@@ -31,31 +31,18 @@
 
 #pragma once
 
-#ifndef ZSLIB_TIMER_H_625827a73b7747cea09db99f967d6a64
-#define ZSLIB_TIMER_H_625827a73b7747cea09db99f967d6a64
-
 #include <zsLib/helpers.h>
-#include <zsLib/internal/zsLib_Timer.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/Proxy.h>
+#include <zsLib/IMessageQueueThread.h>
 
 #define ZSLIB_MAX_TIMER_FIRED_AT_ONCE   5
 
 namespace zsLib
 {
-  typedef Proxy<ITimerDelegate> ITimerDelegateProxy;
+  ZS_DECLARE_INTERACTION_PROXY(ITimerDelegate);
 
-  class Timer : public internal::Timer
+  interaction ITimer
   {
-  protected:
-    struct make_private {};
-
-  public:
-    Timer(const make_private &, ITimerDelegatePtr delegate, Microseconds timeout, bool repeat, UINT maxFiringTimerAtOnce);
-
-  public:
-
-    static void setMonitorPriority(ThreadPriorities priority);  // must be called before any timer is used
-
     //-------------------------------------------------------------------------
     // PURPOSE: Create a timer which will fire once or at a repeat interval
     //          until cancelled.
@@ -67,49 +54,46 @@ namespace zsLib
     //          and missed many events. To fire off hundreds of events at once
     //          is not desirable behaviour so a limit is put which is specified
     //          with "maxFiringTimerAtOnce" to prevent timer wakeup floods.
-    static TimerPtr create(
-                           ITimerDelegatePtr delegate,
-                           Microseconds timeout,
-                           bool repeat = true,
-                           UINT maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
-                           );
+    static ITimerPtr create(
+                            ITimerDelegatePtr delegate,
+                            Microseconds timeout,
+                            bool repeat = true,
+                            size_t maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
+                            );
 
     //-------------------------------------------------------------------------
     // PURPOSE: Helper creation routine for specifying an alternative time unit
     //          other than microseconds
     template <typename TimeUnit>
-    static TimerPtr create(
-                           ITimerDelegatePtr delegate,
-                           TimeUnit timeout,
-                           bool repeat = true,
-                           UINT maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
-                           ) {
+    static ITimerPtr create(
+                            ITimerDelegatePtr delegate,
+                            TimeUnit timeout,
+                            bool repeat = true,
+                            size_t maxFiringTimerAtOnce = ZSLIB_MAX_TIMER_FIRED_AT_ONCE
+                            ) {
       return create(delegate, std::chrono::duration_cast<Microseconds>(timeout), repeat, maxFiringTimerAtOnce);
     }
 
     //-------------------------------------------------------------------------
     // PURPOSE: Helper creation routine to timeout at a specific moment in time
-    static TimerPtr create(
-                           ITimerDelegatePtr delegate,
-                           Time timeout
-                           );
+    static ITimerPtr create(
+                            ITimerDelegatePtr delegate,
+                            Time timeout
+                            );
 
-    ~Timer();
+    virtual PUID getID() const = 0;
+    virtual void cancel() = 0;      // cancel a timer (it is no longer needed)
 
-    PUID getID() const {return mID;}
-    void cancel();      // cancel a timer (it is no longer needed)
-
-    void background(bool background = true);  // background the timer (will run until timer is cancelled even if reference to object is forgotten)
+    virtual void background(bool background = true) = 0;  // background the timer (will run until timer is cancelled even if reference to object is forgotten)
   };
 
   interaction ITimerDelegate
   {
-    virtual void onTimer(TimerPtr timer) = 0;
+    virtual void onTimer(ITimerPtr timer) = 0;
   };
 }
 
 ZS_DECLARE_PROXY_BEGIN(zsLib::ITimerDelegate)
-ZS_DECLARE_PROXY_METHOD_1(onTimer, zsLib::TimerPtr)
+ZS_DECLARE_TYPEDEF_PTR(zsLib::ITimerPtr, ITimerPtr)
+ZS_DECLARE_PROXY_METHOD_1(onTimer, ITimerPtr)
 ZS_DECLARE_PROXY_END()
-
-#endif //ZSLIB_TIMER_H_625827a73b7747cea09db99f967d6a64

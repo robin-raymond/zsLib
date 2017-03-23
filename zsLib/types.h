@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_ZSTYPES_H_53fa543745f508d26ae5baeec4bf3770
-#define ZSLIB_ZSTYPES_H_53fa543745f508d26ae5baeec4bf3770
-
 #include <zsLib/internal/types.h>
 
 #define ZS_DECLARE_PTR(xExistingType)                                               ZS_INTERNAL_DECLARE_PTR(xExistingType)
@@ -48,6 +45,7 @@
 namespace zsLib
 {
   using std::make_shared;
+  using std::size_t;
   
   ZS_DECLARE_TYPEDEF_PTR(std::thread, Thread)
   ZS_DECLARE_TYPEDEF_PTR(std::mutex, Lock)
@@ -109,19 +107,19 @@ namespace zsLib
 
   ZS_DECLARE_CLASS_PTR(Log);
   ZS_DECLARE_INTERACTION_PTR(ILogOutputDelegate);
+  ZS_DECLARE_INTERACTION_PTR(ILogEventingProviderDelegate);
   ZS_DECLARE_INTERACTION_PTR(ILogEventingDelegate);
 
   ZS_DECLARE_CLASS_PTR(SingletonManager);
   ZS_DECLARE_INTERACTION_PTR(ISingletonManagerDelegate);
 
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueue);
   ZS_DECLARE_INTERACTION_PTR(IMessageQueueMessage);
   ZS_DECLARE_INTERACTION_PTR(IMessageQueueNotify);
-  ZS_DECLARE_INTERACTION_PTR(IMessageQueue);
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueManager);
   ZS_DECLARE_INTERACTION_PTR(IMessageQueueThread);
 
-  ZS_DECLARE_CLASS_PTR(MessageQueue);
-  ZS_DECLARE_CLASS_PTR(MessageQueueThread);
-  ZS_DECLARE_CLASS_PTR(MessageQueueThreadPool);
+  ZS_DECLARE_INTERACTION_PTR(IMessageQueueThreadPool);
 
   ZS_DECLARE_CLASS_PTR(Promise);
   ZS_DECLARE_INTERACTION_PTR(IPromiseDelegate);
@@ -134,10 +132,12 @@ namespace zsLib
   ZS_DECLARE_CLASS_PTR(Socket);
   ZS_DECLARE_CLASS_PTR(String);
 
-
+  ZS_DECLARE_INTERACTION_PTR(ISettings);
+  ZS_DECLARE_INTERACTION_PTR(ISettingsDelegate);
+  ZS_DECLARE_INTERACTION_PTR(ISettingsApplyDefaultsDelegate);
+  ZS_DECLARE_INTERACTION_PTR(ITimer);
   ZS_DECLARE_INTERACTION_PTR(ITimerDelegate);
-
-  ZS_DECLARE_CLASS_PTR(Timer);
+  ZS_DECLARE_INTERACTION_PTR(IWakeDelegate);
 
   ZS_DECLARE_STRUCT_PTR(Any);
 
@@ -246,5 +246,3 @@ namespace zsLib
   namespace JSON = zsLib::XML;
 
 } // namespace zsLib
-
-#endif //ZSLIB_ZSTYPES_H_53fa543745f508d26ae5baeec4bf3770

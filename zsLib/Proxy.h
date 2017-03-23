@@ -31,11 +31,8 @@
 
 #pragma once
 
-#ifndef ZSLIB_PROXY_H_9da3060d9c7f78784e853e7416024ea8
-#define ZSLIB_PROXY_H_9da3060d9c7f78784e853e7416024ea8
-
 #include <zsLib/Exception.h>
-#include <zsLib/MessageQueue.h>
+#include <zsLib/IMessageQueue.h>
 
 namespace zsLib
 {
@@ -350,5 +347,3 @@ namespace zsLib
 #define ZS_DECLARE_PROXY_METHOD_23(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23)                                ZS_INTERNAL_DECLARE_PROXY_METHOD_23(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23)
 #define ZS_DECLARE_PROXY_METHOD_24(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24)                            ZS_INTERNAL_DECLARE_PROXY_METHOD_24(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24)
 #define ZS_DECLARE_PROXY_METHOD_25(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25)                        ZS_INTERNAL_DECLARE_PROXY_METHOD_25(xMethod,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25)
-
-#endif //ZSLIB_PROXY_H_9da3060d9c7f78784e853e7416024ea8

@@ -30,7 +30,7 @@
  */
 
 #include <zsLib/Promise.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/IMessageQueueThread.h>
 #include <zsLib/Stringize.h>
 #include <iostream>
 
@@ -218,8 +218,8 @@ namespace testing
   public:
     TestPromise()
     {
-      mThreadService = zsLib::MessageQueueThread::createBasic("service");
-      mThreadUser = zsLib::MessageQueueThread::createBasic("user");
+      mThreadService = zsLib::IMessageQueueThread::createBasic("service");
+      mThreadUser = zsLib::IMessageQueueThread::createBasic("user");
 
       TestPromiseCallbackPtr callback = TestPromiseCallback::create();
       TestPromiseCallbackWithQueuePtr callbackWithQueue = TestPromiseCallbackWithQueue::create(mThreadUser);
@@ -638,8 +638,8 @@ namespace testing
       TESTING_EQUAL("any2reject", getCheck().mReasonAny2)
     }
 
-    zsLib::MessageQueueThreadPtr mThreadService;
-    zsLib::MessageQueueThreadPtr mThreadUser;
+    zsLib::IMessageQueueThreadPtr mThreadService;
+    zsLib::IMessageQueueThreadPtr mThreadUser;
   };
 
 }

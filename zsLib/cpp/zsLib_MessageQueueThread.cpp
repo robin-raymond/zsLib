@@ -29,7 +29,7 @@
  
  */
 
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadBasic.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWinRT.h>
 #include <zsLib/internal/zsLib_MessageQueueThreadUsingCurrentGUIMessageQueueForWindows.h>
@@ -43,6 +43,7 @@ namespace zsLib
 {
   namespace internal
   {
+    //-------------------------------------------------------------------------
     void setThreadPriority(
                            Thread::native_handle_type handle,
                            ThreadPriorities threadPriority
@@ -88,28 +89,15 @@ namespace zsLib
 
 #endif //_WIN32
     }
-  }
 
-  const char *toString(ThreadPriorities priority)
-  {
-    switch (priority) {
-      case ThreadPriority_LowPriority:      return "Low";
-      case ThreadPriority_NormalPriority:   return "Normal";
-      case ThreadPriority_HighPriority:     return "High";
-      case ThreadPriority_HighestPriority:  return "Highest";
-      case ThreadPriority_RealtimePriority: return "Real-time";
-    }
-    return "UNDEFINED";
-  }
-
-  namespace internal
-  {
+    //-------------------------------------------------------------------------
     struct StrToPriority
     {
       const char *mStr;
       ThreadPriorities mPriority;
     };
 
+    //-------------------------------------------------------------------------
     static StrToPriority *getPriorities()
     {
       static StrToPriority gPriorities[] = {
@@ -148,10 +136,61 @@ namespace zsLib
       };
       return gPriorities;
     }
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark MessageQueueThread
+    #pragma mark
+
+    //-------------------------------------------------------------------------
+    MessageQueueThreadPtr MessageQueueThread::createBasic(const char *threadName, ThreadPriorities threadPriority)
+    {
+      return internal::MessageQueueThreadBasic::create(threadName);
+    }
+
+    //-------------------------------------------------------------------------
+    MessageQueueThreadPtr MessageQueueThread::singletonUsingCurrentGUIThreadsMessageQueue()
+    {
+#ifdef _WIN32
+      return internal::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton();
+#elif defined(__APPLE__)
+      return internal::MessageQueueThreadUsingMainThreadMessageQueueForApple::singleton();
+#elif defined(__QNX__)
+      return internal::MessageQueueThreadUsingBlackberryChannels::singleton();
+#elif defined(_ANDROID)
+      return internal::MessageQueueThreadBasic::create("build");
+#else
+#define __STR2__(x) #x
+#define __STR1__(x) __STR2__(x)
+#define __LOC__ __FILE__ "(" __STR1__(__LINE__) ") : warning: "
+#pragma message(__LOC__"Need to implement this method on current target platform...")
+
+      return internal::MessageQueueThreadBasic::create();
+#endif //_WIN32
+    }
+
+
+  } // namespace internal
+
+  //---------------------------------------------------------------------------
+  const char *toString(ThreadPriorities priority)
+  {
+    switch (priority) {
+    case ThreadPriority_LowPriority:      return "Low";
+    case ThreadPriority_NormalPriority:   return "Normal";
+    case ThreadPriority_HighPriority:     return "High";
+    case ThreadPriority_HighestPriority:  return "Highest";
+    case ThreadPriority_RealtimePriority: return "Real-time";
+    }
+    return "UNDEFINED";
   }
 
   using internal::StrToPriority;
 
+  //---------------------------------------------------------------------------
   ThreadPriorities threadPriorityFromString(const char *str)
   {
     if (!str) return ThreadPriority_NormalPriority;
@@ -172,6 +211,7 @@ namespace zsLib
     return ThreadPriority_NormalPriority;
   }
 
+  //---------------------------------------------------------------------------
   void setThreadPriority(
                          Thread &thread,
                          ThreadPriorities threadPriority
@@ -180,28 +220,27 @@ namespace zsLib
     internal::setThreadPriority(thread.native_handle(), threadPriority);
   }
 
-  MessageQueueThreadPtr MessageQueueThread::createBasic(const char *threadName, ThreadPriorities threadPriority)
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  #pragma mark
+  #pragma mark MessageQueueThread
+  #pragma mark
+
+  //---------------------------------------------------------------------------
+  IMessageQueueThreadPtr IMessageQueueThread::createBasic(
+                                                          const char *threadName,
+                                                          ThreadPriorities threadPriority
+                                                          )
   {
-    return internal::MessageQueueThreadBasic::create(threadName);
+    return internal::MessageQueueThread::createBasic(threadName, threadPriority);
   }
 
-  MessageQueueThreadPtr MessageQueueThread::singletonUsingCurrentGUIThreadsMessageQueue()
+  //---------------------------------------------------------------------------
+  IMessageQueueThreadPtr IMessageQueueThread::singletonUsingCurrentGUIThreadsMessageQueue()
   {
-#ifdef _WIN32
-    return internal::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::singleton();
-#elif defined(__APPLE__)
-      return internal::MessageQueueThreadUsingMainThreadMessageQueueForApple::singleton();
-#elif defined(__QNX__)
-      return internal::MessageQueueThreadUsingBlackberryChannels::singleton();
-#elif defined(_ANDROID)
-    return internal::MessageQueueThreadBasic::create("build");
-#else
-#define __STR2__(x) #x
-#define __STR1__(x) __STR2__(x)
-#define __LOC__ __FILE__ "("__STR1__(__LINE__)") : warning: "
-#pragma message(__LOC__"Need to implement this method on current target platform...")
-
-    return internal::MessageQueueThreadBasic::create();
-#endif //_WIN32
+    return internal::MessageQueueThread::singletonUsingCurrentGUIThreadsMessageQueue();
   }
+
 }

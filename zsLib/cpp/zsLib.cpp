@@ -30,8 +30,18 @@
  */
 
 #include <zsLib/zsLib.h>
+
+#ifndef ZSLIB_EVENTING_NOOP
+#include <zsLib/internal/zsLib.events.h>
+#else
+#include <zsLib/eventing/noop.h>
+#endif //ndef ZSLIB_EVENTING_NOOP
+
 namespace zsLib {ZS_IMPLEMENT_SUBSYSTEM(zsLib)}
 namespace zsLib {ZS_IMPLEMENT_SUBSYSTEM(zsLib_socket)}
+
+ZS_EVENTING_SUBSYSTEM_DEFAULT_LEVEL(zsLib, Debug)
+ZS_EVENTING_SUBSYSTEM_DEFAULT_LEVEL(zsLib_socket, Debug)
 
 // The classes below are exported
 //#pragma GCC visibility push(default)  // hidden to hide

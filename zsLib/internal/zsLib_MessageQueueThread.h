@@ -34,7 +34,7 @@
 #ifndef ZSLIB_INTERNAL_MESSAGEQUEUETHREAD_H_5d1955ad9e4c1689e30f9affd5ea319e
 #define ZSLIB_INTERNAL_MESSAGEQUEUETHREAD_H_5d1955ad9e4c1689e30f9affd5ea319e
 
-#include <zsLib/MessageQueue.h>
+#include <zsLib/IMessageQueueThread.h>
 
 namespace zsLib
 {
@@ -50,56 +50,18 @@ namespace zsLib
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     #pragma mark
-    #pragma mark MonitorPriorityHelper
+    #pragma mark MessageQueueThread
     #pragma mark
 
-    class MonitorPriorityHelper
+    class MessageQueueThread : public IMessageQueueThread
     {
-    public:
-      //-----------------------------------------------------------------------
-      MonitorPriorityHelper() :
-        mPriority(ThreadPriority_NormalPriority)
-      {
-      }
+    protected:
+      friend interaction IMessageQueueThread;
 
-      //-----------------------------------------------------------------------
-      ThreadPriorities getPriority() const
-      {
-        AutoRecursiveLock lock(mLock);
-        return mPriority;
-      }
-
-      //-----------------------------------------------------------------------
-      bool setPriority(ThreadPriorities priority)
-      {
-        AutoRecursiveLock lock(mLock);
-        if (priority == mPriority) return false;
-
-        mPriority = priority;
-        return true;
-      }
-
-      //-----------------------------------------------------------------------
-      bool wasNotified() const
-      {
-        AutoRecursiveLock lock(mLock);
-        return mNotified;
-      }
-
-      //-----------------------------------------------------------------------
-      void notify()
-      {
-        AutoRecursiveLock lock(mLock);
-        mNotified = true;
-      }
-
-    private:
-
-      mutable RecursiveLock mLock;
-      ThreadPriorities mPriority;
-      bool mNotified {};
+    protected:
+      static MessageQueueThreadPtr createBasic(const char *threadName = NULL, ThreadPriorities threadPriority = ThreadPriority_NormalPriority);
+      static MessageQueueThreadPtr singletonUsingCurrentGUIThreadsMessageQueue();
     };
-    
   }
 }
 

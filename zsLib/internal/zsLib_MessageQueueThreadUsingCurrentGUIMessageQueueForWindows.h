@@ -36,8 +36,8 @@
 #ifndef ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINDOWS_H_e059928c0dab4631bdaeab09d5b25847
 #define ZSLIB_INTERNAL_MESSAGEQUEUETHREADUSINGCURRENTGUIMESSAGEQUEUEFORWINDOWS_H_e059928c0dab4631bdaeab09d5b25847
 
-#include <zsLib/MessageQueue.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/internal/zsLib_MessageQueueThread.h>
+
 #include <zsLib/Exception.h>
 
 namespace zsLib

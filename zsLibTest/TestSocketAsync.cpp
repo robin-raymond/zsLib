@@ -31,11 +31,13 @@
 
 #include <zsLib/Socket.h>
 #include <zsLib/IPAddress.h>
-#include <zsLib/MessageQueueThread.h>
+#include <zsLib/IMessageQueueThread.h>
 
 
 #include "testing.h"
 #include "main.h"
+
+#include <vector>
 
 using zsLib::BYTE;
 using zsLib::ULONG;
@@ -132,9 +134,9 @@ namespace async_socket
       mAddress = zsLib::IPAddress(zsLib::IPAddress(zsLib::IPAddress::loopbackV4(), 43218));
       mSocket = zsLib::Socket::createTCP();
       mSocket->setOptionFlag(zsLib::Socket::SetOptionFlag::NonBlocking, true);
-      mSocket->setDelegate(mThis.lock());
       mSocket->bind(mAddress);
       mSocket->listen();
+      mSocket->setDelegate(mThis.lock());
     }
 
   public:
@@ -148,7 +150,7 @@ namespace async_socket
 
     virtual void onReadReady(zsLib::SocketPtr socket)
     {
-      TESTING_STDOUT() << "ON READ READY\n";
+      TESTING_STDOUT() << "ON READ READY (TCP)\n";
       ++mReadReadyCalled;
 
       if (socket == mSocket) {
@@ -165,18 +167,18 @@ namespace async_socket
         sizeof(buffer)
         );
       mReadData.push_back((const char *)buffer);
-      TESTING_STDOUT() << "READ " << total << " BYTES.\n";
+      TESTING_STDOUT() << "READ " << total << " BYTES (TCP).\n";
     }
 
     virtual void onWriteReady(zsLib::SocketPtr socket)
     {
-      TESTING_STDOUT() << "ON WRITE READY\n";
+      TESTING_STDOUT() << "ON WRITE READY (TCP)\n";
       ++mWriteReadyCalled;
     }
 
     virtual void onException(zsLib::SocketPtr socket)
     {
-      TESTING_STDOUT() << "ONEXCEPTION\n";
+      TESTING_STDOUT() << "ONEXCEPTION (TCP)\n";
       ++mExceptionCalled;
     }
 
@@ -212,7 +214,7 @@ namespace async_socket
       srand(static_cast<signed int>(time(NULL)));
       zsLib::WORD port1 = (rand()%(65550-5000))+5000;
 
-      zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
+      zsLib::IMessageQueueThreadPtr thread(zsLib::IMessageQueueThread::createBasic());
 
       SocketServerPtr server(SocketServer::create(thread));
 
@@ -258,7 +260,7 @@ namespace async_socket
     {
       zsLib::WORD port1 = (rand() % (65550 - 5000)) + 5000;
 
-      zsLib::MessageQueueThreadPtr thread(zsLib::MessageQueueThread::createBasic());
+      zsLib::IMessageQueueThreadPtr thread(zsLib::IMessageQueueThread::createBasic());
 
       ListenServerPtr server(ListenServer::create(thread));
 

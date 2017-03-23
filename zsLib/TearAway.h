@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_TEAR_AWAY_H_1b92b54dd4fd3fc7f9059b2fa3c3156c8dea29a1
-#define ZSLIB_TEAR_AWAY_H_1b92b54dd4fd3fc7f9059b2fa3c3156c8dea29a1
-
 #include <zsLib/types.h>
 
 namespace zsLib
@@ -43,8 +40,9 @@ namespace zsLib
   {
   public:
 
-    ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, TearAwayInterface)
-    ZS_DECLARE_TYPEDEF_PTR(XDATATYPE, TearAwayData)
+    ZS_DECLARE_TYPEDEF_PTR(XINTERFACE, TearAwayInterface);
+    ZS_DECLARE_TYPEDEF_PTR(XDATATYPE, TearAwayData);
+    ZS_DECLARE_TYPEDEF_PTR(TearAway, TearAwayType);
 
   public:
     //------------------------------------------------------------------------
@@ -54,6 +52,21 @@ namespace zsLib
                                        TearAwayInterfacePtr original,
                                        TearAwayDataPtr data = TearAwayDataPtr()
                                        )                                                                                                                      {return original->tear_away_implementation_for_this_interface_is_not_defined();}
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Get the tear away interface associated to the tear away
+    //          instance. Functionally identical to static original(...)
+    //          method.
+    TearAwayInterfacePtr getDelegate() const                                                                                                                  { return TearAwayInterfacePtr()->tear_away_implementation_for_this_interface_is_not_defined(); }
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Set the tear away interface associated to the tear away
+    //          instance.
+    void setDelegate(TearAwayInterfacePtr original)                                                                                                           { original->tear_away_implementation_for_this_interface_is_not_defined(); }
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Gets the data associated with the tear away instance.
+    TearAwayDataPtr getData() const                                                                                                                           { TearAwayDataPtr()->tear_away_implementation_for_this_interface_is_not_defined(); }
 
     //------------------------------------------------------------------------
     // PURPOSE: Returns true if the interface passed in is a tear away
@@ -69,6 +82,11 @@ namespace zsLib
     // PURPOSE: Returns pointer to data structure if the interface passed
     //          in is a tear away otherwise returns TearAwayDataPtr()
     static TearAwayDataPtr data(TearAwayInterfacePtr tearAway)                                                                                                {return tearAway->tear_away_implementation_for_this_interface_is_not_defined();}
+
+    //------------------------------------------------------------------------
+    // PURPOSE: Returns the tear away inteface from an interface type (or if
+    //          the object is not a tear away then returns a nullptr).
+    static TearAwayTypePtr tearAway(TearAwayInterfacePtr tearAway)                                                                                            { return tearAway->tear_away_implementation_for_this_interface_is_not_defined(); }
   };
 }
 
@@ -190,5 +208,3 @@ namespace zsLib
 #define ZS_DECLARE_TEAR_AWAY_METHOD_CONST_RETURN_23(xMethod,r1,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23)            ZS_INTERNAL_DECLARE_TEAR_AWAY_METHOD_RETURN_23(ZS_LIB_CONST, xMethod,r1,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23)
 #define ZS_DECLARE_TEAR_AWAY_METHOD_CONST_RETURN_24(xMethod,r1,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24)        ZS_INTERNAL_DECLARE_TEAR_AWAY_METHOD_RETURN_24(ZS_LIB_CONST, xMethod,r1,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24)
 #define ZS_DECLARE_TEAR_AWAY_METHOD_CONST_RETURN_25(xMethod,r1,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25)    ZS_INTERNAL_DECLARE_TEAR_AWAY_METHOD_RETURN_25(ZS_LIB_CONST, xMethod,r1,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25)
-
-#endif //ZSLIB_TEAR_AWAY_H_1b92b54dd4fd3fc7f9059b2fa3c3156c8dea29a1

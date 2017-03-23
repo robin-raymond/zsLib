@@ -31,9 +31,6 @@
 
 #pragma once
 
-#ifndef ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
-#define ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546
-
 #include <zsLib/types.h>
 #include <zsLib/Socket.h>
 #include <zsLib/IPAddress.h>
@@ -49,6 +46,8 @@
 #else
 typedef size_t nfds_t;
 #endif //ndef _WIN32
+
+#define ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY "zsLib/socket-monitor/thread-priority"
 
 namespace zsLib
 {
@@ -178,8 +177,7 @@ namespace zsLib
     #pragma mark SocketMonitor
     #pragma mark
 
-    class SocketMonitor : public noncopyable,
-                          public ISingletonManagerDelegate
+    class SocketMonitor : public ISingletonManagerDelegate
     {
     public:
       ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
@@ -197,14 +195,13 @@ namespace zsLib
 
     protected:
       SocketMonitor();
+      SocketMonitor(const SocketMonitor &) = delete;
 
       static SocketMonitorPtr create();
 
     public:
       ~SocketMonitor();
       static SocketMonitorPtr singleton();
-
-      static void setPriority(ThreadPriorities priority);
 
       void monitorBegin(
                         SocketPtr socket,
@@ -278,5 +275,3 @@ namespace zsLib
     };
   }
 }
-
-#endif //ZSLIB_INTERNAL_SOCKETMONITOR_H_c01514fd3a9af7d11f32093baae8c546

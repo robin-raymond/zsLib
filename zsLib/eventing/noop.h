@@ -33,9 +33,6 @@
 
 #ifdef ZSLIB_EVENTING_NOOP
 
-#ifndef ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
-#define ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
-
 #include <zsLib/types.h>
 
 #define ZS_EVENTING_0(xSubsystem, xSeverity, xLevel, xSymbol, xChannelID, xTaskID, xOpCode)
@@ -150,9 +147,11 @@
 #define ZS_EVENTING_SOURCE(xSourceStr)
 #define ZS_EVENTING_CHANNEL(xID, xNameStr, xOperationalType)
 #define ZS_EVENTING_TASK(xName)
+#define ZS_EVENTING_KEYWORD(xName)
 #define ZS_EVENTING_OPCODE(xName)
 #define ZS_EVENTING_TASK_OPCODE(xTaskName, xOpCodeName)
 #define ZS_EVENTING_ASSIGN_VALUE(xSymbol, xValue)
+#define ZS_EVENTING_SUBSYSTEM_DEFAULT_LEVEL(xSubsystemName, xLevel)
 
 namespace zsLib
 {
@@ -160,7 +159,5 @@ namespace zsLib
   {
   }
 }
-
-#endif //ZSLIB_EVENTING_NOOP_H_986d96e7409b5a16c1d498406ec8fb135898b788
 
 #endif //ZSLIB_EVENTING_NOOP

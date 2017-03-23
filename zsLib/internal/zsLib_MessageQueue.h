@@ -35,6 +35,7 @@
 #define ZSLIB_INTERNAL_MESSAGEQUEUE_H_9169ff56fd856a4d060fe12816e81a5e
 
 #include <zsLib/types.h>
+#include <zsLib/IMessageQueue.h>
 
 #include <queue>
 
@@ -42,15 +43,54 @@ namespace zsLib
 {
   namespace internal
   {
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark 
+    #pragma mark MessageQueue
+    #pragma mark 
+
     class MessageQueue : public IMessageQueue
     {
     protected:
       struct make_private {};
+      friend interaction IMessageQueue;
+
+    public:
+      MessageQueue(
+                   const make_private &,
+                   IMessageQueueNotifyPtr notify
+                   );
+      ~MessageQueue();
+
+    public:
+      //-----------------------------------------------------------------------
+      #pragma mark 
+      #pragma mark MessageQueue => IMessageQueue
+      #pragma mark 
+
+      static MessageQueuePtr create(IMessageQueueNotifyPtr notify);
+
+      virtual void post(IMessageQueueMessageUniPtr message) override;
+
+      virtual size_type getTotalUnprocessedMessages() const override;
+
+    public:
+      //-----------------------------------------------------------------------
+      #pragma mark 
+      #pragma mark MessageQueue => (friends)
+      #pragma mark 
+
+      void process();
+      void processOnlyOneMessage();
 
     protected:
-      MessageQueue(IMessageQueueNotifyPtr notify) : mNotify(notify) {}
+      //-----------------------------------------------------------------------
+      #pragma mark 
+      #pragma mark MessageQueue => (data)
+      #pragma mark 
 
-    protected:
       mutable Lock mLock;
       std::queue<IMessageQueueMessageUniPtr> mMessages;
       IMessageQueueNotifyPtr mNotify;

@@ -33,11 +33,15 @@
         },
         {
           "name": "puid",
-          "type": "ulong"
+          "type": "size_t"
         },
         {
           "name": "size_t",
           "type": "uint64"
+        },
+        {
+          "name": "ssize_t",
+          "type": "int64"
         },
         {
           "name": "this",
@@ -49,7 +53,7 @@
         },
         {
           "name": "enum",
-          "type": "uint64"
+          "type": "int64"
         },
         {
           "name": "duration",
@@ -63,8 +67,10 @@
     }
     "sources": {
       "source": [
+        "zsLib.cpp",
         "zsLib_Exception.cpp",
         "zsLib_MessageQueue.cpp",
+        "zsLib_Settings.cpp",
         "zsLib_Socket.cpp",
         "zsLib_Timer.cpp"
       ]
@@ -75,46 +81,6 @@
           "id": "zs",
           "name": "zsLib",
           "type": "Debug"
-        }
-      ]
-    },
-    "tasks": {
-      "task": [
-        {
-          "name": "Exception",
-          "opCodes": {
-            "opCode": [
-              { "name": "Exception" }
-            ]
-          }
-        },
-        {
-          "name": "MessageQueue"
-        },
-        {
-          "name": "Socket",
-          "opCodes": {
-            "opCode": [
-              { "name": "Exception" },
-              { "name": "Orphan" },
-              { "name": "Adopt" },
-              { "name": "Event" },
-              { "name": "Bind" },
-              { "name": "Listen" },
-              { "name": "Accept" },
-              { "name": "Connect" },
-              { "name": "Shutdown" },
-              { "name": "Option" }
-            ]
-          }
-        },
-        {
-          "name": "Timer",
-          "opCodes": {
-            "opCode": [
-              { "name": "Event" }
-            ]
-          }
         }
       ]
     }

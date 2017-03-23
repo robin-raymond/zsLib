@@ -53,8 +53,8 @@ namespace zsLib
 
       //-----------------------------------------------------------------------
       Attribute::Attribute() :
-        mHasQuotes(true),
-        mValuelessAttribute(false)
+        mValuelessAttribute(false),
+        mHasQuotes(true)
       {
       }
 

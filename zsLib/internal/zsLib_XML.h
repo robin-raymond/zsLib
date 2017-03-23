@@ -67,7 +67,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Node : public noncopyable
+      class Node
       {
       protected:
         struct make_private {};
@@ -92,6 +92,7 @@ namespace zsLib
 
       protected:
         Node();
+        Node(const Node &) = delete;
 
         void cloneChildren(const NodePtr &inSelf, NodePtr inNewObject) const;
 
@@ -111,13 +112,15 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Document : public noncopyable
+      class Document
       {
       public:
         Document(
                  bool inElementNameIsCaseSensative,
                  bool inAttributeNameIsCaseSensative
                  );
+
+        Document(const Document &) = delete;
 
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
         void writeBufferXML(const GeneratorPtr &inGenerator, char * &ioPos) const;
@@ -143,13 +146,16 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Element : public noncopyable
+      class Element
       {
       protected:
         friend class XML::Attribute;
 
       public:
         typedef std::list<AttributePtr> AttributeList;
+
+        Element() {}
+        Element(const Element &) = delete;
 
       public:
         void parse(XML::ParserPos &ioPos);
@@ -192,7 +198,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Attribute : public noncopyable
+      class Attribute
       {
       public:
         bool parse(XML::ParserPos &ioPos);
@@ -212,6 +218,7 @@ namespace zsLib
 
       protected:
         Attribute();
+        Attribute(const Attribute &) = delete;
 
       protected:
         String mName;
@@ -226,7 +233,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Text : public noncopyable
+      class Text
       {
       public:
         void parse(XML::ParserPos &ioPos);
@@ -247,6 +254,7 @@ namespace zsLib
 
       protected:
         Text();
+        Text(const Text &) = delete;
 
         String mValue;
         UINT mFormat;
@@ -259,9 +267,12 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Comment : public noncopyable
+      class Comment
       {
       public:
+        Comment() {}
+        Comment(const Comment &) = delete;
+
         void parse(XML::ParserPos &ioPos);
 
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
@@ -282,12 +293,15 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Declaration : public noncopyable
+      class Declaration
       {
       protected:
         friend class XML::Attribute;
 
       public:
+        Declaration() {}
+        Declaration(const Declaration &) = delete;
+
         void parse(XML::ParserPos &ioPos);
 
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
@@ -309,9 +323,12 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Unknown : public noncopyable
+      class Unknown
       {
       public:
+        Unknown() {}
+        Unknown(const Unknown &) = delete;
+
         void parse(XML::ParserPos &ioPos, const char *start = NULL, const char *ending = NULL);
 
         size_t getOutputSizeXML(const GeneratorPtr &inGenerator) const;
@@ -516,7 +533,7 @@ namespace zsLib
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      class Generator : public noncopyable
+      class Generator
       {
       protected:
         struct make_private {};
@@ -577,6 +594,7 @@ namespace zsLib
 
       public:
         Generator(UINT writeFlags);
+        Generator(const Generator &) = delete;
 
       protected:
         static size_t getOutputSize(const GeneratorPtr &inGenerator, NodePtr inNode);
@@ -605,7 +623,7 @@ namespace zsLib
       protected:
         GeneratorWeakPtr mThis;
 
-        UINT mWriteFlags;
+        UINT mWriteFlags {};
         GeneratorModes mGeneratorMode;
 
         String mJSONForcedText;
@@ -613,8 +631,8 @@ namespace zsLib
 
         mutable NodePtr mGeneratorRoot;
 
-        mutable bool mCaseSensitive;
-        mutable ULONG mDepth;
+        mutable bool mCaseSensitive {true};
+        mutable ULONG mDepth {};
         JSONStrs &mStrs;
       };
 

@@ -30,6 +30,7 @@
  */
 
 #include <zsLib/helpers.h>
+#include <zsLib/IHelper.h>
 #include <zsLib/Log.h>
 #include <zsLib/internal/platform.h>
 
@@ -51,7 +52,11 @@
 
 #ifdef _WIN32
 namespace std {
-	inline time_t mktime(struct tm *timeptr) { return ::mktime(timeptr); }
+  //---------------------------------------------------------------------------
+  inline time_t mktime(struct tm *timeptr)
+  {
+    return ::mktime(timeptr);
+  }
 }
 
 namespace zsLib {
@@ -70,7 +75,8 @@ namespace zsLib {
 		} THREADNAME_INFO;
 #pragma pack(pop)
 
-		void SetThreadName(DWORD dwThreadID, const char* threadName)
+    //-------------------------------------------------------------------------
+    void SetThreadName(DWORD dwThreadID, const char* threadName)
 		{
 			THREADNAME_INFO info;
 			info.dwType = 0x1000;
@@ -88,7 +94,8 @@ namespace zsLib {
 		}
 #endif //HAVE_RAISEEXCEPTION
 
-		void uuid_generate_random(zsLib::internal::uuid_wrapper::raw_uuid_type &uuid) {
+    //-------------------------------------------------------------------------
+    void uuid_generate_random(zsLib::internal::uuid_wrapper::raw_uuid_type &uuid) {
 			auto result = CoCreateGuid(&uuid);
 			assert(S_OK == result);
 		}
@@ -125,6 +132,12 @@ namespace zsLib
 
     // forward declarations
     void initSubsystems();
+#ifdef _WIN32
+    void initWindowsEventProviderLogger();
+#endif //__WIN32
+    void installTimerMonitorSettingsDefaults();
+    void installSocketMonitorSettingsDefaults();
+    void installMessageQueueManagerSettingsDefaults();
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -137,32 +150,66 @@ namespace zsLib
     class Setup
     {
     protected:
+      //-----------------------------------------------------------------------
       Setup()
       {
-        ZS_EVENTING_REGISTER(zsLib);
-        initSubsystems();
       }
 
     public:
+      //-----------------------------------------------------------------------
       ~Setup()
       {
         ZS_EVENTING_UNREGISTER(zsLib);
       }
 
+      //-----------------------------------------------------------------------
       static Setup &singleton()
       {
         static Setup setup;
         return setup;
       }
 
+      //-----------------------------------------------------------------------
+      void setup()
+      {
+        {
+          AutoRecursiveLock lock(*IHelper::getGlobalLock());
+        }
+        initSubsystems();
+        Log::initSingleton();
+#ifdef _WIN32
+        initWindowsEventProviderLogger();
+#endif //__WIN32
+        ZS_EVENTING_REGISTER(zsLib);
+        installTimerMonitorSettingsDefaults();
+        installSocketMonitorSettingsDefaults();
+        installMessageQueueManagerSettingsDefaults();
+      }
+
+      //-----------------------------------------------------------------------
       PUID createPUID()
       {
         return ++mID;
       }
 
     protected:
-      std::atomic_ulong mID;
+      std::atomic_ulong mID {};
     };
+
+    //---------------------------------------------------------------------------
+    void setup()
+    {
+      internal::Setup::singleton().setup();
+    }
+
+#ifdef WINRT
+    void setup(Windows::UI::Core::CoreDispatcher ^dispatcher)
+    {
+      setup();
+      internal::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(dispatcher);
+    }
+#endif //WINRT
+
   }
 
   //---------------------------------------------------------------------------
@@ -178,20 +225,6 @@ namespace zsLib
     uuid_generate_random(gen.mUUID);
     return gen;
   }
-
-  //---------------------------------------------------------------------------
-  void setup()
-  {
-    internal::Setup::singleton();
-  }
-
-#ifdef WINRT
-  void setup(Windows::UI::Core::CoreDispatcher ^dispatcher)
-  {
-    setup();
-    internal::MessageQueueThreadUsingCurrentGUIMessageQueueForWindows::setupDispatcher(dispatcher);
-  }
-#endif //WINRT
 
   //---------------------------------------------------------------------------
   void debugSetCurrentThreadName(const char *name)
