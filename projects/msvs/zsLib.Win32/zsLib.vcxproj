@@ -218,9 +218,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\zsLib\cpp\zsLib.events.json" />
+    <None Include="..\..\..\zsLib\idl\config.json">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="..\..\..\zsLib\internal\zsLib.events.jman" />
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.man" />
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.wprp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\..\..\zsLib\idl\std.idl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Midl>
+    <Midl Include="..\..\..\zsLib\idl\zsLib.idl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Midl>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{80306FBE-B1DF-4741-AE97-9BE65C8C4CAE}</ProjectGuid>

@@ -25,6 +25,9 @@
     <Filter Include="zsLib\eventing\internal">
       <UniqueIdentifier>{a5bc8fac-8baf-40b9-8369-f517dc996d69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zsLib\idl">
+      <UniqueIdentifier>{457fc499-e35c-4f38-aeff-895049b424bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\Event.h">
@@ -426,5 +429,16 @@
     <None Include="..\..\..\zsLib\internal\zsLib.events.jman">
       <Filter>zsLib\internal</Filter>
     </None>
+    <None Include="..\..\..\zsLib\idl\config.json">
+      <Filter>zsLib\idl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\..\..\zsLib\idl\std.idl">
+      <Filter>zsLib\idl</Filter>
+    </Midl>
+    <Midl Include="..\..\..\zsLib\idl\zsLib.idl">
+      <Filter>zsLib\idl</Filter>
+    </Midl>
   </ItemGroup>
 </Project>

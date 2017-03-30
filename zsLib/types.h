@@ -146,6 +146,13 @@ namespace zsLib
     virtual ~Any() {}
   };
 
+  template <typename type>
+  struct AnyHolder : public Any
+  {
+    typedef type UseType;
+    UseType value_;
+  };
+
   struct Noop
   {
     Noop(bool noop = false) : mNoop(noop) {}
