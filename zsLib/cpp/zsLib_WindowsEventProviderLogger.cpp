@@ -76,16 +76,21 @@ namespace zsLib
 
     protected:
       //-----------------------------------------------------------------------
-      static WindowsEventProviderLoggerPtr create()
+      static WindowsEventProviderLoggerPtr create(bool &outCreated)
       {
         auto pThis(make_shared<WindowsEventProviderLogger>(make_private{}));
         pThis->mThisWeak = pThis;
         pThis->init();
+        outCreated = true;
         return pThis;
       }
 
       //-----------------------------------------------------------------------
       void init()
+      {
+      }
+
+      void installEventListener()
       {
         zsLib::Log::addEventingProviderListener(mThisWeak.lock());
       }
@@ -113,9 +118,14 @@ namespace zsLib
       //-----------------------------------------------------------------------
       static WindowsEventProviderLoggerPtr singleton()
       {
-        static SingletonLazySharedPtr<WindowsEventProviderLogger> singleton(create());
+        bool created {};
+        static SingletonLazySharedPtr<WindowsEventProviderLogger> singleton(create(created));
         static zsLib::SingletonManager::Register registerSingleton("org.zsLib.WindowsEventProviderLogger", singleton.singleton());
-        return singleton.singleton();
+        auto result = singleton.singleton();
+        if (created) {
+          result->installEventListener();
+        }
+        return result;
       }
 
       //-----------------------------------------------------------------------
