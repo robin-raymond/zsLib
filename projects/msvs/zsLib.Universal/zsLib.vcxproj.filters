@@ -248,11 +248,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\zsLib\license.txt">
-      <Filter>zsLib</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingBlackberryChannels.cpp">
       <Filter>zsLib\cpp</Filter>
     </ClCompile>

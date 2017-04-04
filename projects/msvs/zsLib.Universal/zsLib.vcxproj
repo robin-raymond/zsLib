@@ -108,9 +108,6 @@
     <ClInclude Include="..\..\..\zsLib\zsLib.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\zsLib\license.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Event.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Exception.cpp" />
