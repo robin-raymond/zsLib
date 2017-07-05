@@ -38,6 +38,7 @@
 #include <zsLib/Log.h>
 #include <zsLib/Singleton.h>
 
+#include <unordered_map>
 #include <map>
 #include <set>
 
@@ -55,7 +56,8 @@ namespace zsLib
 
   namespace internal
   {
-    ZS_DECLARE_CLASS_PTR(SocketMonitor)
+    ZS_DECLARE_CLASS_PTR(SocketMonitorLoadBalancer);
+    ZS_DECLARE_CLASS_PTR(SocketMonitor);
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -177,15 +179,13 @@ namespace zsLib
     #pragma mark SocketMonitor
     #pragma mark
 
-    class SocketMonitor : public ISingletonManagerDelegate
+    class SocketMonitor
     {
     public:
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element)
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text)
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Element, Element);
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::XML::Text, Text);
 
-      ZS_DECLARE_CLASS_PTR(SocketMonitorHolder)
-
-      friend class SocketMonitorHolder;
+      friend class SocketMonitorLoadBalancer;
 
       typedef SocketSet::event_type event_type;
       typedef SocketSet::poll_size poll_size;
@@ -201,7 +201,7 @@ namespace zsLib
 
     public:
       ~SocketMonitor();
-      static SocketMonitorPtr singleton();
+      static SocketMonitorPtr link();
 
       void monitorBegin(
                         SocketPtr socket,
@@ -217,12 +217,9 @@ namespace zsLib
 
       void operator()();
 
-      //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark SocketMonitor => ISingletonManagerDelegate
-      #pragma mark
-
-      virtual void notifySingletonCleanup();
+    protected:
+      void shutdown();
+      PUID getID() const { return mID; }
 
     private:
       void cancel();
@@ -234,26 +231,6 @@ namespace zsLib
       zsLib::Log::Params log(const char *message) const;
       static zsLib::Log::Params slog(const char *message);
 
-    public:
-      class SocketMonitorHolder
-      {
-      protected:
-        SocketMonitorHolder(SocketMonitorPtr monitor) : mMonitor(monitor) {}
-        static SocketMonitorHolderPtr create(SocketMonitorPtr monitor)
-        {
-          SocketMonitorHolderPtr pThis(new SocketMonitorHolder(monitor));
-          return pThis;
-        }
-
-      public:
-        static SocketMonitorHolderPtr singleton(SocketMonitorPtr monitor);
-
-        ~SocketMonitorHolder() { mMonitor->cancel(); }
-
-      private:
-        SocketMonitorPtr mMonitor;
-      };
-
     private:
       AutoPUID mID;
       RecursiveLock mLock;
@@ -262,7 +239,7 @@ namespace zsLib
 
       ThreadPtr mThread;
       std::atomic<bool> mShouldShutdown {};
-      typedef std::map<SOCKET, SocketWeakPtr> SocketMap;
+      typedef std::unordered_map<SOCKET, SocketWeakPtr> SocketMap;
       SocketMap mMonitoredSockets;
 
       typedef std::list<zsLib::EventPtr> EventList;
