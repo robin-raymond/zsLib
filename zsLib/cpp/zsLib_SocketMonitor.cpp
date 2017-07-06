@@ -523,6 +523,27 @@ namespace zsLib
       mSocketIndexes.clear();
     }
 
+#ifdef _WIN32
+    //-------------------------------------------------------------------------
+    void SocketSet::setWakeUpEvent(HANDLE eventHandle)
+    {
+      ZS_LOG_TRACE(log("wakeup event created") + ZS_PARAM("event", (PTRNUMBER)eventHandle))
+
+      mDirty = true;
+
+      minOfficialAllocation(mOfficialCount + 1);
+
+      mOfficialSet[mOfficialCount].fd = INVALID_SOCKET;
+      mOfficialSet[mOfficialCount].events = POLLRDNORM | POLLERR | POLLHUP | POLLNVAL;
+      mOfficialSet[mOfficialCount].revents = 0;
+
+      mOfficialHandleSet[mOfficialCount] = eventHandle;
+      mOfficialHandleHolderSet[mOfficialCount] = make_shared<EventHandleHolder>((HANDLE)NULL);  // do not release event handle as part of set
+
+      ++mOfficialCount;
+    }
+#endif //_WIN32
+
     //-------------------------------------------------------------------------
     void SocketSet::reset(SOCKET socket)
     {
@@ -1071,7 +1092,7 @@ namespace zsLib
         }
 #endif //_WIN32
 
-        ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError))
+        ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError));
 
         bool redoWakeupSocket = false;
 
@@ -1086,6 +1107,12 @@ namespace zsLib
           {
 #else
           if (WSA_WAIT_TIMEOUT == result) goto completed;
+          if (WSA_WAIT_FAILED == result) {
+            lastError = WSAGetLastError();
+            ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError));
+            goto completed;
+          }
+
           decltype(result) index = result - WSA_WAIT_EVENT_0;
           decltype(result) nextIndex = index;
 
@@ -1100,6 +1127,8 @@ namespace zsLib
 
             index = (result - WSA_WAIT_EVENT_0) + index;
             if (index >= nextIndex) nextIndex = index+1;
+
+            if (WSA_WAIT_EVENT_0 == result) continue; // special event based wake-up event
 
 #endif //_WIN32
 
@@ -1157,6 +1186,7 @@ namespace zsLib
 
             ZS_LOG_INSANE(log("socket event found") + ZS_PARAM("handle", record.fd) + ZS_PARAM("events", friendly(record.revents)))
 
+#ifndef _WIN32
             if (record.fd == mWakeUpSocket->getSocket()) {
               // related to wakeup socket
               if ((record.revents & POLLRDNORM) != 0) {
@@ -1182,6 +1212,7 @@ namespace zsLib
               }
               continue;
             }
+#endif //_WIN32
 
             SocketMap::iterator found = mMonitoredSockets.find(record.fd);
             if (found == mMonitoredSockets.end()) {
@@ -1278,11 +1309,13 @@ namespace zsLib
           }
         }
 
+#ifndef _WIN32
         if (redoWakeupSocket) {
           // WARNING: DO NOT CALL FROM WITHIN A LOCK
           ZS_LOG_TRACE(log("redoing wake-up socket"))
           createWakeUpSocket();
         }
+#endif //ndef _WIN32
 
       } while (!mShouldShutdown);
 
@@ -1301,7 +1334,7 @@ namespace zsLib
         mMonitoredSockets.clear();
         mWaitingForRebuildList.clear();
         mSocketSet.clear();
-        mWakeUpSocket.reset();
+        cleanWakeUpSocket();
       }
     }
 
@@ -1341,6 +1374,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void SocketMonitor::processWaiting()
     {
+      if (mWaitingForRebuildList.size() < 1) return;
       for (EventList::iterator iter = mWaitingForRebuildList.begin(); iter != mWaitingForRebuildList.end(); ++iter)
       {
         (*iter)->notify();
@@ -1352,6 +1386,10 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void SocketMonitor::wakeUp()
     {
+#ifdef _WIN32
+      if (NULL == mWakeupEvent) return;
+      ::SetEvent(mWakeupEvent);
+#else
       int errorCode = 0;
 
       {
@@ -1376,11 +1414,19 @@ namespace zsLib
       if (0 != errorCode) {
         ZS_LOG_ERROR(Basic, log("Could not wake up socket monitor. This will cause a delay in the socket monitor response time") + ZS_PARAM("error", errorCode))
       }
+#endif //_WIN32
     }
 
     //-------------------------------------------------------------------------
     void SocketMonitor::createWakeUpSocket()
     {
+#ifdef _WIN32
+      mWakeupEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
+
+      if (NULL != mWakeupEvent) {
+        mSocketSet.setWakeUpEvent(mWakeupEvent);
+      }
+#else // _WIN32
       // WARNING: NEVER CALL THIS FROM WITHIN A LOCK
 
       // ignore SIGPIPE
@@ -1451,6 +1497,20 @@ namespace zsLib
 
         ZS_THROW_BAD_STATE_MSG_IF(tries > 500, "Unable to allocate any loopback ports for a wake-up socket")
       }
+#endif // _WIN32
+    }
+
+    //-------------------------------------------------------------------------
+    void SocketMonitor::cleanWakeUpSocket()
+    {
+#ifdef _WIN32
+      if (NULL != mWakeupEvent) {
+        ::CloseHandle(mWakeupEvent);
+        mWakeupEvent = NULL;
+      }
+#else // _WIN32
+      mWakeUpSocket.reset();
+#endif // _WIN32
     }
 
     //-----------------------------------------------------------------------

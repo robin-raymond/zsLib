@@ -80,7 +80,7 @@ namespace zsLib
 
       typedef WSAEVENT EventHandle;
 
-      ZS_DECLARE_STRUCT_PTR(EventHandleHolder)
+      ZS_DECLARE_STRUCT_PTR(EventHandleHolder);
       struct EventHandleHolder {
         EventHandleHolder(EventHandle event);
         ~EventHandleHolder();
@@ -115,6 +115,10 @@ namespace zsLib
       void clear();
 
       bool isDirty() const {return mDirty;}
+
+#ifdef _WIN32
+      void setWakeUpEvent(HANDLE handle);
+#endif //_WIN32
 
       void reset(SOCKET socket);
       void reset(
@@ -227,6 +231,7 @@ namespace zsLib
       void processWaiting();
       void wakeUp();
       void createWakeUpSocket();
+      void cleanWakeUpSocket();
 
       zsLib::Log::Params log(const char *message) const;
       static zsLib::Log::Params slog(const char *message);
@@ -245,8 +250,12 @@ namespace zsLib
       typedef std::list<zsLib::EventPtr> EventList;
       EventList mWaitingForRebuildList;
 
+#ifdef _WIN32
+      HANDLE mWakeupEvent {};
+#else
       IPAddress mWakeUpAddress;
       SocketPtr mWakeUpSocket;
+#endif //_WIN32
 
       SocketSet mSocketSet;
     };
