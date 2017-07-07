@@ -3,8 +3,8 @@
 <WindowsPerformanceRecorder Author="Unknown" Comments="zsLib" Version="1.0">
 <Profiles>
 <EventCollector Id="EventCollector_zsLib_Verbose" Name="zsLib Event Collector" Private="false" ProcessPrivate="false" Secure="false" Realtime="false">
-<BufferSize Value="2048" />
-<Buffers Value="2048" />
+<BufferSize Value="1024" />
+<Buffers Value="1024" />
 </EventCollector>
 <EventCollector Id="EventCollector_zsLib_Light" Name="zsLib Event Collector" Private="false" ProcessPrivate="false" Secure="false" Realtime="false">
 <BufferSize Value="1024" />
