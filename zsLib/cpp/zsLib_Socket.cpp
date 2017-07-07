@@ -270,7 +270,7 @@ namespace zsLib
     {
       if (mMonitor) return;
 
-      mMonitor = SocketMonitor::singleton();
+      mMonitor = SocketMonitor::link();
     }
 
     //-------------------------------------------------------------------------
