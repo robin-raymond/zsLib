@@ -1124,11 +1124,12 @@ namespace zsLib
 
             result = WSAWaitForMultipleEvents(SafeInt<DWORD>(size - index), &(pollEvents[index]), FALSE, 0, FALSE);
             if (WSA_WAIT_TIMEOUT == result) goto completed;
+            if ((WSA_WAIT_EVENT_0 == result) &&
+                (0 == index)) continue; // special event based wake-up event
 
             index = (result - WSA_WAIT_EVENT_0) + index;
             if (index >= nextIndex) nextIndex = index+1;
 
-            if (WSA_WAIT_EVENT_0 == result) continue; // special event based wake-up event
 
 #endif //_WIN32
 
