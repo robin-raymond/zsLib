@@ -911,33 +911,40 @@ namespace zsLib
     {
       EventPtr event;
       {
-        AutoRecursiveLock lock(mLock);
+        {
+          AutoRecursiveLock lock(mLock);
 
-        if (!mThread) {
-          auto pThis = mThisWeak.lock();
-          mThread = ThreadPtr(new std::thread(std::ref(*(pThis.get()))));
-          setThreadPriority(mThread->native_handle(), zsLib::threadPriorityFromString(ISettings::getString(ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY)));
+          if (!mThread) {
+            auto pThis = mThisWeak.lock();
+            mThread = ThreadPtr(new std::thread(std::ref(*(pThis.get()))));
+            setThreadPriority(mThread->native_handle(), zsLib::threadPriorityFromString(ISettings::getString(ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY)));
+          }
         }
 
-        SOCKET socketHandle = socket->getSocket();
-        if (INVALID_SOCKET == socketHandle)                                             // nothing to monitor
-          return;
+        mThreadReady.wait();
 
-        mMonitoredSockets[socketHandle] = socket;                                       // remember the socket is monitored
+        {
+          AutoRecursiveLock lock(mLock);
+          SOCKET socketHandle = socket->getSocket();
+          if (INVALID_SOCKET == socketHandle)                                             // nothing to monitor
+            return;
 
-        event_type events = 0;
-        if (monitorRead) events = events | POLLRDNORM;
-        if (monitorWrite) events = events | POLLWRNORM;
-        if (monitorException) events = events | POLLERR | POLLHUP | POLLNVAL;
+          mMonitoredSockets[socketHandle] = socket;                                       // remember the socket is monitored
 
-        ZS_LOG_INSANE(log("monitor begin") + ZS_PARAM("handle", socketHandle) + ZS_PARAM("events", friendly(events)))
+          event_type events = 0;
+          if (monitorRead) events = events | POLLRDNORM;
+          if (monitorWrite) events = events | POLLWRNORM;
+          if (monitorException) events = events | POLLERR | POLLHUP | POLLNVAL;
 
-        mSocketSet.reset(socketHandle, events);
+          ZS_LOG_INSANE(log("monitor begin") + ZS_PARAM("handle", socketHandle) + ZS_PARAM("events", friendly(events)))
 
-        event = zsLib::Event::create();
-        mWaitingForRebuildList.push_back(event);                                        // socket handles cane be reused so we must ensure that the socket handles are rebuilt before returning
+          mSocketSet.reset(socketHandle, events);
 
-        wakeUp();
+          event = zsLib::Event::create();
+          mWaitingForRebuildList.push_back(event);                                        // socket handles cane be reused so we must ensure that the socket handles are rebuilt before returning
+
+          wakeUp();
+        }
       }
       if (event)
         event->wait();
@@ -1063,6 +1070,8 @@ namespace zsLib
       ZS_LOG_DETAIL(log("socket monitor thread started"))
 
       createWakeUpSocket();
+
+      mThreadReady.notify();
 
       do
       {

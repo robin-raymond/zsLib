@@ -243,6 +243,7 @@ namespace zsLib
       SocketMonitorPtr mGracefulReference;
 
       ThreadPtr mThread;
+      zsLib::Event mThreadReady;
       std::atomic<bool> mShouldShutdown {};
       typedef std::unordered_map<SOCKET, SocketWeakPtr> SocketMap;
       SocketMap mMonitoredSockets;
