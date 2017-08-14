@@ -64,6 +64,9 @@
     <ClCompile Include="..\..\..\zsLibTest\testing.cpp">
       <Filter>zsLibTest</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\zsLibTest\TestRange.cpp">
+      <Filter>zsLibTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

@@ -62,6 +62,7 @@
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Proxy.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_ProxyPack.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_ProxySubscriptions.h" />
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_RangeSelection.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Settings.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Singleton.h" />
     <ClInclude Include="..\..\..\zsLib\internal\zsLib_Socket.h" />
@@ -81,6 +82,7 @@
     <ClInclude Include="..\..\..\zsLib\Promise.h" />
     <ClInclude Include="..\..\..\zsLib\Proxy.h" />
     <ClInclude Include="..\..\..\zsLib\ProxySubscriptions.h" />
+    <ClInclude Include="..\..\..\zsLib\RangeSelection.h" />
     <ClInclude Include="..\..\..\zsLib\SafeInt.h" />
     <ClInclude Include="..\..\..\zsLib\Singleton.h" />
     <ClInclude Include="..\..\..\zsLib\Socket.h" />
@@ -115,6 +117,7 @@
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Numeric.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Promise.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Proxy.cpp" />
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_RangeSelection.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Settings.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Singleton.cpp" />
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Socket.cpp" />

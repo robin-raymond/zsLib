@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2017, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,37 +29,31 @@
  
  */
 
-#pragma once
-
-#include <zsLib/date.h>
-#include <zsLib/Event.h>
-#include <zsLib/Exception.h>
-#include <zsLib/helpers.h>
-#include <zsLib/IFactory.h>
-#include <zsLib/IHelper.h>
-#include <zsLib/IMessageQueue.h>
-#include <zsLib/IMessageQueueThread.h>
-#include <zsLib/IMessageQueueThreadPool.h>
-#include <zsLib/IMessageQueueManager.h>
-#include <zsLib/IPAddress.h>
-#include <zsLib/ISettings.h>
-#include <zsLib/ITimer.h>
-#include <zsLib/IWakeDelegate.h>
-#include <zsLib/Log.h>
-#include <zsLib/MessageQueueAssociator.h>
-#include <zsLib/Numeric.h>
-#include <zsLib/Promise.h>
-#include <zsLib/Proxy.h>
-#include <zsLib/ProxySubscriptions.h>
 #include <zsLib/RangeSelection.h>
-#include <zsLib/Singleton.h>
-#include <zsLib/Socket.h>
-#include <zsLib/String.h>
-#include <zsLib/Stringize.h>
-#include <zsLib/TearAway.h>
-#include <zsLib/WeightedMovingAverage.h>
-#include <zsLib/XML.h>
-//#include <zsLib/zsLib.h>
-#include <zsLib/types.h>
 
-#include <zsLib/SafeInt.h>
+namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
+
+namespace zsLib
+{
+  namespace internal
+  {
+    void throwRangeSelectionInvalidArgumentStartStopStr(const String &startStr, const String &endStr)
+    {
+      ZS_THROW_INVALID_ARGUMENT(String("range not legal: \"") + startStr + "\" \"" + endStr + "\"");
+    }
+
+    void throwRangeSelectionBadStateIf(bool result, const char *str)
+    {
+      if (!result) return;
+      ZS_THROW_BAD_STATE(str);
+    }
+
+    void throwRangeSelectionBadState(const char *str)
+    {
+      ZS_THROW_BAD_STATE(str);
+    }
+
+  } // namespace internal
+
+} // namespace zsLib
+
