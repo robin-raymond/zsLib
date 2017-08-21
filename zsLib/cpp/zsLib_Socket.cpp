@@ -276,7 +276,10 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void Socket::unlinkSocketMonitor()
     {
-      mMonitor.reset();
+      if (mMonitor) {
+        mMonitor->unlink();
+        mMonitor.reset();
+      }
       mMonitorReadReady = false;
       mMonitorWriteReady = false;
       mMonitorException = false;
@@ -349,8 +352,13 @@ namespace zsLib
                           Exceptions::Unspecified
                           )
   {
-    close();
-    mMonitor.reset();
+    try {
+      close();
+    } catch (...) {
+      unlinkSocketMonitor();
+      throw;
+    }
+    unlinkSocketMonitor();
   }
 
   //---------------------------------------------------------------------------

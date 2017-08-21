@@ -799,7 +799,14 @@ namespace zsLib
                     puid, id, mID
                     );
 
-      for (auto iter = mDefaultsDelegates->begin(); iter != mDefaultsDelegates->end(); ++iter)
+      decltype(mDefaultsDelegates) applyList;
+
+      {
+        AutoRecursiveLock lock(mLock);
+        applyList = mDefaultsDelegates;
+      }
+
+      for (auto iter = applyList->begin(); iter != applyList->end(); ++iter)
       {
         auto delegate = (*iter).lock();
         if (!delegate) continue;

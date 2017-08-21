@@ -902,6 +902,12 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
+    void SocketMonitor::unlink()
+    {
+      SocketMonitorLoadBalancer::unlink(mID);
+    }
+
+    //-------------------------------------------------------------------------
     void SocketMonitor::monitorBegin(
                                      SocketPtr socket,
                                      bool monitorRead,
@@ -981,8 +987,6 @@ namespace zsLib
 
       if (event)
         event->wait();
-
-      SocketMonitorLoadBalancer::unlink(mID);
     }
 
     //-------------------------------------------------------------------------
