@@ -42,19 +42,17 @@ namespace zsLib
     class Event
     {
     public:
-      Event();
+      Event(bool manualReset = true);
       ~Event();
 
       Event(const Event &) = delete;
 
     protected:
-      static int NextEventId;
-      int mEventId;
-	  std::atomic_bool mNotified {};
-#ifdef __QNX__
-      pthread_mutex_t mMutex;
-      pthread_cond_t mCondition;
+#ifdef _WIN32
+      HANDLE mEvent {};
 #else
+      bool mManualReset {};
+      std::atomic_bool mNotified{};
       std::mutex mMutex;
       std::condition_variable mCondition;
 #endif

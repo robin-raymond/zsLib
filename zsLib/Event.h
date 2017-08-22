@@ -38,7 +38,9 @@ namespace zsLib
   class Event : public internal::Event
   {
   public:
-    static EventPtr create();
+    static EventPtr create(bool manualReset = true);
+
+    Event(bool manualReset = true) : internal::Event(manualReset) {}
 
     void reset();   // after an event has been notified, reset must be called to cause the wait to happen again
     void wait();    // once an event is notified via "notify()", "wait()" will no longer wait until "reset()" is called
