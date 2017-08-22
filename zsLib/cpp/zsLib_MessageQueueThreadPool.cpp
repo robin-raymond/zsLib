@@ -89,8 +89,6 @@ namespace zsLib
 
         do
         {
-          mEvent.reset();   // should be safe to reset the notification now that we are done processing
-
           if (mMustShutdown) goto done;
 
           {
@@ -166,7 +164,7 @@ namespace zsLib
       ThreadPtr mThread;
       String mThreadName;
 
-      mutable zsLib::Event mEvent;
+      mutable zsLib::Event mEvent {zsLib::Event::Reset_Auto};
 
       mutable Lock mLock;
       std::atomic_bool mMustShutdown{};

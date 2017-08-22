@@ -38,9 +38,18 @@ namespace zsLib
   class Event : public internal::Event
   {
   public:
+
+    enum Resets
+    {
+      Reset_Manual,
+      Reset_Auto,
+    };
+
     static EventPtr create(bool manualReset = true);
+    static EventPtr create(Resets resets) { return create(resets == Reset_Manual); }
 
     Event(bool manualReset = true) : internal::Event(manualReset) {}
+    Event(Resets resets) : internal::Event(resets == Reset_Manual) {}
 
     void reset();   // after an event has been notified, reset must be called to cause the wait to happen again
     void wait();    // once an event is notified via "notify()", "wait()" will no longer wait until "reset()" is called

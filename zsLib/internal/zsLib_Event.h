@@ -35,6 +35,10 @@
 #include <zsLib/types.h>
 #include <condition_variable>
 
+#ifdef _WIN32
+#define ZSLIB_INTERNAL_USE_WIN32_EVENT
+#endif //_WIN32
+
 namespace zsLib
 {
   namespace internal
@@ -48,11 +52,11 @@ namespace zsLib
       Event(const Event &) = delete;
 
     protected:
-#ifdef _WIN32
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
       HANDLE mEvent {};
 #else
       bool mManualReset {};
-      std::atomic_bool mNotified{};
+      std::atomic_bool mNotified {};
       std::mutex mMutex;
       std::condition_variable mCondition;
 #endif

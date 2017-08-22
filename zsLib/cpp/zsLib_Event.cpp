@@ -41,11 +41,11 @@ namespace zsLib
   {
     //-------------------------------------------------------------------------
     Event::Event(bool manualReset) 
-#ifndef _WIN32
+#ifndef ZSLIB_INTERNAL_USE_WIN32_EVENT
     : mManualReset(manualReset)
 #endif //ndef 
     {
-#ifdef _WIN32
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
       mEvent = CreateEventEx(NULL, NULL, manualReset ? CREATE_EVENT_MANUAL_RESET : 0, EVENT_ALL_ACCESS);
 #endif //_WIN32
     }
@@ -53,7 +53,7 @@ namespace zsLib
     //-------------------------------------------------------------------------
     Event::~Event()
     {
-#ifdef _WIN32
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
       if (NULL != mEvent) {
         ::CloseHandle(mEvent);
         mEvent = NULL;
@@ -71,7 +71,7 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Event::reset()
   {
-#ifdef _WIN32
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
     if (NULL == mEvent) return;
     ::ResetEvent(mEvent);
 #else
@@ -82,25 +82,26 @@ namespace zsLib
   //---------------------------------------------------------------------------
   void Event::wait()
   {
-#ifdef _WIN32
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
     if (NULL == mEvent) return;
     ::WaitForSingleObjectEx(mEvent, INFINITE, FALSE);
 #else
     std::unique_lock<std::mutex> lock(mMutex);
 
     if (mManualReset) {
-      bool notified = mNotified;
-      if (notified) return;
-    }
+      auto &notified = mNotified;
+      mCondition.wait(lock, [&notified]() { return (bool)notified; });
+    } else {
+      mCondition.wait(lock);
+  }
 
-    mCondition.wait(lock);
 #endif //WIN32
   }
 
   //---------------------------------------------------------------------------
   void Event::notify()
   {
-#ifdef _WIN32
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
     if (NULL == mEvent) return;
     ::SetEvent(mEvent);
 #else

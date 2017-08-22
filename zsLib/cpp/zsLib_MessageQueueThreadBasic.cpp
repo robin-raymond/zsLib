@@ -71,9 +71,6 @@ namespace zsLib
       do
       {
         queue->process(); // process all pending data now
-        mEvent.reset();   // should be safe to reset the notification now that we are done processing
-
-        queue->process(); // small window between the process and the reset where more events could have arrived so process those now
         shouldShutdown = mMustShutdown;
 
         if (!shouldShutdown) {
