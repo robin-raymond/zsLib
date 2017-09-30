@@ -316,11 +316,11 @@ namespace zsLib
   typedef char CHAR;
   typedef wchar_t WCHAR;
 
-#ifdef _NATIVE_WCHAR_T_DEFINED
+#ifdef UNICODE
   typedef WCHAR TCHAR;
 #else
   typedef CHAR TCHAR;
-#endif //_NATIVE_WCHAR_T_DEFINED
+#endif //UNICODE
 
 
 #if (__WCHAR_MAX__ == 0xFFFFFFFF) || (__WCHAR_MAX__ == 0x7FFFFFFF)
