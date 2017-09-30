@@ -118,6 +118,9 @@ namespace zsLib
       //-----------------------------------------------------------------------
       void importFromString(const char *previousExportString) throw (zsLib::Exceptions::InvalidArgument)
       {
+        typedef zsLib::Numeric<UseRangeType> UseNumeric;
+        typedef typename UseNumeric::ValueOutOfRange ValueOutOfRange;
+
         reset();
         auto doc = Document::createFromAutoDetect(previousExportString);
         if (!doc) return;
@@ -138,10 +141,10 @@ namespace zsLib
               auto endStr = endEl->getText();
 
               try {
-                UseRangeType start = zsLib::Numeric<UseRangeType>(startStr);
-                UseRangeType end = zsLib::Numeric<UseRangeType>(endStr);
+                UseRangeType start = UseNumeric(startStr);
+                UseRangeType end = UseNumeric(endStr);
                 allow(start, end);
-              } catch (const zsLib::Numeric<UseRangeType>::ValueOutOfRange &) {
+              } catch (const ValueOutOfRange &) {
                 throwRangeSelectionInvalidArgumentStartStopStr(startStr, endStr);
               }
             }
@@ -163,10 +166,10 @@ namespace zsLib
               auto endStr = endEl->getText();
 
               try {
-                UseRangeType start = zsLib::Numeric<UseRangeType>(startStr);
-                UseRangeType end = zsLib::Numeric<UseRangeType>(endStr);
+                UseRangeType start = UseNumeric(startStr);
+                UseRangeType end = UseNumeric(endStr);
                 deny(start, end);
-              } catch (const zsLib::Numeric<UseRangeType>::ValueOutOfRange &) {
+              } catch (const ValueOutOfRange &) {
                 throwRangeSelectionInvalidArgumentStartStopStr(startStr, endStr);
               }
             }
@@ -280,7 +283,7 @@ namespace zsLib
           if (range.first != from) continue;
           if (range.second != to) continue;
           dirty_ = true;
-          allows.erase(current);
+          allows_.erase(current);
         }
       }
 
@@ -299,7 +302,7 @@ namespace zsLib
           if (range.first != from) continue;
           if (range.second != to) continue;
           dirty_ = true;
-          allows.erase(current);
+          allows_.erase(current);
         }
       }
 
@@ -422,8 +425,8 @@ namespace zsLib
             }
 
             // overlap found thus this is a bit more complex a scenario
-            RangeMap::iterator foundStart = allowed_.end();
-            RangeMap::iterator foundEnd = allowed_.end();
+            typename RangeMap::iterator foundStart = allowed_.end();
+            typename RangeMap::iterator foundEnd = allowed_.end();
 
             for (auto iterInner = allowed_.begin(); iterInner != allowed_.end(); ++iterInner) {
               auto &existingRange = (*iterInner).second;
