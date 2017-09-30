@@ -36,6 +36,8 @@
 #pragma warning(push)
 #pragma warning(disable: 4290)
 
+#define ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY "zsLib/socket-monitor/thread-priority"
+
 namespace zsLib
 {
   ZS_DECLARE_INTERACTION_PROXY(ISocketDelegate)

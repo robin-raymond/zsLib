@@ -40,6 +40,7 @@ void testNumeric();
 void testPromise();
 void testProxy();
 void testProxyUsingGUIThread();
+void testRange();
 void testSocket();
 void testSocketAsync();
 void testString();
@@ -122,6 +123,7 @@ namespace Testing
     TESTING_RUN_TEST_CASE(testNumeric)
     TESTING_RUN_TEST_CASE(testPromise)
     TESTING_RUN_TEST_CASE(testProxy)
+    TESTING_RUN_TEST_CASE(testRange)
     TESTING_RUN_TEST_CASE(testSocket)
     TESTING_RUN_TEST_CASE(testSocketAsync)
     TESTING_RUN_TEST_CASE(testString)
