@@ -345,12 +345,6 @@ namespace zsLib
 
 #endif // (__WCHAR_MAX__ == 0xFFFFFFFF) || (__WCHAR_MAX__ == 0x7FFFFFFF)
 
-#ifdef _WIN32
-#define ZS_TARGET_UTF16_CHAR_IS_LITTLE_ENDIAN
-#else
-#define ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
-#endif //_WIN32
-
   typedef char * STR;
   typedef const char * CSTR;
 

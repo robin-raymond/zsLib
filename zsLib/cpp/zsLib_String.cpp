@@ -394,82 +394,82 @@ namespace zsLib
 #define ZS_INTERNAL_UTF16_HIGH_BITS_FLAG 0xD800
 #define ZS_INTERNAL_UTF16_LOW_BITS_FLAG 0xDC00
 #define ZS_INTERNAL_UTF16_BASE_INDEX 0x10000
-#define ZS_INTERNAL_UTF32_MAX_VALUE 0x10FFFF
 
-    static UTF32 utf16ToUTF32(CUTF16STR &ioUTF16)
+#define ZS_INTERNAL_UTF32_NO_SURROGATE_BELOW (0xD7FF+1)
+#define ZS_INTERNAL_UTF32_NO_SURROGATE_BETEWEEN_MIN (0xE000-1)
+#define ZS_INTERNAL_UTF32_NO_SURROGATE_BETEWEEN_MAX (0xFFFF+1)
+
+#define ZS_INTERNAL_UTF32_MAKE_SURROGATE_BETEWEEN_MIN (0x10000-1)
+#define ZS_INTERNAL_UTF32_MAKE_SURROGATE_BETEWEEN_MAX (0x10FFFF+1)
+
+    static UTF32 utf16ToUTF32(CUTF16STR &ioUTF16, bool be)
     {
-      switch ((*ioUTF16) & ZS_INTERNAL_UTF16_MASK_FLAG_BITS)
-      {
-        case ZS_INTERNAL_UTF16_HIGH_BITS_FLAG:
-        {
-          if (((ioUTF16[1]) & ZS_INTERNAL_UTF16_MASK_FLAG_BITS) != ZS_INTERNAL_UTF16_LOW_BITS_FLAG)
-            break;
-
-          UTF32 result = (((UTF32)(ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE & (*ioUTF16))) << 10) |
-          ((UTF32)(ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE & (ioUTF16[1])));
-          ioUTF16 += 2;
-          return result + ZS_INTERNAL_UTF16_BASE_INDEX;
-        }
-        case ZS_INTERNAL_UTF16_LOW_BITS_FLAG:
-        {
-          if (((ioUTF16[1]) & ZS_INTERNAL_UTF16_MASK_FLAG_BITS) != ZS_INTERNAL_UTF16_HIGH_BITS_FLAG)
-            break;
-
-          UTF32 result = (((UTF32)(ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE & (ioUTF16[1]))) << 10) |
-          ((UTF32)(ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE & (*ioUTF16)));
-          ioUTF16 += 2;
-          return result + ZS_INTERNAL_UTF16_BASE_INDEX;
-        }
+      const BYTE *ptr = (const BYTE *)(&(ioUTF16[0]));
+      UTF16 surrogate1 {};
+      UTF16 surrogate2 {};
+      if (be) {
+        surrogate1 = (((UTF16)(ptr[0])) << 8) | ((UTF16)(ptr[1]));
+        surrogate2 = (((UTF16)(ptr[2])) << 8) | ((UTF16)(ptr[3]));
+      } else {
+        surrogate1 = (((UTF16)(ptr[1])) << 8) | ((UTF16)(ptr[0]));
+        surrogate2 = (((UTF16)(ptr[3])) << 8) | ((UTF16)(ptr[2]));
       }
 
-      UTF32 result = ((UTF32)(*ioUTF16));
-      ++ioUTF16;
+      if (0 == surrogate2) {
+        ++ioUTF16;
+        return (UTF32)surrogate1;
+      }
 
-      return result;
+      if ((ZS_INTERNAL_UTF16_HIGH_BITS_FLAG == (surrogate1 & ZS_INTERNAL_UTF16_MASK_FLAG_BITS)) &&
+          (ZS_INTERNAL_UTF16_LOW_BITS_FLAG == (surrogate2 & ZS_INTERNAL_UTF16_MASK_FLAG_BITS))) {
+        surrogate1 = surrogate1 & ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE;
+        surrogate2 = surrogate2 & ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE;
+
+        UTF32 result = (((UTF32)surrogate1) << 10) | ((UTF32)surrogate2);
+        result += ZS_INTERNAL_UTF16_BASE_INDEX;
+        ioUTF16 += 2;
+        return result;
+      }
+
+      ++ioUTF16;
+      return surrogate1;
     }
 
     static void utf32ToUTF16(UTF32 utf32Char, UTF16STR &outResult)
     {
-      if (utf32Char < ZS_INTERNAL_UTF16_BASE_INDEX)
-      {
-        // no encoding required
-        *outResult = (UTF16)utf32Char;
+      // direct copy of the value to the result
+      if ((utf32Char < ZS_INTERNAL_UTF32_NO_SURROGATE_BELOW) ||
+          ((utf32Char > ZS_INTERNAL_UTF32_NO_SURROGATE_BETEWEEN_MIN) &&
+           (utf32Char < ZS_INTERNAL_UTF32_NO_SURROGATE_BETEWEEN_MAX))) {
+        UTF16 value = (UTF16)utf32Char;
+        memcpy(outResult, &value, sizeof(value));
         ++outResult;
         return;
       }
 
-      if (utf32Char > ZS_INTERNAL_UTF32_MAX_VALUE)
-      {
-        // this does not convert properly, treat as two independent words - doesn't work well because values are lost but that OS simply doesn't support all code points
-        UTF16 hiWord = (utf32Char >> 16) & 0xFFFF;
-        UTF16 lowWord = utf32Char & 0xFFFF;
-
-#ifndef _WIN32  // WIN32 defaults to little endian but the default must be encoded big endian
-        *outResult = hiWord;
-        outResult[1] = lowWord;
-#else
-        *outResult = lowWord;
-        outResult[1] = hiWord;
-#endif //_WIN32
-
-        outResult += 2;
+      // make a surrogate pair out of the value
+      if ((utf32Char > ZS_INTERNAL_UTF32_MAKE_SURROGATE_BETEWEEN_MIN) &&
+          (utf32Char < ZS_INTERNAL_UTF32_MAKE_SURROGATE_BETEWEEN_MAX)) {
+        utf32Char -= ZS_INTERNAL_UTF16_BASE_INDEX;
+        UTF16 surrogate1 = (ZS_INTERNAL_UTF16_HIGH_BITS_FLAG | (utf32Char >> 10) & ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE);
+        UTF16 surrogate2 = (ZS_INTERNAL_UTF16_LOW_BITS_FLAG | (utf32Char & ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE));
+        memcpy(outResult, &surrogate1, sizeof(surrogate1));
+        ++outResult;
+        memcpy(outResult, &surrogate2, sizeof(surrogate2));
+        ++outResult;
         return;
       }
 
-      utf32Char -= ZS_INTERNAL_UTF16_BASE_INDEX;
-      UTF16 hiWord = ZS_INTERNAL_UTF16_HIGH_BITS_FLAG | ((UTF16)((utf32Char >> 10) & ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE));
-      UTF16 lowWord = ZS_INTERNAL_UTF16_LOW_BITS_FLAG | ((UTF16)(utf32Char & ZS_INTERNAL_UTF16_MASK_10_BITS_VALUE));
+      // this is an illegal pairing, shove the result in as best possible
+      UTF16 surrogate1 = (0xFFFF & (utf32Char >> 16));
+      UTF16 surrogate2 = (utf32Char & 0xFFFF);
 
-#ifndef _WIN32
-      *outResult = hiWord;
-      outResult[1] = lowWord;
-#else
-      // windows must default to low endian as the unicode routines on windows expect little endian encoding
-      *outResult = lowWord;
-      outResult[1] = hiWord;
-#endif //_WIN32
-
-      outResult += 2;
+      if (0 != surrogate1) {
+        memcpy(outResult, &surrogate1, sizeof(surrogate1));
+        ++outResult;
+      }
+      memcpy(outResult, &surrogate2, sizeof(surrogate2));
+      ++outResult;
     }
 
     // U+000000-U+00007F    0xxxxxxx
@@ -561,44 +561,6 @@ namespace zsLib
 #define ZS_INTERNAL_UTF8_OTHER_DIGITS_MASK         0xC0
 #define ZS_INTERNAL_UTF8_OTHER_DIGITS_INDICATOR    0x80
 
-#if 0
-    static UTF32 utf8ToUTF32Reverse(CSTR &ioUTF8, CSTR inStartPos)
-    {
-      ZS_THROW_INVALID_USAGE_IF(ioUTF8 < inStartPos)
-
-      if (ZS_INTERNAL_UTF8_OTHER_DIGITS_INDICATOR != ((*ioUTF8) & ZS_INTERNAL_UTF8_OTHER_DIGITS_MASK))
-      {
-        UTF32 result = (UTF32)((BYTE)*ioUTF8);
-        --ioUTF8;
-        return result;
-      }
-
-      CSTR lookAheadPos = ioUTF8;
-
-      size_t length = 0;
-      while ((lookAheadPos > inStartPos) &&
-             (ZS_INTERNAL_UTF8_OTHER_DIGITS_INDICATOR != ((*lookAheadPos) & ZS_INTERNAL_UTF8_OTHER_DIGITS_MASK)))
-      {
-        if (length > 3)
-          break;
-
-        --lookAheadPos;
-      }
-
-      size_t byteLength = gUTF8LengthLookupTable[((BYTE)*lookAheadPos)];
-      if (byteLength != length+1)
-      {
-        // this is not the legal sequence, so assume ASCII
-        UTF32 result = (UTF32)((BYTE)*ioUTF8);
-        --ioUTF8;
-        return result;
-      }
-      UTF32 result = utf8ToUTF32(lookAheadPos);
-      ioUTF8 = lookAheadPos-1;
-      return result;
-    }
-#endif //0
-
     static void utf32ToUTF8(UTF32 utf32Char, STR &outUTF8)
     {
       size_t length = 1;             // the assumed length
@@ -630,16 +592,6 @@ namespace zsLib
       outUTF8 += length;
     }
 
-#if 0
-    static WCHAR utf8ToUnicode(CSTR &ioUTF8)
-    {
-      if (!ioUTF8)
-        return 0;
-
-      return (WCHAR)(utf8ToUTF32(ioUTF8));
-    }
-#endif //0
-
     static std::unique_ptr<WCHAR[]> utf8ToUnicodeConvert(CSTR szInUTF8)
     {
       if (NULL == szInUTF8)
@@ -654,15 +606,15 @@ namespace zsLib
       CSTR szSource = szInUTF8;
       WCHAR *pDest = result.get();
 
-      while (0 != *szSource)
+      if (sizeof(WORD) == sizeof(WCHAR))
       {
-
-        if (sizeof(WORD) == sizeof(WCHAR))
+        while (0 != *szSource)
         {
           // requires UTF-32 to UTF-16 conversion
           utf32ToUTF16(utf8ToUTF32(szSource), (UTF16 * &)pDest);
         }
-        else
+      } else {
+        while (0 != *szSource)
         {
           *pDest = (WCHAR)utf8ToUTF32(szSource);
           ++pDest;
@@ -690,34 +642,46 @@ namespace zsLib
       CWSTR szSource = szInUnicodeString;
       CHAR *pDest = result.get();
 
-      while (0 != *szSource)
+      if (sizeof(WORD) == sizeof(WCHAR))
       {
-        if (sizeof(WORD) == sizeof(WCHAR))
+        UTF16 value = 1;
+        BYTE checkBOM[sizeof(value)];
+        memcpy(&(checkBOM[0]), &value, sizeof(value));
+      
+        bool be = (0 == checkBOM[0]);
+
+        memcpy(&(checkBOM[0]), &(szSource[0]), sizeof(checkBOM));
+
+        if (0xFE == checkBOM[0]) {
+          if (0xFF == checkBOM[1]) {
+            be = true;
+            ++szSource;
+          }
+        } else if (0xFF == checkBOM[0]) {
+          if (0xFE == checkBOM[1]) {
+            be = false;
+            ++szSource;
+          }
+        }
+
+        while (0 != *szSource)
         {
           // this requires conversion from UTF 16 to UTF 32 then to UTF 8
-          utf32ToUTF8(utf16ToUTF32((CUTF16STR &)szSource), pDest);
+          utf32ToUTF8(utf16ToUTF32((CUTF16STR &)szSource, be), pDest);
         }
-        else
+      } else {
+        while (0 != *szSource)
         {
           utf32ToUTF8((UTF32)(*szSource), pDest);
           ++szSource;
         }
       }
+
       *pDest = 0;
 
       return result;
     }
-
-#if 0
-    static void unicodeAdvance(CWSTR &ioString)
-    {
-      if (sizeof(WORD) == sizeof(WCHAR))
-        utf16ToUTF32((CUTF16STR &)ioString);
-      else
-        ++ioString;
-    }
-#endif //0
-
+    
     std::string convertToString(CWSTR value)
     {
       if (!value) return std::string();

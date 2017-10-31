@@ -49,6 +49,15 @@ using zsLib::WORD;
 #define TEST_UNICODE_2_DIGIT 0x00A9
 #define TEST_UNICODE_3_DIGIT 0x2260
 
+static void testReverseEndian(wchar_t &value)
+{
+  if (sizeof(WORD) != sizeof(wchar_t)) return;
+
+  BYTE *buffer = (BYTE *)&value;
+  BYTE tmp = buffer[0];
+  buffer[0] = buffer[1];
+  buffer[1] = tmp;
+}
 
 void testString1()
 
@@ -119,25 +128,30 @@ void testString1()
     0x800,
     0xFFFF,
 
-#ifdef _WIN32
     // represents 0x10000
-    0xDC00, // low
-    0xD800, // high
+    0x0000 | 0xD800, // high
+    0x0000 | 0xDC00, // low
 
     // represents 0x10FFFF; 0x10FFFF - 0x10000 = 0xFFFFF or 1111 11111111 11111111 (20 bits)
-    0xDFFF, // low
-    0xDBFF, // high
-#else
-    // represents 0x10000
-    0xD800, // high
-    0xDC00, // low
+    0x3FF | 0xD800, // low
+    0x3FF | 0xDC00, // high
 
-    // represents 0x10FFFF; 0x10FFFF - 0x10000 = 0xFFFFF or 1111 11111111 11111111 (20 bits)
-    0xDBFF, // high
-    0xDFFF, // low
-#endif //_WIN32
     0x0
   };
+
+#if 0
+  {
+    zsLib::WORD value {1};
+    zsLib::BYTE checkE[sizeof(value)];
+    memcpy(&(checkE[0]), &value, sizeof(value));
+    if (1 == checkE[0]) {
+      testReverseEndian(wbuffer8_utf16[6]);
+      testReverseEndian(wbuffer8_utf16[7]);
+      testReverseEndian(wbuffer8_utf16[8]);
+      testReverseEndian(wbuffer8_utf16[9]);
+    }
+  }
+#endif //0
 
   zsLib::String str6("Τη γλώσσα μου έδωσαν ελληνική");
   zsLib::String str7(buffer7);
@@ -268,7 +282,6 @@ void testString1()
 
 #ifdef ZS_TARGET_WCHAR_IS_UTF16
 
-#ifdef ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
 size_t gTEST_ARRAY_1_LINE_START = __LINE__;
 static wchar_t gWArray1[] =
 {
@@ -309,51 +322,6 @@ static wchar_t gWArray1[] =
   0x0
 };
 size_t gTEST_ARRAY_1_LINE_END = __LINE__;
-
-#else //ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
-
-size_t gTEST_ARRAY_1_LINE_START = __LINE__;
-static wchar_t gWArray1[] =
-{
-  0x01,
-  0x7F,
-  0x80,
-  0xBF,
-  0xC0,
-  0xC1,
-  0xC2,
-  0xDF,
-  0xD0,
-  0xDF,
-  0xE0,
-  0xEF,
-  0xF0,
-  0xF4,
-  0xF5,
-  0xFF,
-  0x100,
-  0x7FF,
-  0x800,
-  0xFFFF,
-  0xDC00, 0xD800,
-  0xDC00, 0xDBFF,
-  0xDFFF, 0xD800,
-  0xDFFF, 0xDBFF,
-  0xE000,
-  0xEFFF,
-  0xF000,
-  0xFFFF,
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  0x0
-};
-size_t gTEST_ARRAY_1_LINE_END = __LINE__;
-
-#endif //ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
 
 #else //ZS_TARGET_WCHAR_IS_UTF16
 
@@ -563,13 +531,26 @@ static TestMidStruct gMidTests[] =
   {0, 0, NULL, 0}
 };
 
-#ifdef ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
+static size_t gTEST_ARRAY_2_LINE_START = __LINE__;
 static wchar_t gWArray2[] =
 {
-  0xDC00, 0xD800,
-  0xDC00, 0xDBFF,
-  0xDFFF, 0xD800,
-  0xDFFF, 0xDBFF,
+  0xDC00,           // not legal surrogate
+  0xD800, 0xDC00,   // legal surrogate
+  0xDBFF, 0xDFFF,   // legal surrogate
+  0xD800, 0xDFFF,   // legal surrogate
+          0xDBFF,   // not legal surrogate
+  0x0
+};
+static size_t gTEST_ARRAY_2_LINE_END = __LINE__;
+static size_t gTEST_ARRAY_2_LINE_LENGTH = (gTEST_ARRAY_2_LINE_END - gTEST_ARRAY_2_LINE_START - 5);
+
+static BYTE gByteArray2[] =
+{
+  0xED, 0xB0, 0x80, // 0xDC00 = 1101 110000 000000 = 1110xxxx 10xxxxxx 10xxxxxx = 111011011011000010000000 = EDB080
+  0xF0, 0x90, 0x80, 0x80, // 0xD800, 0xDC00, 0x10000 = 000 010000 000000 000000 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110000100100001000000010000000 = F0908080
+  0xF4, 0x8F, 0xBF, 0xBF, // 0xDBFF, 0xDFFF, 0x10FFFF = 100 001111 111111 111111 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110100100011111011111110111111 = F48FBFBF
+  0xF0, 0x90, 0x8F, 0xBF, // 0xD800, 0xDFFF, 0x103FF = 000 010000 001111 111111 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110000100100001000111110111111 = F0908FBF
+  0xED, 0xAF, 0xBF, // 0xDBFF = 1101 101111 111111 = 1110xxxx 10xxxxxx 10xxxxxx = 111011011010111110111111 = EDAFBF
   0x0
 };
 
@@ -584,38 +565,13 @@ static wchar_t gWArray3[] =
 };
 static size_t gTEST_ARRAY_3_LINE_END = __LINE__;
 static size_t gTEST_ARRAY_3_LINE_LENGTH = (gTEST_ARRAY_3_LINE_END - gTEST_ARRAY_3_LINE_START - 5);
-
-#else //ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
-
-static wchar_t gWArray2[] =
-{
-  0xD800, 0xDC00,
-  0xDBFF, 0xDC00,
-  0xD800, 0xDFFF,
-  0xDBFF, 0xDFFF,
-  0x0
-};
-
-static size_t gTEST_ARRAY_3_LINE_START = __LINE__;
-static wchar_t gWArray3[] =
-{
-  0xDC00, 0xD800,
-  0xDC00, 0xDBFF,
-  0xDFFF, 0xD800,
-  0xDFFF, 0xDBFF,
-  0x0
-};
-static size_t gTEST_ARRAY_3_LINE_END = __LINE__;
-static size_t gTEST_ARRAY_3_LINE_LENGTH = (gTEST_ARRAY_3_LINE_END - gTEST_ARRAY_3_LINE_START - 5);
-
-#endif //ZS_TARGET_UTF16_CHAR_IS_BIG_ENDIAN
 
 static BYTE gByteArray3[] =
 {
-  0xF0, 0x90, 0x80, 0x80, // 0xD800, 0xDC00,
-  0xF4, 0x8F, 0xB0, 0x80, // 0xDBFF, 0xDC00,
-  0xF0, 0x90, 0x8F, 0xBF, // 0xD800, 0xDFFF,
-  0xF4, 0x8F, 0xBF, 0xBF, // 0xDBFF, 0xDFFF,
+  0xF0, 0x90, 0x80, 0x80, // 0xD800, 0xDC00, 0x10000 = 000 010000 000000 000000 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110000100100001000000010000000 = F0908080
+  0xF4, 0x8F, 0xB0, 0x80, // 0xDBFF, 0xDC00, 0x10FC00 =  100 001111 110000 000000 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110100100011111011000010000000 = F48FB080
+  0xF0, 0x90, 0x8F, 0xBF, // 0xD800, 0xDFFF, 0x103FF = 000 010000 001111 111111 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110000100100001000111110111111 = F0908FBF
+  0xF4, 0x8F, 0xBF, 0xBF, // 0xDBFF, 0xDFFF, 0x10FFFF = 100 001111 111111 111111 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110100100011111011111110111111 = F48FBFBF
   0x0
 };
 
@@ -723,6 +679,23 @@ static BYTE gUTFByteArray5[] =
   0x00
 };
 
+
+
+static size_t gTEST_ARRAY_6_LINE_START = __LINE__;
+static wchar_t gWArray6[] =
+{
+  0xD83D, 0xDE06,  // 0x1F606 = 0000111101 1000000110 = 110110xxxxxxxxxx 110111xxxxxxxxxxx = 1101100000111101 1101111000000110 = D83D DE06
+  0x0
+};
+static size_t gTEST_ARRAY_6_LINE_END = __LINE__;
+static size_t gTEST_ARRAY_6_LINE_LENGTH = (gTEST_ARRAY_6_LINE_END - gTEST_ARRAY_6_LINE_START - 5);
+
+static BYTE gByteArray6[] =
+{
+  0xF0, 0x9F, 0x98, 0x86, // 0xD83D, 0xDE06, 0x1F606 = 000 011111 011000 000110 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 11110000100111111001100010000110 = F09F9886
+  0x0
+};
+
 void testString2()
 {
   {
@@ -761,8 +734,8 @@ void testString2()
   }
   if (sizeof(WORD) == sizeof(WCHAR))  // this test if for UTF-16 systems only, new test requried for UTF-32 systems
   {
-    // test convert to unicode with wrong endian and back
-    CWSTR wStr = &(gWArray2[0]);
+    // test convert to unicode with right endian and back
+    CWSTR wStr = &(gWArray3[0]);
     zsLib::String string(wStr);
 
     CSTR utf8Str = string;
@@ -774,6 +747,38 @@ void testString2()
 
     TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray3[0]), sizeof(gWArray3)))
     TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_3_LINE_LENGTH)
+  }
+  if (sizeof(WORD) == sizeof(WCHAR))  // this test if for UTF-16 systems only, new test requried for UTF-32 systems
+  {
+    // test convert to unicode with wrong endian and back
+    CWSTR wStr = &(gWArray2[0]);
+    zsLib::String string(wStr);
+
+    CSTR utf8Str = string;
+    TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray2[0]), sizeof(gByteArray2)))
+
+    zsLib::String string2(utf8Str);
+    std::wstring wstring2(string2.wstring());
+    CWSTR utf16Str = wstring2.c_str();
+
+    TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray2[0]), sizeof(gWArray2)))
+    TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_2_LINE_LENGTH)
+  }
+  if (sizeof(WORD) == sizeof(WCHAR))  // this test if for UTF-16 systems only, new test requried for UTF-32 systems
+  {
+    // test convert to unicode with right endian and back
+    CWSTR wStr = &(gWArray6[0]);
+    zsLib::String string(wStr);
+
+    CSTR utf8Str = string;
+    TESTING_CHECK(0 == memcmp(utf8Str, &(gByteArray6[0]), sizeof(gByteArray6)))
+
+    zsLib::String string2(utf8Str);
+    std::wstring wstring2(string2.wstring());
+    CWSTR utf16Str = wstring2.c_str();
+
+    TESTING_CHECK(0 == memcmp((void *)utf16Str, &(gWArray6[0]), sizeof(gWArray6)))
+    TESTING_CHECK(string.lengthUnicodeSafe() == gTEST_ARRAY_6_LINE_LENGTH)
   }
   {
     // test illegal UTF-16 encoding
