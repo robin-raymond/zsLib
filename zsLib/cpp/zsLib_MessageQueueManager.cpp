@@ -259,7 +259,7 @@ namespace zsLib
       while (totalThreadsCreated < minThreadsRequired) {
         ++totalThreadsCreated;
         ZS_LOG_TRACE(log("creating pool thread") + ZS_PARAM("poolName", poolName + "." + string(totalThreadsCreated)) + ZS_PARAM("priority", zsLib::toString(priority)))
-        pool->createThread((poolName + "." + string(totalThreadsCreated)).c_str());
+        pool->createThread((poolName + "." + string(totalThreadsCreated)).c_str(), priority);
       }
 
       mPools[poolName] = MessageQueueThreadPoolPair(pool, totalThreadsCreated);
@@ -280,30 +280,49 @@ namespace zsLib
                                                                   ThreadPriorities priority
                                                                   )
     {
+      ZS_DECLARE_TYPEDEF_PTR(zsLib::IMessageQueueThread, IMessageQueueThread);
+
       AutoRecursiveLock lock(mLock);
 
       String name(assignedQueueName);
       mThreadPriorities[name] = priority;
 
-      MessageQueueMap::iterator found = mQueues.find(name);
-      if (found == mQueues.end()) {
-        ZS_LOG_DEBUG(log("message queue specified is not in use at yet") + ZS_PARAM("name", name) + ZS_PARAM("priority", zsLib::toString(priority)))
-        return;
+      bool inUse = false;
+
+      // scope: fix existing queue thread priorities
+      {
+        auto found = mQueues.find(name);
+        if (found != mQueues.end()) {
+          ZS_LOG_DEBUG(log("updating message queue thread") + ZS_PARAM("name", name) + ZS_PARAM("priority", zsLib::toString(priority)));
+
+          IMessageQueuePtr queue = (*found).second;
+
+          IMessageQueueThreadPtr thread = ZS_DYNAMIC_PTR_CAST(IMessageQueueThread, queue);
+          if (thread) {
+            thread->setThreadPriority(priority);
+            inUse = true;
+          } else {
+            ZS_LOG_WARNING(Detail, log("found thread was not recognized as a message queue thread") + ZS_PARAM("name", name));
+          }
+        }
       }
 
-      ZS_LOG_DEBUG(log("updating message queue thread") + ZS_PARAM("name", name) + ZS_PARAM("priority", zsLib::toString(priority)))
+      // scope: fix existing pool queue thrad priorities
+      {
+        auto found = mPools.find(name);
+        if (found != mPools.end()) {
+          ZS_LOG_DEBUG(log("updating message queue thread pool") + ZS_PARAM("name", name) + ZS_PARAM("priority", zsLib::toString(priority)));
 
-      ZS_DECLARE_TYPEDEF_PTR(zsLib::IMessageQueueThread, IMessageQueueThread)
+          IMessageQueueThreadPoolPtr pool = (*found).second.first;
 
-      IMessageQueuePtr queue = (*found).second;
-
-      IMessageQueueThreadPtr thread = ZS_DYNAMIC_PTR_CAST(IMessageQueueThread, queue);
-      if (!thread) {
-        ZS_LOG_WARNING(Detail, log("found thread was not recognized as a message queue thread") + ZS_PARAM("name", name))
-        return;
+          pool->setThreadPriority(priority);
+          inUse = true;
+        }
       }
 
-      thread->setThreadPriority(priority);
+      if (!inUse) {
+        ZS_LOG_DEBUG(log("message queue specified is not in use at yet") + ZS_PARAM("name", name) + ZS_PARAM("priority", zsLib::toString(priority)));
+      }
     }
 
     //-------------------------------------------------------------------------

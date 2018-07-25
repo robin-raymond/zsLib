@@ -55,6 +55,7 @@ namespace zsLib
   typedef std::lock_guard<RecursiveLock> AutoRecursiveLock;
 
   typedef std::chrono::system_clock::time_point Time;
+  typedef std::chrono::duration<std::chrono::hours::rep, std::ratio<3600 * 24> > Days;
   typedef std::chrono::hours Hours;
   typedef std::chrono::minutes Minutes;
   typedef std::chrono::seconds Seconds;
@@ -144,6 +145,13 @@ namespace zsLib
   struct Any
   {
     virtual ~Any() {}
+  };
+
+  template <typename type>
+  struct AnyHolder : public Any
+  {
+    typedef type UseType;
+    UseType value_;
   };
 
   struct Noop

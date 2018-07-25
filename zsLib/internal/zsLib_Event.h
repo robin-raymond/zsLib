@@ -35,6 +35,10 @@
 #include <zsLib/types.h>
 #include <condition_variable>
 
+#ifdef _WIN32
+#define ZSLIB_INTERNAL_USE_WIN32_EVENT
+#endif //_WIN32
+
 namespace zsLib
 {
   namespace internal
@@ -42,19 +46,17 @@ namespace zsLib
     class Event
     {
     public:
-      Event();
+      Event(bool manualReset = true);
       ~Event();
 
       Event(const Event &) = delete;
 
     protected:
-      static int NextEventId;
-      int mEventId;
-	  std::atomic_bool mNotified {};
-#ifdef __QNX__
-      pthread_mutex_t mMutex;
-      pthread_cond_t mCondition;
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
+      HANDLE mEvent {};
 #else
+      bool mManualReset {};
+      std::atomic_bool mNotified {};
       std::mutex mMutex;
       std::condition_variable mCondition;
 #endif

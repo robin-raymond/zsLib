@@ -40,92 +40,79 @@ namespace zsLib
   namespace internal
   {
     //-------------------------------------------------------------------------
-    Event::Event()
+    Event::Event(bool manualReset) 
+#ifndef ZSLIB_INTERNAL_USE_WIN32_EVENT
+    : mManualReset(manualReset)
+#endif //ndef 
     {
-#ifdef __QNX__
-      static pthread_cond_t gConditionInit = PTHREAD_COND_INITIALIZER;
-      static pthread_mutex_t gMutexInit = PTHREAD_MUTEX_INITIALIZER;
-
-      mCondition = gConditionInit;
-      mMutex = gMutexInit;
-#endif //__QNX__
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
+      mEvent = CreateEventEx(NULL, NULL, manualReset ? CREATE_EVENT_MANUAL_RESET : 0, EVENT_ALL_ACCESS);
+#endif //_WIN32
     }
 
     //-------------------------------------------------------------------------
     Event::~Event()
     {
-#ifdef __QNX__
-      pthread_cond_destroy(&mCondition);
-      pthread_mutex_destroy(&mMutex);
-#endif //__QNX__
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
+      if (NULL != mEvent) {
+        ::CloseHandle(mEvent);
+        mEvent = NULL;
+      }
+#endif //_WIN32
     }
 
   }
 
   //---------------------------------------------------------------------------
-  EventPtr Event::create() {
-    return make_shared<Event>();
+  EventPtr Event::create(bool manualReset) {
+    return make_shared<Event>(manualReset);
   }
 
   //---------------------------------------------------------------------------
   void Event::reset()
   {
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
+    if (NULL == mEvent) return;
+    ::ResetEvent(mEvent);
+#else
     mNotified = false;
+#endif //_WIN32
   }
 
   //---------------------------------------------------------------------------
   void Event::wait()
   {
-    bool notified = mNotified;
-    if (0 != notified) {
-      return;
-    }
-
-#ifdef __QNX__
-    int result = pthread_mutex_lock(&mMutex);
-    ZS_THROW_BAD_STATE_IF(0 != result)
-
-    notified = mNotified;
-    if (0 != notified) {
-      result = pthread_mutex_unlock(&mMutex);
-      ZS_THROW_BAD_STATE_IF(0 != result)
-      return;
-    }
-
-    result = pthread_cond_wait(&mCondition, &mMutex);
-    ZS_THROW_BAD_STATE_IF(0 != result)
-
-    result = pthread_mutex_unlock(&mMutex);
-    ZS_THROW_BAD_STATE_IF(0 != result)
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
+    if (NULL == mEvent) return;
+    ::WaitForSingleObjectEx(mEvent, INFINITE, FALSE);
 #else
     std::unique_lock<std::mutex> lock(mMutex);
-    notified = mNotified;
-    if (0 != notified) return;
-    mCondition.wait(lock);
-#endif //__QNX__
+
+    if (mManualReset) {
+      auto &notified = mNotified;
+      mCondition.wait(lock, [&notified]() { return (bool)notified; });
+    } else {
+      mCondition.wait(lock);
+  }
+
+#endif //WIN32
   }
 
   //---------------------------------------------------------------------------
   void Event::notify()
   {
-#ifdef __QNX__
-    int result = pthread_mutex_lock(&mMutex);
-    ZS_THROW_BAD_STATE_IF(0 != result)
-
-    result = pthread_cond_signal(&mCondition);
-    ZS_THROW_BAD_STATE_IF(0 != result)
-
-    mNotified = true;
-
-    result = pthread_mutex_unlock(&mMutex);
-    ZS_THROW_BAD_STATE_IF(0 != result)
+#ifdef ZSLIB_INTERNAL_USE_WIN32_EVENT
+    if (NULL == mEvent) return;
+    ::SetEvent(mEvent);
 #else
     std::lock_guard<std::mutex> lock(mMutex);
-
     mNotified = true;
-
-    mCondition.notify_one();
-#endif //__QNX__
+    if (mManualReset) {
+      mCondition.notify_all();
+    } else {
+      mCondition.notify_one();
+    }
+#endif //_WIN32
   }
 
 }

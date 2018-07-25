@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2014, Robin Raymond
+ Copyright (c) 2017, Robin Raymond
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,30 +29,31 @@
  
  */
 
-#pragma once
+#include <zsLib/RangeSelection.h>
 
-#include <zsLib/internal/zsLib_Event.h>
+namespace zsLib { ZS_DECLARE_SUBSYSTEM(zsLib) }
 
 namespace zsLib
 {
-  class Event : public internal::Event
+  namespace internal
   {
-  public:
-
-    enum Resets
+    void throwRangeSelectionInvalidArgumentStartStopStr(const String &startStr, const String &endStr)
     {
-      Reset_Manual,
-      Reset_Auto,
-    };
+      ZS_THROW_INVALID_ARGUMENT(String("range not legal: \"") + startStr + "\" \"" + endStr + "\"");
+    }
 
-    static EventPtr create(bool manualReset = true);
-    static EventPtr create(Resets resets) { return create(resets == Reset_Manual); }
+    void throwRangeSelectionBadStateIf(bool result, const char *str)
+    {
+      if (!result) return;
+      ZS_THROW_BAD_STATE(str);
+    }
 
-    Event(bool manualReset = true) : internal::Event(manualReset) {}
-    Event(Resets resets) : internal::Event(resets == Reset_Manual) {}
+    void throwRangeSelectionBadState(const char *str)
+    {
+      ZS_THROW_BAD_STATE(str);
+    }
 
-    void reset();   // after an event has been notified, reset must be called to cause the wait to happen again
-    void wait();    // once an event is notified via "notify()", "wait()" will no longer wait until "reset()" is called
-    void notify();  // breaks the wait from executing until the reset is called
-  };
-}
+  } // namespace internal
+
+} // namespace zsLib
+

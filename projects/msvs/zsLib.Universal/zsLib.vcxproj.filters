@@ -25,6 +25,9 @@
     <Filter Include="zsLib\eventing\internal">
       <UniqueIdentifier>{d02bffd1-1eec-4985-a931-5299daff94d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zsLib\idl">
+      <UniqueIdentifier>{658d6109-d61c-4b11-87f2-b8fe31123a60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\zsLib\Exception.h">
@@ -243,11 +246,12 @@
     <ClInclude Include="..\..\..\zsLib\eventing\internal\zsLib_eventing_EventTypes.h">
       <Filter>zsLib\eventing\internal</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\..\..\zsLib\license.txt">
+    <ClInclude Include="..\..\..\zsLib\RangeSelection.h">
       <Filter>zsLib</Filter>
-    </Text>
+    </ClInclude>
+    <ClInclude Include="..\..\..\zsLib\internal\zsLib_RangeSelection.h">
+      <Filter>zsLib\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_MessageQueueThreadUsingBlackberryChannels.cpp">
@@ -412,6 +416,9 @@
     <ClCompile Include="..\..\..\zsLib\cpp\zsLib_Helper.cpp">
       <Filter>zsLib\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\zsLib\cpp\zsLib_RangeSelection.cpp">
+      <Filter>zsLib\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\zsLib\internal\zsLib.events_win_etw.wprp">
@@ -426,5 +433,16 @@
     <None Include="..\..\..\zsLib\cpp\zsLib.events.json">
       <Filter>zsLib\cpp</Filter>
     </None>
+    <None Include="..\..\..\zsLib\idl\config.json">
+      <Filter>zsLib\idl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\..\..\zsLib\idl\zsLib.idl">
+      <Filter>zsLib\idl</Filter>
+    </Midl>
+    <Midl Include="..\..\..\zsLib\idl\std.idl">
+      <Filter>zsLib\idl</Filter>
+    </Midl>
   </ItemGroup>
 </Project>

@@ -35,6 +35,7 @@
 #define ZSLIB_TEST_PROMISE          (true)
 #define ZSLIB_TEST_PROXY            (true)
 #define ZSLIB_TEST_PROXY_USING_GUI  (true)
+#define ZSLIB_TEST_RANGE            (true)
 #define ZSLIB_TEST_SOCKET           (true)
 #define ZSLIB_TEST_SOCKET_ASYNC     (true)
 #define ZSLIB_TEST_STRING           (true)

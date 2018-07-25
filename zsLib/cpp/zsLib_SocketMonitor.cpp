@@ -41,6 +41,8 @@
 
 #include <stdlib.h>
 
+#include <unordered_map>
+
 #define ZSLIB_SOCKET_MONITOR_TIMEOUT_IN_MILLISECONDS (10*(1000))
 
 namespace zsLib {ZS_DECLARE_SUBSYSTEM(zsLib_socket)}
@@ -144,6 +146,229 @@ namespace zsLib
     {
       SocketMonitorSettingsDefaults::singleton();
     }
+
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    #pragma mark
+    #pragma mark SocketMonitorLoadBalancer
+    #pragma mark
+    
+    class SocketMonitorLoadBalancer : public ISingletonManagerDelegate
+    {
+    protected:
+      struct make_private {};
+
+    public:
+      struct SocketMonitorInfo
+      {
+        size_t totalMonitored_ {};
+        SocketMonitorPtr monitor_;
+      };
+
+      typedef std::unordered_map<PUID, SocketMonitorInfo> SocketMonitorMap;
+
+    protected:
+
+      //-----------------------------------------------------------------------
+      static SocketMonitorLoadBalancerPtr create()
+      {
+        auto pThis(make_shared<SocketMonitorLoadBalancer>(make_private{}));
+        pThis->thisWeak_ = pThis;
+        pThis->init();
+        return pThis;
+      }
+
+      //-----------------------------------------------------------------------
+      static SocketMonitorLoadBalancerPtr singleton()
+      {
+        static SingletonLazySharedPtr<SocketMonitorLoadBalancer> singleton(create());
+
+        SocketMonitorLoadBalancerPtr result = singleton.singleton();
+        if (!result) {
+          ZS_LOG_WARNING(Detail, slog("singleton gone"))
+        }
+
+        static zsLib::SingletonManager::Register registerSingleton("org.zsLib.SocketMonitorLoadBalancer", result);
+        return result;
+      }
+
+      //-----------------------------------------------------------------------
+      void init()
+      {
+      }
+
+    public:
+      //-----------------------------------------------------------------------
+      SocketMonitorLoadBalancer(const make_private &) :
+        shutdownQueue_(IMessageQueueThread::createBasic("zsLib.SocketMonitorLoadBalancer", ThreadPriority_LowPriority)),
+#ifdef _WIN32
+        maxSocketsPerMonitor_(WSA_MAXIMUM_WAIT_EVENTS)
+#else
+        maxSocketsPerMonitor_(FD_SETSIZE)
+#endif //_WIN32
+      {
+        --maxSocketsPerMonitor_; // wake up socket/event
+      }
+
+      //-----------------------------------------------------------------------
+      ~SocketMonitorLoadBalancer()
+      {
+        thisWeak_.reset();
+        cancel();
+      }
+
+      //-----------------------------------------------------------------------
+      static SocketMonitorPtr link()
+      {
+        auto pThis = singleton();
+        if (!pThis) return SocketMonitorPtr();
+
+        return pThis->internalLink();
+      }
+
+      //-----------------------------------------------------------------------
+      static void unlink(PUID id)
+      {
+        auto pThis = singleton();
+        if (!pThis) return;
+
+        pThis->internalUnlink(id);
+      }
+
+    protected:
+
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark SocketMonitorLoadBalancer => ISingletonManagerDelegate
+      #pragma mark
+
+      //-----------------------------------------------------------------------
+      virtual void notifySingletonCleanup() override
+      {
+        cancel();
+      }
+
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark SocketMonitorLoadBalancer => (internal)
+      #pragma mark
+
+      //-----------------------------------------------------------------------
+      void cancel()
+      {
+        SocketMonitorMap monitors;
+
+        {
+          AutoRecursiveLock lock(lock_);
+
+          if (shutdown_) return;
+          shutdown_ = true;
+
+          monitors = socketMonitors_;
+          socketMonitors_.clear();
+        }
+
+        for (auto iter = monitors.begin(); iter != monitors.end(); ++iter) {
+          auto &info = (*iter).second;
+
+          info.monitor_->shutdown();
+        }
+
+        shutdownQueue_->waitForShutdown();
+      }
+
+      //-----------------------------------------------------------------------
+      SocketMonitorPtr internalLink()
+      {
+        AutoRecursiveLock lock(lock_);
+
+        SocketMonitorInfo *foundInfo {};
+
+        for (auto iter = socketMonitors_.begin(); iter != socketMonitors_.end(); ++iter) {
+          auto &info = (*iter).second;
+
+          if (!foundInfo) {
+            foundInfo = &info;
+            continue;
+          }
+
+          if (info.totalMonitored_ >= foundInfo->totalMonitored_) continue;
+          foundInfo = &info;
+        }
+
+        if (foundInfo) {
+          if (foundInfo->totalMonitored_ >= maxSocketsPerMonitor_) {
+            foundInfo = NULL;
+          }
+        }
+
+        if (foundInfo) {
+          ++(foundInfo->totalMonitored_);
+          return foundInfo->monitor_;
+        }
+
+        SocketMonitorInfo info;
+        info.monitor_ = SocketMonitor::create();
+        info.totalMonitored_ = 1;
+
+        socketMonitors_[info.monitor_->getID()] = info;
+
+        return info.monitor_;
+      }
+
+      //-----------------------------------------------------------------------
+      void internalUnlink(PUID id)
+      {
+        SocketMonitorPtr shutdownMonitor;
+
+        {
+          AutoRecursiveLock lock(lock_);
+
+          auto found = socketMonitors_.find(id);
+          if (found == socketMonitors_.end()) return;
+
+          auto &info = (*found).second;
+
+          if (info.totalMonitored_ > 0) {
+            --(info.totalMonitored_);
+          }
+
+          if (0 == info.totalMonitored_) {
+            shutdownMonitor = info.monitor_;
+            socketMonitors_.erase(found);
+          }
+        }
+
+        if (!shutdownMonitor) return;
+
+        try {
+          shutdownQueue_->postClosure([shutdownMonitor]()
+          {
+            shutdownMonitor->shutdown();
+          });
+        } catch (IMessageQueue::Exceptions::MessageQueueGone &) {
+        }
+      }
+
+      //-----------------------------------------------------------------------
+      static zsLib::Log::Params slog(const char *message)
+      {
+        return zsLib::Log::Params(message, "SocketMonitorLoadBalancer");
+      }
+
+    protected:
+      SocketMonitorLoadBalancerWeakPtr thisWeak_;
+
+      RecursiveLock lock_;
+
+      bool shutdown_ {false};
+
+      size_t maxSocketsPerMonitor_ {};
+      SocketMonitorMap socketMonitors_;
+      IMessageQueueThreadPtr shutdownQueue_;
+    };
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -307,6 +532,27 @@ namespace zsLib
       mOfficialCount = 0;
       mSocketIndexes.clear();
     }
+
+#ifdef _WIN32
+    //-------------------------------------------------------------------------
+    void SocketSet::setWakeUpEvent(HANDLE eventHandle)
+    {
+      ZS_LOG_TRACE(log("wakeup event created") + ZS_PARAM("event", (PTRNUMBER)eventHandle))
+
+      mDirty = true;
+
+      minOfficialAllocation(mOfficialCount + 1);
+
+      mOfficialSet[mOfficialCount].fd = INVALID_SOCKET;
+      mOfficialSet[mOfficialCount].events = POLLRDNORM | POLLERR | POLLHUP | POLLNVAL;
+      mOfficialSet[mOfficialCount].revents = 0;
+
+      mOfficialHandleSet[mOfficialCount] = eventHandle;
+      mOfficialHandleHolderSet[mOfficialCount] = make_shared<EventHandleHolder>((HANDLE)NULL);  // do not release event handle as part of set
+
+      ++mOfficialCount;
+    }
+#endif //_WIN32
 
     //-------------------------------------------------------------------------
     void SocketSet::reset(SOCKET socket)
@@ -660,30 +906,15 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    SocketMonitorPtr SocketMonitor::singleton()
+    SocketMonitorPtr SocketMonitor::link()
     {
-      static SingletonLazySharedPtr<SocketMonitor> singleton(SocketMonitor::create());
-
-      SocketMonitorPtr result = singleton.singleton();
-      if (!result) {
-        ZS_LOG_WARNING(Detail, slog("singleton gone"))
-      }
-
-      static zsLib::SingletonManager::Register registerSingleton("org.zsLib.SocketMonitor", result);
-
-      SocketMonitorHolder::singleton(result);
-      return result;
+      return SocketMonitorLoadBalancer::link();
     }
 
     //-------------------------------------------------------------------------
-    SocketMonitor::SocketMonitorHolderPtr SocketMonitor::SocketMonitorHolder::singleton(SocketMonitorPtr monitor)
+    void SocketMonitor::unlink()
     {
-      static SingletonLazySharedPtr<SocketMonitorHolder> singleton(SocketMonitorHolder::create(monitor));
-      SocketMonitorHolderPtr result = singleton.singleton();
-      if (!result) {
-        ZS_LOG_WARNING(Detail, slog("singleton gone"))
-      }
-      return result;
+      SocketMonitorLoadBalancer::unlink(mID);
     }
 
     //-------------------------------------------------------------------------
@@ -696,32 +927,40 @@ namespace zsLib
     {
       EventPtr event;
       {
-        AutoRecursiveLock lock(mLock);
+        {
+          AutoRecursiveLock lock(mLock);
 
-        if (!mThread) {
-          mThread = ThreadPtr(new std::thread(std::ref(*(singleton().get()))));
-          setThreadPriority(mThread->native_handle(), zsLib::threadPriorityFromString(ISettings::getString(ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY)));
+          if (!mThread) {
+            auto pThis = mThisWeak.lock();
+            mThread = ThreadPtr(new std::thread(std::ref(*(pThis.get()))));
+            setThreadPriority(mThread->native_handle(), zsLib::threadPriorityFromString(ISettings::getString(ZSLIB_SETTING_SOCKET_MONITOR_THREAD_PRIORITY)));
+          }
         }
 
-        SOCKET socketHandle = socket->getSocket();
-        if (INVALID_SOCKET == socketHandle)                                             // nothing to monitor
-          return;
+        mThreadReady.wait();
 
-        mMonitoredSockets[socketHandle] = socket;                                       // remember the socket is monitored
+        {
+          AutoRecursiveLock lock(mLock);
+          SOCKET socketHandle = socket->getSocket();
+          if (INVALID_SOCKET == socketHandle)                                             // nothing to monitor
+            return;
 
-        event_type events = 0;
-        if (monitorRead) events = events | POLLRDNORM;
-        if (monitorWrite) events = events | POLLWRNORM;
-        if (monitorException) events = events | POLLERR | POLLHUP | POLLNVAL;
+          mMonitoredSockets[socketHandle] = socket;                                       // remember the socket is monitored
 
-        ZS_LOG_INSANE(log("monitor begin") + ZS_PARAM("handle", socketHandle) + ZS_PARAM("events", friendly(events)))
+          event_type events = 0;
+          if (monitorRead) events = events | POLLRDNORM;
+          if (monitorWrite) events = events | POLLWRNORM;
+          if (monitorException) events = events | POLLERR | POLLHUP | POLLNVAL;
 
-        mSocketSet.reset(socketHandle, events);
+          ZS_LOG_INSANE(log("monitor begin") + ZS_PARAM("handle", socketHandle) + ZS_PARAM("events", friendly(events)))
 
-        event = zsLib::Event::create();
-        mWaitingForRebuildList.push_back(event);                                        // socket handles cane be reused so we must ensure that the socket handles are rebuilt before returning
+          mSocketSet.reset(socketHandle, events);
 
-        wakeUp();
+          event = zsLib::Event::create();
+          mWaitingForRebuildList.push_back(event);                                        // socket handles cane be reused so we must ensure that the socket handles are rebuilt before returning
+
+          wakeUp();
+        }
       }
       if (event)
         event->wait();
@@ -755,6 +994,7 @@ namespace zsLib
 
         wakeUp();
       }
+
       if (event)
         event->wait();
     }
@@ -845,6 +1085,8 @@ namespace zsLib
 
       createWakeUpSocket();
 
+      mThreadReady.notify();
+
       do
       {
         EventHandle *pollEvents = NULL;
@@ -873,7 +1115,7 @@ namespace zsLib
         }
 #endif //_WIN32
 
-        ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError))
+        ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError));
 
         bool redoWakeupSocket = false;
 
@@ -888,6 +1130,12 @@ namespace zsLib
           {
 #else
           if (WSA_WAIT_TIMEOUT == result) goto completed;
+          if (WSA_WAIT_FAILED == result) {
+            lastError = WSAGetLastError();
+            ZS_LOG_INSANE(log("poll completed") + ZS_PARAM("result", result) + ZS_PARAM("error", lastError));
+            goto completed;
+          }
+
           decltype(result) index = result - WSA_WAIT_EVENT_0;
           decltype(result) nextIndex = index;
 
@@ -899,9 +1147,12 @@ namespace zsLib
 
             result = WSAWaitForMultipleEvents(SafeInt<DWORD>(size - index), &(pollEvents[index]), FALSE, 0, FALSE);
             if (WSA_WAIT_TIMEOUT == result) goto completed;
+            if ((WSA_WAIT_EVENT_0 == result) &&
+                (0 == index)) continue; // special event based wake-up event
 
             index = (result - WSA_WAIT_EVENT_0) + index;
             if (index >= nextIndex) nextIndex = index+1;
+
 
 #endif //_WIN32
 
@@ -959,6 +1210,7 @@ namespace zsLib
 
             ZS_LOG_INSANE(log("socket event found") + ZS_PARAM("handle", record.fd) + ZS_PARAM("events", friendly(record.revents)))
 
+#ifndef _WIN32
             if (record.fd == mWakeUpSocket->getSocket()) {
               // related to wakeup socket
               if ((record.revents & POLLRDNORM) != 0) {
@@ -984,6 +1236,7 @@ namespace zsLib
               }
               continue;
             }
+#endif //_WIN32
 
             SocketMap::iterator found = mMonitoredSockets.find(record.fd);
             if (found == mMonitoredSockets.end()) {
@@ -1080,11 +1333,13 @@ namespace zsLib
           }
         }
 
+#ifndef _WIN32
         if (redoWakeupSocket) {
           // WARNING: DO NOT CALL FROM WITHIN A LOCK
           ZS_LOG_TRACE(log("redoing wake-up socket"))
           createWakeUpSocket();
         }
+#endif //ndef _WIN32
 
       } while (!mShouldShutdown);
 
@@ -1103,14 +1358,21 @@ namespace zsLib
         mMonitoredSockets.clear();
         mWaitingForRebuildList.clear();
         mSocketSet.clear();
-        mWakeUpSocket.reset();
+        cleanWakeUpSocket();
       }
+    }
+
+    //-------------------------------------------------------------------------
+    void SocketMonitor::shutdown()
+    {
+      ZS_LOG_DETAIL(log("shutdown called"));
+      cancel();
     }
 
     //-------------------------------------------------------------------------
     void SocketMonitor::cancel()
     {
-      ZS_LOG_DETAIL(log("cancel called"))
+      ZS_LOG_DETAIL(log("cancel called"));
 
       ThreadPtr thread;
       SocketMonitorPtr gracefulReference;
@@ -1134,14 +1396,9 @@ namespace zsLib
     }
 
     //-------------------------------------------------------------------------
-    void SocketMonitor::notifySingletonCleanup()
-    {
-      cancel();
-    }
-
-    //-------------------------------------------------------------------------
     void SocketMonitor::processWaiting()
     {
+      if (mWaitingForRebuildList.size() < 1) return;
       for (EventList::iterator iter = mWaitingForRebuildList.begin(); iter != mWaitingForRebuildList.end(); ++iter)
       {
         (*iter)->notify();
@@ -1153,6 +1410,10 @@ namespace zsLib
     //-------------------------------------------------------------------------
     void SocketMonitor::wakeUp()
     {
+#ifdef _WIN32
+      if (NULL == mWakeupEvent) return;
+      ::SetEvent(mWakeupEvent);
+#else
       int errorCode = 0;
 
       {
@@ -1177,11 +1438,19 @@ namespace zsLib
       if (0 != errorCode) {
         ZS_LOG_ERROR(Basic, log("Could not wake up socket monitor. This will cause a delay in the socket monitor response time") + ZS_PARAM("error", errorCode))
       }
+#endif //_WIN32
     }
 
     //-------------------------------------------------------------------------
     void SocketMonitor::createWakeUpSocket()
     {
+#ifdef _WIN32
+      mWakeupEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
+
+      if (NULL != mWakeupEvent) {
+        mSocketSet.setWakeUpEvent(mWakeupEvent);
+      }
+#else // _WIN32
       // WARNING: NEVER CALL THIS FROM WITHIN A LOCK
 
       // ignore SIGPIPE
@@ -1252,6 +1521,20 @@ namespace zsLib
 
         ZS_THROW_BAD_STATE_MSG_IF(tries > 500, "Unable to allocate any loopback ports for a wake-up socket")
       }
+#endif // _WIN32
+    }
+
+    //-------------------------------------------------------------------------
+    void SocketMonitor::cleanWakeUpSocket()
+    {
+#ifdef _WIN32
+      if (NULL != mWakeupEvent) {
+        ::CloseHandle(mWakeupEvent);
+        mWakeupEvent = NULL;
+      }
+#else // _WIN32
+      mWakeUpSocket.reset();
+#endif // _WIN32
     }
 
     //-----------------------------------------------------------------------
